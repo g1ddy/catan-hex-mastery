@@ -156,54 +156,7 @@ function parseVertexId(id: string) {
 }
 
 function getVertexNeighbors(vertexId: string): string[] {
-    // A vertex is defined by 3 hexes (A, B, C).
-    // Its neighbors are vertices that share 2 hexes with it.
-    // Neighbor 1: (A, B, D)
-    // Neighbor 2: (B, C, E)
-    // Neighbor 3: (C, A, F)
-    // This seems complex to calculate from just the ID string without the grid context or a geometric solver.
-
-    // Alternative:
-    // A vertex is a "point".
-    // 3 hexes meet at a vertex.
-    // The neighbors of this vertex are the other ends of the 3 edges radiating from it.
-    // An edge is defined by 2 hexes.
-    // So the edges connected to this vertex are (A,B), (B,C), (C,A).
-    // The other end of edge (A,B) is the vertex defined by (A, B, D) where D is the other neighbor of A and B.
-
-    // Let's use `getEdgesForVertex` and then find the other vertex for each edge.
-    // But we don't have `getOtherVertex(edge, vertex)`.
-
-    // Let's stick to the Geometry defined in `hexUtils`.
-    // `getVerticesForHex` returns the 6 vertices of a hex.
-    // If we have the 3 hexes forming the vertex, we can get all their vertices.
-    // The neighbors are the ones that share exactly 2 hex coordinates with our target vertex?
-    // Wait, the vertex ID is composed of 3 hex coordinates.
-    // Neighbor vertices share an edge. An edge is defined by 2 hex coordinates.
-    // So yes, a neighbor vertex shares exactly 2 hex coordinates in its definition?
-    // Let's verify.
-    // V1 = (H1, H2, H3).
-    // Edge1 = (H1, H2).
-    // V2 (neighbor) is the other end of Edge1. V2 must be formed by (H1, H2, H4).
-    // So yes, neighbors share exactly 2 hex components in their ID.
-
-    // So to find neighbors:
-    // 1. Parse V1 into H1, H2, H3.
-    // 2. Find H4 (neighbor of H1 and H2), H5 (neighbor of H2 and H3), H6 (neighbor of H3 and H1).
-    // 3. Construct IDs for (H1,H2,H4), (H2,H3,H5), (H3,H1,H6).
-
     const hexes = parseVertexId(vertexId);
-    // hexes[0], hexes[1], hexes[2]
-
-    // Helper to find common neighbor of two hexes excluding a third
-    // Algorithm:
-    // 1. Get vertices of H1.
-    // 2. Get vertices of H2.
-    // 3. Find intersection of these two lists.
-    // 4. The intersection should contain exactly 2 vertices: V itself, and Neighbor1.
-    // 5. Repeat for (H2, H3) -> Neighbor2.
-    // 6. Repeat for (H3, H1) -> Neighbor3.
-
     const neighbors: string[] = [];
     const pairs = [
         [hexes[0], hexes[1]],
