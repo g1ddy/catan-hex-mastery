@@ -1,25 +1,28 @@
 import { useState } from 'react';
-import { Board } from './components/Board';
-import { generateBoard } from './game/boardGen';
-import { Hex } from './game/types';
+import { GameClient } from './GameClient';
 import './App.css';
 
 function App() {
-  const [hexes, setHexes] = useState<Hex[]>(() => generateBoard());
+  const [numPlayers, setNumPlayers] = useState<number | null>(null);
+
+  if (numPlayers !== null) {
+    return (
+      <div className="app-container">
+        <GameClient numPlayers={numPlayers} />
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
-      <h1 className="title">Hex Mastery - Phase 1</h1>
-      <button
-        onClick={() => setHexes(generateBoard())}
-        className="new-game-btn"
-      >
-        New Game
-      </button>
-      <div className="board-wrapper">
-        <Board hexes={hexes} />
+      <h1 className="title">Hex Mastery - Setup</h1>
+      <div className="setup-menu">
+        <p>Select Number of Players:</p>
+        <div className="button-group">
+          <button onClick={() => setNumPlayers(3)} className="player-btn">3 Players</button>
+          <button onClick={() => setNumPlayers(4)} className="player-btn">4 Players</button>
+        </div>
       </div>
-      <p className="instructions">Open Console to see Hex Coordinates on Click</p>
     </div>
   );
 }
