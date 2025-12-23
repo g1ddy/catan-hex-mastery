@@ -61,3 +61,21 @@ export const getEdgesForHex = (coords: CubeCoordinates): string[] => {
   const neighbors = getNeighbors(coords);
   return neighbors.map(n => getEdgeId(coords, n));
 };
+
+// Helper used in Board.tsx
+function parseVertexId(id: string) {
+    return id.split('::').map(s => {
+        const [q, r, sCoords] = s.split(',').map(Number);
+        return { q, r, s: sCoords };
+    });
+}
+
+export const getEdgesForVertex = (vertexId: string): string[] => {
+    // Edges connected to a vertex (H1, H2, H3) are (H1,H2), (H2,H3), (H3,H1).
+    const hexes = parseVertexId(vertexId);
+    return [
+        getEdgeId(hexes[0], hexes[1]),
+        getEdgeId(hexes[1], hexes[2]),
+        getEdgeId(hexes[2], hexes[0])
+    ];
+};
