@@ -1,0 +1,285 @@
+﻿The Settlers of Catan: An Exhaustive Analysis of Ludological Mechanics, Probability Theory, and Competitive Strategy
+Executive Summary
+Since its introduction, The Settlers of Catan (now simply Catan) has transcended its status as a mere board game to become a foundational text in the study of modern resource management simulations. It represents a paradigm shift from the zero-sum conflict of wargames to a "constructive competition" model where trading, spatial economics, and probability management converge. This report provides a comprehensive, expert-level dissection of the game's official rules—specifically the 5th Edition standards—and synthesizes these mechanics into a definitive guide on high-level strategy. By examining the mathematical underpinnings of the 19-hex board, the bell curve of the 2d6 probability distribution, and the complex psychological economy of the trading table, this document serves as an exhaustive reference for competitive mastery.
+The analysis is divided into three primary movements:
+1. The Immutable Laws: A rigorous examination of the rules, component limitations, and the specific geometric constraints of the "Distance Rule."
+2. The Probabilistic Landscape: A deep dive into the mathematics of dice rolls, "pips," and the statistical reality of resource production.
+3. Grand Strategy & Execution: An evaluation of dominant strategic archetypes (Ore-Wheat-Sheep vs. Brick-Wood), negotiation psychology, and endgame calculus.
+1. The Constitution of Catan: Rules, Mechanics, and Infrastructure
+To master Catan, one must first understand the rigid framework within which the game operates. The rules are not merely instructions but a physics engine that dictates the boundaries of possibility.
+1.1 The Geometry of Scarcity: Board Construction
+The standard Catan board is a variable hexagonal grid comprising 19 terrain hexes surrounded by 6 sea frame pieces. This specific geography is not arbitrary; it is designed to create scarcity. The distribution of terrain types in the base game is fixed, creating a predefined economic landscape before a single die is rolled.
+Terrain Distribution and Resource Correlation:
+* Forest (Produces Lumber): 4 Hexes
+* Pasture (Produces Wool): 4 Hexes
+* Fields (Produces Grain/Wheat): 4 Hexes
+* Hills (Produces Brick): 3 Hexes
+* Mountains (Produces Ore): 3 Hexes
+* Desert (Produces Nothing): 1 Hex
+Implication of Scarcity: The most critical immediate insight from this distribution is the inherent scarcity of Brick and Ore. With only three hexes each, compared to four for Wood, Wool, and Wheat, these resources act as natural bottlenecks. Brick is the limiting factor for early-game expansion (Roads and Settlements), while Ore is the limiting factor for late-game consolidation (Cities and Development Cards). In any standard setup, the "Brick shortage" or "Ore drought" is not a bug; it is a mathematical inevitability designed into the map.
+The Coastal Frame: The sea frame pieces house the harbors (ports), which provide the only mechanism for "fixed rate" exchange, bypassing the volatile player-driven market. The spacing of these ports is static relative to the frame, but the internal hexes are randomized (in the variable setup), creating unique "Port-to-Resource" synergies—or lack thereof—in every game.
+1.2 The Distance Rule: A Mechanism of Area Denial
+Perhaps the most misunderstood and strategically profound rule in Catan is the Distance Rule. The rule states: "You may only build a settlement at an intersection if all 3 of the adjacent intersections are vacant".
+This is often interpreted simply as a spacing requirement to prevent clutter. However, strategically, it acts as a mechanism for Area Denial.
+* The "Kill Zone": When a player places a settlement on a vertex, they effectively "kill" the three adjacent vertices. No player, including the owner, can ever build on those spots.
+* Offensive Application: Experienced players utilize this rule aggressively. By building a settlement on a specific intersection, a player can render an opponent’s road network useless or block them from accessing a high-value tile, even if the building player gains little immediate production from that spot. It transforms settlement placement from a purely economic decision into a territorial control tactic.
+1.3 The Economy of Components
+Unlike many modern games where tokens are unlimited, Catan enforces strict component limits. A player is limited to:
+* 5 Settlements
+* 4 Cities
+* 15 Roads.
+The Upgrade Cycle: If a player has built all 5 settlements and wishes to build another, they must first upgrade an existing settlement to a city. This returns the settlement piece to their supply, making it available for placement elsewhere. This creates a forced "Upgrade Cycle." A player cannot simply sprawl indefinitely; they must mature their economy (build cities) to free up the capacity to expand further.
+The Road Limit: The 15-road limit is a hard cap. If a player builds all 15 roads, they cannot build more. This has significant implications for the "Longest Road" strategy. If a player builds a long, inefficient road to nowhere, they may find themselves physically unable to build the connecting segments needed to reach a port or a new settlement spot in the endgame.
+1.4 The Turn Structure: 5th Edition Evolution
+The structure of a turn in Catan has evolved over the game's editions, leading to significant confusion among players using older rulesets.
+The Standard Sequence:
+1. Resource Production: The active player rolls 2d6. Results apply to all players.
+2. Trading / Building: The active player spends resources and makes trades.
+The Combined Trade/Build Phase (5th Edition): In older editions (pre-2010), players were required to finish all trading before laying a single piece of wood. The 5th Edition Almanac and "Rules for Experienced Players" introduced the Combined Trade/Build Phase.
+* The Rule: After rolling, the active player may trade and build in any order.
+* Strategic Impact: This creates dynamic "combo" turns. A player can now trade for a road, build that road to a 3:1 port, and immediately use that port to trade for a settlement in the same turn. This removes the "lock-step" rigidity and allows for more fluid, opportunistic play.
+1.5 The 5-6 Player Extension: The "Paired Player" Rule
+In games with 5 or 6 players, the board is expanded with additional hexes, but the most significant change is to the turn structure to prevent downtime.
+Old Rule: Special Building Phase: Previously, at the end of every player's turn, all other players could engage in a "Special Building Phase" where they could build (but not trade). This is now considered outdated.
+New Rule: Paired Players (2020+): The modern standard is the Paired Player rule.
+* Mechanism: When the active player (Player 1) finishes their turn, the player sitting opposite them (Player 2) immediately takes a "Special Turn."
+* Limitations: During this special turn, Player 2 can roll for production? No. They can Trade (only with the supply/ports, not with players) and Build. They cannot play Development Cards (unless it is a VP card to win).
+* Implication: This keeps the game moving but restricts the secondary player to "autarkic" moves—they must be self-sufficient as they cannot barter with the table.
+2. The Probabilistic Landscape: The Mathematics of the Roll
+Catan is, at its core, a game of managing a Probability Density Function (PDF). The central engine—two six-sided dice—creates a bell curve of outcomes that dictates the economic pulse of the game.
+2.1 The 2d6 Bell Curve and "Pip" Analysis
+There are 36 possible permutations when rolling two dice (6 \times 6). The sum of these dice results in numbers ranging from 2 to 12. The game visualizes the probability of these numbers using "pips" (dots) on the number tokens.
+Table 2.1: Probability Distribution of 2d6
+Number
+	Dice Combinations (Permutations)
+	Probability (P)
+	Pips (Dots)
+	Frequency (%)
+	2
+	1+1
+	1/36
+	1
+	2.78%
+	3
+	1+2, 2+1
+	2/36
+	2
+	5.56%
+	4
+	1+3, 3+1, 2+2
+	3/36
+	3
+	8.33%
+	5
+	1+4, 4+1, 2+3, 3+2
+	4/36
+	4
+	11.11%
+	6
+	1+5, 5+1, 2+4, 4+2, 3+3
+	5/36
+	5
+	13.89%
+	7
+	1+6, 6+1, 2+5, 5+2, 3+4, 4+3
+	6/36
+	(Robber)
+	16.67%
+	8
+	2+6, 6+2, 3+5, 5+3, 4+4
+	5/36
+	5
+	13.89%
+	9
+	3+6, 6+3, 4+5, 5+4
+	4/36
+	4
+	11.11%
+	10
+	4+6, 6+4, 5+5
+	3/36
+	3
+	8.33%
+	11
+	5+6, 6+5
+	2/36
+	2
+	5.56%
+	12
+	6+6
+	1/36
+	1
+	2.78%
+	Strategic Application of Pips: When placing a settlement, a player covers three hexes. The "value" of that settlement can be quantified by summing the pips of the adjacent numbers.
+* Maximum Value: A settlement on a 6, 9, 5 intersection has a value of 5 + 4 + 4 = 13 pips. This means the player expects to receive a resource on 13 out of every 36 rolls (roughly 36% of turns).
+* Minimum Viable Value: A settlement on a 2, 3, 12 intersection has a value of 1 + 2 + 1 = 4 pips (11% of turns).
+* The "Pips Strategy": In a vacuum, the optimal strategy is simply to maximize the total pip count of your initial settlements. A starting setup with 25 total pips will, over the law of large numbers, vastly outproduce a setup with 15 pips.
+2.2 Variance, Droughts, and the Gambler's Fallacy
+While the "Pip Strategy" is mathematically sound over an infinite timeline, Catan games are finite (usually 60-80 turns). This small sample size introduces high Variance.
+* The Drought: It is statistically common for a "high probability" number (e.g., 8) to not roll for 15 or 20 turns. Players relying entirely on a single number (e.g., placing on two different 8s) are vulnerable to "resource droughts."
+* Number Diversity: To mitigate variance, advanced strategy dictates Number Diversity. Instead of having 10 pips concentrated on the number 8, it is often better to have 10 pips spread across 4, 5, 9, and 10. This ensures a smoother, more consistent influx of resources, preventing the hand from stagnating and keeping the player active in trading.
+* Gambler's Fallacy: Players often believe that if an 8 hasn't rolled in a while, it is "due." The dice have no memory. Every roll is an independent event. Strategy must be based on probability, not "due" corrections.
+2.3 The "7" Anomaly and the Robber Economy
+The number 7 is the single most likely outcome (16.67%). This is the game's built-in mechanism for redistribution and aggression.
+* The Hand Limit: The 7-card hand limit forces players to maintain a "lean" economy. Hoarding resources is statistically punished. If a player holds 8 cards, there is a ~17% chance they will lose half of them before their next turn.
+* Expected Damage (EV): The Robber is an economic weapon. Placing the Robber on a '6' hex effectively removes 5 pips of production from the game. If an opponent has a City on a '6', the Robber denies them 2 cards x (5/36 probability) = 0.27 cards per roll. Over 10 turns, that is nearly 3 lost cards—the cost of a Development Card.
+3. The Art of Initial Placement: The "Snake Draft"
+The game of Catan is often won or lost before the first die is rolled. The setup phase uses a "Snake Draft" system that balances the advantage of going first with the advantage of placing two settlements back-to-back.
+Draft Order: Player 1 \rightarrow 2 \rightarrow 3 \rightarrow 4 \rightarrow 4 \rightarrow 3 \rightarrow 2 \rightarrow 1.
+3.1 Analyzing the Positions
+First Position (Player 1):
+* Advantage: Gets the absolute best single location on the board (The "Prime Spot").
+* Disadvantage: Suffers the longest wait between picks. Their second settlement will be the 8th pick, meaning they are often left with "scraps."
+* Strategy: Player 1 must prioritize the highest pip-count spot or the scarcest resource (usually a strong Brick/Ore tile). They cannot count on getting a complementary spot later, so their first pick must be a powerhouse.
+Fourth Position (Player 4 - The Wheel):
+* Advantage: Places two settlements consecutively.
+* Disadvantage: Gets the 4th and 5th best spots, missing the "Prime Spot."
+* Strategy: Player 4 has the unique ability to create instant synergy. They can coordinate their two settlements to ensure they have a perfect starting hand (e.g., Road building materials) or secure a "Monopoly" on a specific resource cluster. They can also effectively "block" a large section of the board by placing two settlements close to each other (adhering to the distance rule), claiming a territory.
+3.2 Starting Resources
+Players receive starting resources based only on their second placed settlement.
+* Tactical Decision: A player might place their first settlement on a high-production Ore spot (to secure it for later) but place their second settlement on a Wood/Brick cluster. This gives them a starting hand of Wood/Brick, allowing them to build a road immediately on Turn 1.
+* The "City Start": Conversely, placing the second settlement on Ore-Wheat-Sheep gives a starting hand that can immediately buy a Development Card if the first roll yields the missing component.
+4. Resource Economics: The Valuation of Goods
+Not all resources are created equal. Their relative value fluctuates based on scarcity (board layout) and game phase.
+4.1 The Hierarchy of Value
+1. Wheat (Grain): The "King" Resource Wheat is the most fundamental resource. It is required for:
+* Settlements (Growth)
+* Cities (Production Multiplier)
+* Development Cards (Security/VP)
+* Analysis: It is functionally impossible to win without steady Wheat production. It is involved in 3 out of 4 build recipes. A player with no Wheat is effectively dead in the water.
+2. Ore: The "Queen" Resource Ore is the engine of the endgame.
+* Required for: Cities, Development Cards.
+* Scarcity: With only 3 hexes, Ore is often the bottleneck. A player with high Wheat but low Ore will have a sprawling empire of settlements (5 VP max) but will struggle to reach 10 VP without cities.
+3. Brick: The "Prince" of the Early Game
+* Required for: Roads, Settlements.
+* Scarcity: Like Ore, there are only 3 Brick hexes.
+* Volatility: Brick is crucial in the first 15 minutes to secure territory. Once a player has built their 5 settlements and essential roads, the value of Brick plummets to near zero (unless going for Longest Road). This is known as the "Brick Depreciation Curve".
+4. Wood (Lumber): The Common Builder
+* Required for: Roads, Settlements.
+* Abundance: With 4 hexes, Wood is generally more available than Brick. It shares the same depreciation curve as Brick but is less prone to critical shortages.
+5. Sheep (Wool): The "Currency" Resource
+* Required for: Settlements, Development Cards.
+* Abundance: With 4 hexes, Sheep is often the most abundant resource. Because it is often overproduced, it becomes the "penny" of Catan—used to pad trades or discard to the Robber. However, a "Sheep Port" strategy can monetize this abundance effectively.
+5. Grand Strategic Archetypes
+To win Catan, a player must commit to a strategic engine. While adaptability is key, most winning games fall into one of three archetypes.
+5.1 The "City-Knight" Engine (Ore-Wheat-Sheep)
+This is widely regarded by competitive players as the most robust strategy.
+* Concept: Prioritize vertical growth (Cities) over horizontal expansion (Roads).
+* Core Loop: Use Ore/Wheat to upgrade initial settlements to Cities as fast as possible. This doubles resource intake. Use the surplus to buy Development Cards.
+* Win Condition: 3 Cities (6 VP) + Largest Army (2 VP) + 2 Victory Point Cards / Settlements = 10 VP.
+* Why it dominates: It is space-efficient. You don't need to fight for territory. The "Largest Army" protects your high-value tiles from the Robber. The hidden VP cards provide a "stealth" win.
+* Counter: The "Robber Lock." If opponents block your single Ore source, the engine seizes.
+5.2 The "Road Builder" Engine (Brick-Wood)
+This is the intuitive strategy for new players, but it is fragile.
+* Concept: Rapid horizontal expansion to secure the best ports and settlement spots.
+* Core Loop: Use Wood/Brick to build roads and settlements. Cut off opponents. Aim for the "Longest Road" card.
+* Win Condition: 5 Settlements (5 VP) + Longest Road (2 VP) + 1 City / VP Card = ~8-9 VP.
+* The Problem: This strategy often stalls at 7 or 8 points. Settlements only give 1 VP. To get to 10, you must eventually build Cities, which requires Ore/Wheat—resources this strategy usually neglects.
+* Risk: "Longest Road" is a volatile 2 points. If an opponent builds a longer road, you lose 2 points instantly—a massive swing.
+5.3 The "Port Monopolist" Strategy
+This is a high-risk, high-reward strategy that ignores diversity in favor of volume.
+* Concept: Secure a high-production cluster of a single resource (e.g., 8 and 5 of Sheep) and the corresponding 2:1 Port (Sheep Port).
+* Core Loop: Produce massive amounts of Sheep. Trade them 2:1 for whatever you need (Ore, Wheat, etc.).
+* Why it works: It bypasses the "Trading Market." You don't need other players to trade with you. You are self-sufficient.
+* The Achilles Heel: If the Robber blocks your one resource hex, you produce nothing. You have no diversification. This strategy requires aggressive Knight usage to keep the production line open.
+6. Advanced Tactics: Diplomacy and the Mid-Game
+Catan is unique because it forces players to trade. You cannot win in a vacuum (unless playing a pure Port strategy).
+6.1 The Psychology of Trading
+* Information Asymmetry: Smart players track the cards. If an 8 (Brick) just rolled, everyone knows who has Brick. Use this. "I know you have Brick, and I know you need Wheat for that City. Let's deal.".
+* The "Non-Binding" Promise: Official rules state you cannot trade "futures" (e.g., "Give me a brick now, I'll give you a wheat next turn"). However, players often make informal agreements regarding the Robber ("Don't rob me, and I'll trade with you"). Breaking these agreements is legal but carries a heavy "meta-game" penalty—players will never trust you again.
+* The "Embargo": As soon as a player reaches 7 or 8 points, the table usually stops trading with them. A winning player anticipates this. They secure a port before they look like a threat, ensuring they can function when the embargo hits.
+6.2 The "Monopoly" Card Trap
+The Monopoly card is the most devastating weapon in the game.
+* The Tactic: A player asks, "Does anyone have Ore for trade?" Players announce they have Ore. The player then says, "Actually, I'll just play Monopoly on Ore."
+* The Counter: Advanced players never reveal what they have when asked, unless a trade is actively on the table.
+* Tracking: Counting cards is essential. If three "10s" (producing Wheat) were rolled recently, you know there is a glut of Wheat in the market. That is the moment to play Monopoly.
+6.3 Development Card Timing
+* Knights: Don't play them immediately. Hold them. A Knight is a threat. It forces opponents to play sub-optimally. Play it before you roll if the Robber is blocking your key tile.
+* Victory Points: Never reveal them until the very end. If you have 8 points on the board and 2 hidden VP cards, you have won. If you reveal them early, you have 10 points on the board, and the table will attack you to prevent you from getting the "last" point.
+7. The Endgame: Closing the Deal
+The endgame (8-10 VP) requires a shift in mindset. Efficiency no longer matters; only speed matters.
+7.1 The "Sprint" to 10
+Players often get stuck at 9 points. The "Longest Road" is frequently the tiebreaker.
+* Road Building Card: Saving a "Road Building" card for the final turn allows a player to unexpectedly extend their road by 2 segments, potentially stealing the Longest Road card and swinging the score by +2 VP for an instant win.
+7.2 Defensive Building
+If you cannot win, you must stop the leader.
+* Road Breaking: If an opponent has a long road with a gap (an empty intersection), you can build a settlement there to "break" their road chain. This splits their road into two shorter segments, potentially causing them to lose the Longest Road card.
+7.3 The "Robber Baron"
+In the endgame, the Robber should always be on the leader's highest production tile. There is no "friendly" play in the endgame. If Player A has 9 points, blocking their 2-pip tile is a mistake; block their 5-pip (6 or 8) tile regardless of feelings.
+8. Clarifications, Misconceptions, and Variants
+8.1 Common Rule Misconceptions
+* The "Road-Settlement" Leapfrog: You cannot build a road, then a settlement, then another road from that settlement in the same turn if you didn't have the settlement built first. (Actually, Yes you can, provided you have the resources for all of it. The "Combined Trade/Build" phase allows chaining).
+* Trading with the Bank: You can trade 4:1 with the bank at any time during your turn. You do not need a port.
+* Knight before Roll: You can play a Knight card before rolling the dice. This is the only action allowed before rolling. This is strategic: move the Robber off your 8, then roll, hoping for an 8.
+8.2 The "Friendly Robber" Variant
+This is an official variant (from Traders & Barbarians), not a base rule.
+* Rule: The Robber cannot be moved to a hex adjacent to a player with only 2 Victory Points.
+* Purpose: Prevents a player from being bullied out of the game before they have even started.
+* Note: In competitive base Catan, this rule does NOT apply. Ruthless players will block a 2-point player if it benefits them.
+9. Conclusion
+Mastery of Catan requires a synthesis of mathematical rigor and psychological acuity. The novice sees dice rolls; the expert sees probability curves. The novice sees trading as helping; the expert sees trading as manipulation.
+Summary of Winning Strategy:
+1. Setup: Prioritize high-pip intersections with access to Wheat and Ore. Avoid placing both settlements on the same number.
+2. Early Game: Focus on Brick/Wood to secure key spots, but pivot quickly. Don't over-invest in roads.
+3. Mid Game: Transition to the "City Engine." Upgrade settlements. Buy Development Cards to secure the Largest Army.
+4. Endgame: Hoard resources for a burst finish. Keep VP cards hidden. Steal the Longest Road only on the final turn.
+By adhering to the "Immutable Laws" of the board and respecting the "Geometry of Scarcity," a player transforms Catan from a game of chance into a game of calculated risk and inevitable victory.
+10. Appendix: Data Tables
+Table 10.1: Resource Utility by Phase
+Resource
+	Early Game Value (Turns 1-15)
+	Mid Game Value (Turns 16-30)
+	Late Game Value (Turns 30+)
+	Scarcity (Hexes)
+	Brick
+	High (Roads/Settlements)
+	Moderate
+	Low
+	3
+	Wood
+	High (Roads/Settlements)
+	Moderate
+	Low
+	4
+	Wheat
+	Moderate
+	Very High (Cities/Devs)
+	Critical
+	4
+	Ore
+	Low
+	High (Cities)
+	Critical
+	3
+	Sheep
+	Low
+	Moderate (Devs)
+	Low
+	4
+	Table 10.2: Development Card Probability
+Card Type
+	Count
+	Probability
+	Strategic Use
+	Knight
+	14
+	56%
+	Defense / Largest Army (2 VP)
+	Victory Point
+	5
+	20%
+	Hidden Scoring
+	Road Building
+	2
+	8%
+	Surprise expansion / Steal Longest Road
+	Year of Plenty
+	2
+	8%
+	Free resources (Flexibility)
+	Monopoly
+	2
+	8%
+	Economic warfare (Steal Ore/Wheat)
+	Works cited
+1. Game Rules - CATAN, https://www.catan.com/sites/default/files/2021-06/catan_base_rules_2020_200707.pdf 2. THE GAME - CATAN, https://www.catan.com/sites/default/files/2025-03/CN3081%20CATAN%E2%80%93The%20Game%20Rulebook%20secure%20%281%29.pdf 3. catan-family-rules-overview.pdf, https://www.catan.com/sites/default/files/2021-06/catan-family-rules-overview.pdf 4. Settlers of Catan: Distance Rule : r/boardgames - Reddit, https://www.reddit.com/r/boardgames/comments/4smcdc/settlers_of_catan_distance_rule/ 5. Catan Rule Unclear: Settlement Placement - Reddit, https://www.reddit.com/r/Catan/comments/1kzwvc8/catan_rule_unclear_settlement_placement/ 6. Catan Game 5-6 Rules 2022 240313.pdf, https://www.catan.com/sites/default/files/2024-03/Catan%20Game%205-6%20Rules%202022%20240313.pdf 7. almanac - CATAN, https://www.catan.com/sites/default/files/2024-01/Almanac%20CATAN-3D.pdf 8. Catan Rules - 64 Ounce Games, https://www.64ouncegames.com/pages/catan 9. Catan Strategy Guide : 16 Steps (with Pictures) - Instructables, https://www.instructables.com/Catan-strategy-guide/ 10. Playing the probabilities in Settlers of Catan - David Richeson, https://divisbyzero.com/2010/01/06/playing-the-probabilities-in-settlers-of-catan/ 11. Dice Odds for Settlers of Catan - Stanford Computer Science, https://cs.stanford.edu/people/nick/settlers/DiceOddsSettlers.html 12. Probability of Dice Rolls in Settlers of Catan - Stung Eye - Winnipeg, Manitoba, Canada, https://www.stungeye.com/archive/by_date/2013/12/17 13. How to Set Up Catan - YouTube, https://www.youtube.com/watch?v=iVQZliENn5w 14. How to Win at Catan: Secret Strategies Most Players Miss | Meeples ..., https://meeplescorner.co.uk/blogs/meeple-musings/how-to-win-at-catan-secret-strategies-most-players-miss 15. How to play Catan: board game's rules, setup and how to win explained | Dicebreaker, https://www.dicebreaker.com/games/catan-1/how-to/how-to-play-catan-board-game 16. What is the strategic value of each Catan resources? - Board Game Analysis, https://www.boardgameanalysis.com/what-is-the-strategic-value-of-each-catan-resources/ 17. Strategies for Settlers of Catan - Shreyas Nimishe, https://shnimishe.medium.com/strategies-for-settlers-of-catan-59849c92a17c 18. The Brick-Wood Paradox | Developing Catan - WordPress.com, https://developingcatan.wordpress.com/2011/05/22/the-brick-wood-paradox/ 19. 5 Best Winning Catan Strategies: Never Lose Again - Elevated Board Games, https://www.elevatedboardgames.com/post/5-best-winning-catan-strategies-never-lose-again 20. Why is Longest Road Better Than Largest Army in 1v1? : r/Catan - Reddit, https://www.reddit.com/r/Catan/comments/1b1jp0p/why_is_longest_road_better_than_largest_army_in/ 21. largest army – Board Game Business, https://boardgame.business/tag/largest-army/ 22. Avoid this MISTAKE in Catan! - YouTube, https://www.youtube.com/watch?v=JbEjMT3rITU 23. 5 Negotiation Tips From Settlers of Catan | by Maor Cohen - Medium, https://medium.com/@MaorCohen/5-negotiation-tips-from-settlers-of-catan-4bb1b249e14c 24. Rules Question on Resource Trades and the Robber : r/Catan - Reddit, https://www.reddit.com/r/Catan/comments/1gftwzu/rules_question_on_resource_trades_and_the_robber/ 25. 8 Tips For Trading In Catan - YouTube, https://www.youtube.com/watch?v=qCKuBd6cN6o 26. What's everyone's favourite negotiation tactic? : r/Catan - Reddit, https://www.reddit.com/r/Catan/comments/1i80ogu/whats_everyones_favourite_negotiation_tactic/ 27. Advanced Strategy Guide to Win More Catan | by Noah Miller - Medium, https://medium.com/@noahmiller400/17-advanced-tactics-to-win-more-settlers-of-catan-2d9280b7fa4b 28. Is "Longest Road" an overrated strategy in Settlers of Catan? - Board & Card Games Stack Exchange, https://boardgames.stackexchange.com/questions/8545/is-longest-road-an-overrated-strategy-in-settlers-of-catan 29. Your Ultimate Catan Strategy Guide: 13 Top Tips - wikiHow, https://www.wikihow.com/Catan-Strategy 30. Can I build several connected roads on the same turn?, https://boardgames.stackexchange.com/questions/31796/can-i-build-several-connected-roads-on-the-same-turn 31. Variant rules - CATAN, https://www.catan.com/sites/default/files/2021-06/catan-t_b_2020_rule_book_200820.pdf 32. No robbing until all have 3? Where did this rule come from? : r/Catan - Reddit, https://www.reddit.com/r/Catan/comments/1mz1gmd/no_robbing_until_all_have_3_where_did_this_rule/
