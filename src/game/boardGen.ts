@@ -51,9 +51,10 @@ export function generateBoard(): Hex[] {
     const coords = generateSpiralCoords();
 
     const terrainList: TerrainType[] = [];
-    Object.entries(TERRAIN_COUNTS).forEach(([t, count]) => {
-        // @ts-ignore
-        for(let i=0; i<count; i++) terrainList.push(t as TerrainType);
+    Object.keys(TERRAIN_COUNTS).forEach((key) => {
+        const t = key as TerrainType;
+        const count = TERRAIN_COUNTS[t];
+        for(let i=0; i<count; i++) terrainList.push(t);
     });
 
     let hexes: Hex[] = [];
