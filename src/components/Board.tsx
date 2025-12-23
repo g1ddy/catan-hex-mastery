@@ -181,7 +181,7 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
 
     const size = 8;
     // Pointy Top hexes have corners at 30, 90, 150, 210, 270, 330
-    const corners = [30, 90, 150, 210, 270, 330].map(angle => {
+    const corners = Array.from({ length: 6 }, (_, i) => 30 + i * 60).map(angle => {
         const rad = (angle * Math.PI) / 180;
         return {
             x: size * Math.cos(rad),
