@@ -134,7 +134,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
 };
 
 // Sub-component to render overlays for a single hex
-const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any, moves: any }) => {
+const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: BoardProps<GameState>['ctx'], moves: BoardProps<GameState>['moves'] }) => {
     const isTooClose = (vertexId: string) => {
         // Distance Check logic for highlighting
         // We can't easily check all neighbors without the expensive helper, but we have `G.board.vertices`.
