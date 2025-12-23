@@ -6,6 +6,40 @@
 ## Introduction
 You are working on `hex-mastery`, a high-fidelity game engine and strategy analysis tool. Your goal is not just to make the game "work," but to make it **mathematically perfect** and **strategically insightful**. This codebase serves as the foundation for coaching algorithms, so accuracy is paramount.
 
+This file contains context and strict guidelines for AI assistants (Cursor, Copilot, Windsurf) working on this repository.
+
+## 🧠 Project Architecture
+*   **Engine:** We use `boardgame.io` for all game logic. State lives in `G`, turn metadata lives in `ctx`.
+*   **Geometry:** We use **Cube Coordinates** (`q, r, s`) for all board math. Do not use Offset coordinates for logic, only for rendering if absolutely necessary.
+*   **UI:** We use `react-hexgrid` for visualization. The board is SVG-based, not Canvas.
+
+## 📦 Key Data Structures
+*   **Hex:** `{ q, r, s, terrain, tokenValue }`
+*   **Vertex ID:** A hash of the 3 adjacent hex coordinates (e.g., specific string format).
+*   **Edge ID:** A hash of the 2 adjacent hex coordinates.
+
+## 🚧 Current Task: Phase 2 (Setup Engine)
+
+We are currently building the **Snake Draft** logic.
+
+**Requirements:**
+1.  **Turn Order:** Must strictly follow 1-2-3-4-4-3-2-1. Use `TurnOrder.CUSTOM` in `boardgame.io`.
+2.  **Validation:**
+    *   **Distance Rule:** A settlement cannot be placed if *any* adjacent vertex is occupied.
+    *   **Setup Roads:** In the setup phase, the road must attach to the settlement *just placed* in that same turn.
+3.  **State Updates:**
+    *   Store placements in `G.board.vertices` and `G.board.edges`.
+    *   Update `G.players[id].victoryPoints` immediately.
+    *   **Crucial:** Grant starting resources only after the *second* settlement is placed.
+
+## 🚫 Constraints
+*   **No Class Components:** Use React Functional Components + Hooks only.
+*   **No jQuery/Direct DOM Manipulation:** Use React state.
+*   **Strict Typing:** No `any`. Define interfaces in `types.ts`.
+*   **Immutable Laws:** You are bound by the logic defined in `Catan Strategy and Starting Rules.txt`.
+    *   **Distance Rule:** Strictly enforce the rule that no settlement may be adjacent to another. This is an "Area Denial" mechanism, not just spacing.
+    *   **Probability:** Correctly implement the 2d6 Bell Curve. "Pips" are the truth.
+
 ## Core Directives
 
 ### 1. Technology & Standards
@@ -16,22 +50,7 @@ You are working on `hex-mastery`, a high-fidelity game engine and strategy analy
     *   **Coverage**: Every phase must have comprehensive unit tests.
     *   **Verification**: You must verify your code by running tests before marking a task as complete.
 
-### 2. The "Immutable Laws"
-You are bound by the logic defined in `Catan Strategy and Starting Rules.txt`. You must consult this file to understand the "Physics" of the game.
-*   **Hex Grid**: Use Cube Coordinates (q, r, s). Do not use offset coordinates.
-*   **Distance Rule**: Strictly enforce the rule that no settlement may be adjacent to another. This is an "Area Denial" mechanism, not just spacing.
-*   **Probability**: Correctly implement the 2d6 Bell Curve. "Pips" are the truth.
-*   **Resource Scarcity**: Respect the fixed distribution of hexes (e.g., only 3 Brick, 3 Ore).
-
-### 3. Phased Development
-Do not jump ahead. Adhere to the roadmap in `README.md`.
-*   **Phase 1**: Geometry & Probability. (Do not build game state yet).
-*   **Phase 2**: Rules Kernel. (Do not build AI yet).
-*   **Phase 3**: Analyst Module.
-*   **Phase 4**: Coaching Layer.
-*   **Phase 5**: Interface.
-
-### 4. Strategic Context
+### 2. Strategic Context
 When implementing logic, remember the "Why".
 *   *Why do we need a BoardAnalyzer?* To calculate "Pip Score" for the Placement Trainer.
 *   *Why do we need a specific Longest Road algorithm?* Because it is a dynamic graph problem that changes with every road built.
