@@ -88,7 +88,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
       <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
 
       <HexGrid width={800} height={800} viewBox="-50 -50 100 100">
-        <Layout size={{ x: 8, y: 8 }} flat={true} spacing={1.02} origin={{ x: 0, y: 0 }}>
+        <Layout size={{ x: 8, y: 8 }} flat={false} spacing={1.02} origin={{ x: 0, y: 0 }}>
           {/* 1. Terrain Hexes */}
           <g>
             {hexes.map(hex => (
@@ -180,7 +180,8 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
     // Let's verify with Math.
 
     const size = 8;
-    const corners = [0, 60, 120, 180, 240, 300].map(angle => {
+    // Pointy Top hexes have corners at 30, 90, 150, 210, 270, 330
+    const corners = Array.from({ length: 6 }, (_, i) => 30 + i * 60).map(angle => {
         const rad = (angle * Math.PI) / 180;
         return {
             x: size * Math.cos(rad),
