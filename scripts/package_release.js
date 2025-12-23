@@ -43,7 +43,7 @@ archive.on('warning', function(err) {
   if (err.code === 'ENOENT') {
     console.warn(err);
   } else {
-    throw err;
+    console.error(err);
   }
 });
 
