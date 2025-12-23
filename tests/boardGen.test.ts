@@ -1,4 +1,5 @@
 import { generateBoard } from '../src/game/boardGen';
+import { TerrainType } from '../src/game/types';
 
 describe('boardGen', () => {
   test('generates 19 hexes', () => {
@@ -8,9 +9,8 @@ describe('boardGen', () => {
 
   test('no desert has token', () => {
     const hexes = generateBoard();
-    const desert = hexes.find(h => h.terrain === 'Desert');
-    if (desert) {
-        expect(desert.tokenValue).toBeNull();
-    }
+    const desert = hexes.find(h => h.terrain === TerrainType.Desert);
+    expect(desert).toBeDefined();
+    expect(desert?.tokenValue).toBeNull();
   });
 });
