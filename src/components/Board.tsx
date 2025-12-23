@@ -207,6 +207,10 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any,
             {/* Vertices */}
             {corners.map((corner, i) => {
                 const vId = vertices[i];
+                // Deduping: Only render if this hex is the "primary" owner (first in ID)
+                const primaryHex = vId.split('::')[0];
+                if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
+
                 const vertex = G.board.vertices[vId];
                 const isOccupied = !!vertex;
                 const isSettlementPhase = ctx.activePlayers?.[ctx.currentPlayer] === 'placeSettlement';
@@ -240,10 +244,15 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any,
             {/* Edges */}
             {/* We place edge hit areas between corners */}
             {corners.map((corner, i) => {
+                const eId = edges[i];
+                // Deduping: Only render if this hex is the "primary" owner (first in ID)
+                const primaryHex = eId.split('::')[0];
+                if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
+
                 const nextCorner = corners[(i + 1) % 6];
                 const midX = (corner.x + nextCorner.x) / 2;
                 const midY = (corner.y + nextCorner.y) / 2;
-                const eId = edges[i];
+
                 const edge = G.board.edges[eId];
                 const isOccupied = !!edge;
                 const isRoadPhase = ctx.activePlayers?.[ctx.currentPlayer] === 'placeRoad';
