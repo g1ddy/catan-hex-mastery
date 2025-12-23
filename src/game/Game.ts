@@ -1,4 +1,4 @@
-import { Game, Ctx } from 'boardgame.io';
+import { Game } from 'boardgame.io';
 import { GameState, Player, Resources } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
@@ -8,7 +8,7 @@ import { TurnOrder } from 'boardgame.io/core';
 export const CatanGame: Game<GameState> = {
   name: 'catan',
 
-  setup: ({ ctx }, setupData?: { numPlayers?: number }): GameState => {
+  setup: (_, setupData?: { numPlayers?: number }): GameState => {
     const numPlayers = setupData?.numPlayers || 4;
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));

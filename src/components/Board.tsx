@@ -4,10 +4,10 @@ import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
-import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 
-interface CatanBoardProps extends BoardProps<GameState> {}
+export interface CatanBoardProps extends BoardProps<GameState> {}
 
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   // We need to render:
@@ -90,13 +90,15 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
       <HexGrid width={800} height={800} viewBox="-50 -50 100 100">
         <Layout size={{ x: 8, y: 8 }} flat={true} spacing={1.02} origin={{ x: 0, y: 0 }}>
           {/* 1. Terrain Hexes */}
-          {hexes.map(hex => (
-            <GameHex
-              key={hex.id}
-              hex={hex}
-              onClick={() => {}} // Hex click not used in setup for now
-            />
-          ))}
+          <g>
+            {hexes.map(hex => (
+                <GameHex
+                key={hex.id}
+                hex={hex}
+                onClick={() => {}} // Hex click not used in setup for now
+                />
+            ))}
+          </g>
 
           {/* 2. Vertices & Edges Overlay */}
           {/*
@@ -113,15 +115,17 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
              Since multiple hexes share a vertex, we will render multiple circles on top of each other.
              This is inefficient but visualy correct if they align.
           */}
-          {hexes.map(hex => (
-             <HexOverlays
-                key={`overlay-${hex.id}`}
-                hex={hex}
-                G={G}
-                ctx={ctx}
-                moves={moves}
-             />
-          ))}
+          <g>
+            {hexes.map(hex => (
+                <HexOverlays
+                    key={`overlay-${hex.id}`}
+                    hex={hex}
+                    G={G}
+                    ctx={ctx}
+                    moves={moves}
+                />
+            ))}
+          </g>
 
         </Layout>
       </HexGrid>
@@ -230,7 +234,7 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any,
                             <rect
                                 x={corner.x - 2} y={corner.y - 2}
                                 width={4} height={4}
-                                fill={ownerColor}
+                                fill={ownerColor || 'none'}
                                 stroke="black" strokeWidth={0.5}
                             />
                         )}
@@ -275,7 +279,7 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any,
                             <rect
                                 x={midX - 3} y={midY - 1}
                                 width={6} height={2}
-                                fill={ownerColor}
+                                fill={ownerColor || 'none'}
                                 transform={`rotate(${angle} ${midX} ${midY})`}
                             />
                         )}
