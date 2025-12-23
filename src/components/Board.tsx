@@ -4,7 +4,7 @@ import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
-import { getVerticesForHex, getEdgesForHex, getVertexNeighbors } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 
 interface CatanBoardProps extends BoardProps<GameState> {}
@@ -130,10 +130,32 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
 };
 
 // Sub-component to render overlays for a single hex
-const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: BoardProps<GameState>['ctx'], moves: BoardProps<GameState>['moves'] }) => {
+const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: any, moves: any }) => {
     const isTooClose = (vertexId: string) => {
-        const neighbors = getVertexNeighbors(vertexId);
-        return neighbors.some(nId => !!G.board.vertices[nId]);
+        // Distance Check logic for highlighting
+        // We can't easily check all neighbors without the expensive helper, but we have `G.board.vertices`.
+        // We can iterate occupied vertices and check `distance`? No, vertex ID distance is hard.
+        // We can use the same logic as `placeSettlement` validation if we expose it or reimplement.
+        // Since this is for UI feedback, strictness isn't critical (backend will block it), but we want good UX.
+        // Let's implement a simple check:
+        // A vertex ID is built from hex coords.
+        // If we just check the list of all occupied vertices, and for each occupied vertex,
+        // if it shares an edge with `vertexId`, then `vertexId` is too close.
+        // Vertices share an edge if they share 2 hex coords.
+
+        const occupied = Object.keys(G.board.vertices);
+        const thisV = vertexId.split('::'); // ['q,r,s', 'q,r,s', 'q,r,s']
+
+        for (const occId of occupied) {
+            const thatV = occId.split('::');
+            // Count matching hex coords
+            let matchCount = 0;
+            for(const h1 of thisV) {
+                if(thatV.includes(h1)) matchCount++;
+            }
+            if (matchCount >= 2) return true; // Shared edge -> Adjacent
+        }
+        return false;
     };
 
     // We need to know the offset of corners for Flat Top hexes.
@@ -170,9 +192,15 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
     // Map the 6 standard directions to the sorted IDs returned by `getVerticesForHex`.
     // `getVerticesForHex` uses `getNeighbors` order.
     // `getNeighbors` order: (1,-1,0), (1,0,-1), (0,1,-1), (-1,1,0), (-1,0,1), (0,-1,1).
-    // These directions correspond to angles 0, 60, 120, 180, 240, 300 degrees in Flat Top layout.
-    // This matches the `corners` array order defined above.
-    // Thus, `vertices[i]` maps correctly to `corners[i]`.
+    // These are 6 directions.
+    // We need to match the visual corners to these logical neighbors.
+    // Direction 0: q+1, r-1. (East-North-East?)
+    // In flat layout:
+    // q+ is East?
+    // Let's assume the order matches the rotation.
+    // The `hexUtils` neighbors are in clockwise or counter-clockwise order?
+    // (1,-1,0), (1,0,-1), ...
+    // If we assume they align with the 6 corners in order.
 
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
