@@ -1,7 +1,6 @@
 import { Hex, BoardStats } from './types';
-import { calculatePipCount } from './analysis/pips';
+import { calculatePipCount, SCARCITY_THRESHOLD } from './analysis/pips';
 
-const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;
 const SCARCITY_PENALTY = 20;
 const ABUNDANCE_PENALTY = 10;

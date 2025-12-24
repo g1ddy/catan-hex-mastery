@@ -21,9 +21,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   // Calculate best placements whenever G changes (if hints are on)
   useEffect(() => {
     if (showHints) {
+        // Run getBestPlacements(G)
+        // We need to import it. I added import.
         const suggestions = getBestPlacements(G);
         // Take top 3
-
         const top3 = suggestions.slice(0, 3).map(p => p.vertexId);
         setBestPlacements(new Set(top3));
     } else {

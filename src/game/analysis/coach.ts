@@ -2,6 +2,9 @@ import { GameState, TERRAIN_CONFIG, PlacementScore, CoachFeedback } from '../typ
 import { getVerticesForHex, getVertexNeighbors } from '../hexUtils';
 import { calculatePipCount, getScarcityMap, PIP_MAP } from './pips';
 
+const SCARCITY_MULTIPLIER = 1.2;
+const SYNERGY_BONUS = 2;
+
 function getResourcesForVertex(G: GameState, vertexId: string): string[] {
     const hexCoordsStrings = vertexId.split('::');
     const resources: string[] = [];
@@ -50,6 +53,30 @@ function isValidSettlement(G: GameState, vertexId: string): boolean {
     return true;
 }
 
+function scoreVertex(G: GameState, vertexId: string, scarcityMap: Record<string, boolean>): PlacementScore {
+    const pips = getPipsForVertex(G, vertexId);
+    const resources = getResourcesForVertex(G, vertexId);
+
+    let scarcityMultiplier = 1.0;
+
+    const hasScarceResource = resources.some(r => scarcityMap[r]);
+    if (hasScarceResource) {
+        scarcityMultiplier = SCARCITY_MULTIPLIER;
+    }
+
+    const synergy = hasSynergy(resources) ? SYNERGY_BONUS : 0;
+
+    const score = (pips * scarcityMultiplier) + synergy;
+
+    return {
+        vertexId,
+        score,
+        totalPips: pips,
+        synergyBonus: synergy,
+        scarcityBonus: hasScarceResource
+    };
+}
+
 // Main Coach Function
 export function getBestPlacements(G: GameState): PlacementScore[] {
     const validPlacements: PlacementScore[] = [];
@@ -64,28 +91,7 @@ export function getBestPlacements(G: GameState): PlacementScore[] {
 
     allVertices.forEach(vId => {
         if (!isValidSettlement(G, vId)) return;
-
-        const pips = getPipsForVertex(G, vId);
-        const resources = getResourcesForVertex(G, vId);
-
-        let scarcityMultiplier = 1.0;
-
-        const hasScarceResource = resources.some(r => scarcityMap[r]);
-        if (hasScarceResource) {
-            scarcityMultiplier = 1.2;
-        }
-
-        const synergy = hasSynergy(resources) ? 2 : 0;
-
-        const score = (pips * scarcityMultiplier) + synergy;
-
-        validPlacements.push({
-            vertexId: vId,
-            score,
-            totalPips: pips,
-            synergyBonus: synergy,
-            scarcityBonus: hasScarceResource
-        });
+        validPlacements.push(scoreVertex(G, vId, scarcityMap));
     });
 
     return validPlacements.sort((a, b) => b.score - a.score);
@@ -97,12 +103,7 @@ export function evaluatePlacement(G: GameState, vertexId: string): CoachFeedback
     const { totalPips, totalBoardPips } = calculatePipCount(G.board.hexes);
     const scarcityMap = getScarcityMap(totalPips, totalBoardPips);
 
-    const pips = getPipsForVertex(G, vertexId);
-    const resources = getResourcesForVertex(G, vertexId);
-    const hasScarceResource = resources.some(r => scarcityMap[r]);
-    const scarcityMultiplier = hasScarceResource ? 1.2 : 1.0;
-    const synergy = hasSynergy(resources) ? 2 : 0;
-    const userScore = (pips * scarcityMultiplier) + synergy;
+    const { score: userScore } = scoreVertex(G, vertexId, scarcityMap);
 
     // 2. Get Best Placements
 

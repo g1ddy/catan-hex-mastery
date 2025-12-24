@@ -19,6 +19,8 @@ export const INITIAL_RESOURCE_PIPS: ResourcePips = {
   ore: 0
 };
 
+export const SCARCITY_THRESHOLD = 0.10;
+
 export function calculatePipCount(hexes: Record<string, Hex>): { totalPips: ResourcePips, totalBoardPips: number } {
   const totalPips: ResourcePips = { ...INITIAL_RESOURCE_PIPS };
   let totalBoardPips = 0;
@@ -37,7 +39,6 @@ export function calculatePipCount(hexes: Record<string, Hex>): { totalPips: Reso
 
 export function getScarcityMap(totalPips: ResourcePips, totalBoardPips: number): Record<string, boolean> {
   const scarcityMap: Record<string, boolean> = {};
-  const SCARCITY_THRESHOLD = 0.10;
 
   if (totalBoardPips === 0) return scarcityMap;
 

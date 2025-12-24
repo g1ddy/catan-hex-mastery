@@ -19,7 +19,7 @@ export const Toast: React.FC<ToastProps> = ({ feedback }) => {
       }, 4000); // Linger for 4 seconds
       return () => clearTimeout(timer);
     } else {
-      setVisible(false);
+        setVisible(false);
     }
   }, [feedback]);
 
