@@ -154,12 +154,11 @@ export function evaluatePlacement(G: GameState, vertexId: string): CoachFeedback
 
     // Note: If evaluatePlacement is called BEFORE placement, `vertexId` is valid and will be in `getBestPlacements`.
     // If called AFTER, `vertexId` is occupied and won't be returned.
+    const rankedPlacements = getBestPlacements(G);
+    // rankedPlacements contains all valid placements, including the user's potential choice, sorted by score.
 
-    const bestAlternatives = getBestPlacements(G);
-
-    const maxAlternativeScore = bestAlternatives.length > 0 ? bestAlternatives[0].score : 0;
-    const maxPossibleScore = Math.max(userScore, maxAlternativeScore);
-    const bestSpotId = bestAlternatives.length > 0 ? bestAlternatives[0].vertexId : undefined;
+    const maxPossibleScore = rankedPlacements.length > 0 ? rankedPlacements[0].score : 0;
+    const bestSpotId = rankedPlacements.length > 0 ? rankedPlacements[0].vertexId : undefined;
 
     // Logic:
     // If UserScore >= MaxPossibleScore - 1: "Great Pick!"
