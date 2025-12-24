@@ -7,9 +7,18 @@ import { TurnOrder } from 'boardgame.io/core';
 
 export const CatanGame: Game<GameState> = {
   name: 'catan',
+  minPlayers: 2,
+  maxPlayers: 4,
 
-  setup: (ctx, setupData?: { numPlayers?: number }): GameState => {
-    const numPlayers = ctx.numPlayers || setupData?.numPlayers || 4;
+  setup: (ctx, _setupData?: any): GameState => {
+    if (!ctx.numPlayers) {
+      throw new Error("Number of players must be provided");
+    }
+    const numPlayers = ctx.numPlayers as number;
+    if (numPlayers < 2 || numPlayers > 4) {
+      throw new Error("Number of players must be between 2 and 4");
+    }
+
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
 
