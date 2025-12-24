@@ -1,4 +1,4 @@
-import { Hex, TerrainType, TERRAIN_CONFIG } from '../types';
+import { Hex, TERRAIN_CONFIG } from '../types';
 
 export const PIP_MAP: Record<number, number> = {
   2: 1, 12: 1,

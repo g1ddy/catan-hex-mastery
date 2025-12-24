@@ -1,4 +1,4 @@
-import { GameState, TerrainType, TERRAIN_CONFIG } from '../types';
+import { GameState, TERRAIN_CONFIG } from '../types';
 import { getVerticesForHex } from '../hexUtils';
 import { calculatePipCount, getScarcityMap, PIP_MAP } from './pips';
 

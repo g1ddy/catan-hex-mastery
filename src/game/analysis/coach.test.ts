@@ -76,7 +76,6 @@ describe('Coach Logic', () => {
         const placements = getBestPlacements(G);
         expect(placements.length).toBeGreaterThan(0);
 
-        const top = placements[0];
         // Score calculation:
         // Pips: 5+5+2 = 12.
         // Scarcity: Ore is scarce? Total pips = 12. Ore=2. 2/12 = 16.6% > 10%.
