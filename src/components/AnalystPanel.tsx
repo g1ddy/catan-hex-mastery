@@ -4,9 +4,11 @@ import './AnalystPanel.css';
 
 interface AnalystPanelProps {
   stats: BoardStats;
+  showHints: boolean;
+  onToggleHints: (show: boolean) => void;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats }) => {
+const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, showHints, onToggleHints }) => {
   const getFairnessColor = (score: number) => {
     if (score >= 90) return 'green';
     if (score >= 70) return 'orange';
@@ -16,6 +18,19 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats }) => {
   return (
     <div className="analyst-panel">
       <h2>Analyst Dashboard</h2>
+
+      <div className="analyst-section">
+          <h3>Coach Mode</h3>
+          <label className="toggle-switch">
+              <input
+                  type="checkbox"
+                  checked={showHints}
+                  onChange={(e) => onToggleHints(e.target.checked)}
+              />
+              <span className="slider"></span>
+              <span className="label-text">Show Hints</span>
+          </label>
+      </div>
 
       <div className="analyst-section">
         <h3>Fairness Score</h3>
