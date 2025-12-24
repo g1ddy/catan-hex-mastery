@@ -168,10 +168,7 @@ const HexOverlays = ({ hex, G, ctx, moves, bestPlacements }: {
                              <circle cx={corner.x} cy={corner.y} r={2.5} fill="none" stroke="gold" strokeWidth={1} />
                         )}
                         {showFlash && (
-                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="yellow" strokeWidth={2} className="flash-ring">
-                                <animate attributeName="r" from="2" to="6" dur="1s" repeatCount="indefinite" />
-                                <animate attributeName="opacity" from="1" to="0" dur="1s" repeatCount="indefinite" />
-                             </circle>
+                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="yellow" strokeWidth={2} className="flash-ring" />
                         )}
                     </g>
                 );

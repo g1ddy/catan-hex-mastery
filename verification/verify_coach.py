@@ -27,7 +27,7 @@ def verify_coach_mode():
             # Enable Hints
             # Need to click the LABEL or the INPUT
             toggle.click(force=True)
-            time.sleep(1) # Wait for calculation/render
+            # time.sleep(1) # Removed as per code review
 
             # 2. Verify Hints (Gold Rings) appear
             # We look for the circle with gold stroke

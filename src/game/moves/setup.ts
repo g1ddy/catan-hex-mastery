@@ -1,6 +1,6 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
-import { getVerticesForHex, getEdgeId } from '../hexUtils';
+import { getEdgeId, getVertexNeighbors, parseVertexId } from '../hexUtils';
 import { evaluatePlacement } from '../analysis/coach';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
@@ -117,33 +117,6 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
 
 
 // --- Helpers ---
-
-function parseVertexId(id: string) {
-    return id.split('::').map(s => {
-        const [q, r, sCoords] = s.split(',').map(Number);
-        return { q, r, s: sCoords };
-    });
-}
-
-function getVertexNeighbors(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-    const neighbors: string[] = [];
-    const pairs = [
-        [hexes[0], hexes[1]],
-        [hexes[1], hexes[2]],
-        [hexes[2], hexes[0]]
-    ];
-
-    pairs.forEach(pair => {
-       const vA = getVerticesForHex(pair[0]);
-       const vB = getVerticesForHex(pair[1]);
-       const common = vA.filter(id => vB.includes(id));
-       const n = common.find(id => id !== vertexId);
-       if (n) neighbors.push(n);
-    });
-
-    return neighbors;
-}
 
 function getHexesForVertex(vertexId: string): string[] {
     const hexes = parseVertexId(vertexId);

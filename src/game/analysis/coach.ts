@@ -1,23 +1,6 @@
-import { GameState, TERRAIN_CONFIG } from '../types';
-import { getVerticesForHex } from '../hexUtils';
+import { GameState, TERRAIN_CONFIG, PlacementScore, CoachFeedback } from '../types';
+import { getVerticesForHex, getVertexNeighbors } from '../hexUtils';
 import { calculatePipCount, getScarcityMap, PIP_MAP } from './pips';
-
-export interface PlacementScore {
-  vertexId: string;
-  score: number;
-  totalPips: number;
-  synergyBonus: number;
-  scarcityBonus: boolean;
-}
-
-export interface CoachFeedback {
-  score: number;
-  maxScore: number;
-  quality: 'good' | 'bad';
-  message: string;
-  bestSpotId?: string;
-  placements: PlacementScore[];
-}
 
 function getResourcesForVertex(G: GameState, vertexId: string): string[] {
     const hexCoordsStrings = vertexId.split('::');
@@ -65,35 +48,6 @@ function isValidSettlement(G: GameState, vertexId: string): boolean {
         if (G.board.vertices[nId]) return false;
     }
     return true;
-}
-
-function parseVertexId(id: string) {
-    return id.split('::').map(s => {
-        const [q, r, sCoords] = s.split(',').map(Number);
-        return { q, r, s: sCoords };
-    });
-}
-
-function getVertexNeighbors(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-
-    const neighbors: string[] = [];
-    const pairs = [
-        [hexes[0], hexes[1]],
-        [hexes[1], hexes[2]],
-        [hexes[2], hexes[0]]
-    ];
-
-    pairs.forEach(pair => {
-       const vA = getVerticesForHex(pair[0]); // array of strings
-       const vB = getVerticesForHex(pair[1]); // array of strings
-       // Intersection of vA and vB gives the 2 vertices sharing this edge.
-       const common = vA.filter(id => vB.includes(id));
-       const n = common.find(id => id !== vertexId);
-       if (n) neighbors.push(n);
-    });
-
-    return neighbors;
 }
 
 // Main Coach Function
@@ -154,11 +108,12 @@ export function evaluatePlacement(G: GameState, vertexId: string): CoachFeedback
 
     // Note: If evaluatePlacement is called BEFORE placement, `vertexId` is valid and will be in `getBestPlacements`.
     // If called AFTER, `vertexId` is occupied and won't be returned.
-    const rankedPlacements = getBestPlacements(G);
-    // rankedPlacements contains all valid placements, including the user's potential choice, sorted by score.
 
-    const maxPossibleScore = rankedPlacements.length > 0 ? rankedPlacements[0].score : 0;
-    const bestSpotId = rankedPlacements.length > 0 ? rankedPlacements[0].vertexId : undefined;
+    const bestAlternatives = getBestPlacements(G);
+
+    const maxAlternativeScore = bestAlternatives.length > 0 ? bestAlternatives[0].score : 0;
+    const maxPossibleScore = Math.max(userScore, maxAlternativeScore);
+    const bestSpotId = bestAlternatives.length > 0 ? bestAlternatives[0].vertexId : undefined;
 
     // Logic:
     // If UserScore >= MaxPossibleScore - 1: "Great Pick!"
