@@ -43,7 +43,7 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats }) => {
         ) : (
           <ul className="warnings-list">
             {stats.warnings.map((w, i) => (
-              <li key={i}>{w}</li>
+              <li key={`${w}-${i}`}>{w}</li>
             ))}
           </ul>
         )}
