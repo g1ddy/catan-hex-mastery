@@ -23,12 +23,12 @@ Hex-Mastery is a modular resource-trading game engine designed to train players 
 *   [x] Valid 19-hex board generation.
 *   [x] "Fairness" algorithms (preventing adjacent 6s/8s).
 
-### Phase 2: The Setup Engine (Current Focus) 🚧
-*   [ ] Implement "Snake Draft" turn order (1-2-3-4-4-3-2-1).
-*   [ ] Enforce the "Distance Rule" validation.
-*   [ ] Implement starting resource logic (based on 2nd settlement).
+### Phase 2: The Setup Engine (Trainer) ✅
+*   [x] Implement "Snake Draft" turn order (1-2-3-4-4-3-2-1).
+*   [x] Enforce the "Distance Rule" validation.
+*   [x] Implement starting resource logic (based on 2nd settlement).
 
-### Phase 3: The Analyst Module
+### Phase 3: The Analyst Module 🚧
 *   [ ] Real-time "Pip" counting.
 *   [ ] Resource scarcity calculation.
 *   [ ] Board balance visualization.
@@ -37,7 +37,7 @@ Hex-Mastery is a modular resource-trading game engine designed to train players 
 *   [ ] Heuristic engine to grade player placements.
 *   [ ] "Best Move" suggestion overlay.
 
-### Phase 5 & 6: Polish & Full Game Loop
+### Phase 5: Full Game Loop/Polish
 *   [ ] Full resource production, trading, and building mechanics.
 
 ## 🚀 Getting Started
