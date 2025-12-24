@@ -64,6 +64,23 @@ export interface BoardStats {
   warnings: string[];
 }
 
+export interface PlacementScore {
+  vertexId: string;
+  score: number;
+  totalPips: number;
+  synergyBonus: number;
+  scarcityBonus: boolean;
+}
+
+export interface CoachFeedback {
+  score: number;
+  maxScore: number;
+  quality: 'good' | 'bad';
+  message: string;
+  bestSpotId?: string;
+  placements: PlacementScore[];
+}
+
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
@@ -73,4 +90,5 @@ export interface GameState {
   lastRoll: [number, number];
   boardStats: BoardStats;
   hasRolled: boolean;
+  lastFeedback: CoachFeedback | null;
 }
