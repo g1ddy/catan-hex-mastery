@@ -10,7 +10,7 @@ export const CatanGame: Game<GameState> = {
   minPlayers: 2,
   maxPlayers: 4,
 
-  setup: (ctx, _setupData?: any): GameState => {
+  setup: ({ ctx }, _setupData?: any): GameState => {
     if (!ctx.numPlayers) {
       throw new Error("Number of players must be provided");
     }
