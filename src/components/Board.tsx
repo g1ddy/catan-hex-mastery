@@ -7,6 +7,7 @@ import { GameHex } from './GameHex';
 import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
+import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
 
@@ -14,23 +15,23 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
 
   return (
-    <div style={{ display: 'flex', width: '100%', height: '100vh' }}>
-      <div className="board-container" style={{ flexGrow: 1, height: '100%', position: 'relative', overflow: 'hidden' }}>
+    <div className="game-layout">
+      <div className="board-container">
         <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
 
-        <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 10 }}>
+        <div className="board-controls">
             {ctx.phase === 'GAMEPLAY' && !G.hasRolled && ctx.activePlayers?.[ctx.currentPlayer] === 'roll' && (
-                <button onClick={() => moves.rollDice()} style={{ padding: '10px 20px', fontSize: '16px' }}>
+                <button className="roll-btn" onClick={() => moves.rollDice()}>
                     Roll Dice
                 </button>
             )}
              {G.lastRoll[0] > 0 && (
-                <div style={{ background: 'white', padding: '5px', borderRadius: '5px', marginTop: '5px' }}>
+                <div className="last-roll">
                     Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
                 </div>
             )}
             {ctx.phase === 'setup' && (
-               <button onClick={() => moves.regenerateBoard()} style={{ marginTop: '10px', padding: '5px' }}>
+               <button className="regenerate-btn" onClick={() => moves.regenerateBoard()}>
                    Regenerate Board
                </button>
             )}
@@ -62,7 +63,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
         </HexGrid>
       </div>
 
-      <aside style={{ width: '300px', height: '100%', borderLeft: '1px solid #ccc' }}>
+      <aside className="sidebar">
         <AnalystPanel stats={G.boardStats} />
       </aside>
     </div>
