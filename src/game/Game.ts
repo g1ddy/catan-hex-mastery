@@ -9,7 +9,7 @@ export const CatanGame: Game<GameState> = {
   name: 'catan',
 
   setup: (ctx, setupData?: { numPlayers?: number }): GameState => {
-    const numPlayers = (ctx.numPlayers || setupData?.numPlayers || 4) as number;
+    const numPlayers = ctx.numPlayers || setupData?.numPlayers || 4;
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
 
