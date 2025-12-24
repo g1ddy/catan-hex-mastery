@@ -14,6 +14,16 @@ export enum TerrainType {
   Sea = 'Sea'
 }
 
+export const TERRAIN_CONFIG: Record<TerrainType, string | null> = {
+  [TerrainType.Forest]: 'wood',
+  [TerrainType.Hills]: 'brick',
+  [TerrainType.Pasture]: 'sheep',
+  [TerrainType.Fields]: 'wheat',
+  [TerrainType.Mountains]: 'ore',
+  [TerrainType.Desert]: null,
+  [TerrainType.Sea]: null
+};
+
 export interface Hex {
   id: string;
   coords: CubeCoordinates;
@@ -48,10 +58,19 @@ export interface BoardState {
   edges: Record<string, { owner: string }>; // owner is player ID
 }
 
+export interface BoardStats {
+  totalPips: Record<string, number>; // Resource -> Total Pips
+  fairnessScore: number; // 0-100
+  warnings: string[];
+}
+
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
   setupPhase: SetupPhaseState;
   lastPlacedSettlement: string | null;
-  setupOrder: string[]; // Add this
+  setupOrder: string[];
+  lastRoll: [number, number];
+  boardStats: BoardStats;
+  hasRolled: boolean;
 }

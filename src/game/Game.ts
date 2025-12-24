@@ -1,9 +1,32 @@
-import { Game } from 'boardgame.io';
+import { Game, Move } from 'boardgame.io';
 import { GameState, Player, Resources } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { TurnOrder } from 'boardgame.io/core';
+import { calculateBoardStats } from './analyst';
+
+const regenerateBoard: Move<GameState> = ({ G }) => {
+    const boardHexes = generateBoard();
+    const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+    G.board.hexes = hexesMap;
+    G.boardStats = calculateBoardStats(hexesMap);
+};
+
+const rollDice: Move<GameState> = ({ G, random, events }) => {
+    if (G.hasRolled) return 'INVALID_MOVE';
+
+    const d1 = random.Die(6);
+    const d2 = random.Die(6);
+    G.lastRoll = [d1, d2];
+    G.hasRolled = true;
+
+    // End the roll stage.
+    // If we have an 'action' stage, we transition to it.
+    if (events && events.setStage) {
+        events.setStage('action');
+    }
+};
 
 export const CatanGame: Game<GameState> = {
   name: 'catan',
@@ -21,6 +44,7 @@ export const CatanGame: Game<GameState> = {
 
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+    const boardStats = calculateBoardStats(hexesMap);
 
     const initialResources: Resources = {
       wood: 0,
@@ -56,6 +80,9 @@ export const CatanGame: Game<GameState> = {
       },
       lastPlacedSettlement: null,
       setupOrder: getSnakeDraftOrder(numPlayers),
+      lastRoll: [0, 0],
+      boardStats,
+      hasRolled: false
     };
   },
 
@@ -69,6 +96,7 @@ export const CatanGame: Game<GameState> = {
       moves: {
         placeSettlement,
         placeRoad,
+        regenerateBoard
       },
       endIf: ({ G }) => {
         // End setup phase if all players have placed 2 settlements and 2 roads
@@ -77,10 +105,31 @@ export const CatanGame: Game<GameState> = {
         );
         return allPlayersDone;
       },
-      next: 'mainGame',
+      next: 'GAMEPLAY',
     },
-    mainGame: {
-      // Placeholder for next phases
+    GAMEPLAY: {
+      turn: {
+        onBegin: ({ G }) => {
+          G.hasRolled = false;
+        },
+        activePlayers: {
+           currentPlayer: 'roll'
+        },
+        stages: {
+            roll: {
+                moves: { rollDice },
+                next: 'action'
+            },
+            action: {
+                // Future moves: trade, build, etc.
+                // For now, allow endTurn
+                moves: {}
+            }
+        }
+      },
+      moves: {
+          rollDice
+      }
     },
   },
 };
