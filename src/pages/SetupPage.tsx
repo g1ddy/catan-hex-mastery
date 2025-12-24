@@ -13,8 +13,11 @@ export function SetupPage() {
       <div className="setup-menu">
         <p>Select Number of Players:</p>
         <div className="button-group">
-          <button onClick={() => handlePlayerSelection(3)} className="player-btn">3 Players</button>
-          <button onClick={() => handlePlayerSelection(4)} className="player-btn">4 Players</button>
+          {[3, 4].map((num) => (
+            <button key={num} onClick={() => handlePlayerSelection(num)} className="player-btn">
+              {num} Players
+            </button>
+          ))}
         </div>
       </div>
     </div>

@@ -44,18 +44,3 @@
   height: 100%;
   border-left: 1px solid #ccc;
 }
-
-@keyframes flashRing {
-  0% {
-    r: 2px;
-    opacity: 1;
-  }
-  100% {
-    r: 6px;
-    opacity: 0;
-  }
-}
-
-.flash-ring {
-  animation: flashRing 1s infinite;
-}

@@ -11,7 +11,6 @@ export function GamePage() {
 
   return (
     <div className="app-container">
-      {/* @ts-ignore: boardgame.io Client props typing issue */}
       <GameClient numPlayers={numPlayers} />
     </div>
   );
