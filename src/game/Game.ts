@@ -127,9 +127,7 @@ export const CatanGame: Game<GameState> = {
             }
         }
       },
-      moves: {
-          rollDice
-      }
+      moves: {}
     },
   },
 };

@@ -1,5 +1,10 @@
 import { Hex, BoardStats, TERRAIN_CONFIG } from './types';
 
+const SCARCITY_THRESHOLD = 0.10;
+const ABUNDANCE_THRESHOLD = 0.30;
+const SCARCITY_PENALTY = 20;
+const ABUNDANCE_PENALTY = 10;
+
 export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
   const totalPips: Record<string, number> = {
     wood: 0,
@@ -40,12 +45,12 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
   if (totalBoardPips > 0) {
       Object.entries(totalPips).forEach(([resource, pips]) => {
           const percentage = pips / totalBoardPips;
-          if (percentage < 0.10) {
+          if (percentage < SCARCITY_THRESHOLD) {
               warnings.push(`${resource.charAt(0).toUpperCase() + resource.slice(1)} Scarcity detected (${Math.round(percentage * 100)}%)`);
-              fairnessScore -= 20;
-          } else if (percentage > 0.30) {
+              fairnessScore -= SCARCITY_PENALTY;
+          } else if (percentage > ABUNDANCE_THRESHOLD) {
               warnings.push(`${resource.charAt(0).toUpperCase() + resource.slice(1)} Abundance detected (${Math.round(percentage * 100)}%)`);
-              fairnessScore -= 10;
+              fairnessScore -= ABUNDANCE_PENALTY;
           }
       });
   } else {
