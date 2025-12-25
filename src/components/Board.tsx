@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 // @ts-ignore
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
@@ -7,34 +7,15 @@ import { GameHex } from './GameHex';
 import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
-import { Toast } from './Toast';
-import { getBestPlacements } from '../game/analysis/coach';
 import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
 
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
-  const [showHints, setShowHints] = useState(false);
-  const [bestPlacements, setBestPlacements] = useState<Set<string>>(new Set());
-
-  // Calculate best placements whenever G changes (if hints are on)
-  useEffect(() => {
-    if (showHints) {
-        // Run getBestPlacements(G)
-        // We need to import it. I added import.
-        const suggestions = getBestPlacements(G);
-        // Take top 3
-        const top3 = suggestions.slice(0, 3).map(p => p.vertexId);
-        setBestPlacements(new Set(top3));
-    } else {
-        setBestPlacements(new Set());
-    }
-  }, [G, showHints]);
 
   return (
     <div className="game-layout">
-      <Toast feedback={G.lastFeedback} />
       <div className="board-container">
         <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
 
@@ -75,7 +56,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
                       G={G}
                       ctx={ctx}
                       moves={moves}
-                      bestPlacements={bestPlacements}
                   />
               ))}
             </g>
@@ -84,23 +64,13 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
       </div>
 
       <aside className="sidebar">
-        <AnalystPanel
-            stats={G.boardStats}
-            showHints={showHints}
-            onToggleHints={setShowHints}
-        />
+        <AnalystPanel stats={G.boardStats} />
       </aside>
     </div>
   );
 };
 
-const HexOverlays = ({ hex, G, ctx, moves, bestPlacements }: {
-    hex: Hex,
-    G: GameState,
-    ctx: BoardProps<GameState>['ctx'],
-    moves: BoardProps<GameState>['moves'],
-    bestPlacements: Set<string>
-}) => {
+const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: BoardProps<GameState>['ctx'], moves: BoardProps<GameState>['moves'] }) => {
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
         const thisV = vertexId.split('::');
@@ -140,12 +110,6 @@ const HexOverlays = ({ hex, G, ctx, moves, bestPlacements }: {
                 const isSettlementPhase = ctx.activePlayers?.[ctx.currentPlayer] === 'placeSettlement';
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
                 const validSpot = !isOccupied && isSettlementPhase && !isTooClose(vId);
-                const isRecommended = bestPlacements.has(vId);
-
-                // Flashing effect logic can be done via CSS class 'flash-ring' if implemented.
-                // For now, static gold ring.
-
-                const showFlash = G.lastFeedback?.quality === 'bad' && G.lastFeedback?.bestSpotId === vId;
 
                 return (
                     <g key={i} onClick={(e) => {
@@ -163,12 +127,6 @@ const HexOverlays = ({ hex, G, ctx, moves, bestPlacements }: {
                         )}
                         {validSpot && (
                             <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.3} className="ghost-vertex" />
-                        )}
-                        {isRecommended && validSpot && (
-                             <circle cx={corner.x} cy={corner.y} r={2.5} fill="none" stroke="gold" strokeWidth={1} />
-                        )}
-                        {showFlash && (
-                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="yellow" strokeWidth={2} className="flash-ring" />
                         )}
                     </g>
                 );

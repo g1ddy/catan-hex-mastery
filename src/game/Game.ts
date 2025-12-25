@@ -82,8 +82,7 @@ export const CatanGame: Game<GameState> = {
       setupOrder: getSnakeDraftOrder(numPlayers),
       lastRoll: [0, 0],
       boardStats,
-      hasRolled: false,
-      lastFeedback: null
+      hasRolled: false
     };
   },
 

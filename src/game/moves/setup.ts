@@ -1,7 +1,6 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
-import { getEdgeId, getVertexNeighbors, parseVertexId } from '../hexUtils';
-import { evaluatePlacement } from '../analysis/coach';
+import { getVerticesForHex, getEdgeId } from '../hexUtils';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
   // 1. Validation: Occupancy
@@ -17,31 +16,6 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
       return 'INVALID_MOVE'; // Distance rule violation
     }
   }
-
-  // Analysis / Coach Feedback (Run BEFORE updating state to match logic in coach.ts)
-  // Actually, evaluatePlacement is designed to run *after* validity checks but *before* the board is modified
-  // to properly compare "User Score" vs "Best Other Scores".
-  // WAIT: My implementation of `evaluatePlacement` calculates `userScore` assuming it's a valid spot.
-  // And `getBestPlacements` ignores occupied spots.
-  // If I run it BEFORE placing, `vertexId` is NOT occupied.
-  // So `getBestPlacements` WILL include `vertexId`.
-  // This simplifies things!
-  // If `getBestPlacements` returns `vertexId` as #1, then `maxScore` == `userScore`.
-  // If I run it AFTER placing, `vertexId` is occupied, so `getBestPlacements` returns alternatives.
-  // The logic in `evaluatePlacement` assumes it calculates `userScore` and compares with `bestAlternatives`.
-  // Let's check `coach.ts` again.
-  // `getBestPlacements(G)` filters out invalid spots. If we run it BEFORE placement, `vertexId` is valid.
-  // So `vertexId` will likely be in the list.
-  // So `evaluatePlacement` logic needs to be mindful of this.
-  // My `evaluatePlacement` implementation:
-  // 1. Calculates `userScore`.
-  // 2. Calls `getBestPlacements(G)`.
-  // 3. Compares.
-  // If I run BEFORE placement: `bestAlternatives` will contain `vertexId` (with score == userScore).
-  // So `maxPossibleScore` will be `userScore` (or higher if user picked suboptimally).
-  // This works perfectly.
-
-  G.lastFeedback = evaluatePlacement(G, vertexId);
 
   // Execution
   G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
@@ -117,6 +91,33 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
 
 
 // --- Helpers ---
+
+function parseVertexId(id: string) {
+    return id.split('::').map(s => {
+        const [q, r, sCoords] = s.split(',').map(Number);
+        return { q, r, s: sCoords };
+    });
+}
+
+function getVertexNeighbors(vertexId: string): string[] {
+    const hexes = parseVertexId(vertexId);
+    const neighbors: string[] = [];
+    const pairs = [
+        [hexes[0], hexes[1]],
+        [hexes[1], hexes[2]],
+        [hexes[2], hexes[0]]
+    ];
+
+    pairs.forEach(pair => {
+       const vA = getVerticesForHex(pair[0]);
+       const vB = getVerticesForHex(pair[1]);
+       const common = vA.filter(id => vB.includes(id));
+       const n = common.find(id => id !== vertexId);
+       if (n) neighbors.push(n);
+    });
+
+    return neighbors;
+}
 
 function getHexesForVertex(vertexId: string): string[] {
     const hexes = parseVertexId(vertexId);
