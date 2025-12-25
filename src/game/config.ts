@@ -25,3 +25,7 @@ export const COLORS = {
   EDGE_HIGHLIGHT: 'white',
   EDGE_HIGHLIGHT_OPACITY: 0.5,
 };
+
+export const GAME_CONFIG = {
+  mode: 'local' as const,
+};

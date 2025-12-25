@@ -18,19 +18,19 @@ This file contains context and strict guidelines for AI assistants (Cursor, Copi
 *   **Vertex ID:** A hash of the 3 adjacent hex coordinates (e.g., specific string format).
 *   **Edge ID:** A hash of the 2 adjacent hex coordinates.
 
-## 🚧 Current Task: Phase 2 (Setup Engine)
+## 🚧 Current Task: Phase 5 (UI/UX Polish)
 
-We are currently building the **Snake Draft** logic.
+We are currently working on **Phase 5: UI/UX Polish**, prioritizing readability and mobile usability before the Full Game Loop (Phase 6).
+
+**Priorities:**
+1.  **Readability**: Replace raw SVG text with high-contrast `NumberToken` components.
+2.  **Iconography**: Use `lucide-react` icons instead of text labels.
+3.  **Constraints**: Enforce 2-player limit for Local/Pass-and-Play mode.
 
 **Requirements:**
-1.  **Turn Order:** Must strictly follow 1-2-3-4-4-3-2-1. Use `TurnOrder.CUSTOM` in `boardgame.io`.
-2.  **Validation:**
-    *   **Distance Rule:** A settlement cannot be placed if *any* adjacent vertex is occupied.
-    *   **Setup Roads:** In the setup phase, the road must attach to the settlement *just placed* in that same turn.
-3.  **State Updates:**
-    *   Store placements in `G.board.vertices` and `G.board.edges`.
-    *   Update `G.players[id].victoryPoints` immediately.
-    *   **Crucial:** Grant starting resources only after the *second* settlement is placed.
+*   **NumberToken**: Use `<foreignObject>` inside SVG to leverage Tailwind styling (Beige circles, shadows).
+*   **Icons**: Standardize on `Trees`, `BrickWall`, `Wheat`, `Mountain`, and `Cloud` (for Sheep).
+*   **Configuration**: Respect `GAME_CONFIG.mode` for feature flags.
 
 ## 🚫 Constraints
 *   **No Class Components:** Use React Functional Components + Hooks only.

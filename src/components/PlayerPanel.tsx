@@ -1,5 +1,6 @@
 import React from 'react';
 import { GameState, Player } from '../game/types';
+import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
 
 interface PlayerPanelProps {
   players: GameState['players'];
@@ -36,8 +37,27 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
             <div style={{ fontSize: '0.85rem', marginTop: '4px' }}>
               VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
             </div>
-            <div style={{ fontSize: '0.8rem', marginTop: '2px', color: '#555' }}>
-              W:{player.resources.wood} B:{player.resources.brick} S:{player.resources.sheep} Wh:{player.resources.wheat} O:{player.resources.ore}
+            <div style={{ display: 'flex', gap: '8px', fontSize: '0.8rem', marginTop: '4px', color: '#555', alignItems: 'center' }}>
+              <div title="Wood" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Trees size={14} className="stroke-green-700" />
+                <span>{player.resources.wood}</span>
+              </div>
+              <div title="Brick" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <BrickWall size={14} className="stroke-red-700" />
+                <span>{player.resources.brick}</span>
+              </div>
+              <div title="Sheep" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Cloud size={14} className="stroke-green-400" />
+                <span>{player.resources.sheep}</span>
+              </div>
+              <div title="Wheat" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Wheat size={14} className="stroke-yellow-600" />
+                <span>{player.resources.wheat}</span>
+              </div>
+              <div title="Ore" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Mountain size={14} className="stroke-gray-600" />
+                <span>{player.resources.ore}</span>
+              </div>
             </div>
           </div>
         ))}
