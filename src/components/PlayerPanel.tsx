@@ -11,39 +11,39 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
   const playerList = Object.values(players);
 
   return (
-    <div className="player-panel absolute top-2 left-2 bg-white/90 p-2 rounded-lg shadow-md z-[100]">
-      <h3>Players</h3>
-      <div className="flex flex-col gap-2">
+    <div className="player-panel absolute top-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-100 z-[100]">
+      <h3 className="font-bold text-lg mb-2">Players</h3>
+      <div className="flex flex-col gap-3">
         {playerList.map((player: Player) => (
           <div key={player.id}
-               className={`p-1 rounded border ${player.id === currentPlayerId ? 'border-2 border-black bg-gray-100' : 'border-gray-300 bg-transparent'}`}
+               className={`p-2 rounded border transition-colors ${player.id === currentPlayerId ? 'border-slate-400 bg-slate-800' : 'border-slate-700 bg-transparent'}`}
           >
-            <div className="flex items-center gap-1 font-bold">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: player.color }}></div>
+            <div className="flex items-center gap-2 font-bold text-base">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
               Player {Number(player.id) + 1}
             </div>
-            <div className="text-sm mt-1">
+            <div className="text-sm text-slate-300 mt-1">
               VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
             </div>
-            <div className="flex gap-2 text-xs mt-1 text-gray-600 items-center">
-              <div title="Wood" className="flex items-center gap-0.5">
-                <Trees size={14} className="stroke-green-700" />
+            <div className="flex gap-3 text-sm mt-2 items-center">
+              <div title="Wood" className="flex items-center gap-1">
+                <Trees size={16} className="text-green-500" />
                 <span>{player.resources.wood}</span>
               </div>
-              <div title="Brick" className="flex items-center gap-0.5">
-                <BrickWall size={14} className="stroke-red-700" />
+              <div title="Brick" className="flex items-center gap-1">
+                <BrickWall size={16} className="text-orange-700" />
                 <span>{player.resources.brick}</span>
               </div>
-              <div title="Sheep" className="flex items-center gap-0.5">
-                <Cloud size={14} className="stroke-green-400" />
+              <div title="Sheep" className="flex items-center gap-1">
+                <Cloud size={16} className="text-slate-300" />
                 <span>{player.resources.sheep}</span>
               </div>
-              <div title="Wheat" className="flex items-center gap-0.5">
-                <Wheat size={14} className="stroke-yellow-600" />
+              <div title="Wheat" className="flex items-center gap-1">
+                <Wheat size={16} className="text-yellow-500" />
                 <span>{player.resources.wheat}</span>
               </div>
-              <div title="Ore" className="flex items-center gap-0.5">
-                <Mountain size={14} className="stroke-gray-600" />
+              <div title="Ore" className="flex items-center gap-1">
+                <Mountain size={16} className="text-gray-400" />
                 <span>{player.resources.ore}</span>
               </div>
             </div>
