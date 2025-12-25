@@ -11,50 +11,38 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
   const playerList = Object.values(players);
 
   return (
-    <div className="player-panel" style={{
-      position: 'absolute',
-      top: '10px',
-      left: '10px',
-      background: 'rgba(255, 255, 255, 0.9)',
-      padding: '10px',
-      borderRadius: '8px',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-      zIndex: 100
-    }}>
+    <div className="player-panel absolute top-2 left-2 bg-white/90 p-2 rounded-lg shadow-md z-[100]">
       <h3>Players</h3>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="flex flex-col gap-2">
         {playerList.map((player: Player) => (
-          <div key={player.id} style={{
-            border: player.id === currentPlayerId ? '2px solid black' : '1px solid #ccc',
-            padding: '5px',
-            borderRadius: '4px',
-            backgroundColor: player.id === currentPlayerId ? '#f0f0f0' : 'transparent'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold' }}>
-              <div style={{ width: '12px', height: '12px', backgroundColor: player.color, borderRadius: '50%' }}></div>
+          <div key={player.id}
+               className={`p-1 rounded border ${player.id === currentPlayerId ? 'border-2 border-black bg-gray-100' : 'border-gray-300 bg-transparent'}`}
+          >
+            <div className="flex items-center gap-1 font-bold">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: player.color }}></div>
               Player {Number(player.id) + 1}
             </div>
-            <div style={{ fontSize: '0.85rem', marginTop: '4px' }}>
+            <div className="text-sm mt-1">
               VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
             </div>
-            <div style={{ display: 'flex', gap: '8px', fontSize: '0.8rem', marginTop: '4px', color: '#555', alignItems: 'center' }}>
-              <div title="Wood" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+            <div className="flex gap-2 text-xs mt-1 text-gray-600 items-center">
+              <div title="Wood" className="flex items-center gap-0.5">
                 <Trees size={14} className="stroke-green-700" />
                 <span>{player.resources.wood}</span>
               </div>
-              <div title="Brick" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <div title="Brick" className="flex items-center gap-0.5">
                 <BrickWall size={14} className="stroke-red-700" />
                 <span>{player.resources.brick}</span>
               </div>
-              <div title="Sheep" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <div title="Sheep" className="flex items-center gap-0.5">
                 <Cloud size={14} className="stroke-green-400" />
                 <span>{player.resources.sheep}</span>
               </div>
-              <div title="Wheat" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <div title="Wheat" className="flex items-center gap-0.5">
                 <Wheat size={14} className="stroke-yellow-600" />
                 <span>{player.resources.wheat}</span>
               </div>
-              <div title="Ore" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <div title="Ore" className="flex items-center gap-0.5">
                 <Mountain size={14} className="stroke-gray-600" />
                 <span>{player.resources.ore}</span>
               </div>

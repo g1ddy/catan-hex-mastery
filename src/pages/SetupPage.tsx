@@ -16,24 +16,21 @@ export function SetupPage() {
       <div className="setup-menu">
         <p>Select Number of Players:</p>
         <div className="button-group">
-            <button
-                onClick={() => handlePlayerSelection(2)}
-                className="player-btn"
-            >
-              2 Players
-            </button>
-          {[3, 4].map((num) => (
-            <button
-                key={num}
-                onClick={() => !isLocalMode && handlePlayerSelection(num)}
-                className={`player-btn ${isLocalMode ? 'disabled' : ''}`}
-                disabled={isLocalMode}
-                style={isLocalMode ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                title={isLocalMode ? "3-4 Player modes are unavailable in Local Pass-and-Play." : ""}
-            >
-              {num} Players
-            </button>
-          ))}
+          {[2, 3, 4].map((num) => {
+            const isDisabled = isLocalMode && num > 2;
+            return (
+              <button
+                  key={num}
+                  onClick={() => handlePlayerSelection(num)}
+                  className={`player-btn ${isDisabled ? 'disabled' : ''}`}
+                  disabled={isDisabled}
+                  style={isDisabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                  title={isDisabled ? "3-4 Player modes are unavailable in Local Pass-and-Play." : ""}
+              >
+                {num} Players
+              </button>
+            );
+          })}
         </div>
         {isLocalMode && (
              <p className="local-mode-warning" style={{ fontSize: '0.8rem', color: '#666', marginTop: '10px' }}>
