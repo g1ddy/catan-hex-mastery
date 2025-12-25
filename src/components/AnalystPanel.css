@@ -1,16 +1,22 @@
 .analyst-panel {
   padding: 20px;
-  background-color: #f5f5f5;
-  color: #333;
-  border-left: 1px solid #ddd;
+  background: #f9f9f9;
   height: 100%;
-  width: 300px;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
-.analyst-panel h2, .analyst-panel h3 {
-  color: #333;
+.analyst-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.analyst-panel h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .analyst-section {
@@ -30,23 +36,54 @@
 .pip-list-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
-  padding: 5px;
-  background-color: white;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  color: #333;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
 }
 
 .resource-name {
   text-transform: capitalize;
 }
 
-.warnings-list {
-  padding-left: 20px;
-  color: #d32f2f;
-}
-
 .no-issues {
   color: green;
+}
+
+.warnings-list {
+  color: #d32f2f;
+  padding-left: 20px;
+}
+
+.regenerate-btn-panel {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.regenerate-btn-panel:hover {
+  background-color: #1976d2;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .analyst-panel h2 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+  }
+
+  .fairness-score {
+    font-size: 1.5rem; /* Equivalent to text-2xl or text-3xl depending on context */
+  }
+
+  .analyst-section h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+
+  .pip-list-item {
+    font-size: 0.9rem;
+  }
 }

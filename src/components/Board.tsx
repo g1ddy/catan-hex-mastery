@@ -7,66 +7,77 @@ import { GameHex } from './GameHex';
 import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
+import { GameLayout } from './GameLayout';
+import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
+import { BOARD_CONFIG } from '../game/config';
 import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
 
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
+  const viewBox = useResponsiveViewBox();
 
-  return (
-    <div className="game-layout">
-      <div className="board-container">
-        <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
+  const BoardContent = (
+    <div className="board-container">
+      <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
 
-        <div className="board-controls">
-            {ctx.phase === 'GAMEPLAY' && !G.hasRolled && ctx.activePlayers?.[ctx.currentPlayer] === 'roll' && (
-                <button className="roll-btn" onClick={() => moves.rollDice()}>
-                    Roll Dice
-                </button>
-            )}
-             {G.lastRoll[0] > 0 && (
-                <div className="last-roll">
-                    Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
-                </div>
-            )}
-            {ctx.phase === 'setup' && (
-               <button className="regenerate-btn" onClick={() => moves.regenerateBoard()}>
-                   Regenerate Board
-               </button>
-            )}
-        </div>
-
-        <HexGrid width={800} height={800} viewBox="-50 -50 100 100">
-          <Layout size={{ x: 8, y: 8 }} flat={false} spacing={1.02} origin={{ x: 0, y: 0 }}>
-            <g>
-              {hexes.map(hex => (
-                  <GameHex
-                  key={hex.id}
-                  hex={hex}
-                  onClick={() => {}}
-                  />
-              ))}
-            </g>
-            <g>
-              {hexes.map(hex => (
-                  <HexOverlays
-                      key={`overlay-${hex.id}`}
-                      hex={hex}
-                      G={G}
-                      ctx={ctx}
-                      moves={moves}
-                  />
-              ))}
-            </g>
-          </Layout>
-        </HexGrid>
+      <div className="board-controls">
+        {ctx.phase === 'GAMEPLAY' && !G.hasRolled && ctx.activePlayers?.[ctx.currentPlayer] === 'roll' && (
+          <button className="roll-btn" onClick={() => moves.rollDice()}>
+            Roll Dice
+          </button>
+        )}
+        {G.lastRoll[0] > 0 && (
+          <div className="last-roll">
+            Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
+          </div>
+        )}
       </div>
 
-      <aside className="sidebar">
-        <AnalystPanel stats={G.boardStats} />
-      </aside>
+      <HexGrid width="100%" height="100%" viewBox={viewBox}>
+        <Layout
+          size={BOARD_CONFIG.HEX_SIZE}
+          flat={false}
+          spacing={BOARD_CONFIG.HEX_SPACING}
+          origin={BOARD_CONFIG.HEX_ORIGIN}
+        >
+          <g>
+            {hexes.map(hex => (
+              <GameHex
+                key={hex.id}
+                hex={hex}
+                onClick={() => {}}
+              />
+            ))}
+          </g>
+          <g>
+            {hexes.map(hex => (
+              <HexOverlays
+                key={`overlay-${hex.id}`}
+                hex={hex}
+                G={G}
+                ctx={ctx}
+                moves={moves}
+              />
+            ))}
+          </g>
+        </Layout>
+      </HexGrid>
     </div>
+  );
+
+  return (
+    <GameLayout
+      board={BoardContent}
+      dashboard={
+        <AnalystPanel
+          stats={G.boardStats}
+          onRegenerate={() => moves.regenerateBoard()}
+          showRegenerate={ctx.phase === 'setup'}
+        />
+      }
+    />
   );
 };
 
