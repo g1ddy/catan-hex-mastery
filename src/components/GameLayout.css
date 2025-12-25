@@ -1,0 +1,116 @@
+/* Desktop Layout */
+.game-layout-desktop {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-layout-desktop .board-area {
+  flex-grow: 1;
+  height: 100%;
+  position: relative;
+  /* Ensure board takes available space */
+}
+
+.game-layout-desktop .sidebar-area {
+  width: 320px; /* Fixed width sidebar */
+  height: 100%;
+  border-left: 1px solid #ccc;
+  background: #f9f9f9;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+/* Mobile Layout */
+.game-layout-mobile {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-layout-mobile .board-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.fab-stats {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.fab-stats:active {
+  transform: scale(0.95);
+}
+
+.bottom-sheet-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  z-index: 31;
+}
+
+.bottom-sheet {
+  position: relative;
+  z-index: 32;
+  background: white;
+  width: 100%;
+  height: 60vh; /* Default to 60% height */
+  max-height: 90vh;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+}
+
+.close-sheet-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #666;
+  z-index: 33;
+}
+
+.sheet-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 20px; /* Space for close button */
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

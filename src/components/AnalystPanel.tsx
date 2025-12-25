@@ -4,9 +4,11 @@ import './AnalystPanel.css';
 
 interface AnalystPanelProps {
   stats: BoardStats;
+  onRegenerate?: () => void;
+  showRegenerate?: boolean;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats }) => {
+const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate }) => {
   const getFairnessColor = (score: number) => {
     if (score >= 90) return 'green';
     if (score >= 70) return 'orange';
@@ -15,7 +17,14 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats }) => {
 
   return (
     <div className="analyst-panel">
-      <h2>Analyst Dashboard</h2>
+      <div className="analyst-header">
+        <h2>Analyst Dashboard</h2>
+        {showRegenerate && onRegenerate && (
+          <button className="regenerate-btn-panel" onClick={onRegenerate}>
+            Regenerate Board
+          </button>
+        )}
+      </div>
 
       <div className="analyst-section">
         <h3>Fairness Score</h3>
