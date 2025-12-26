@@ -22,7 +22,7 @@ export function SetupPage() {
               <button
                   key={num}
                   onClick={() => handlePlayerSelection(num)}
-                  className="player-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`player-btn ${isDisabled ? 'disabled' : ''} disabled:opacity-50 disabled:cursor-not-allowed`}
                   disabled={isDisabled}
                   title={isDisabled ? "3-4 Player modes are unavailable in Local Pass-and-Play." : ""}
               >
@@ -32,7 +32,7 @@ export function SetupPage() {
           })}
         </div>
         {isLocalMode && (
-             <p className="local-mode-warning text-xs text-gray-500 mt-2.5">
+             <p className="local-mode-warning text-xs text-gray-500 mt-2">
                  * 3-4 Player modes are unavailable in Local Pass-and-Play.
              </p>
         )}
