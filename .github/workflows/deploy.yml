@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "feat-game-controls-3312199694432745458"]
+    branches: ["main", "feat-game-controls"]
   workflow_dispatch:
 
 permissions:

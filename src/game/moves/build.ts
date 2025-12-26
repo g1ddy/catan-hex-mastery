@@ -2,7 +2,7 @@ import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { getEdgesForVertex } from '../hexUtils';
 
-export const buildRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
+export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     const player = G.players[ctx.currentPlayer];
 
     // 1. Cost Check

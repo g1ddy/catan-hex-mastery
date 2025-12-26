@@ -1,5 +1,5 @@
-import { buildRoad, buildSettlement, buildCity, endTurn } from './build';
-import { GameState, TerrainType } from '../types';
+import { buildRoad, buildSettlement, buildCity } from './build';
+import { GameState } from '../types';
 
 describe('Gameplay Moves', () => {
     let G: GameState;
