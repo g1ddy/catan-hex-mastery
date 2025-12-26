@@ -11,7 +11,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
   const playerList = Object.values(players);
 
   return (
-    <div className="player-panel absolute top-4 left-4 w-64 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-100 z-[100]">
+    <div className="player-panel absolute top-20 left-4 w-64 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-100 z-[100]">
       <h3 className="font-bold text-lg mb-2">Players</h3>
       <div className="flex flex-col gap-3">
         {playerList.map((player: Player) => (
