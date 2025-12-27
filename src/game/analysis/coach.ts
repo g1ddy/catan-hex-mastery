@@ -91,7 +91,7 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
         thisV.forEach(coordStr => {
             const [q, r, s] = coordStr.split(',').map(Number);
             // Find the hex with these coords (inefficient linear search, but board is small)
-            const hex = Object.values(hexes).find(h => h.coords.q === q && h.coords.r === r && h.coords.s === s);
+            const hex = hexes[coordStr];
 
             if (hex && hex.terrain !== 'Desert' && hex.terrain !== 'Sea') {
                 const hexPips = getPips(hex.tokenValue || 0);
