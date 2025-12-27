@@ -10,8 +10,9 @@ import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
-import { GameControls, BuildMode } from './GameControls';
+import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { getBestSettlementSpots } from '../game/analysis/coach';
 import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
@@ -20,6 +21,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
   const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
+  const [uiMode, setUiMode] = useState<UiMode>('viewing');
   const isMobile = useIsMobile();
 
   const BoardContent = (
@@ -58,6 +60,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
                 moves={moves}
                 buildMode={buildMode}
                 setBuildMode={setBuildMode}
+                uiMode={uiMode}
+                setUiMode={setUiMode}
               />
             ))}
           </g>
@@ -83,6 +87,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
           moves={moves}
           buildMode={buildMode}
           setBuildMode={setBuildMode}
+          uiMode={uiMode}
+          setUiMode={setUiMode}
           variant={isMobile ? 'docked' : 'floating'}
         />
       }
@@ -98,15 +104,25 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
 };
 
 const HexOverlays = ({
-    hex, G, ctx, moves, buildMode, setBuildMode
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode
 }: {
     hex: Hex,
     G: GameState,
     ctx: BoardProps<GameState>['ctx'],
     moves: BoardProps<GameState>['moves'],
     buildMode: BuildMode,
-    setBuildMode: (mode: BuildMode) => void
+    setBuildMode: (mode: BuildMode) => void,
+    uiMode: UiMode,
+    setUiMode: (mode: UiMode) => void
 }) => {
+    // Coach Recommendations
+    const recommendations = React.useMemo(() => {
+        if (ctx.phase === 'setup' && uiMode === 'placing') {
+            return getBestSettlementSpots(G, ctx.currentPlayer);
+        }
+        return [];
+    }, [G, ctx.phase, uiMode, ctx.currentPlayer]);
+
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
         const thisV = vertexId.split('::');
@@ -153,13 +169,28 @@ const HexOverlays = ({
 
                 let isClickable = false;
                 let isGhost = false;
+                let isRecommended = false;
+                let recommendationReason = "";
                 let clickAction = () => {};
 
                 if (isSetup) {
                     if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
-                        isClickable = true;
-                        isGhost = true;
-                        clickAction = () => moves.placeSettlement(vId);
+                        // Only activate ghost if uiMode is placing
+                        if (uiMode === 'placing') {
+                            isClickable = true;
+                            isGhost = true;
+                            clickAction = () => {
+                                moves.placeSettlement(vId);
+                                setUiMode('viewing'); // Reset after place
+                            };
+
+                            // Check recommendation
+                            const rec = recommendations.find(r => r.vertexId === vId);
+                            if (rec) {
+                                isRecommended = true;
+                                recommendationReason = `Score: ${rec.score} (${rec.reason})`;
+                            }
+                        }
                     }
                 } else if (isGameplay) {
                     if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
@@ -213,11 +244,18 @@ const HexOverlays = ({
                             </React.Fragment>
                         )}
                         {isGhost && (
-                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
+                            <circle cx={corner.x} cy={corner.y} r={isRecommended ? 1.5 : 1} fill="white" opacity={0.5} className="ghost-vertex" />
                         )}
                         {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
                              <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse" />
+                        )}
+                        {/* Coach Recommendation Highlight */}
+                        {isRecommended && (
+                             <g className="coach-highlight">
+                                <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
+                                <title>{recommendationReason}</title>
+                             </g>
                         )}
                     </g>
                 );
@@ -249,11 +287,17 @@ const HexOverlays = ({
 
                 if (isSetup) {
                      if (currentStage === 'placeRoad' && !isOccupied) {
-                        const isConnected = G.lastPlacedSettlement && getEdgesForVertex(G.lastPlacedSettlement).includes(eId);
-                        if (isConnected) {
-                            isClickable = true;
-                            isGhost = true;
-                            clickAction = () => moves.placeRoad(eId);
+                         // Only activate ghost if uiMode is placing
+                        if (uiMode === 'placing') {
+                            const isConnected = G.lastPlacedSettlement && getEdgesForVertex(G.lastPlacedSettlement).includes(eId);
+                            if (isConnected) {
+                                isClickable = true;
+                                isGhost = true;
+                                clickAction = () => {
+                                    moves.placeRoad(eId);
+                                    setUiMode('viewing');
+                                };
+                            }
                         }
                      }
                 } else if (isGameplay) {
