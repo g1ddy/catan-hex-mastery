@@ -11,6 +11,7 @@ import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode } from './GameControls';
+import { useIsMobile } from '../hooks/useIsMobile';
 import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
@@ -19,19 +20,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
   const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
+  const isMobile = useIsMobile();
 
   const BoardContent = (
     <div className="board-container">
-      <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
-
-      <GameControls
-        G={G}
-        ctx={ctx}
-        moves={moves}
-        buildMode={buildMode}
-        setBuildMode={setBuildMode}
-      />
-
       <div className="board-controls">
         {G.lastRoll[0] > 0 && (
           <div className="last-roll">
@@ -77,6 +69,23 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   return (
     <GameLayout
       board={BoardContent}
+      playerPanel={
+        <PlayerPanel
+          players={G.players}
+          currentPlayerId={ctx.currentPlayer}
+          variant={isMobile ? 'docked' : 'floating'}
+        />
+      }
+      gameControls={
+        <GameControls
+          G={G}
+          ctx={ctx}
+          moves={moves}
+          buildMode={buildMode}
+          setBuildMode={setBuildMode}
+          variant={isMobile ? 'docked' : 'floating'}
+        />
+      }
       dashboard={
         <AnalystPanel
           stats={G.boardStats}
