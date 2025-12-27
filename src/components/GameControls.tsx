@@ -11,9 +11,10 @@ interface GameControlsProps {
     moves: Record<string, any>;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
+    variant?: 'floating' | 'docked';
 }
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode }) => {
+export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === 'setup';
     const isGameplay = ctx.phase === 'GAMEPLAY';
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
@@ -23,7 +24,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         if (stage === 'placeSettlement') instruction = "Place a Settlement";
         if (stage === 'placeRoad') instruction = "Place a Road";
 
-        // Removed potential blocking check: if (ctx.currentPlayer !== player.id) return null;
+        if (variant === 'docked') {
+            return (
+                 <div className="flex-grow flex items-center justify-center text-white px-2">
+                    <span className="text-sm font-semibold animate-pulse">{instruction}</span>
+                </div>
+            );
+        }
 
         return (
             <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 pointer-events-none z-[100]">
@@ -35,6 +42,20 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     if (isGameplay) {
         // Roll Phase
         if (!G.hasRolled && stage === 'roll') {
+            if (variant === 'docked') {
+                return (
+                    <div className="flex-grow flex justify-end items-center pointer-events-auto">
+                        <button
+                            onClick={() => moves.rollDice()}
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow transition-all active:scale-95"
+                        >
+                            <Dice size={20} />
+                            <span className="text-sm font-bold">Roll</span>
+                        </button>
+                    </div>
+                );
+            }
+
              return (
                 <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[100]">
                     <button
@@ -51,6 +72,55 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         // Action Phase
         if (G.hasRolled || stage === 'action') {
             const isActive = (mode: BuildMode) => buildMode === mode ? "bg-amber-500 text-slate-900" : "bg-slate-800 text-slate-300 hover:bg-slate-700";
+
+            if (variant === 'docked') {
+                return (
+                     <div className="flex-grow flex items-center justify-end gap-2 pointer-events-auto overflow-x-auto">
+                         {/* Build Menu Row */}
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => setBuildMode(buildMode === 'road' ? null : 'road')}
+                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('road')}`}
+                                title="Road"
+                            >
+                                <MapPin size={18} />
+                            </button>
+                             <button
+                                onClick={() => setBuildMode(buildMode === 'settlement' ? null : 'settlement')}
+                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('settlement')}`}
+                                title="Settlement"
+                            >
+                                <Home size={18} />
+                            </button>
+                             <button
+                                onClick={() => setBuildMode(buildMode === 'city' ? null : 'city')}
+                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('city')}`}
+                                title="City"
+                            >
+                                <Castle size={18} />
+                            </button>
+                             <button
+                                className="p-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center justify-center"
+                                title="Dev Card"
+                            >
+                                <Scroll size={18} />
+                            </button>
+                        </div>
+
+                        {/* End Turn */}
+                        <button
+                            onClick={() => {
+                                setBuildMode(null);
+                                moves.endTurn();
+                            }}
+                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg shadow transition-all active:scale-95 font-bold text-sm ml-2"
+                        >
+                            <span>End</span>
+                            <ArrowRight size={16} />
+                        </button>
+                    </div>
+                );
+            }
 
             return (
                 <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto max-w-[90vw] z-[100]">
