@@ -3,6 +3,7 @@ import { GameState, Player, Resources } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
+import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 
@@ -121,9 +122,12 @@ export const CatanGame: Game<GameState> = {
                 next: 'action'
             },
             action: {
-                // Future moves: trade, build, etc.
-                // For now, allow endTurn
-                moves: {}
+                moves: {
+                    buildRoad,
+                    buildSettlement,
+                    buildCity,
+                    endTurn
+                }
             }
         }
       },

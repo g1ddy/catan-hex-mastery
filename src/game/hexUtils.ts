@@ -63,11 +63,34 @@ export const getEdgesForHex = (coords: CubeCoordinates): string[] => {
 };
 
 // Helper used in Board.tsx
-function parseVertexId(id: string) {
+export function parseVertexId(id: string) {
     return id.split('::').map(s => {
         const [q, r, sCoords] = s.split(',').map(Number);
         return { q, r, s: sCoords };
     });
+}
+
+export const getVerticesForEdge = (edgeId: string): string[] => {
+    // Edge between H1, H2. Vertices are (H1, H2, N1) and (H1, H2, N2) where N1, N2 are common neighbors.
+    // Easier: Just find common neighbors of H1 and H2.
+    const [h1, h2] = edgeId.split('::').map(s => {
+         const [q, r, sCoords] = s.split(',').map(Number);
+         return { q, r, s: sCoords };
+    });
+
+    // We need to find the two hexes that share this edge.
+    // Neighbors of h1 that are also neighbors of h2.
+    const n1 = getNeighbors(h1);
+    const n2 = getNeighbors(h2);
+
+    // Find intersection
+    const common = n1.filter(a => n2.some(b => compareCoords(a, b)));
+
+    // Should be exactly 2 for internal edges, or fewer for boundary?
+    // In a full grid, always 2. If boundary, maybe 1?
+    // But getVertexId sorts them, so we just construct the IDs.
+
+    return common.map(c => getVertexId(h1, h2, c));
 }
 
 export const getEdgesForVertex = (vertexId: string): string[] => {

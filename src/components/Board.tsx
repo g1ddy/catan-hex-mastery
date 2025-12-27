@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // @ts-ignore
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
@@ -10,6 +10,7 @@ import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
+import { GameControls, BuildMode } from './GameControls';
 import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
@@ -17,17 +18,21 @@ export interface CatanBoardProps extends BoardProps<GameState> {}
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const hexes = Object.values(G.board.hexes);
   const viewBox = useResponsiveViewBox();
+  const [buildMode, setBuildMode] = useState<BuildMode>(null);
 
   const BoardContent = (
     <div className="board-container">
       <PlayerPanel players={G.players} currentPlayerId={ctx.currentPlayer} />
 
+      <GameControls
+        G={G}
+        ctx={ctx}
+        moves={moves}
+        buildMode={buildMode}
+        setBuildMode={setBuildMode}
+      />
+
       <div className="board-controls">
-        {ctx.phase === 'GAMEPLAY' && !G.hasRolled && ctx.activePlayers?.[ctx.currentPlayer] === 'roll' && (
-          <button className="roll-btn" onClick={() => moves.rollDice()}>
-            Roll Dice
-          </button>
-        )}
         {G.lastRoll[0] > 0 && (
           <div className="last-roll">
             Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
@@ -59,6 +64,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
                 G={G}
                 ctx={ctx}
                 moves={moves}
+                buildMode={buildMode}
+                setBuildMode={setBuildMode}
               />
             ))}
           </g>
@@ -81,7 +88,16 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   );
 };
 
-const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: BoardProps<GameState>['ctx'], moves: BoardProps<GameState>['moves'] }) => {
+const HexOverlays = ({
+    hex, G, ctx, moves, buildMode, setBuildMode
+}: {
+    hex: Hex,
+    G: GameState,
+    ctx: BoardProps<GameState>['ctx'],
+    moves: BoardProps<GameState>['moves'],
+    buildMode: BuildMode,
+    setBuildMode: (mode: BuildMode) => void
+}) => {
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
         const thisV = vertexId.split('::');
@@ -111,6 +127,7 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
 
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
+            {/* VERTICES */}
             {corners.map((corner, i) => {
                 const vId = vertices[i];
                 const primaryHex = vId.split('::')[0];
@@ -118,31 +135,78 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
 
                 const vertex = G.board.vertices[vId];
                 const isOccupied = !!vertex;
-                const isSettlementPhase = ctx.activePlayers?.[ctx.currentPlayer] === 'placeSettlement';
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
-                const validSpot = !isOccupied && isSettlementPhase && !isTooClose(vId);
+
+                // Interaction Logic
+                const isSetup = ctx.phase === 'setup';
+                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                let isClickable = false;
+                let isGhost = false;
+                let clickAction = () => {};
+
+                if (isSetup) {
+                    if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
+                        isClickable = true;
+                        isGhost = true;
+                        clickAction = () => moves.placeSettlement(vId);
+                    }
+                } else if (isGameplay) {
+                    if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
+                        // TODO: Add strict connectivity check for settlements in gameplay if needed
+                        isClickable = true;
+                        isGhost = true;
+                        clickAction = () => {
+                            moves.buildSettlement(vId);
+                            setBuildMode(null);
+                        }
+                    } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
+                        isClickable = true;
+                        isGhost = false; // It's upgrading an existing one
+                        clickAction = () => {
+                             moves.buildCity(vId);
+                             setBuildMode(null);
+                        }
+                    }
+                }
 
                 return (
                     <g key={i} onClick={(e) => {
                         e.stopPropagation();
-                        if (validSpot) moves.placeSettlement(vId);
+                        if (isClickable) clickAction();
                     }}>
-                        <circle cx={corner.x} cy={corner.y} r={3} fill="transparent" style={{ cursor: validSpot ? 'pointer' : 'default' }} />
+                        <circle cx={corner.x} cy={corner.y} r={3} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
                         {isOccupied && (
-                            <rect
-                                x={corner.x - 2} y={corner.y - 2}
-                                width={4} height={4}
-                                fill={ownerColor || 'none'}
-                                stroke="black" strokeWidth={0.5}
-                            />
+                            <React.Fragment>
+                                <rect
+                                    x={corner.x - 2} y={corner.y - 2}
+                                    width={4} height={4}
+                                    fill={ownerColor || 'none'}
+                                    stroke="black" strokeWidth={0.5}
+                                />
+                                {vertex.type === 'city' && (
+                                     <rect
+                                        x={corner.x - 1} y={corner.y - 4}
+                                        width={2} height={2}
+                                        fill={ownerColor || 'none'}
+                                        stroke="black" strokeWidth={0.5}
+                                    />
+                                )}
+                            </React.Fragment>
                         )}
-                        {validSpot && (
-                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.3} className="ghost-vertex" />
+                        {isGhost && (
+                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
+                        )}
+                        {/* Highlight upgrade target */}
+                        {isClickable && buildMode === 'city' && (
+                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse" />
                         )}
                     </g>
                 );
             })}
 
+            {/* EDGES */}
             {corners.map((corner, i) => {
                 const eId = edges[i];
                 const primaryHex = eId.split('::')[0];
@@ -154,18 +218,45 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
 
                 const edge = G.board.edges[eId];
                 const isOccupied = !!edge;
-                const isRoadPhase = ctx.activePlayers?.[ctx.currentPlayer] === 'placeRoad';
                 const ownerColor = isOccupied ? G.players[edge.owner]?.color : null;
-                const isLastSettlementConnected = G.lastPlacedSettlement && getEdgesForVertex(G.lastPlacedSettlement).includes(eId);
-
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
+
+                // Interaction Logic
+                const isSetup = ctx.phase === 'setup';
+                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                let isClickable = false;
+                let isGhost = false;
+                let clickAction = () => {};
+
+                if (isSetup) {
+                     if (currentStage === 'placeRoad' && !isOccupied) {
+                        const isConnected = G.lastPlacedSettlement && getEdgesForVertex(G.lastPlacedSettlement).includes(eId);
+                        if (isConnected) {
+                            isClickable = true;
+                            isGhost = true;
+                            clickAction = () => moves.placeRoad(eId);
+                        }
+                     }
+                } else if (isGameplay) {
+                    if (buildMode === 'road' && !isOccupied) {
+                        // TODO: Add connectivity check for roads in gameplay
+                        isClickable = true;
+                        isGhost = true;
+                        clickAction = () => {
+                             moves.buildRoad(eId);
+                             setBuildMode(null);
+                        }
+                    }
+                }
 
                 return (
                      <g key={`edge-${i}`} onClick={(e) => {
                         e.stopPropagation();
-                        if (!isOccupied && isRoadPhase) moves.placeRoad(eId);
+                        if (isClickable) clickAction();
                     }}>
-                        <circle cx={midX} cy={midY} r={2.5} fill="transparent" style={{ cursor: 'pointer' }} />
+                        <circle cx={midX} cy={midY} r={2.5} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
                         {isOccupied && (
                             <rect
                                 x={midX - 3} y={midY - 1}
@@ -174,7 +265,7 @@ const HexOverlays = ({ hex, G, ctx, moves }: { hex: Hex, G: GameState, ctx: Boar
                                 transform={`rotate(${angle} ${midX} ${midY})`}
                             />
                         )}
-                         {!isOccupied && isRoadPhase && isLastSettlementConnected && (
+                         {isGhost && (
                             <rect
                                 x={midX - 3} y={midY - 1}
                                 width={6} height={2}

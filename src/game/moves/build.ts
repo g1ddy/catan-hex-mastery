@@ -1,6 +1,24 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../types';
-import { getEdgesForVertex } from '../hexUtils';
+import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
+
+// Helper to find neighboring vertices (distance rule)
+const getVertexNeighbors = (vertexId: string): string[] => {
+    const edges = getEdgesForVertex(vertexId);
+    // Each edge connects to 2 vertices. One is vertexId, the other is the neighbor.
+    // Use a Set to avoid duplicates if any (though structurally unlikely in hex grid).
+    const neighbors = new Set<string>();
+
+    for (const eId of edges) {
+        const vertices = getVerticesForEdge(eId);
+        for (const v of vertices) {
+            if (v !== vertexId) {
+                neighbors.add(v);
+            }
+        }
+    }
+    return Array.from(neighbors);
+};
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     const player = G.players[ctx.currentPlayer];
@@ -121,108 +139,3 @@ export const endTurn: Move<GameState> = ({ events }) => {
         events.endTurn();
     }
 };
-
-// --- Local Helpers ---
-
-function parseEdgeId(id: string) {
-    return id.split('::').map(s => {
-        const [q, r, sCoords] = s.split(',').map(Number);
-        return { q, r, s: sCoords };
-    });
-}
-
-function parseVertexId(id: string) {
-    return id.split('::').map(s => {
-        const [q, r, sCoords] = s.split(',').map(Number);
-        return { q, r, s: sCoords };
-    });
-}
-
-function getVerticesForEdge(edgeId: string): string[] {
-    // Edge is between H1 and H2.
-    // The two vertices are the ones shared by H1 and H2.
-    // H1 and H2 share two neighbors: N1 and N2.
-    // So vertices are (H1, H2, N1) and (H1, H2, N2).
-    const [h1, h2] = parseEdgeId(edgeId);
-
-    // Find common neighbors
-    // Simple approach: get all neighbors of h1, check if they are neighbors of h2.
-    // Or simpler: The "directions" around h1 that touch h2.
-    // Cube coord math:
-    // neighbors of h1.
-    const h1Neighbors = [
-        { q: h1.q+1, r: h1.r-1, s: h1.s }, { q: h1.q+1, r: h1.r, s: h1.s-1 },
-        { q: h1.q, r: h1.r+1, s: h1.s-1 }, { q: h1.q-1, r: h1.r+1, s: h1.s },
-        { q: h1.q-1, r: h1.r, s: h1.s+1 }, { q: h1.q, r: h1.r-1, s: h1.s+1 }
-    ];
-    // Filter neighbors that are also neighbors of h2 (dist(n, h2) == 1).
-    // Actually, simple graph property: if h1 and h2 are neighbors, they share exactly two common neighbors in a hex grid.
-
-    const common: any[] = [];
-    h1Neighbors.forEach(n => {
-        const dist = Math.max(Math.abs(n.q - h2.q), Math.abs(n.r - h2.r), Math.abs(n.s - h2.s));
-        if (dist === 1) {
-            common.push(n);
-        }
-    });
-
-    if (common.length !== 2) {
-        // Should not happen for valid edge
-        return [];
-    }
-
-    // Construct vertex IDs: (h1, h2, common[0]) and (h1, h2, common[1])
-    // We need a helper to sort and join them.
-    // Re-implement getVertexId here or just use the sorting logic manually to avoid circular deps if importing from hexUtils fails (it shouldn't).
-    // I'll assume I can duplicate the sort logic or just be careful.
-
-    const sortAndJoin = (coords: any[]) => {
-        const sorted = coords.sort((a, b) => {
-            if (a.q !== b.q) return a.q - b.q;
-            if (a.r !== b.r) return a.r - b.r;
-            return a.s - b.s;
-        });
-        return sorted.map(c => `${c.q},${c.r},${c.s}`).join('::');
-    };
-
-    return [
-        sortAndJoin([h1, h2, common[0]]),
-        sortAndJoin([h1, h2, common[1]])
-    ];
-}
-
-// Logic duplicated from moves/setup.ts (which wasn't exported)
-function getVertexNeighbors(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-    const neighbors: string[] = [];
-    // Neighboring vertices share an edge.
-    // Vertex is (H1, H2, H3).
-    // Edges are (H1,H2), (H2,H3), (H3,H1).
-    // For edge (H1,H2), the other vertex is (H1,H2,H4).
-    // So we need to find H4 which is common neighbor of H1,H2 but not H3.
-
-    const pairs = [
-        [hexes[0], hexes[1]],
-        [hexes[1], hexes[2]],
-        [hexes[2], hexes[0]]
-    ];
-
-    pairs.forEach(pair => {
-       // Find common neighbor of pair[0] and pair[1] that is NOT the third hex in 'hexes'.
-       // We can use getVerticesForEdge logic essentially.
-       const edgeV = getVerticesForEdge(getEdgeIdStr(pair[0], pair[1]));
-       const n = edgeV.find(id => id !== vertexId);
-       if (n) neighbors.push(n);
-    });
-
-    return neighbors;
-}
-
-function getEdgeIdStr(h1: any, h2: any): string {
-    const sorted = [h1, h2].sort((a, b) => {
-        if (a.q !== b.q) return a.q - b.q;
-        if (a.r !== b.r) return a.r - b.r;
-        return a.s - b.s;
-    });
-    return sorted.map(c => `${c.q},${c.r},${c.s}`).join('::');
-}
