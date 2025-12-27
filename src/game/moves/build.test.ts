@@ -55,13 +55,11 @@ describe('Gameplay Moves', () => {
              // @ts-ignore
              const result = buildRoad({ G, ctx, events } as any, eId);
 
-             if (result === 'INVALID_MOVE') {
-                 // Debug or fail?
-             }
-
-             // If passed:
-             // expect(G.board.edges[eId].owner).toBe('0');
-             // expect(G.players['0'].resources.wood).toBe(0);
+             expect(result).not.toBe('INVALID_MOVE');
+             expect(G.board.edges[eId].owner).toBe('0');
+             expect(G.players['0'].resources.wood).toBe(0);
+             expect(G.players['0'].resources.brick).toBe(0);
+             expect(G.players['0'].roads).toContain(eId);
         });
     });
 
