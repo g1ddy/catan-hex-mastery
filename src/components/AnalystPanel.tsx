@@ -20,7 +20,7 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
       <div className="analyst-header">
         <h2 className="text-xl font-bold">Analyst Dashboard</h2>
         {showRegenerate && onRegenerate && (
-          <button className="regenerate-btn-panel bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors" onClick={onRegenerate}>
+          <button className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors" onClick={onRegenerate}>
             Regenerate Board
           </button>
         )}
@@ -28,7 +28,7 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
 
       <div className="analyst-section">
         <h3 className="text-lg font-semibold mb-2">Fairness Score</h3>
-        <div className={`fairness-score text-3xl font-bold ${getFairnessColorClass(stats.fairnessScore)}`}>
+        <div className={`text-3xl font-bold ${getFairnessColorClass(stats.fairnessScore)}`}>
           {stats.fairnessScore} / 100
         </div>
       </div>
@@ -37,8 +37,8 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
         <h3 className="text-lg font-semibold mb-2">Pip Distribution</h3>
         <ul className="pip-list">
           {Object.entries(stats.totalPips).map(([resource, pips]) => (
-            <li key={resource} className="pip-list-item border-slate-700">
-              <span className="resource-name capitalize text-slate-300">{resource}</span>
+            <li key={resource} className="flex justify-between py-[5px] border-b border-slate-700 text-[0.9rem] md:text-base">
+              <span className="capitalize text-slate-300">{resource}</span>
               <strong className="text-slate-100">{pips} pips</strong>
             </li>
           ))}
@@ -48,9 +48,9 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
       <div>
         <h3 className="text-lg font-semibold mb-2">Warnings</h3>
         {stats.warnings.length === 0 ? (
-          <p className="no-issues text-green-400">No issues detected.</p>
+          <p className="text-green-400">No issues detected.</p>
         ) : (
-          <ul className="warnings-list text-red-300 pl-5 list-disc">
+          <ul className="text-red-300 pl-5 list-disc">
             {stats.warnings.map((w, i) => (
               <li key={`${w}-${i}`}>{w}</li>
             ))}
