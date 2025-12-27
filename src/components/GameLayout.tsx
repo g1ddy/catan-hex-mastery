@@ -24,7 +24,9 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard }) => {
     return (
       <div className="game-layout-desktop">
         <div className="board-area">{board}</div>
-        <aside className="sidebar-area bg-transparent">{dashboard}</aside>
+        <aside className="sidebar-area bg-slate-900/90 backdrop-blur-md border-l border-slate-700 shadow-2xl overflow-y-auto p-5">
+          {dashboard}
+        </aside>
       </div>
     );
   }
@@ -55,7 +57,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard }) => {
             >
               <X size={24} />
             </button>
-            <div className="sheet-content">
+            <div className="sheet-content px-5 pb-5">
               {dashboard}
             </div>
           </div>
