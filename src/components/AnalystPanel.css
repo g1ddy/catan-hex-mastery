@@ -1,6 +1,6 @@
 .analyst-panel {
   padding: 20px;
-  background: #f9f9f9;
+  /* background removed - handled by Tailwind */
   height: 100%;
   box-sizing: border-box;
   overflow-y: auto;
@@ -12,21 +12,14 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-}
-
-.analyst-panel h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* moved from h2 margin */
 }
 
 .analyst-section {
   margin-bottom: 20px;
 }
 
-.fairness-score {
-  font-size: 24px;
-  font-weight: bold;
-}
+/* fairness-score handled by Tailwind */
 
 .pip-list {
   list-style: none;
@@ -37,51 +30,24 @@
   display: flex;
   justify-content: space-between;
   padding: 5px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid; /* color handled by Tailwind border-slate-700 */
 }
 
-.resource-name {
-  text-transform: capitalize;
-}
-
-.no-issues {
-  color: green;
-}
-
-.warnings-list {
-  color: #d32f2f;
-  padding-left: 20px;
-}
+/* resource-name handled by Tailwind */
+/* no-issues handled by Tailwind */
+/* warnings-list handled by Tailwind */
 
 .regenerate-btn-panel {
-  background-color: #2196f3;
-  color: white;
+  /* most styles moved to Tailwind, keeping structural defaults if any needed */
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-}
-
-.regenerate-btn-panel:hover {
-  background-color: #1976d2;
 }
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
-  .analyst-panel h2 {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-  }
-
-  .fairness-score {
-    font-size: 1.5rem; /* Equivalent to text-2xl or text-3xl depending on context */
-  }
-
-  .analyst-section h3 {
-    font-size: 1rem;
-    margin-bottom: 5px;
-  }
+  /* Font sizes are now largely handled by Tailwind responsive classes or defaults,
+     but keeping these specialized adjustments if needed, though Tailwind text-xl/lg etc usually suffice.
+     I'll remove the redundant ones to avoid conflict. */
 
   .pip-list-item {
     font-size: 0.9rem;
