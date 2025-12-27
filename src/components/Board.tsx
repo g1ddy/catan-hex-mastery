@@ -4,7 +4,7 @@ import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
-import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge } from '../game/hexUtils';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
@@ -154,12 +154,20 @@ const HexOverlays = ({
                     }
                 } else if (isGameplay) {
                     if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
-                        // TODO: Add strict connectivity check for settlements in gameplay if needed
-                        isClickable = true;
-                        isGhost = true;
-                        clickAction = () => {
-                            moves.buildSettlement(vId);
-                            setBuildMode(null);
+                        // Strict connectivity check for settlements
+                        const adjEdges = getEdgesForVertex(vId);
+                        const hasOwnRoad = adjEdges.some(eId => {
+                            const edge = G.board.edges[eId];
+                            return edge && edge.owner === ctx.currentPlayer;
+                        });
+
+                        if (hasOwnRoad) {
+                            isClickable = true;
+                            isGhost = true;
+                            clickAction = () => {
+                                moves.buildSettlement(vId);
+                                setBuildMode(null);
+                            }
                         }
                     } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
                         isClickable = true;
@@ -241,12 +249,30 @@ const HexOverlays = ({
                      }
                 } else if (isGameplay) {
                     if (buildMode === 'road' && !isOccupied) {
-                        // TODO: Add connectivity check for roads in gameplay
-                        isClickable = true;
-                        isGhost = true;
-                        clickAction = () => {
-                             moves.buildRoad(eId);
-                             setBuildMode(null);
+                         const endpoints = getVerticesForEdge(eId);
+
+                         const hasConnection = (vId: string): boolean => {
+                            const building = G.board.vertices[vId];
+                            // Connected to own settlement/city
+                            if (building && building.owner === ctx.currentPlayer) return true;
+                            // Blocked by opponent's settlement/city
+                            if (building && building.owner !== ctx.currentPlayer) return false;
+                            // Connected to own road
+                            const adjEdges = getEdgesForVertex(vId);
+                            return adjEdges.some(adjEdgeId => {
+                                if (adjEdgeId === eId) return false;
+                                const edge = G.board.edges[adjEdgeId];
+                                return edge && edge.owner === ctx.currentPlayer;
+                            });
+                        };
+
+                        if (endpoints.some(hasConnection)) {
+                            isClickable = true;
+                            isGhost = true;
+                            clickAction = () => {
+                                moves.buildRoad(eId);
+                                setBuildMode(null);
+                            }
                         }
                     }
                 }

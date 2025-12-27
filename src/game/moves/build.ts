@@ -1,6 +1,7 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
+import { BUILD_COSTS } from '../config';
 
 // Helper to find neighboring vertices (distance rule)
 const getVertexNeighbors = (vertexId: string): string[] => {
@@ -22,9 +23,10 @@ const getVertexNeighbors = (vertexId: string): string[] => {
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     const player = G.players[ctx.currentPlayer];
+    const cost = BUILD_COSTS.road;
 
     // 1. Cost Check
-    if (player.resources.wood < 1 || player.resources.brick < 1) {
+    if (player.resources.wood < cost.wood || player.resources.brick < cost.brick) {
         return 'INVALID_MOVE';
     }
 
@@ -35,49 +37,44 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
 
     // 3. Validation: Connection
     const endpoints = getVerticesForEdge(edgeId);
-    let connected = false;
 
-    for (const vId of endpoints) {
-        // Check for own building (settlement/city)
+    const hasConnection = (vId: string): boolean => {
         const building = G.board.vertices[vId];
+        // Connected to own settlement/city
         if (building && building.owner === ctx.currentPlayer) {
-            connected = true;
-            break;
+            return true;
         }
-
-        // Check for own roads connected to this vertex
-        // Rule: You can build from your road unless an opponent's building is on that vertex.
+        // Blocked by opponent's settlement/city
         if (building && building.owner !== ctx.currentPlayer) {
-            // Opponent building blocks road connection
-            continue;
+            return false;
         }
-
+        // Connected to own road
         const adjEdges = getEdgesForVertex(vId);
-        for (const adjEdgeId of adjEdges) {
-            if (adjEdgeId === edgeId) continue;
+        return adjEdges.some(adjEdgeId => {
+            if (adjEdgeId === edgeId) return false;
             const edge = G.board.edges[adjEdgeId];
-            if (edge && edge.owner === ctx.currentPlayer) {
-                connected = true;
-                break;
-            }
-        }
-        if (connected) break;
-    }
+            return edge && edge.owner === ctx.currentPlayer;
+        });
+    };
 
-    if (!connected) return 'INVALID_MOVE';
+    if (!endpoints.some(hasConnection)) return 'INVALID_MOVE';
 
     // Execution
     G.board.edges[edgeId] = { owner: ctx.currentPlayer };
     player.roads.push(edgeId);
-    player.resources.wood--;
-    player.resources.brick--;
+    player.resources.wood -= cost.wood;
+    player.resources.brick -= cost.brick;
 };
 
 export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     const player = G.players[ctx.currentPlayer];
+    const cost = BUILD_COSTS.settlement;
 
     // 1. Cost Check
-    if (player.resources.wood < 1 || player.resources.brick < 1 || player.resources.wheat < 1 || player.resources.sheep < 1) {
+    if (player.resources.wood < cost.wood ||
+        player.resources.brick < cost.brick ||
+        player.resources.wheat < cost.wheat ||
+        player.resources.sheep < cost.sheep) {
         return 'INVALID_MOVE';
     }
 
@@ -107,17 +104,18 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
     player.settlements.push(vertexId);
     player.victoryPoints += 1;
-    player.resources.wood--;
-    player.resources.brick--;
-    player.resources.wheat--;
-    player.resources.sheep--;
+    player.resources.wood -= cost.wood;
+    player.resources.brick -= cost.brick;
+    player.resources.wheat -= cost.wheat;
+    player.resources.sheep -= cost.sheep;
 };
 
 export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     const player = G.players[ctx.currentPlayer];
+    const cost = BUILD_COSTS.city;
 
     // 1. Cost Check
-    if (player.resources.ore < 3 || player.resources.wheat < 2) {
+    if (player.resources.ore < cost.ore || player.resources.wheat < cost.wheat) {
         return 'INVALID_MOVE';
     }
 
@@ -130,8 +128,8 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     // Execution
     vertex.type = 'city';
     player.victoryPoints += 1; // 1 (settlement) -> 2 (city), so +1
-    player.resources.ore -= 3;
-    player.resources.wheat -= 2;
+    player.resources.ore -= cost.ore;
+    player.resources.wheat -= cost.wheat;
 };
 
 export const endTurn: Move<GameState> = ({ events }) => {
