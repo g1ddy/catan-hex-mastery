@@ -24,7 +24,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard }) => {
     return (
       <div className="game-layout-desktop">
         <div className="board-area">{board}</div>
-        <aside className="sidebar-area">{dashboard}</aside>
+        <aside className="sidebar-area bg-transparent">{dashboard}</aside>
       </div>
     );
   }
@@ -47,9 +47,9 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard }) => {
       {showDashboard && (
         <div className="bottom-sheet-overlay">
           <div className="backdrop" onClick={() => setShowDashboard(false)} />
-          <div className="bottom-sheet">
+          <div className="bottom-sheet bg-slate-900/95 backdrop-blur-md border-t border-slate-700 text-slate-100">
             <button
-              className="close-sheet-btn"
+              className="close-sheet-btn text-slate-300 hover:text-white"
               onClick={() => setShowDashboard(false)}
               aria-label="Close Stats"
             >

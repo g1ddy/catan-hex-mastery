@@ -16,8 +16,8 @@
 .game-layout-desktop .sidebar-area {
   width: 320px; /* Fixed width sidebar */
   height: 100%;
-  border-left: 1px solid #ccc;
-  background: #f9f9f9;
+  /* background removed - handled by component class */
+  /* border removed - handled by component class */
   z-index: 10;
   flex-shrink: 0;
 }
@@ -72,7 +72,7 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4); /* Darker backdrop */
   backdrop-filter: blur(2px);
   z-index: 31;
 }
@@ -80,13 +80,13 @@
 .bottom-sheet {
   position: relative;
   z-index: 32;
-  background: white;
+  /* background handled by Tailwind */
   width: 100%;
   height: 60vh; /* Default to 60% height */
   max-height: 90vh;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease-out;
@@ -100,7 +100,7 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: #666;
+  /* color handled by Tailwind */
   z-index: 33;
 }
 
