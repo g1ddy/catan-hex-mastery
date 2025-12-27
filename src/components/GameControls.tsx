@@ -16,7 +16,6 @@ interface GameControlsProps {
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode }) => {
     const isSetup = ctx.phase === 'setup';
     const isGameplay = ctx.phase === 'GAMEPLAY';
-    const player = G.players[ctx.currentPlayer];
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
 
     if (isSetup) {
