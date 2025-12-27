@@ -36,7 +36,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-900">
       {/* Top: Board Area */}
-      <div className="flex-grow relative overflow-hidden">
+      <div className="flex-grow relative overflow-hidden h-full">
         {board}
       </div>
 

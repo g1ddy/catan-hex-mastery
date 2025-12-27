@@ -4,6 +4,7 @@ import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-
 import { Ctx } from 'boardgame.io';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
+export type UiMode = 'viewing' | 'placing';
 
 interface GameControlsProps {
     G: GameState;
@@ -11,30 +12,56 @@ interface GameControlsProps {
     moves: Record<string, any>;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
+    uiMode: UiMode;
+    setUiMode: (mode: UiMode) => void;
     variant?: 'floating' | 'docked';
 }
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, variant = 'floating' }) => {
+export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === 'setup';
     const isGameplay = ctx.phase === 'GAMEPLAY';
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
 
     if (isSetup) {
         let instruction = "Wait for your turn...";
-        if (stage === 'placeSettlement') instruction = "Place a Settlement";
-        if (stage === 'placeRoad') instruction = "Place a Road";
+        let canInteract = false;
+
+        if (stage === 'placeSettlement') {
+            instruction = "Place a Settlement";
+            canInteract = true;
+        }
+        if (stage === 'placeRoad') {
+            instruction = "Place a Road";
+            canInteract = true;
+        }
+
+        // Disable interaction if it's not user's turn (simplified check, assumes currentPlayer matches local player for now)
+        // In boardgame.io client, we only see controls if it's our turn usually.
+
+        const handleClick = () => {
+            if (canInteract) {
+                setUiMode(uiMode === 'viewing' ? 'placing' : 'viewing');
+            }
+        };
+
+        const activeClass = uiMode === 'placing' ? 'ring-2 ring-amber-400 bg-slate-800' : '';
+        const pointerClass = canInteract ? 'cursor-pointer hover:bg-slate-800 active:scale-95' : 'pointer-events-none opacity-70';
 
         if (variant === 'docked') {
             return (
-                 <div className="flex-grow flex items-center justify-center text-white px-2">
-                    <span className="text-sm font-semibold animate-pulse">{instruction}</span>
+                 <div onClick={handleClick} className={`flex-grow flex items-center justify-center text-white px-4 py-2 rounded-lg transition-all ${pointerClass} ${activeClass}`}>
+                    <span className={`text-sm font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
+                        {uiMode === 'placing' ? 'Tap a highlighted spot!' : instruction}
+                    </span>
                 </div>
             );
         }
 
         return (
-            <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 pointer-events-none z-[100]">
-                <span className="text-lg font-semibold animate-pulse">{instruction}</span>
+            <div onClick={handleClick} className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100] transition-all ${pointerClass} ${activeClass}`}>
+                <span className={`text-lg font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
+                    {uiMode === 'placing' ? 'Select a location on the board' : instruction}
+                </span>
             </div>
         );
     }
