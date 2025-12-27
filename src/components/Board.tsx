@@ -70,21 +70,21 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
     <GameLayout
       board={BoardContent}
       playerPanel={
-          <PlayerPanel
-            players={G.players}
-            currentPlayerId={ctx.currentPlayer}
-            variant={isMobile ? 'docked' : 'floating'}
-          />
+        <PlayerPanel
+          players={G.players}
+          currentPlayerId={ctx.currentPlayer}
+          variant={isMobile ? 'docked' : 'floating'}
+        />
       }
       gameControls={
-          <GameControls
-            G={G}
-            ctx={ctx}
-            moves={moves}
-            buildMode={buildMode}
-            setBuildMode={setBuildMode}
-            variant={isMobile ? 'docked' : 'floating'}
-          />
+        <GameControls
+          G={G}
+          ctx={ctx}
+          moves={moves}
+          buildMode={buildMode}
+          setBuildMode={setBuildMode}
+          variant={isMobile ? 'docked' : 'floating'}
+        />
       }
       dashboard={
         <AnalystPanel
