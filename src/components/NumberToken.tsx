@@ -13,7 +13,7 @@ export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
   return (
     <foreignObject x="-4" y="-4" width="8" height="8">
       <div
-          className="w-full h-full rounded-full bg-[#f3e5ab] shadow-sm flex flex-col items-center justify-center border-[0.2px] border-gray-500/50"
+          className="w-full h-full rounded-full bg-token-beige shadow-sm flex flex-col items-center justify-center border-[0.2px] border-gray-500/50"
       >
           <span className={`font-bold leading-none ${textColorClass} text-[0.25rem] mb-[0.5px]`}>
               {value}

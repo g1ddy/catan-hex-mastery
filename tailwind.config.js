@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         beige: '#f3e5ab',
+        'token-beige': '#f3e5ab',
       },
     },
   },

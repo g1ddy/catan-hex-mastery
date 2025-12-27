@@ -11,6 +11,14 @@ const SCARCITY_THRESHOLD = 0.10;
 const SCARCITY_MULTIPLIER = 1.2;
 const SYNERGY_BONUS = 2;
 
+const TERRAIN_TO_RESOURCE: Record<string, string> = {
+    'Forest': 'wood',
+    'Hills': 'brick',
+    'Pasture': 'sheep',
+    'Fields': 'wheat',
+    'Mountains': 'ore'
+};
+
 export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRecommendation[] {
     const recommendations: CoachRecommendation[] = [];
     const hexes = G.board.hexes;
@@ -90,14 +98,7 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
                 pips += hexPips;
 
                 // Map terrain to resource
-                const terrainToResource: Record<string, string> = {
-                    'Forest': 'wood',
-                    'Hills': 'brick',
-                    'Pasture': 'sheep',
-                    'Fields': 'wheat',
-                    'Mountains': 'ore'
-                };
-                const res = terrainToResource[hex.terrain];
+                const res = TERRAIN_TO_RESOURCE[hex.terrain];
                 if (res) resources.push(res);
             }
         });
