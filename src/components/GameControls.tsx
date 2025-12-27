@@ -26,8 +26,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         let instruction = "Wait for your turn...";
         let canInteract = false;
 
-        if (stage === 'placeSettlement' || stage === 'placeRoad') {
-            instruction = stage === 'placeSettlement' ? "Place a Settlement" : "Place a Road";
+        if (stage === 'placeSettlement') {
+            instruction = "Place a Settlement";
+            canInteract = true;
+        }
+        if (stage === 'placeRoad') {
+            instruction = "Place a Road";
             canInteract = true;
         }
 

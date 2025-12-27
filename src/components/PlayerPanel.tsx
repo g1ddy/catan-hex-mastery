@@ -16,7 +16,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
     return (
       <div className="player-panel-docked w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700 text-slate-100 flex flex-col transition-all">
         {/* Header / Summary Row */}
-        <div className="flex items-center justify-between p-2 px-4" role="button" tabIndex={0} onClick={() => setIsExpanded(!isExpanded)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsExpanded(!isExpanded); } }}>
+        <div className="flex items-center justify-between p-2 px-4" onClick={() => setIsExpanded(!isExpanded)}>
              <div className="flex gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 {playerList.map((player: Player) => (
                     <div key={player.id}

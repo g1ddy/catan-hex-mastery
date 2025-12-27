@@ -89,8 +89,7 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
         const resources: string[] = [];
 
         thisV.forEach(coordStr => {
-            const [q, r, s] = coordStr.split(',').map(Number);
-            // Find the hex with these coords (inefficient linear search, but board is small)
+            // Find the hex with these coords
             const hex = hexes[coordStr];
 
             if (hex && hex.terrain !== 'Desert' && hex.terrain !== 'Sea') {
