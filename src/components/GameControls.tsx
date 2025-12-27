@@ -73,27 +73,36 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         if (G.hasRolled || stage === 'action') {
             const isActive = (mode: BuildMode) => buildMode === mode ? "bg-amber-500 text-slate-900" : "bg-slate-800 text-slate-300 hover:bg-slate-700";
 
+            const toggleBuildMode = (mode: BuildMode) => {
+                setBuildMode(buildMode === mode ? null : mode);
+            };
+
+            const handleEndTurn = () => {
+                setBuildMode(null);
+                moves.endTurn();
+            };
+
             if (variant === 'docked') {
                 return (
                      <div className="flex-grow flex items-center justify-end gap-2 pointer-events-auto overflow-x-auto">
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1">
                             <button
-                                onClick={() => setBuildMode(buildMode === 'road' ? null : 'road')}
+                                onClick={() => toggleBuildMode('road')}
                                 className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('road')}`}
                                 title="Road"
                             >
                                 <MapPin size={18} />
                             </button>
                              <button
-                                onClick={() => setBuildMode(buildMode === 'settlement' ? null : 'settlement')}
+                                onClick={() => toggleBuildMode('settlement')}
                                 className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('settlement')}`}
                                 title="Settlement"
                             >
                                 <Home size={18} />
                             </button>
                              <button
-                                onClick={() => setBuildMode(buildMode === 'city' ? null : 'city')}
+                                onClick={() => toggleBuildMode('city')}
                                 className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('city')}`}
                                 title="City"
                             >
@@ -109,10 +118,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                         {/* End Turn */}
                         <button
-                            onClick={() => {
-                                setBuildMode(null);
-                                moves.endTurn();
-                            }}
+                            onClick={handleEndTurn}
                             className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg shadow transition-all active:scale-95 font-bold text-sm ml-2"
                         >
                             <span>End</span>
@@ -127,7 +133,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                      {/* Build Menu */}
                     <div className="bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-2xl flex flex-wrap gap-2 justify-end">
                         <button
-                            onClick={() => setBuildMode(buildMode === 'road' ? null : 'road')}
+                            onClick={() => toggleBuildMode('road')}
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('road')}`}
                             title="Build Road (1 Wood, 1 Brick)"
                         >
@@ -135,7 +141,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             <span className="hidden md:inline">Road</span>
                         </button>
                          <button
-                            onClick={() => setBuildMode(buildMode === 'settlement' ? null : 'settlement')}
+                            onClick={() => toggleBuildMode('settlement')}
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('settlement')}`}
                             title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                         >
@@ -143,7 +149,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             <span className="hidden md:inline">Settlement</span>
                         </button>
                          <button
-                            onClick={() => setBuildMode(buildMode === 'city' ? null : 'city')}
+                            onClick={() => toggleBuildMode('city')}
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('city')}`}
                             title="Build City (3 Ore, 2 Wheat)"
                         >
@@ -161,10 +167,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                     {/* End Turn */}
                     <button
-                        onClick={() => {
-                            setBuildMode(null);
-                            moves.endTurn();
-                        }}
+                        onClick={handleEndTurn}
                         className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 font-bold"
                     >
                         <span>End Turn</span>
