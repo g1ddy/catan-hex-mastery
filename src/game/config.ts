@@ -7,11 +7,11 @@ export const BOARD_CONFIG = {
 
   // Layout spacing
   HEX_SIZE: { x: 8, y: 8 },
-  HEX_SPACING: 1.02,
+  HEX_SPACING: 1.01,
   HEX_ORIGIN: { x: 0, y: 0 },
 
   // ViewBox padding
-  VIEWBOX_PADDING: 10,
+  VIEWBOX_PADDING: 2,
 
   // Magic numbers moved from Board.tsx
   VERTEX_RADIUS: 3,

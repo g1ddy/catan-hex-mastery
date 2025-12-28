@@ -35,9 +35,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             canInteract = true;
         }
 
-        // Disable interaction if it's not user's turn (simplified check, assumes currentPlayer matches local player for now)
-        // In boardgame.io client, we only see controls if it's our turn usually.
-
         const handleClick = () => {
             if (canInteract) {
                 setUiMode(uiMode === 'viewing' ? 'placing' : 'viewing');
@@ -48,8 +45,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         const pointerClass = canInteract ? 'cursor-pointer hover:bg-slate-800 active:scale-95' : 'pointer-events-none opacity-70';
 
         if (variant === 'docked') {
+             // Mobile Bottom Floating Bar Style
             return (
-                 <div onClick={handleClick} className={`flex-grow flex items-center justify-center text-white px-4 py-2 rounded-lg transition-all ${pointerClass} ${activeClass}`}>
+                 <div onClick={handleClick} className={`flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all ${pointerClass} ${activeClass}`}>
                     <span className={`text-sm font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
                         {uiMode === 'placing' ? 'Tap a highlighted spot!' : instruction}
                     </span>
@@ -74,10 +72,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
                         <button
                             onClick={() => moves.rollDice()}
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow transition-all active:scale-95"
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 w-full justify-center"
                         >
-                            <Dice size={20} />
-                            <span className="text-sm font-bold">Roll</span>
+                            <Dice size={24} />
+                            <span className="text-base font-bold">Roll Dice</span>
                         </button>
                     </div>
                 );
@@ -98,7 +96,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // Action Phase
         if (G.hasRolled || stage === 'action') {
-            const isActive = (mode: BuildMode) => buildMode === mode ? "bg-amber-500 text-slate-900" : "bg-slate-800 text-slate-300 hover:bg-slate-700";
+            const isActive = (mode: BuildMode) => buildMode === mode ? "bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]" : "bg-slate-800 text-slate-300 hover:bg-slate-700";
 
             const toggleBuildMode = (mode: BuildMode) => {
                 setBuildMode(buildMode === mode ? null : mode);
@@ -111,42 +109,37 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
             if (variant === 'docked') {
                 return (
-                     <div className="flex-grow flex items-center justify-end gap-2 pointer-events-auto overflow-x-auto">
+                     <div className="flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg">
                          {/* Build Menu Row */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                             <button
                                 onClick={() => toggleBuildMode('road')}
-                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('road')}`}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('road')}`}
                                 title="Road"
                             >
-                                <MapPin size={18} />
+                                <MapPin size={20} />
                             </button>
                              <button
                                 onClick={() => toggleBuildMode('settlement')}
-                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('settlement')}`}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('settlement')}`}
                                 title="Settlement"
                             >
-                                <Home size={18} />
+                                <Home size={20} />
                             </button>
                              <button
                                 onClick={() => toggleBuildMode('city')}
-                                className={`p-2 rounded-lg transition-all flex items-center justify-center ${isActive('city')}`}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('city')}`}
                                 title="City"
                             >
-                                <Castle size={18} />
+                                <Castle size={20} />
                             </button>
-                             <button
-                                className="p-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center justify-center"
-                                title="Dev Card"
-                            >
-                                <Scroll size={18} />
-                            </button>
+                             {/* Dev Card Button (Placeholder) - maybe hide on mobile to save space if not needed yet? Keeping for consistency but simplified */}
                         </div>
 
                         {/* End Turn */}
                         <button
                             onClick={handleEndTurn}
-                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg shadow transition-all active:scale-95 font-bold text-sm ml-2"
+                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 font-bold text-sm ml-2 whitespace-nowrap"
                         >
                             <span>End</span>
                             <ArrowRight size={16} />

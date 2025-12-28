@@ -32,33 +32,36 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     );
   }
 
-  // Mobile Layout: Vertical Stack
+  // Mobile Layout: Overlay "Map-First"
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-slate-900">
-      {/* Top: Board Area */}
-      <div className="flex-grow relative overflow-hidden h-full">
+    <div className="relative w-full h-full overflow-hidden bg-slate-900">
+      {/* 1. Wallpaper Board: Absolute, Full Screen */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center">
         {board}
       </div>
 
-      {/* Bottom: Controls Stack */}
-      <div className="flex-none z-50 bg-slate-900 border-t border-slate-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        {/* Player Panel (Docked) */}
-        {playerPanel}
+      {/* 2. Top Center Overlay: Player Panel */}
+      <div className="absolute top-4 left-0 right-0 z-10 mx-auto max-w-[95%] pointer-events-none">
+          <div className="pointer-events-auto">
+             {playerPanel}
+          </div>
+      </div>
 
-        {/* Action Bar */}
-        <div className="flex items-center justify-between p-2 px-4 gap-4">
-            {/* Stats Toggle */}
-            <button
-                className="p-3 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95"
-                onClick={() => setShowDashboard(true)}
-                aria-label="Open Stats"
-            >
-                <BarChart2 size={24} />
-            </button>
+      {/* 3. Bottom Floating Action Bar */}
+      <div className="absolute bottom-6 left-4 right-4 z-20 pointer-events-none flex items-center justify-between gap-4">
+         {/* Stats Toggle */}
+          <button
+              className="flex-none p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 pointer-events-auto border border-slate-700 shadow-lg"
+              onClick={() => setShowDashboard(true)}
+              aria-label="Open Stats"
+          >
+              <BarChart2 size={24} />
+          </button>
 
-            {/* Game Controls (Docked) */}
+         {/* Game Controls */}
+         <div className="pointer-events-auto flex-grow">
             {gameControls}
-        </div>
+         </div>
       </div>
 
       {/* Bottom Sheet Overlay (Analyst Panel) */}
