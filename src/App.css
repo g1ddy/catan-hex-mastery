@@ -13,8 +13,8 @@ html, body, #root {
 .app-container {
   display: block;
   background-color: #282c34;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   color: white;
   padding: 0;
   margin: 0;
