@@ -41,3 +41,8 @@
 .instructions {
   margin-top: 10px;
 }
+
+.game-page > div {
+  height: 100%;
+  width: 100%;
+}
