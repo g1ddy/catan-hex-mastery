@@ -10,7 +10,7 @@ export function GamePage() {
   }
 
   return (
-    <div className="app-container game-page">
+    <div className="game-page">
       <GameClient numPlayers={numPlayers} />
     </div>
   );
