@@ -50,6 +50,11 @@ html, body, #root {
   margin-top: 10px;
 }
 
+.game-page {
+  height: 100%;
+  width: 100%;
+}
+
 .game-page > div {
   height: 100%;
   width: 100%;
