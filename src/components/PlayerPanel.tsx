@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GameState, Player } from '../game/types';
-import { Trees, BrickWall, Wheat, Mountain, Cloud, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
 
 interface PlayerPanelProps {
   players: GameState['players'];
@@ -13,53 +13,51 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (variant === 'docked') {
+    // New Overlay Mobile Style
+    // Top-center floating panel. Glassmorphism.
     return (
-      <div className="player-panel-docked w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700 text-slate-100 flex flex-col transition-all">
+      <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl text-slate-100 shadow-xl overflow-hidden transition-all">
         {/* Header / Summary Row */}
-        <div className="flex items-center justify-between p-2 px-4" onClick={() => setIsExpanded(!isExpanded)}>
-             <div className="flex gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                {playerList.map((player: Player) => (
-                    <div key={player.id}
-                        className={`p-1 px-2 rounded border transition-colors flex items-center gap-3 ${player.id === currentPlayerId ? 'border-slate-400 bg-slate-800' : 'border-slate-700 bg-transparent'}`}
-                    >
-                        <div className="flex items-center gap-1 font-bold text-sm">
-                        <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
-                        P{Number(player.id) + 1}
-                        </div>
-                        <div className="text-xs text-slate-300">
-                        VP:{player.victoryPoints}
-                        </div>
-                         <div className="flex gap-1 text-xs items-center opacity-75">
-                             <span className="flex items-center gap-0.5" title="Cards"><Trees size={12}/>{Object.values(player.resources).reduce((a, b) => a + b, 0)}</span>
-                         </div>
-                    </div>
-                ))}
-            </div>
-            <button className="text-slate-400 p-1">
-                {isExpanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
-            </button>
-        </div>
+        <div className="flex items-center justify-between p-2 px-3" onClick={() => setIsExpanded(!isExpanded)}>
+             <div className="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide w-full justify-center">
+                {playerList.map((player: Player) => {
+                    const isActive = player.id === currentPlayerId;
 
-        {/* Expanded Details */}
-        {isExpanded && (
-            <div className="p-4 border-t border-slate-700 grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 duration-200">
-                 {playerList.map((player: Player) => (
-                     <div key={player.id} className="bg-slate-800/50 p-2 rounded-lg">
-                        <div className="flex items-center gap-2 font-bold mb-2 text-sm text-slate-200">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
-                            Player {Number(player.id) + 1}
-                        </div>
-                        <div className="grid grid-cols-3 gap-y-2 gap-x-1 text-xs text-slate-300">
-                             <div className="flex items-center gap-1"><Trees size={12} className="text-green-500" /> {player.resources.wood}</div>
-                             <div className="flex items-center gap-1"><BrickWall size={12} className="text-orange-700" /> {player.resources.brick}</div>
-                             <div className="flex items-center gap-1"><Cloud size={12} className="text-slate-300" /> {player.resources.sheep}</div>
-                             <div className="flex items-center gap-1"><Wheat size={12} className="text-yellow-500" /> {player.resources.wheat}</div>
-                             <div className="flex items-center gap-1"><Mountain size={12} className="text-gray-400" /> {player.resources.ore}</div>
-                        </div>
-                     </div>
-                 ))}
+                    if (isActive) {
+                        // Active Player: Show Compact Resources Row
+                        return (
+                            <div key={player.id} className="flex items-center gap-2 p-1 px-2 rounded bg-slate-800 border border-slate-600">
+                                <div className="flex items-center gap-1 font-bold text-sm text-amber-400">
+                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
+                                    P{Number(player.id) + 1}
+                                </div>
+                                <div className="h-4 w-px bg-slate-600 mx-1"></div>
+                                <div className="flex items-center gap-2 text-xs">
+                                     <span className="flex items-center gap-0.5"><Trees size={12} className="text-green-500" />{player.resources.wood}</span>
+                                     <span className="flex items-center gap-0.5"><BrickWall size={12} className="text-orange-700" />{player.resources.brick}</span>
+                                     <span className="flex items-center gap-0.5"><Cloud size={12} className="text-slate-300" />{player.resources.sheep}</span>
+                                     <span className="flex items-center gap-0.5"><Wheat size={12} className="text-yellow-500" />{player.resources.wheat}</span>
+                                     <span className="flex items-center gap-0.5"><Mountain size={12} className="text-gray-400" />{player.resources.ore}</span>
+                                </div>
+                            </div>
+                        );
+                    } else {
+                        // Opponent: Summary Only
+                         return (
+                            <div key={player.id} className="flex items-center gap-2 p-1 px-2 rounded bg-transparent border border-transparent opacity-75">
+                                <div className="flex items-center gap-1 font-bold text-xs text-slate-300">
+                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
+                                    P{Number(player.id) + 1}
+                                </div>
+                                <div className="text-[10px] text-slate-400">
+                                    VP:{player.victoryPoints} | <Trees size={10} className="inline"/> {Object.values(player.resources).reduce((a, b) => a + b, 0)}
+                                </div>
+                            </div>
+                        );
+                    }
+                })}
             </div>
-        )}
+        </div>
       </div>
     );
   }

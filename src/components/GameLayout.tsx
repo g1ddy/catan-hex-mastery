@@ -41,7 +41,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
       </div>
 
       {/* 2. Top Center Overlay: Player Panel */}
-      <div className="absolute top-4 left-4 right-4 z-10 pointer-events-none flex justify-center">
+      <div className="absolute top-4 left-0 right-0 z-10 mx-auto max-w-[95%] pointer-events-none">
           <div className="pointer-events-auto">
              {playerPanel}
           </div>
