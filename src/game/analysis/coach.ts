@@ -166,12 +166,18 @@ export function getBestSettlementSpots(G: GameState, playerID: string): CoachRec
             // It implies per TYPE.
 
             // So we iterate the unique resources this spot provides.
+            const newResources: string[] = [];
             uniqueResources.forEach(r => {
                 if (!existingResources.has(r)) {
                     score += NEED_BONUS;
-                    reasons.push(`Balances Economy (Added ${r})`);
+                    newResources.push(r);
                 }
             });
+
+            if (newResources.length > 0) {
+                // Sort for deterministic output
+                reasons.push(`Balances Economy (Added ${newResources.sort().join(', ')})`);
+            }
         }
 
         recommendations.push({

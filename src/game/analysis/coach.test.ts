@@ -1,5 +1,5 @@
 import { getBestSettlementSpots } from './coach';
-import { GameState, TerrainType, Player, BoardState } from '../types';
+import { GameState, TerrainType, Player, BoardState, Hex } from '../types';
 
 describe('getBestSettlementSpots', () => {
 
@@ -11,23 +11,16 @@ describe('getBestSettlementSpots', () => {
     const HEX_A_ID = '0,0,0';
     const HEX_B_ID = '1,-1,0';
     const HEX_C_ID = '1,0,-1';
-
-    // Calculate expected vertex ID:
-    // Sorted: 0,0,0 -> 1,-1,0 -> 1,0,-1 (1, -1 comes before 1, 0)
-    // Actually sorting logic: q asc, r asc, s asc.
-    // 0,0,0 (q=0) First.
-    // 1,-1,0 (q=1, r=-1) Second.
-    // 1,0,-1 (q=1, r=0) Third.
     const TARGET_VERTEX_ID = `${HEX_A_ID}::${HEX_B_ID}::${HEX_C_ID}`;
 
+    // Helper to create a partial Mock state using RecursivePartial logic or just explicit Partial
     const createMockState = (
         hexConfig: { id: string, terrain: TerrainType, value: number }[],
         settlementCount: number = 0,
-        firstSettlementResources: string[] = [] // Resources produced by first settlement
+        firstSettlementResources: string[] = []
     ): GameState => {
-        const hexes: any = {};
-
-        // Fill basic map around 0,0,0 to ensure getVerticesForHex finds something
+        // 1. Construct Hexes with correct typing
+        const hexes: Record<string, Hex> = {};
         hexConfig.forEach(h => {
             const [q, r, s] = h.id.split(',').map(Number);
             hexes[h.id] = {
@@ -35,16 +28,17 @@ describe('getBestSettlementSpots', () => {
                 coords: { q, r, s },
                 terrain: h.terrain,
                 tokenValue: h.value
-            };
+            } as Hex;
         });
 
-        // Mock board stats
-        const boardStats: any = {
+        // 2. Mock BoardStats
+        const boardStats = {
             totalPips: {
                 wood: 100, brick: 100, sheep: 100, wheat: 100, ore: 100
             }
         };
 
+        // 3. Construct Player
         const player: Player = {
             id: '0',
             color: 'red',
@@ -54,19 +48,14 @@ describe('getBestSettlementSpots', () => {
             victoryPoints: 0
         };
 
-        // If settlementCount > 0, we need to mock a first settlement.
-        // We'll place it far away to avoid interference, or just assume the 'firstSettlementResources'
-        // implies what the player "produces".
-        // The implementation will look at `player.settlements[0]` and its adjacent hexes.
-        // So we must create a dummy settlement and adjacent hexes for it.
-
+        // 4. Handle First Settlement Mocking
         if (settlementCount > 0) {
-            // Create a dummy settlement at 10,10,10 (far away)
-            const s1Id = '10,10,-20::11,9,-20::10,9,-19'; // Arbitrary valid-ish ID
+            // Create a dummy settlement far away
+            // ID format: h1::h2::h3
+            const s1Id = '10,10,-20::11,9,-20::10,9,-19';
             player.settlements.push(s1Id);
 
-            // We need to ensure the hexes for this settlement exist in G.board.hexes
-            // and have the resources specified in `firstSettlementResources`.
+            // Map resources to terrain
             const s1HexIds = s1Id.split('::');
             const terrainMap: Record<string, TerrainType> = {
                 'wood': TerrainType.Forest,
@@ -78,27 +67,36 @@ describe('getBestSettlementSpots', () => {
 
             s1HexIds.forEach((hid, idx) => {
                 const res = firstSettlementResources[idx];
+                // We must use fake coords that match the ID, although the code just looks up the ID in hexes.
+                // Actually the code splits the ID to get keys for lookup.
+                // So the keys in `hexes` must match `hid`.
+
                 if (res) {
                    hexes[hid] = {
                        id: hid,
-                       coords: { q: 10+idx, r: 10, s: -20-idx }, // Fake coords
+                       coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: terrainMap[res],
                        tokenValue: 2 // 1 pip
-                   };
+                   } as Hex;
                 } else {
-                   // Fill remaining with Desert
                    hexes[hid] = {
                        id: hid,
                        coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: TerrainType.Desert,
                        tokenValue: null
-                   };
+                   } as Hex;
                 }
             });
         }
 
+        // Return a Partial cast to GameState to satisfy the test,
+        // but constructed with more type awareness.
         return {
-            board: { hexes, vertices: {}, edges: {} } as BoardState,
+            board: {
+                hexes,
+                vertices: {},
+                edges: {}
+            } as BoardState,
             players: { '0': player },
             boardStats
         } as unknown as GameState;
@@ -117,18 +115,7 @@ describe('getBestSettlementSpots', () => {
         const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
         expect(target).toBeDefined();
-
-        // Base Pips: 13
-        // Scarcity: 1.0 (Mocked high stats) -> Wait, logic checks < 0.10. 100/500 = 0.2. So Scarcity FALSE.
-        // Diversity: 3 unique -> 1.2x
-        // Synergy: 0 settlements -> Wood+Brick (+2).
-        // Total: (13 * 1.2) + 2 = 15.6 + 2 = 17.6
-
-        // Current implementation (Before changes): 13 + 2 (Synergy) = 15. (No Diversity yet).
-        // This test is EXPECTING the NEW logic.
-        // I will assert the value assuming the code IS changed.
-        // Since I haven't changed code yet, this test will FAIL.
-
+        // (13 * 1.2) + 2 (Synergy) = 17.6
         expect(target?.score).toBeCloseTo(17.6);
         expect(target?.reason).toContain('Diversity Bonus');
     });
@@ -145,11 +132,7 @@ describe('getBestSettlementSpots', () => {
         const results = getBestSettlementSpots(G, '0');
         const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
-        // Base Pips: 13
-        // Diversity: Duplicate -> 1.0x
-        // Synergy: 0 settlements -> No pair (Wood+Wood+Sheep != Wood+Brick). So +0.
-        // Total: 13 * 1.0 + 0 = 13.
-
+        // 13 * 1.0 = 13.
         expect(target?.score).toBeCloseTo(13.0);
         expect(target?.reason).not.toContain('Diversity Bonus');
     });
@@ -175,9 +158,13 @@ describe('getBestSettlementSpots', () => {
         const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
         expect(target?.score).toBeCloseTo(30.6);
-        expect(target?.reason).toContain('Balances Economy');
-        expect(target?.reason).toContain('Added ore');
-        expect(target?.reason).toContain('Added wheat');
+
+        // Expect concise reason string
+        // The list is sorted: ore, sheep, wheat
+        expect(target?.reason).toContain('Balances Economy (Added ore, sheep, wheat)');
+
+        // Verify individual components if needed, but the full string check covers it.
+        // The previous separate checks are no longer valid with the new format.
     });
 
     test('Second Settlement: Should NOT apply static Synergy', () => {
@@ -187,7 +174,6 @@ describe('getBestSettlementSpots', () => {
         // Diversity: Yes (1.2x) -> 15.6.
         // Need Bonus: Wood(+5), Brick(+5), Ore(+5) -> +15. Total 30.6.
         // Static Synergy (Wood+Brick) should NOT apply (+2).
-        // If it did apply: 32.6.
 
         const hexes = [
             { id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 },
@@ -200,6 +186,6 @@ describe('getBestSettlementSpots', () => {
         const results = getBestSettlementSpots(G, '0');
         const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
-        expect(target?.score).toBeCloseTo(30.6); // Not 32.6
+        expect(target?.score).toBeCloseTo(30.6);
     });
 });
