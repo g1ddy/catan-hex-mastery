@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart2, X } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 import { useIsMobile } from '../hooks/useIsMobile';
 import './GameLayout.css';
 
@@ -20,6 +21,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     // assuming they are passed as absolute positioned elements (variant="floating") for desktop.
     return (
       <div className="game-layout-desktop">
+        <Toaster />
         <div className="board-area relative">
             {board}
             {playerPanel}
@@ -35,6 +37,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   // Mobile Layout: Overlay "Map-First"
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
+      <Toaster />
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
       <div className="absolute inset-0 z-0">
         {board}

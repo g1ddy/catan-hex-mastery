@@ -7,6 +7,7 @@ import { NumberToken } from './NumberToken';
 interface GameHexProps {
   hex: Hex;
   onClick: (hex: Hex) => void;
+  isProducing?: boolean;
 }
 
 const TERRAIN_COLORS: Record<TerrainType, string> = {
@@ -30,21 +31,27 @@ const getPipsCount = (num: number): number => {
   return map[num] || 0;
 };
 
-export const GameHex: React.FC<GameHexProps> = ({ hex, onClick }) => {
+export const GameHex: React.FC<GameHexProps> = ({ hex, onClick, isProducing }) => {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 
   return (
-    <Hexagon
-      q={hex.coords.q}
-      r={hex.coords.r}
-      s={hex.coords.s}
-      onClick={() => onClick(hex)}
-      cellStyle={{ fill: color, stroke: 'white', strokeWidth: '0.2' }}
-    >
-       {hex.tokenValue && (
-           <NumberToken value={hex.tokenValue} pips={pips} />
-       )}
-    </Hexagon>
+    <g className={isProducing ? 'animate-pulse' : ''}>
+        <Hexagon
+        q={hex.coords.q}
+        r={hex.coords.r}
+        s={hex.coords.s}
+        onClick={() => onClick(hex)}
+        cellStyle={{
+            fill: color,
+            stroke: isProducing ? '#FFD700' : 'white',
+            strokeWidth: isProducing ? '0.8' : '0.2'
+        }}
+        >
+        {hex.tokenValue && (
+            <NumberToken value={hex.tokenValue} pips={pips} />
+        )}
+        </Hexagon>
+    </g>
   );
 };

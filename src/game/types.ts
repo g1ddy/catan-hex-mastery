@@ -71,6 +71,7 @@ export interface GameState {
   setupPhase: SetupPhaseState;
   setupOrder: string[];
   lastRoll: [number, number];
+  lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
   hasRolled: boolean;
 }
