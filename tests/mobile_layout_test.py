@@ -25,7 +25,7 @@ def run_test():
             sys.exit(1)
 
         print("Waiting for Game Page...")
-        time.sleep(3) # Wait for load
+        page.wait_for_selector('.game-page', timeout=10000) # Wait for the game page to render
 
         # Check SVG 0 details
         print("--- INSPECTING BOARD SVG ---")
