@@ -108,4 +108,4 @@ export const getEdgesForVertex = (vertexId: string): string[] => {
 export const getHexesForVertex = (vertexId: string): string[] => {
     const hexes = parseVertexId(vertexId);
     return hexes.map(h => `${h.q},${h.r},${h.s}`);
-};
+}
