@@ -15,10 +15,20 @@ import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { getBestSettlementSpots } from '../game/analysis/coach';
 
-export interface CatanBoardProps extends BoardProps<GameState> {}
+export interface CatanBoardProps extends BoardProps<GameState> {
+  onPlayerChange?: (playerID: string) => void;
+}
 
-export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
+export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
   const hexes = Object.values(G.board.hexes);
+
+  // Auto-switch Identity in Hotseat Mode
+  React.useEffect(() => {
+    if (onPlayerChange && playerID !== ctx.currentPlayer) {
+      onPlayerChange(ctx.currentPlayer);
+    }
+  }, [ctx.currentPlayer, playerID, onPlayerChange]);
+
   const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
