@@ -107,9 +107,19 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 moves.endTurn();
             };
 
+            const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
+
             if (variant === 'docked') {
                 return (
                      <div className="flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg">
+                         {/* Last Roll Display */}
+                         {lastRollSum > 0 && (
+                             <div className="flex items-center gap-2 mr-1 px-2 py-1 border-r border-slate-700/50">
+                                 <Dice className="text-blue-400" size={20} />
+                                 <span className="text-xl font-bold text-white">{lastRollSum}</span>
+                             </div>
+                         )}
+
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                             <button
@@ -152,6 +162,14 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto max-w-[90vw] z-[100]">
                      {/* Build Menu */}
                     <div className="bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-2xl flex flex-wrap gap-2 justify-end">
+                         {/* Last Roll Display */}
+                         {lastRollSum > 0 && (
+                             <div className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-lg border border-slate-700 text-white mr-2">
+                                 <Dice className="text-blue-400" size={20} />
+                                 <span className="font-bold">{lastRollSum}</span>
+                                 <span className="text-xs text-slate-500">({G.lastRoll[0]}+{G.lastRoll[1]})</span>
+                             </div>
+                         )}
                         <button
                             onClick={() => toggleBuildMode('road')}
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('road')}`}

@@ -26,13 +26,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
 
   const BoardContent = (
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute top-2 left-2 z-10">
-        {G.lastRoll[0] > 0 && (
-          <div className="bg-white p-2 rounded-lg text-slate-900 border border-slate-300 shadow-lg font-bold">
-            Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
-          </div>
-        )}
-      </div>
 
       <HexGrid
         width="100%"
