@@ -139,7 +139,7 @@ export function getBestSettlementSpots(G: GameState, playerID: string): CoachRec
         // 2. Diversity Multiplier
         // Check if resources are unique
         const uniqueResources = new Set(resources);
-        if (uniqueResources.size === 3 && resources.length === 3) {
+        if (uniqueResources.size === 3) {
             score *= DIVERSITY_MULTIPLIER;
             reasons.push('Diversity Bonus');
         }
