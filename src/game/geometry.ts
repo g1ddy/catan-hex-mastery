@@ -15,13 +15,13 @@ export const hexCornerOffset = (index: number, size: number = HEX_SIZE) => {
 
 /**
  * Returns the indices of the two neighbors that share the vertex at the given index.
- * Based on the standard neighbor order:
- * 0: Top-Right (300 deg)
- * 1: Right (0 deg)
- * 2: Bottom-Right (60 deg)
- * 3: Bottom-Left (120 deg)
- * 4: Left (180 deg)
- * 5: Top-Left (240 deg)
+ * Based on the standard neighbor order from `hexUtils.getNeighbors`:
+ * 0: Top-Right
+ * 1: Right
+ * 2: Bottom-Right
+ * 3: Bottom-Left
+ * 4: Left
+ * 5: Top-Left
  *
  * Vertex 0 (Top, 270 deg) is between Top-Left (5) and Top-Right (0).
  * Vertex 1 (Top-Right, 330 deg) is between Top-Right (0) and Right (1).
