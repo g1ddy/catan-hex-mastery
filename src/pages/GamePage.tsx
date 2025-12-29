@@ -14,6 +14,7 @@ export function GamePage() {
       <GameClient
         numPlayers={numPlayers}
         matchID="default"
+        playerID="0"
       />
     </div>
   );
