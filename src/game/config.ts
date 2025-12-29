@@ -35,3 +35,12 @@ export const BUILD_COSTS = {
   settlement: { wood: 1, brick: 1, wheat: 1, sheep: 1 },
   city: { wheat: 2, ore: 3 },
 };
+
+export const PIP_MAP: Record<number, number> = {
+  2: 1, 12: 1,
+  3: 2, 11: 2,
+  4: 3, 10: 3,
+  5: 4, 9: 4,
+  6: 5, 8: 5,
+  7: 0
+};

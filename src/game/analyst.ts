@@ -1,4 +1,6 @@
-import { Hex, BoardStats, TERRAIN_CONFIG } from './types';
+import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from './types';
+import { PIP_MAP } from './config';
+import { parseVertexId } from './hexUtils';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;
@@ -12,15 +14,6 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
     sheep: 0,
     wheat: 0,
     ore: 0
-  };
-
-  const PIP_MAP: Record<number, number> = {
-    2: 1, 12: 1,
-    3: 2, 11: 2,
-    4: 3, 10: 3,
-    5: 4, 9: 4,
-    6: 5, 8: 5,
-    7: 0 // Should not be on a resource hex usually, but for completeness
   };
 
   let totalBoardPips = 0;
@@ -63,4 +56,46 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
     fairnessScore: Math.max(0, fairnessScore),
     warnings
   };
+}
+
+export function calculatePlayerPotentialPips(G: GameState): Record<string, Record<string, number>> {
+    const result: Record<string, Record<string, number>> = {};
+
+    Object.values(G.players).forEach(player => {
+        const playerPips: Record<string, number> = {
+            wood: 0,
+            brick: 0,
+            sheep: 0,
+            wheat: 0,
+            ore: 0
+        };
+
+        // Find all vertices owned by player
+        Object.entries(G.board.vertices).forEach(([vId, vertex]) => {
+            if (vertex.owner === player.id) {
+                // Determine multiplier
+                const multiplier = vertex.type === 'city' ? 2 : 1;
+
+                // Get adjacent hexes
+                const adjacentHexCoords = parseVertexId(vId);
+
+                adjacentHexCoords.forEach(coord => {
+                    const hexId = `${coord.q},${coord.r},${coord.s}`;
+                    const hex = G.board.hexes[hexId];
+
+                    if (hex && hex.tokenValue && hex.terrain) {
+                        const resource = TERRAIN_CONFIG[hex.terrain];
+                        if (resource) {
+                            const pips = (PIP_MAP[hex.tokenValue] || 0) * multiplier;
+                            playerPips[resource] = (playerPips[resource] || 0) + pips;
+                        }
+                    }
+                });
+            }
+        });
+
+        result[player.id] = playerPips;
+    });
+
+    return result;
 }

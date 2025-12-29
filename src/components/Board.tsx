@@ -98,6 +98,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
       dashboard={
         <AnalystPanel
           stats={G.boardStats}
+          G={G}
           onRegenerate={() => moves.regenerateBoard()}
           showRegenerate={ctx.phase === 'setup'}
         />
