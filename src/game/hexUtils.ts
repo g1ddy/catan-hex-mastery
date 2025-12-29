@@ -1,4 +1,5 @@
 import { CubeCoordinates } from './types';
+import { getVertexNeighborIndices } from './geometry';
 
 export const getNeighbors = (coords: CubeCoordinates): CubeCoordinates[] => {
   const directions = [
@@ -50,8 +51,9 @@ export const getVerticesForHex = (coords: CubeCoordinates): string[] => {
   const neighbors = getNeighbors(coords);
   const vertices: string[] = [];
   for (let i = 0; i < 6; i++) {
-    const n1 = neighbors[i];
-    const n2 = neighbors[(i + 1) % 6];
+    const [n1Index, n2Index] = getVertexNeighborIndices(i);
+    const n1 = neighbors[n1Index];
+    const n2 = neighbors[n2Index];
     vertices.push(getVertexId(coords, n1, n2));
   }
   return vertices;
@@ -102,3 +104,8 @@ export const getEdgesForVertex = (vertexId: string): string[] => {
         getEdgeId(hexes[2], hexes[0])
     ];
 };
+
+export const getHexesForVertex = (vertexId: string): string[] => {
+    const hexes = parseVertexId(vertexId);
+    return hexes.map(h => `${h.q},${h.r},${h.s}`);
+}

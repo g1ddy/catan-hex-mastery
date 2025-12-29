@@ -5,6 +5,7 @@ import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
 import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge } from '../game/hexUtils';
+import { hexCornerOffset } from '../game/geometry';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
@@ -143,13 +144,8 @@ const HexOverlays = ({
     };
 
     const size = 8;
-    const corners = Array.from({ length: 6 }, (_, i) => 30 + i * 60).map(angle => {
-        const rad = (angle * Math.PI) / 180;
-        return {
-            x: size * Math.cos(rad),
-            y: size * Math.sin(rad)
-        };
-    });
+    // Use the centralized geometry
+    const corners = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i, size));
 
     const vertices = getVerticesForHex(hex.coords);
     const edges = getEdgesForHex(hex.coords);
