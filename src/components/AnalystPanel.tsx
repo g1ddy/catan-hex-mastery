@@ -1,18 +1,23 @@
 import React from 'react';
-import { BoardStats } from '../game/types';
+import { BoardStats, GameState } from '../game/types';
+import { calculatePlayerPotentialPips } from '../game/analyst';
+import { ResourceIconRow } from './ResourceIconRow';
 
 interface AnalystPanelProps {
   stats: BoardStats;
   onRegenerate?: () => void;
   showRegenerate?: boolean;
+  G?: GameState;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate }) => {
+const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate, G }) => {
   const getFairnessColorClass = (score: number) => {
     if (score >= 90) return 'text-green-400';
     if (score >= 70) return 'text-orange-400';
     return 'text-red-400';
   };
+
+  const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
 
   return (
     <div className="text-slate-100 h-full">
@@ -24,6 +29,23 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
           </button>
         )}
       </div>
+
+      {playerPotentials && G && (
+        <div className="mb-5">
+            <h3 className="text-lg font-semibold mb-2">Player Production Potential</h3>
+            <div className="flex flex-col gap-2">
+                {Object.values(G.players).map(player => (
+                    <div key={player.id} className="bg-slate-800 p-2 rounded border border-slate-700">
+                        <div className="flex items-center gap-2 font-bold text-sm mb-1">
+                             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
+                             Player {Number(player.id) + 1}
+                        </div>
+                        <ResourceIconRow resources={playerPotentials[player.id]} size="sm" />
+                    </div>
+                ))}
+            </div>
+        </div>
+      )}
 
       <div className="mb-5">
         <h3 className="text-lg font-semibold mb-2">Fairness Score</h3>

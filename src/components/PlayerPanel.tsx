@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GameState, Player } from '../game/types';
-import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
+import { Trees } from 'lucide-react';
+import { ResourceIconRow } from './ResourceIconRow';
 
 interface PlayerPanelProps {
   players: GameState['players'];
@@ -32,13 +33,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                                     P{Number(player.id) + 1}
                                 </div>
                                 <div className="h-4 w-px bg-slate-600 mx-1"></div>
-                                <div className="flex items-center gap-2 text-xs">
-                                     <span className="flex items-center gap-0.5"><Trees size={12} className="text-green-500" />{player.resources.wood}</span>
-                                     <span className="flex items-center gap-0.5"><BrickWall size={12} className="text-orange-700" />{player.resources.brick}</span>
-                                     <span className="flex items-center gap-0.5"><Cloud size={12} className="text-slate-300" />{player.resources.sheep}</span>
-                                     <span className="flex items-center gap-0.5"><Wheat size={12} className="text-yellow-500" />{player.resources.wheat}</span>
-                                     <span className="flex items-center gap-0.5"><Mountain size={12} className="text-gray-400" />{player.resources.ore}</span>
-                                </div>
+                                <ResourceIconRow resources={player.resources} size="sm" />
                             </div>
                         );
                     } else {
@@ -79,26 +74,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
               VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
             </div>
             <div className="flex gap-3 text-sm mt-2 items-center">
-              <div title="Wood" className="flex items-center gap-1">
-                <Trees size={16} className="text-green-500" />
-                <span>{player.resources.wood}</span>
-              </div>
-              <div title="Brick" className="flex items-center gap-1">
-                <BrickWall size={16} className="text-orange-700" />
-                <span>{player.resources.brick}</span>
-              </div>
-              <div title="Sheep" className="flex items-center gap-1">
-                <Cloud size={16} className="text-slate-300" />
-                <span>{player.resources.sheep}</span>
-              </div>
-              <div title="Wheat" className="flex items-center gap-1">
-                <Wheat size={16} className="text-yellow-500" />
-                <span>{player.resources.wheat}</span>
-              </div>
-              <div title="Ore" className="flex items-center gap-1">
-                <Mountain size={16} className="text-gray-400" />
-                <span>{player.resources.ore}</span>
-              </div>
+              <ResourceIconRow resources={player.resources} size="md" />
             </div>
           </div>
         ))}
