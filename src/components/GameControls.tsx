@@ -107,7 +107,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 moves.endTurn();
             };
 
-            const lastRollSum = G.lastRoll ? G.lastRoll[0] + G.lastRoll[1] : 0;
+            const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
 
             if (variant === 'docked') {
                 return (
