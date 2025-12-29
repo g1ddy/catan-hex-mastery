@@ -34,6 +34,7 @@ export const BUILD_COSTS = {
   road: { wood: 1, brick: 1 },
   settlement: { wood: 1, brick: 1, wheat: 1, sheep: 1 },
   city: { wheat: 2, ore: 3 },
+  devCard: { ore: 1, wheat: 1, sheep: 1 },
 };
 
 export const PIP_MAP: Record<number, number> = {
