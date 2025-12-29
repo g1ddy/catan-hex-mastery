@@ -78,8 +78,8 @@ export const CatanGame: Game<GameState> = {
       players,
       setupPhase: {
         activeRound: 1,
+        activeSettlement: null,
       },
-      lastPlacedSettlement: null,
       setupOrder: getSnakeDraftOrder(numPlayers),
       lastRoll: [0, 0],
       boardStats,

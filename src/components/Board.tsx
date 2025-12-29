@@ -289,7 +289,7 @@ const HexOverlays = ({
                      if (currentStage === 'placeRoad' && !isOccupied) {
                          // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
-                            const isConnected = G.lastPlacedSettlement && getEdgesForVertex(G.lastPlacedSettlement).includes(eId);
+                            const isConnected = G.setupPhase.activeSettlement && getEdgesForVertex(G.setupPhase.activeSettlement).includes(eId);
                             if (isConnected) {
                                 isClickable = true;
                                 isGhost = true;
