@@ -19,7 +19,7 @@ def verify_dev_tools():
         # Increase timeout just in case
         try:
              dev_tools.wait_for(state="visible", timeout=5000)
-        except:
+        except TimeoutError:
              print("Dev Mode indicator not found!")
              page.screenshot(path="verification/failed_no_dev_tools.png")
              browser.close()
@@ -45,7 +45,7 @@ def verify_dev_tools():
 
         # Verify P1 is active (visual check via screenshot mostly, but we can check class)
         # The active button has bg-blue-600
-        page.wait_for_timeout(500) # Wait for React state update
+        page.wait_for_selector("button:has-text('P1')[class*='bg-blue-600']") # Wait for P1 to be active
         page.screenshot(path="verification/dev_tools_p1.png")
 
         browser.close()
