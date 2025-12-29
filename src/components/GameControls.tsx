@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameState } from '../game/types';
+import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
@@ -99,12 +99,15 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         if (G.hasRolled || stage === 'action') {
             const resources = G.players[ctx.currentPlayer].resources;
 
-            const canAffordRoad = resources.wood >= BUILD_COSTS.road.wood && resources.brick >= BUILD_COSTS.road.brick;
-            const canAffordSettlement = resources.wood >= BUILD_COSTS.settlement.wood &&
-                                        resources.brick >= BUILD_COSTS.settlement.brick &&
-                                        resources.wheat >= BUILD_COSTS.settlement.wheat &&
-                                        resources.sheep >= BUILD_COSTS.settlement.sheep;
-            const canAffordCity = resources.wheat >= BUILD_COSTS.city.wheat && resources.ore >= BUILD_COSTS.city.ore;
+            const canAfford = (cost: Partial<Resources>): boolean => {
+                return (Object.keys(cost) as Array<keyof Resources>).every(
+                    resource => resources[resource] >= (cost[resource] || 0)
+                );
+            };
+
+            const canAffordRoad = canAfford(BUILD_COSTS.road);
+            const canAffordSettlement = canAfford(BUILD_COSTS.settlement);
+            const canAffordCity = canAfford(BUILD_COSTS.city);
 
             // Helper to generate class string based on affordability and active state
             const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
