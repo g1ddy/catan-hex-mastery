@@ -24,8 +24,7 @@ describe('Gameplay Moves', () => {
                     victoryPoints: 0
                 }
             },
-            setupPhase: { activeRound: 1 },
-            lastPlacedSettlement: null,
+            setupPhase: { activeRound: 1, activeSettlement: null },
             setupOrder: ['0'],
             lastRoll: [0, 0],
             boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },

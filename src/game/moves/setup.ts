@@ -21,7 +21,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
-  G.lastPlacedSettlement = vertexId;
+  G.setupPhase.activeSettlement = vertexId;
 
   // Resource Grant (Round 2 Only)
   // Check if this is the second settlement for this player
@@ -68,12 +68,12 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   }
 
   // 2. Validation: Connection
-  // Must connect to G.lastPlacedSettlement
-  if (!G.lastPlacedSettlement) {
+  // Must connect to G.setupPhase.activeSettlement
+  if (!G.setupPhase.activeSettlement) {
       return 'INVALID_MOVE'; // Should not happen in flow
   }
 
-  const connectedEdges = getEdgesForVertex(G.lastPlacedSettlement);
+  const connectedEdges = getEdgesForVertex(G.setupPhase.activeSettlement);
   if (!connectedEdges.includes(edgeId)) {
       return 'INVALID_MOVE';
   }
@@ -81,7 +81,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   // Execution
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
   G.players[ctx.currentPlayer].roads.push(edgeId);
-  G.lastPlacedSettlement = null; // Reset
+  G.setupPhase.activeSettlement = null; // Reset
 
   // State Transition
   if (events && events.endTurn) {

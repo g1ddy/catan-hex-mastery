@@ -50,6 +50,7 @@ export interface Player {
 
 export interface SetupPhaseState {
   activeRound: 1 | 2;
+  activeSettlement: string | null;
 }
 
 export interface BoardState {
@@ -68,7 +69,6 @@ export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
   setupPhase: SetupPhaseState;
-  lastPlacedSettlement: string | null;
   setupOrder: string[];
   lastRoll: [number, number];
   boardStats: BoardStats;
