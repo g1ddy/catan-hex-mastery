@@ -7,6 +7,7 @@ interface GameClientProps {
   numPlayers: number;
   playerID?: string;
   matchID?: string;
+  onPlayerChange?: (playerID: string) => void;
 }
 
 export const GameClient = Client({
