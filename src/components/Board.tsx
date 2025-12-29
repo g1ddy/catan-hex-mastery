@@ -158,7 +158,12 @@ const HexOverlays = ({
             {/* VERTICES */}
             {corners.map((corner, i) => {
                 const vId = vertices[i];
-                const primaryHex = vId.split('::')[0];
+                // Fix: Find the first hex ID in the vertex key that actually exists on the board.
+                // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
+                // which would cause the vertex to not render at all.
+                const potentialOwners = vId.split('::');
+                const primaryHex = potentialOwners.find(id => G.board.hexes[id]) || potentialOwners[0];
+
                 if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
 
                 const vertex = G.board.vertices[vId];
@@ -267,7 +272,10 @@ const HexOverlays = ({
             {/* EDGES */}
             {corners.map((corner, i) => {
                 const eId = edges[i];
-                const primaryHex = eId.split('::')[0];
+                // Fix: Find the first hex ID in the edge key that actually exists on the board.
+                const potentialOwners = eId.split('::');
+                const primaryHex = potentialOwners.find(id => G.board.hexes[id]) || potentialOwners[0];
+
                 if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
 
                 const nextCorner = corners[(i + 1) % 6];
