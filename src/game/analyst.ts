@@ -1,6 +1,6 @@
 import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from './types';
 import { PIP_MAP } from './config';
-import { parseVertexId } from './hexUtils';
+import { getHexesForVertex } from './hexUtils';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;
@@ -76,11 +76,10 @@ export function calculatePlayerPotentialPips(G: GameState): Record<string, Recor
                 // Determine multiplier
                 const multiplier = vertex.type === 'city' ? 2 : 1;
 
-                // Get adjacent hexes
-                const adjacentHexCoords = parseVertexId(vId);
+                // Get adjacent hexes using the geometry-aware helper
+                const adjacentHexIds = getHexesForVertex(vId);
 
-                adjacentHexCoords.forEach(coord => {
-                    const hexId = `${coord.q},${coord.r},${coord.s}`;
+                adjacentHexIds.forEach(hexId => {
                     const hex = G.board.hexes[hexId];
 
                     if (hex && hex.tokenValue && hex.terrain) {
