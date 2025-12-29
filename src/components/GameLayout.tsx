@@ -36,7 +36,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center">
+      <div className="absolute inset-0 z-0">
         {board}
       </div>
 

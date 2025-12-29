@@ -49,6 +49,7 @@ We are currently working on **Phase 5: UI/UX Polish**, prioritizing readability 
     *   **Mandatory TDD**: Write tests *before* or *alongside* your implementation.
     *   **Coverage**: Every phase must have comprehensive unit tests.
     *   **Verification**: You must verify your code by running tests before marking a task as complete.
+    *   **UI/Visual Verification**: When working on UI/UX, you **must** use Playwright scripts to generate visual confirmation (screenshots and DOM dumps). Never assume a layout works based on code analysis alone.
 
 ### 2. Strategic Context
 When implementing logic, remember the "Why".
@@ -60,6 +61,28 @@ When implementing logic, remember the "Why".
 *   **Reflect**: Before implementing a rule, ask: "Does this match the expert analysis in the strategy text?"
 *   **Test**: Did you write a test for that edge case? (e.g., Can a player build a road through an opponent's settlement? No. Test it.)
 
+## ⚠️ Lessons Learned & Troubleshooting
+*   **React-Hexgrid vs Tailwind**: The `react-hexgrid` library automatically adds `class="grid"` to its root SVG. Tailwind CSS interprets `.grid` as `display: grid`. This conflict causes the SVG to collapse to 0 height in some layouts. **Fix:** Use a global CSS override (e.g., in `index.css`) to enforce `svg.grid { display: block !important; }`.
+*   **Mobile Height Inheritance**: To ensure full-screen layouts on mobile, the entire DOM chain from `html` -> `body` -> `#root` -> `.game-page` -> `GameClient` -> `Board` must have explicit `height: 100%` (or `h-full`). If one link is missing (e.g., `.game-page` defaulting to `height: auto`), `height: 100%` on children will resolve to 0.
+
 ## "Source of Truth" Files
 *   `README.md`: The roadmap and high-level goals.
 *   `Catan Strategy and Starting Rules.txt`: The rulebook and strategic engine logic.
+
+## Verification
+### Mobile Layout Verification
+To verify the mobile layout rendering (and ensure the SVG board is visible and properly sized), use the Playwright script `tests/mobile_layout_test.py`.
+
+```bash
+# Ensure playwright is installed
+pip install playwright
+playwright install chromium
+
+# Run the test (ensure dev server is running on :5173)
+python3 tests/mobile_layout_test.py
+```
+
+This test checks:
+1.  Background color (dark slate-900).
+2.  Board visibility (SVG dimensions > 0 and `display: block`).
+3.  Controls visibility.

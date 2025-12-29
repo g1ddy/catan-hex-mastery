@@ -13,7 +13,6 @@ import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { getBestSettlementSpots } from '../game/analysis/coach';
-import './Board.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {}
 
@@ -25,16 +24,20 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves }) => {
   const isMobile = useIsMobile();
 
   const BoardContent = (
-    <div className="board-container">
-      <div className="board-controls">
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute top-2 left-2 z-10">
         {G.lastRoll[0] > 0 && (
-          <div className="last-roll">
+          <div className="bg-white p-2 rounded-lg text-slate-900 border border-slate-300 shadow-lg font-bold">
             Last Roll: {G.lastRoll[0]} + {G.lastRoll[1]} = {G.lastRoll[0] + G.lastRoll[1]}
           </div>
         )}
       </div>
 
-      <HexGrid width="100%" height="100%" viewBox={viewBox}>
+      <HexGrid
+        width="100%"
+        height="100%"
+        viewBox={viewBox}
+      >
         <Layout
           size={BOARD_CONFIG.HEX_SIZE}
           flat={false}
