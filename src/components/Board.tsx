@@ -153,16 +153,20 @@ const HexOverlays = ({
     const vertices = getVerticesForHex(hex.coords);
     const edges = getEdgesForHex(hex.coords);
 
+    const getPrimaryHexOwner = (id: string): string => {
+        const potentialOwners = id.split('::');
+        // Fix: Find the first hex ID in the key that actually exists on the board.
+        // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
+        // which would cause the element to not render at all.
+        return potentialOwners.find(ownerId => G.board.hexes[ownerId]) || potentialOwners[0];
+    };
+
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
             {corners.map((corner, i) => {
                 const vId = vertices[i];
-                // Fix: Find the first hex ID in the vertex key that actually exists on the board.
-                // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
-                // which would cause the vertex to not render at all.
-                const potentialOwners = vId.split('::');
-                const primaryHex = potentialOwners.find(id => G.board.hexes[id]) || potentialOwners[0];
+                const primaryHex = getPrimaryHexOwner(vId);
 
                 if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
 
@@ -272,9 +276,7 @@ const HexOverlays = ({
             {/* EDGES */}
             {corners.map((corner, i) => {
                 const eId = edges[i];
-                // Fix: Find the first hex ID in the edge key that actually exists on the board.
-                const potentialOwners = eId.split('::');
-                const primaryHex = potentialOwners.find(id => G.board.hexes[id]) || potentialOwners[0];
+                const primaryHex = getPrimaryHexOwner(eId);
 
                 if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
 
