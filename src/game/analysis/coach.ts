@@ -9,7 +9,9 @@ interface CoachRecommendation {
 
 const SCARCITY_THRESHOLD = 0.10;
 const SCARCITY_MULTIPLIER = 1.2;
+const DIVERSITY_MULTIPLIER = 1.2;
 const SYNERGY_BONUS = 2;
+const NEED_BONUS = 5;
 
 const TERRAIN_TO_RESOURCE: Record<string, string> = {
     'Forest': 'wood',
@@ -19,10 +21,11 @@ const TERRAIN_TO_RESOURCE: Record<string, string> = {
     'Mountains': 'ore'
 };
 
-export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRecommendation[] {
+export function getBestSettlementSpots(G: GameState, playerID: string): CoachRecommendation[] {
     const recommendations: CoachRecommendation[] = [];
     const hexes = G.board.hexes;
     const vertices = G.board.vertices;
+    const player = G.players[playerID];
 
     // Helper to get pips for a number
     const getPips = (num: number): number => {
@@ -49,9 +52,30 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
         });
     }
 
-    // Identify all valid spots (simplified: check all vertices, then filter by validity)
-    // Since we don't have a direct "valid vertices" list, we iterate all hex corners.
-    // To avoid duplicates, we use a Set.
+    // Determine current phase/needs for Synergy
+    const settlementCount = player.settlements.length;
+    const existingResources = new Set<string>();
+
+    if (settlementCount === 1) {
+        // Collect resources from the first settlement
+        const s1VId = player.settlements[0];
+        // The vertex ID might be stored. We need to parse it to find adjacent hexes.
+        // We can reuse getHexesForVertex or parse manually.
+        // Assuming hexUtils exports or we replicate logic.
+        // Since getHexesForVertex returns IDs, we can look them up.
+        // But getHexesForVertex is not imported. I'll need to update imports or parse manually.
+        // Actually, vertexID is "h1::h2::h3".
+
+        const s1HexIds = s1VId.split('::');
+        s1HexIds.forEach(hid => {
+            const h = hexes[hid];
+            if (h && h.terrain && TERRAIN_TO_RESOURCE[h.terrain]) {
+                 existingResources.add(TERRAIN_TO_RESOURCE[h.terrain]);
+            }
+        });
+    }
+
+    // Identify all valid spots
     const candidates = new Set<string>();
     Object.values(hexes).forEach(hex => {
         const vs = getVerticesForHex(hex.coords);
@@ -63,9 +87,6 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
         if (vertices[vId]) return;
 
         // Skip if too close to another building (Distance Rule)
-        // Note: The caller (Board.tsx) usually handles validity, but for Coach we need to pre-filter.
-        // We replicate the 'isTooClose' logic here or rely on the visual highlighter to filter final display.
-        // For performance, we'll do a quick check.
         const occupied = Object.keys(vertices);
         let tooClose = false;
         const thisV = vId.split('::');
@@ -84,7 +105,6 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
         if (tooClose) return;
 
         // Score the vertex
-        let score = 0;
         let pips = 0;
         const resources: string[] = [];
 
@@ -102,10 +122,11 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
             }
         });
 
-        score = pips;
+        // Base Score = Pips
+        let score = pips;
         const reasons: string[] = [`${pips} Pips`];
 
-        // Apply Scarcity
+        // 1. Scarcity Multiplier
         let hasScarcity = false;
         resources.forEach(r => {
             if (scarcityMap[r]) hasScarcity = true;
@@ -115,15 +136,42 @@ export function getBestSettlementSpots(G: GameState, _playerID: string): CoachRe
             reasons.push('Scarcity Bonus');
         }
 
-        // Apply Synergy
-        const hasWood = resources.includes('wood');
-        const hasBrick = resources.includes('brick');
-        const hasOre = resources.includes('ore');
-        const hasWheat = resources.includes('wheat');
+        // 2. Diversity Multiplier
+        // Check if resources are unique
+        const uniqueResources = new Set(resources);
+        if (uniqueResources.size === 3 && resources.length === 3) {
+            score *= DIVERSITY_MULTIPLIER;
+            reasons.push('Diversity Bonus');
+        }
 
-        if ((hasWood && hasBrick) || (hasOre && hasWheat)) {
-            score += SYNERGY_BONUS;
-            reasons.push('Synergy');
+        // 3. Synergy / Needs
+        if (settlementCount === 0) {
+            // Static Synergy
+            const hasWood = resources.includes('wood');
+            const hasBrick = resources.includes('brick');
+            const hasOre = resources.includes('ore');
+            const hasWheat = resources.includes('wheat');
+
+            if ((hasWood && hasBrick) || (hasOre && hasWheat)) {
+                score += SYNERGY_BONUS;
+                reasons.push('Synergy');
+            }
+        } else if (settlementCount === 1) {
+            // "One of Everything" Logic
+            // For each resource this spot provides...
+            // Note: If duplicate types in this spot (e.g. 2 Ore), do we add +5 twice if we need Ore?
+            // Clarification was: "+5 points PER missing resource type acquired."
+            // "A spot with Ore gets +5."
+            // "A spot with Ore AND Wheat gets +10."
+            // It implies per TYPE.
+
+            // So we iterate the unique resources this spot provides.
+            uniqueResources.forEach(r => {
+                if (!existingResources.has(r)) {
+                    score += NEED_BONUS;
+                    reasons.push(`Balances Economy (Added ${r})`);
+                }
+            });
         }
 
         recommendations.push({
