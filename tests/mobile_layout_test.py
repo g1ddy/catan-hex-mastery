@@ -1,4 +1,5 @@
 import time
+import sys
 from playwright.sync_api import sync_playwright
 
 def run_test():
@@ -21,27 +22,17 @@ def run_test():
         except Exception as e:
             print(f"Setup failed: {e}")
             browser.close()
-            return
+            sys.exit(1)
 
         print("Waiting for Game Page...")
         time.sleep(3) # Wait for load
 
-        # Hide debug panel
-        page.evaluate("""
-            const elements = document.querySelectorAll('div');
-            for (const el of elements) {
-                if (el.innerText && (el.innerText.includes('CONTROLS') || el.innerText.includes('PLAYERS')) && el.style.position === 'fixed') {
-                    el.style.display = 'none';
-                }
-            }
-        """)
-
         # Check SVG 0 details
-        print("--- DEBUGGING SVG 0 ---")
+        print("--- INSPECTING BOARD SVG ---")
         debug_info = page.evaluate("""
             () => {
                 const svg = document.querySelector('svg.grid');
-                if (!svg) return "SVG.grid not found";
+                if (!svg) return null;
 
                 const style = window.getComputedStyle(svg);
                 const rect = svg.getBoundingClientRect();
@@ -56,8 +47,26 @@ def run_test():
                 };
             }
         """)
-        print(debug_info)
 
+        print(f"SVG Info: {debug_info}")
+
+        if not debug_info:
+            print("FAIL: SVG.grid not found.")
+            browser.close()
+            sys.exit(1)
+
+        # Assertions
+        if debug_info['height'] < 500:
+            print(f"FAIL: Board height too small ({debug_info['height']}px). Expected > 500px.")
+            browser.close()
+            sys.exit(1)
+
+        if debug_info['computedDisplay'] == 'grid':
+            print("FAIL: Display is 'grid' (Tailwind conflict not resolved).")
+            browser.close()
+            sys.exit(1)
+
+        print("PASS: Board SVG is visible, has correct display mode, and fills screen height.")
         browser.close()
 
 if __name__ == "__main__":
