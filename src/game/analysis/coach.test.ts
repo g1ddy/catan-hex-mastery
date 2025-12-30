@@ -328,7 +328,7 @@ describe('getBestSettlementSpots', () => {
             ];
             const G = createMockState(hexes);
             // Occupy the target
-            G.board.vertices[TARGET_VERTEX_ID] = { id: TARGET_VERTEX_ID, owner: '1' } as any;
+            G.board.vertices[TARGET_VERTEX_ID] = { owner: '1', type: 'settlement' };
 
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
@@ -348,7 +348,7 @@ describe('getBestSettlementSpots', () => {
             // Target: A::B::C
             // Neighbor: A::B::D (shares A and B).
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
-            G.board.vertices[neighborID] = { id: neighborID, owner: '1' } as any;
+            G.board.vertices[neighborID] = { owner: '1', type: 'settlement' };
 
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
