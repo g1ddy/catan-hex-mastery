@@ -11,52 +11,59 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 2. Setup Phase: Click "Begin Placement" to enter placing mode
   await page.getByRole('button', { name: 'Begin Placement' }).click();
 
-  // 3. Enable Coach Mode
-  // Based on AnalystPanel.tsx:
-  // <div ...>Coach Mode</span> <label ...><input type="checkbox" .../></label>
-  // The label wraps the input, but the text "Coach Mode" is in a sibling span.
-  // We can target the input inside a label that is a sibling of "Coach Mode" text,
-  // OR just find the checkbox on the page (there's only one toggle).
-  // But to be safe:
+  // 3. Verify Default State (Coach Mode OFF / Minimal View)
   const coachToggle = page.locator('input[type="checkbox"]').first();
+  await expect(coachToggle).not.toBeChecked();
 
-  // Ensure it is checked (default is true in Board.tsx)
-  await expect(coachToggle).toBeChecked();
-
-  // 4. Verify Heatmap Elements
+  // 4. Verify Heatmap Classes
   const highlights = page.locator('.coach-highlight');
+  await expect(highlights.first()).toBeAttached();
+  const totalCount = await highlights.count();
+  console.log(`Found ${totalCount} total coach highlights`);
+  expect(totalCount).toBeGreaterThan(10);
 
-  // Wait for the first highlight to be visible.
-  await expect(highlights.first()).toBeVisible();
+  // Helper function to count classes
+  const countClasses = async () => {
+    let op100 = 0;
+    let op0 = 0;
+    for (let i = 0; i < totalCount; i++) {
+      const el = highlights.nth(i);
+      const classString = await el.getAttribute('class');
+      const classList = classString ? classString.split(' ') : [];
+      if (classList.includes('opacity-100')) op100++;
+      if (classList.includes('opacity-0')) op0++;
+    }
+    return { op100, op0 };
+  };
 
-  const count = await highlights.count();
-  console.log(`Found ${count} coach highlights`);
-  expect(count).toBeGreaterThan(10);
+  let counts = await countClasses();
+  console.log(`Default State - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
 
-  // 5. Verify Top 3 Highlighting
-  // Structure: <g class="coach-highlight"> <circle stroke="#FFD700" ... /> </g>
-  const top3 = page.locator('.coach-highlight circle[stroke="#FFD700"]');
-  const top3Count = await top3.count();
-  console.log(`Found ${top3Count} top 3 highlights`);
+  // Default assertions
+  expect(counts.op100).toBeGreaterThanOrEqual(1);
+  expect(counts.op100).toBeLessThanOrEqual(5);
+  expect(counts.op0).toBeGreaterThan(5);
+  expect(counts.op0 + counts.op100).toBe(totalCount);
 
-  expect(top3Count).toBeGreaterThanOrEqual(1);
-  expect(top3Count).toBeLessThanOrEqual(3);
-
-  // 6. Test Toggle OFF
-  // Playwright's `uncheck` works on inputs.
-  // Since the input has `class="sr-only"`, Playwright might complain about actionability.
-  // We should force click it or click the label.
+  // 5. Test Toggle ON (Full Mode)
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
-
-  // Wait for render
   await page.waitForTimeout(500);
 
-  const highlightsAfterOff = page.locator('.coach-highlight');
-  expect(await highlightsAfterOff.count()).toBe(0);
+  counts = await countClasses();
+  console.log(`After Toggle ON - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
 
-  // 7. Test Toggle ON again
+  expect(counts.op100).toBe(totalCount);
+  expect(counts.op0).toBe(0);
+
+  // 6. Test Toggle OFF again
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
   await page.waitForTimeout(500);
 
-  expect(await page.locator('.coach-highlight').count()).toBeGreaterThan(10);
+  counts = await countClasses();
+  console.log(`After Toggle OFF - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
+
+  // Should return to default state
+  expect(counts.op100).toBeGreaterThanOrEqual(1);
+  expect(counts.op100).toBeLessThanOrEqual(5);
+  expect(counts.op0).toBeGreaterThan(5);
 });
