@@ -14,7 +14,7 @@ import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
-import { getBestSettlementSpots, CoachRecommendation } from '../game/analysis/coach';
+import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -68,7 +68,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const isMobile = useIsMobile();
 
   const BoardContent = (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="board absolute inset-0 overflow-hidden">
         {/* Tooltip for Coach Mode */}
         <Tooltip
             id="coach-tooltip"
@@ -198,8 +198,8 @@ const HexOverlays = ({
     showCoachMode: boolean
 }) => {
     // Coach Recommendations / Heatmap Scores
-    const { scores, minScore, maxScore } = React.useMemo(() => {
-        if (!showCoachMode) return { scores: [], minScore: 0, maxScore: 0 };
+    const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
+        if (!showCoachMode) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
 
         // Active when placing settlement in Setup OR Gameplay
         const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
@@ -207,16 +207,20 @@ const HexOverlays = ({
 
         if (isSetupPlacing || isGamePlacing) {
             const allScores = getAllSettlementScores(G, ctx.currentPlayer);
-            if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0 };
+            if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
 
             const vals = allScores.map(s => s.score);
+            const sorted = [...allScores].sort((a, b) => b.score - a.score);
+            const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+
             return {
                 scores: allScores,
                 minScore: Math.min(...vals),
-                maxScore: Math.max(...vals)
+                maxScore: Math.max(...vals),
+                top3Set: new Set(top3Ids)
             };
         }
-        return { scores: [], minScore: 0, maxScore: 0 };
+        return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
     }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer, showCoachMode]);
 
     const isTooClose = (vertexId: string) => {
@@ -269,11 +273,10 @@ const HexOverlays = ({
 
                 let isClickable = false;
                 let isGhost = false;
-                let isRecommended = false; // "Recommended" now implies Heatmap visibility
-                let recommendationReason = "";
-                let heatmapColor = "";
                 let isRecommended = false;
                 let recommendationData: CoachRecommendation | undefined;
+                let heatmapColor = "";
+                let isTop3 = false;
                 let clickAction = () => {};
 
                 if (isSetup) {
@@ -291,14 +294,12 @@ const HexOverlays = ({
                                 const rec = scores.find(r => r.vertexId === vId);
                                 if (rec) {
                                     isRecommended = true;
-                                    recommendationReason = `Score: ${rec.score} (${rec.reason})`;
+                                    recommendationData = rec;
                                     heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    if (top3Set.has(vId)) {
+                                        isTop3 = true;
+                                    }
                                 }
-                            // Check recommendation
-                            const rec = recommendations.find(r => r.vertexId === vId);
-                            if (rec) {
-                                isRecommended = true;
-                                recommendationData = rec;
                             }
                         }
                     }
@@ -324,8 +325,11 @@ const HexOverlays = ({
                                 const rec = scores.find(r => r.vertexId === vId);
                                 if (rec) {
                                     isRecommended = true;
-                                    recommendationReason = `Score: ${rec.score} (${rec.reason})`;
+                                    recommendationData = rec;
                                     heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    if (top3Set.has(vId)) {
+                                        isTop3 = true;
+                                    }
                                 }
                             }
                         }
@@ -367,27 +371,21 @@ const HexOverlays = ({
                         {/* Ghost Vertex (White Dot for Click Target) */}
                         {isGhost && !isRecommended && (
                             <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
-                        {isGhost && (
-                            <circle
-                                cx={corner.x}
-                                cy={corner.y}
-                                r={isRecommended ? 1.5 : 1}
-                                fill="white"
-                                opacity={0.5}
-                                className="ghost-vertex"
-                                data-testid="ghost-vertex"
-                            />
                         )}
 
-                        {/* Highlight upgrade target */}
+                         {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
                              <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse" />
                         )}
 
-                        {/* Heatmap Overlay (Replaces Ghost/Gold Ring) */}
+                        {/* Heatmap Overlay */}
                         {isRecommended && (
-                             <g className="coach-highlight">
-                                {/* Semi-transparent filled circle */}
+                             <g
+                                className="coach-highlight"
+                                data-tooltip-id="coach-tooltip"
+                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                             >
+                                {/* Base Heatmap Circle */}
                                 <circle
                                     cx={corner.x} cy={corner.y}
                                     r={4}
@@ -395,21 +393,30 @@ const HexOverlays = ({
                                     opacity={0.6}
                                     stroke="none"
                                 />
-                                {/* Optional: Subtle ring to define edge */}
-                                <circle
-                                    cx={corner.x} cy={corner.y}
-                                    r={4}
-                                    fill="none"
-                                    stroke={heatmapColor}
-                                    strokeWidth={0.5}
-                                />
-                                <title>{recommendationReason}</title>
-                             <g
-                                className="coach-highlight"
-                                data-tooltip-id="coach-tooltip"
-                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
-                             >
-                                <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
+
+                                {/* Top 3 Highlight (Gold Ring) */}
+                                {isTop3 && (
+                                    <circle
+                                        cx={corner.x}
+                                        cy={corner.y}
+                                        r={5}
+                                        fill="none"
+                                        stroke="#FFD700"
+                                        strokeWidth={2}
+                                        className="animate-pulse"
+                                    />
+                                )}
+
+                                {/* Subtle ring for all recommendations */}
+                                {!isTop3 && (
+                                    <circle
+                                        cx={corner.x} cy={corner.y}
+                                        r={4}
+                                        fill="none"
+                                        stroke={heatmapColor}
+                                        strokeWidth={0.5}
+                                    />
+                                )}
                              </g>
                         )}
                     </g>
