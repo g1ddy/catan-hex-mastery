@@ -7,23 +7,61 @@ interface NumberTokenProps {
 
 export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
   const isRed = value === 6 || value === 8;
-  const textColorClass = isRed ? 'text-red-600' : 'text-gray-900';
-  const pipColorClass = isRed ? 'bg-red-600' : 'bg-gray-900';
+  const color = isRed ? '#dc2626' : '#111827'; // red-600 : gray-900
+
+  // Configuration for geometry (SVG units)
+  // Assuming the previous width="8" meant the token is 8 units wide.
+  const radius = 3.8;
+  const pipRadius = 0.25;
+  const pipGap = 0.3; // slightly tighter than 0.5 to keep them together
+  const pipY = 2.2;   // Position pips below the number
+  const fontSize = 3;
+
+  // Calculate total width of pips to center them
+  const totalPipWidth = (pips * (pipRadius * 2)) + ((pips - 1) * pipGap);
+  const startX = -(totalPipWidth / 2) + pipRadius;
 
   return (
-    <foreignObject x="-4" y="-4" width="8" height="8">
-      <div
-          className="w-full h-full rounded-full bg-token-beige shadow-sm flex flex-col items-center justify-center border-[0.2px] border-gray-500/50"
+    <g>
+      {/* Token Background */}
+      <circle
+        cx="0"
+        cy="0"
+        r={radius}
+        fill="#f3e5ab"
+        stroke="#6b7280"
+        strokeOpacity="0.5"
+        strokeWidth="0.2"
+      />
+
+      {/* Number Value */}
+      <text
+        x="0"
+        y="1" // Vertically aligned - slightly down to visually center with pips below
+        textAnchor="middle"
+        fill={color}
+        fontSize={fontSize}
+        fontWeight="bold"
+        style={{ pointerEvents: 'none', userSelect: 'none' }}
       >
-          <span className={`font-bold leading-none ${textColorClass} text-[0.25rem] mb-[0.5px]`}>
-              {value}
-          </span>
-          <div className="flex gap-[0.5px] items-center justify-center h-[1px]">
-              {Array.from({ length: pips }).map((_, i) => (
-                  <div key={i} className={`w-[0.5px] h-[0.5px] rounded-full ${pipColorClass}`} />
-              ))}
-          </div>
-      </div>
-    </foreignObject>
+        {value}
+      </text>
+
+      {/* Pips */}
+      <g>
+        {Array.from({ length: pips }).map((_, i) => {
+          const cx = startX + i * (pipRadius * 2 + pipGap);
+          return (
+            <circle
+              key={i}
+              cx={cx}
+              cy={pipY}
+              r={pipRadius}
+              fill={color}
+            />
+          );
+        })}
+      </g>
+    </g>
   );
 };
