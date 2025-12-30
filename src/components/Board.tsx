@@ -110,16 +110,36 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <Tooltip
             id="coach-tooltip"
             place="top"
-            style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.95)', // Slate-800 with opacity
-                color: '#f8fafc',
-                borderRadius: '8px',
-                padding: '12px',
-                fontSize: '14px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                zIndex: 1000,
-                width: '300px'
+            className="coach-tooltip"
+            render={({ content }) => {
+                if (!content) return null;
+                const rec = JSON.parse(content) as CoachRecommendation;
+                const { score, details } = rec;
+                const parts = [];
+                // Pips
+                parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
+                // Scarcity
+                if (details.scarcityBonus && details.scarceResources.length > 0) {
+                    parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                // Diversity
+                if (details.diversityBonus) {
+                    parts.push('High Diversity');
+                }
+                // Synergy
+                if (details.synergyBonus) {
+                    parts.push('Synergy');
+                }
+                // Needed
+                if (details.neededResources.length > 0) {
+                     parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                return (
+                    <div>
+                        <div className="font-bold mb-1">Score: {score}</div>
+                        <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
+                    </div>
+                );
             }}
         />
 
@@ -318,33 +338,6 @@ const HexOverlays = ({
                     }
                 }
 
-                // Construct Tooltip Text
-                let tooltipHtml = "";
-                if (isRecommended && recommendationData) {
-                    const { score, details } = recommendationData;
-                    const parts = [];
-                    // Pips
-                    parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
-                    // Scarcity
-                    if (details.scarcityBonus && details.scarceResources.length > 0) {
-                        parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                    }
-                    // Diversity
-                    if (details.diversityBonus) {
-                        parts.push('High Diversity');
-                    }
-                    // Synergy
-                    if (details.synergyBonus) {
-                        parts.push('Synergy');
-                    }
-                    // Needed
-                    if (details.neededResources.length > 0) {
-                         parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                    }
-
-                    tooltipHtml = `<div class="font-bold mb-1">Score: ${score}</div><div class="text-xs text-slate-300">${parts.join(' + ')}</div>`;
-                }
-
                 return (
                     <g key={i} onClick={(e) => {
                         e.stopPropagation();
@@ -381,7 +374,7 @@ const HexOverlays = ({
                              <g
                                 className="coach-highlight"
                                 data-tooltip-id="coach-tooltip"
-                                data-tooltip-html={tooltipHtml}
+                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
                              >
                                 <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
                              </g>

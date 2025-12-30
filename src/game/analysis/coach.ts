@@ -135,17 +135,11 @@ export function getBestSettlementSpots(G: GameState, playerID: string): CoachRec
         };
 
         const reasons: string[] = [`${pips} Pips`];
+        const uniqueResources = new Set(resources);
 
         // 1. Scarcity Multiplier
-        let hasScarcity = false;
-        const scarceResources: string[] = [];
-        resources.forEach(r => {
-            if (scarcityMap[r]) {
-                hasScarcity = true;
-                if (!scarceResources.includes(r)) scarceResources.push(r);
-            }
-        });
-        if (hasScarcity) {
+        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]);
+        if (scarceResources.length > 0) {
             score *= SCARCITY_MULTIPLIER;
             details.scarcityBonus = true;
             details.scarceResources = scarceResources;
@@ -153,8 +147,6 @@ export function getBestSettlementSpots(G: GameState, playerID: string): CoachRec
         }
 
         // 2. Diversity Multiplier
-        // Check if resources are unique
-        const uniqueResources = new Set(resources);
         if (uniqueResources.size === 3 && resources.length === 3) {
             score *= DIVERSITY_MULTIPLIER;
             details.diversityBonus = true;
