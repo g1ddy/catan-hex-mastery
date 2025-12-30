@@ -53,11 +53,11 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     return (
       <div className="game-layout-desktop">
         <Toaster />
-        <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+        <Tooltip id="resource-tooltip" place="top" className="z-[1000]" />
         <Tooltip
             id="cost-tooltip"
             place="top"
-            className="z-[100]"
+            className="z-[1000]"
             render={renderCostTooltip}
         />
         {/* Main Game Area: Absolute Layers to ensure robustness */}
@@ -92,11 +92,11 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
       <Toaster />
-      <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+      <Tooltip id="resource-tooltip" place="top" className="z-[1000]" />
       <Tooltip
             id="cost-tooltip"
             place="top"
-            className="z-[100]"
+            className="z-[1000]"
             render={renderCostTooltip}
         />
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
