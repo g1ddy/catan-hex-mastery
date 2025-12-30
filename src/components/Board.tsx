@@ -49,12 +49,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       if (sum === 0) return; // Initial state
 
       // 1. Highlight Hexes
-      const activeIds: string[] = [];
-      hexes.forEach(h => {
-          if (h.tokenValue === sum) {
-              activeIds.push(h.id);
-          }
-      });
+      const activeIds = hexes.filter(h => h.tokenValue === sum).map(h => h.id);
 
       if (activeIds.length > 0) {
           setProducingHexIds(activeIds);

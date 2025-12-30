@@ -34,7 +34,7 @@ const rollDice: Move<GameState> = ({ G, random, events }) => {
                      const vertices = getVerticesForHex(hex.coords);
                      vertices.forEach(vId => {
                          const vertex = G.board.vertices[vId];
-                         if (vertex) {
+                         if (vertex && G.players[vertex.owner]) {
                              const amount = vertex.type === 'city' ? 2 : 1;
                              const owner = vertex.owner;
 
