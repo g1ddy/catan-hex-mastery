@@ -18,6 +18,23 @@ interface GameControlsProps {
     variant?: 'floating' | 'docked';
 }
 
+const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
+    <button
+        onClick={onClick}
+        className={className}
+    >
+        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>Begin Placement</span>
+    </button>
+);
+
+const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ text, className }) => (
+    <div className={className}>
+        <span className={className?.includes('text-lg') ? "text-lg font-semibold text-amber-400" : "text-sm font-semibold text-amber-400"}>
+            {text}
+        </span>
+    </div>
+);
+
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === 'setup';
     const isGameplay = ctx.phase === 'GAMEPLAY';
@@ -45,43 +62,45 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         }
 
         const handleClick = () => {
-            if (canInteract) {
-                setUiMode(uiMode === 'viewing' ? 'placing' : 'viewing');
+            if (canInteract && uiMode === 'viewing') {
+                setUiMode('placing');
             }
         };
 
-        const activeClass = uiMode === 'placing' ? 'ring-2 ring-amber-400 bg-slate-800' : '';
-        const pointerClass = canInteract ? 'cursor-pointer hover:bg-slate-800 active:scale-95' : 'pointer-events-none opacity-70';
-
         if (variant === 'docked') {
              // Mobile Bottom Floating Bar Style
+             if (uiMode === 'viewing') {
+                 return (
+                    <BeginPlacementButton
+                        onClick={handleClick}
+                        className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                    />
+                 );
+             }
+
             return (
-                 <div
+                 <InstructionDisplay
+                    text={instruction}
+                    className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
+                 />
+            );
+        }
+
+        // Desktop Floating Variant (kept for completeness if reused)
+        if (uiMode === 'viewing') {
+             return (
+                <BeginPlacementButton
                     onClick={handleClick}
-                    role="button"
-                    tabIndex={canInteract ? 0 : -1}
-                    onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
-                    className={`flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
-                 >
-                    <span className={`text-sm font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
-                        {uiMode === 'placing' ? 'Tap a highlighted spot!' : instruction}
-                    </span>
-                </div>
+                    className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full shadow-lg border border-blue-400/50 z-[100] transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                />
             );
         }
 
         return (
-            <div
-                onClick={handleClick}
-                role="button"
-                tabIndex={canInteract ? 0 : -1}
-                onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
-                className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100] transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
-            >
-                <span className={`text-lg font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
-                    {uiMode === 'placing' ? 'Select a location on the board' : instruction}
-                </span>
-            </div>
+            <InstructionDisplay
+                text={instruction}
+                className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100]"
+            />
         );
     }
 
