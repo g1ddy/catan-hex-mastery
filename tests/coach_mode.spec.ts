@@ -15,14 +15,16 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // On Mobile, the Analyst Panel (dashboard) is hidden in a bottom sheet.
   // We need to open it to access the toggle.
   const openStatsBtn = page.getByLabel('Open Stats');
+
+  const coachToggle = page.locator('input[type="checkbox"]').first();
+
   if (await openStatsBtn.isVisible()) {
     await openStatsBtn.click();
-    // Wait for animation/render
-    await page.waitForTimeout(500);
+    // Wait for the toggle to appear in the DOM/become visible
+    await expect(coachToggle).toBeVisible();
   }
 
   // Now find the toggle. It's an input inside the dashboard.
-  const coachToggle = page.locator('input[type="checkbox"]').first();
   await expect(coachToggle).not.toBeChecked();
 
   // 4. Verify Heatmap Classes
@@ -32,17 +34,11 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   console.log(`Found ${totalCount} total coach highlights`);
   expect(totalCount).toBeGreaterThan(10);
 
-  // Helper function to count classes
+  // Helper function to count classes (Corrected to use page-level locators)
   const countClasses = async () => {
-    let op100 = 0;
-    let op0 = 0;
-    for (let i = 0; i < totalCount; i++) {
-      const el = highlights.nth(i);
-      const classString = await el.getAttribute('class');
-      const classList = classString ? classString.split(' ') : [];
-      if (classList.includes('opacity-100')) op100++;
-      if (classList.includes('opacity-0')) op0++;
-    }
+    // We target elements that have BOTH classes
+    const op100 = await page.locator('.coach-highlight.opacity-100').count();
+    const op0 = await page.locator('.coach-highlight.opacity-0').count();
     return { op100, op0 };
   };
 
@@ -56,8 +52,7 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   expect(counts.op0 + counts.op100).toBe(totalCount);
 
   // 5. Test Toggle ON (Full Mode)
-  // Note: Toggle is inside the dashboard, which we ensured is open if needed.
-  await coachToggle.evaluate(el => (el as HTMLInputElement).click());
+  await coachToggle.click({ force: true });
 
   // Use built-in assertions to wait for state change
   await expect(page.locator('.coach-highlight.opacity-0')).toHaveCount(0);
@@ -65,19 +60,19 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
 
 
   // 6. Test Toggle OFF again
-  await coachToggle.evaluate(el => (el as HTMLInputElement).click());
+  await coachToggle.click({ force: true });
 
   // Wait for state to revert
   await expect(page.locator('.coach-highlight.opacity-0')).not.toHaveCount(0);
 
   // Verify precise counts eventually match default expectations
   await expect(async () => {
-    const hiddenCount = await page.locator('.coach-highlight.opacity-0').count();
-    const visibleCount = await page.locator('.coach-highlight.opacity-100').count();
+    const op0 = await page.locator('.coach-highlight.opacity-0').count();
+    const op100 = await page.locator('.coach-highlight.opacity-100').count();
 
-    expect(visibleCount).toBeGreaterThanOrEqual(1);
-    expect(visibleCount).toBeLessThanOrEqual(5);
-    expect(hiddenCount).toBeGreaterThan(5);
-    expect(visibleCount + hiddenCount).toBe(totalCount);
+    expect(op100).toBeGreaterThanOrEqual(1);
+    expect(op100).toBeLessThanOrEqual(5);
+    expect(op0).toBeGreaterThan(5);
+    expect(op100 + op0).toBe(totalCount);
   }).toPass();
 });
