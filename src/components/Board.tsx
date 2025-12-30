@@ -20,6 +20,9 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
 import { Home, Castle } from 'lucide-react';
 
+const SETTLEMENT_ICON_SIZE = 5;
+const CITY_ICON_SIZE = 6;
+
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
 }
@@ -343,10 +346,10 @@ const HexOverlays = ({
                             <React.Fragment>
                                 {vertex.type === 'settlement' && (
                                     <Home
-                                        x={corner.x - 2.5}
-                                        y={corner.y - 2.5}
-                                        width={5}
-                                        height={5}
+                                        x={corner.x - SETTLEMENT_ICON_SIZE / 2}
+                                        y={corner.y - SETTLEMENT_ICON_SIZE / 2}
+                                        width={SETTLEMENT_ICON_SIZE}
+                                        height={SETTLEMENT_ICON_SIZE}
                                         fill={ownerColor || 'none'}
                                         stroke="black"
                                         strokeWidth={1}
@@ -357,10 +360,10 @@ const HexOverlays = ({
                                 )}
                                 {vertex.type === 'city' && (
                                     <Castle
-                                        x={corner.x - 3}
-                                        y={corner.y - 3}
-                                        width={6}
-                                        height={6}
+                                        x={corner.x - CITY_ICON_SIZE / 2}
+                                        y={corner.y - CITY_ICON_SIZE / 2}
+                                        width={CITY_ICON_SIZE}
+                                        height={CITY_ICON_SIZE}
                                         fill={ownerColor || 'none'}
                                         stroke="black"
                                         strokeWidth={1}
