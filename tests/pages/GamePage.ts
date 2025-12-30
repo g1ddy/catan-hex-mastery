@@ -22,9 +22,9 @@ export class GamePage {
     this.rollDiceButton = page.getByRole('button', { name: 'Roll Dice' });
 
     // Ghost elements for board interaction (Exception allowed for CSS selectors on SVG visual elements)
-    this.ghostVertex = page.locator('.ghost-vertex');
-    // From desktop_layout_test.py: rect[fill='white'][opacity='0.5']
-    this.ghostEdge = page.locator("rect[fill='white'][opacity='0.5']");
+    this.ghostVertex = page.getByTestId('ghost-vertex');
+    // Using robust data-testid instead of brittle CSS/attributes
+    this.ghostEdge = page.getByTestId('ghost-edge');
   }
 
   async goto() {

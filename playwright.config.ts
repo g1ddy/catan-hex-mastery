@@ -1,15 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const BASE_URL = 'http://localhost:4173/catan-hex-mastery/';
+
 export default defineConfig({
   testDir: './tests',
   testMatch: /.*\.spec\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4173/catan-hex-mastery/',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -33,7 +35,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:4173/catan-hex-mastery/',
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
   },
 });
