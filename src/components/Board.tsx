@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
+import { Home, Castle } from 'lucide-react';
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
@@ -340,18 +341,32 @@ const HexOverlays = ({
                         />
                         {isOccupied && (
                             <React.Fragment>
-                                <rect
-                                    x={corner.x - 2} y={corner.y - 2}
-                                    width={4} height={4}
-                                    fill={ownerColor || 'none'}
-                                    stroke="black" strokeWidth={0.5}
-                                />
-                                {vertex.type === 'city' && (
-                                     <rect
-                                        x={corner.x - 1} y={corner.y - 4}
-                                        width={2} height={2}
+                                {vertex.type === 'settlement' && (
+                                    <Home
+                                        x={corner.x - 2.5}
+                                        y={corner.y - 2.5}
+                                        width={5}
+                                        height={5}
                                         fill={ownerColor || 'none'}
-                                        stroke="black" strokeWidth={0.5}
+                                        stroke="black"
+                                        strokeWidth={1}
+                                        data-testid="settlement-icon"
+                                        aria-label={`Settlement owned by Player ${vertex.owner}`}
+                                        role="img"
+                                    />
+                                )}
+                                {vertex.type === 'city' && (
+                                    <Castle
+                                        x={corner.x - 3}
+                                        y={corner.y - 3}
+                                        width={6}
+                                        height={6}
+                                        fill={ownerColor || 'none'}
+                                        stroke="black"
+                                        strokeWidth={1}
+                                        data-testid="city-icon"
+                                        aria-label={`City owned by Player ${vertex.owner}`}
+                                        role="img"
                                     />
                                 )}
                             </React.Fragment>
