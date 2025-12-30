@@ -16,17 +16,26 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   const [showDashboard, setShowDashboard] = useState(false);
 
   if (!isMobile) {
-    // Desktop Layout: Side-by-side
-    // Note: playerPanel and gameControls are rendered inside the board area,
-    // assuming they are passed as absolute positioned elements (variant="floating") for desktop.
+    // Desktop Layout: Side-by-side with Bottom Dock
     return (
       <div className="game-layout-desktop">
         <Toaster />
-        <div className="board-area relative">
-            {board}
-            {playerPanel}
-            {gameControls}
+        {/* Main Game Area: Flex Column */}
+        <div className="board-area flex flex-col relative w-full h-full">
+            {/* Top: Board Canvas & Overlays */}
+            <div className="flex-grow relative w-full overflow-hidden">
+                {board}
+                {/* Player Panel remains floating for now, but contained here */}
+                {playerPanel}
+            </div>
+
+            {/* Bottom: Docked Controls Bar */}
+            <div className="flex-none w-full z-20">
+                {gameControls}
+            </div>
         </div>
+
+        {/* Right: Analyst Sidebar */}
         <aside className="sidebar-area bg-slate-900/90 backdrop-blur-md border-l border-slate-700 shadow-2xl overflow-y-auto p-5">
           {dashboard}
         </aside>
