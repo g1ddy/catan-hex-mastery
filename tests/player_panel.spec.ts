@@ -78,17 +78,9 @@ test.describe('Player Panel Tests', () => {
 
     // Verify resource icons for active player are visible immediately.
     // In our refactor, mobile icons are in the `.md:hidden` container.
-    // However, since we just want to verify *any* visible wood icon:
+    // Since we are in mobile viewport, the desktop one is hidden via CSS.
+    // The selector finds the first match, which happens to be the mobile one.
     const woodIcon = playerPanel.locator('span[data-tooltip-content="Wood"]').first();
-
-    // Check it's visible. Since viewport is mobile, the desktop one is hidden via CSS,
-    // so .first() usually grabs the first one in DOM.
-    // If the mobile one comes first in DOM (it does), this works.
-    // To be safe, we can filter by visibility.
-    const visibleWoodIcon = playerPanel.locator('span[data-tooltip-content="Wood"]').filter({ has: page.locator('visible=true') }).first();
-    // Actually, pseudo-selectors like visible=true aren't standard in locator filter 'has'.
-    // Let's just trust that on mobile viewport, the desktop one is hidden.
-
     await expect(woodIcon).toBeVisible();
 
     // Trigger tooltip on mobile (tap/click)
