@@ -28,24 +28,26 @@ Hex-Mastery is a modular resource-trading game engine designed to train players 
 *   [x] Enforce the "Distance Rule" validation.
 *   [x] Implement starting resource logic (based on 2nd settlement).
 
-### Phase 3: The Analyst Module 🚧
-*   [ ] Real-time "Pip" counting.
-*   [ ] Resource scarcity calculation.
-*   [ ] Board balance visualization.
+### Phase 3: The Analyst Module ✅
+*   [x] Real-time "Pip" counting.
+*   [x] Resource scarcity calculation.
+*   [x] Board balance visualization.
 
-### Phase 4: Coaching Layer (Current Focus)
-*   [ ] Heuristic engine to grade player placements (Pips + Synergy + Scarcity).
-*   [ ] "Coach Toggle" in Sidebar.
-*   [ ] Goal: Smart assistant for board evaluation.
+### Phase 4: Coaching Layer ✅
+*   [x] Heuristic engine to grade player placements (Pips + Synergy + Scarcity).
+*   [x] "Coach Recommendations" visualizer (Gold Rings).
+*   [x] Goal: Smart assistant for board evaluation.
 
-### Phase 5: UI/UX Polish (High Priority)
-*   [ ] Visual Overhaul: NumberToken components for readability.
-*   [ ] Iconography: Integrate lucide-react icons.
-*   [ ] Mobile Layout refinements.
+### Phase 5: UI/UX Polish (Current Focus)
+*   [x] Iconography: Integrate lucide-react icons.
+*   [x] Mobile Layout refinements.
+*   [ ] Visual Overhaul: Final polish on NumberToken components.
 
 ### Phase 6: Full Game Loop & Rules
-*   [ ] Turn Phases (Trade vs Build).
-*   [ ] Robber and Win Conditions.
+*   [ ] Turn Phases (Trade vs. Build).
+*   [ ] Robber mechanic.
+*   [ ] Victory Point tracking.
+*   [ ] Win conditions and end-game state.
 
 ## 🚀 Getting Started
 
