@@ -1,6 +1,6 @@
 import React from 'react';
-import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
 import { Resources } from '../game/types';
+import { RESOURCE_META } from './uiConfig';
 
 interface ResourceIconRowProps {
   resources: Partial<Resources> | Record<string, number>;
@@ -16,11 +16,12 @@ export const ResourceIconRow: React.FC<ResourceIconRowProps> = ({ resources, siz
 
   return (
     <div className={`flex items-center gap-2 ${textSize} ${className}`}>
-        <span className="flex items-center gap-0.5" title="Wood"><Trees size={iconSize} className="text-green-500" />{r.wood || 0}</span>
-        <span className="flex items-center gap-0.5" title="Brick"><BrickWall size={iconSize} className="text-orange-700" />{r.brick || 0}</span>
-        <span className="flex items-center gap-0.5" title="Sheep"><Cloud size={iconSize} className="text-slate-300" />{r.sheep || 0}</span>
-        <span className="flex items-center gap-0.5" title="Wheat"><Wheat size={iconSize} className="text-yellow-500" />{r.wheat || 0}</span>
-        <span className="flex items-center gap-0.5" title="Ore"><Mountain size={iconSize} className="text-gray-400" />{r.ore || 0}</span>
+        {RESOURCE_META.map(({ name, label, Icon, color }) => (
+            <span key={name} className="flex items-center gap-0.5" data-tooltip-id="resource-tooltip" data-tooltip-content={label}>
+                <Icon size={iconSize} className={color} />
+                {r[name] || 0}
+            </span>
+        ))}
     </div>
   );
 };

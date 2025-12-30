@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
-import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
+import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
+import { BUILD_BUTTON_CONFIG } from './uiConfig';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -152,6 +153,19 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const canAffordSettlement = canAfford(BUILD_COSTS.settlement);
             const canAffordCity = canAfford(BUILD_COSTS.city);
 
+            // Map afford status to key
+            const affordMap = {
+                road: canAffordRoad,
+                settlement: canAffordSettlement,
+                city: canAffordCity
+            };
+
+            const costString = (type: keyof typeof BUILD_COSTS) => {
+                 const cost = BUILD_COSTS[type];
+                 const parts = Object.entries(cost).map(([res, amt]) => `${amt} ${res.charAt(0).toUpperCase() + res.slice(1)}`);
+                 return `Cost: ${parts.join(', ')}`;
+            };
+
             // Helper to generate class string based on affordability and active state
             const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
                 const base = "focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none";
@@ -186,33 +200,21 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                            <button
-                                onClick={() => toggleBuildMode('road', canAffordRoad)}
-                                disabled={!canAffordRoad}
-                                aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
-                                title="Road (1 Wood, 1 Brick)"
-                            >
-                                <MapPin size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                                disabled={!canAffordSettlement}
-                                aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
-                                title="Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            >
-                                <Home size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('city', canAffordCity)}
-                                disabled={!canAffordCity}
-                                aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
-                                title="City (3 Ore, 2 Wheat)"
-                            >
-                                <Castle size={20} />
-                            </button>
+                            {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
+                                const affordable = affordMap[type];
+                                return (
+                                    <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                                        <button
+                                            onClick={() => toggleBuildMode(type, affordable)}
+                                            disabled={!affordable}
+                                            aria-label={`${ariaPrefix} (${costString(type)})`}
+                                            className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, affordable)}`}
+                                        >
+                                            <Icon size={20} />
+                                        </button>
+                                    </div>
+                                );
+                            })}
                              {/* Dev Card Button (Placeholder) - maybe hide on mobile to save space if not needed yet? Keeping for consistency but simplified */}
                         </div>
 
@@ -242,36 +244,22 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                  <span className="text-xs text-slate-500">({G.lastRoll[0]}+{G.lastRoll[1]})</span>
                              </div>
                          )}
-                        <button
-                            onClick={() => toggleBuildMode('road', canAffordRoad)}
-                            disabled={!canAffordRoad}
-                            aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
-                            title="Build Road (1 Wood, 1 Brick)"
-                        >
-                            <MapPin size={20} />
-                            <span className="hidden md:inline">Road</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                            disabled={!canAffordSettlement}
-                            aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
-                            title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                        >
-                            <Home size={20} />
-                            <span className="hidden md:inline">Settlement</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('city', canAffordCity)}
-                            disabled={!canAffordCity}
-                            aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
-                            title="Build City (3 Ore, 2 Wheat)"
-                        >
-                            <Castle size={20} />
-                            <span className="hidden md:inline">City</span>
-                        </button>
+                        {BUILD_BUTTON_CONFIG.map(({ type, label, Icon, ariaPrefix }) => {
+                            const affordable = affordMap[type];
+                            return (
+                                <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                                    <button
+                                        onClick={() => toggleBuildMode(type, affordable)}
+                                        disabled={!affordable}
+                                        aria-label={`${ariaPrefix} (${costString(type)})`}
+                                        className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass(type, affordable)}`}
+                                    >
+                                        <Icon size={20} />
+                                        <span className="hidden md:inline">{label}</span>
+                                    </button>
+                                </div>
+                            );
+                        })}
                          <button
                             className="p-3 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                             title="Dev Card (Coming Soon)"
