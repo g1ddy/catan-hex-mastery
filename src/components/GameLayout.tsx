@@ -20,18 +20,23 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     return (
       <div className="game-layout-desktop">
         <Toaster />
-        {/* Main Game Area: Flex Column */}
-        <div className="board-area flex flex-col relative w-full h-full">
-            {/* Top: Board Canvas & Overlays */}
-            <div className="flex-grow relative w-full overflow-hidden">
+        {/* Main Game Area: Absolute Layers to ensure robustness */}
+        <div className="board-area relative w-full h-full overflow-hidden">
+            {/* 1. Board Canvas (Background) */}
+            <div className="absolute inset-0 z-0">
                 {board}
-                {/* Player Panel remains floating for now, but contained here */}
-                {playerPanel}
             </div>
 
-            {/* Bottom: Docked Controls Bar */}
-            <div className="flex-none w-full z-20">
-                {gameControls}
+            {/* 2. Overlays */}
+            {/* Player Panel remains floating */}
+            {playerPanel}
+
+            {/* 3. Bottom Docked Controls Bar */}
+            {/* Positioned absolutely at the bottom to guarantee visibility */}
+            <div className="absolute bottom-6 left-6 right-6 z-20 pointer-events-none flex justify-center">
+                <div className="pointer-events-auto w-full max-w-4xl flex">
+                     {gameControls}
+                </div>
             </div>
         </div>
 
