@@ -47,7 +47,9 @@ export class GamePage {
 
     // Wait for ghost vertices
     // Wait for ghost vertices and click the first one.
-    await this.ghostVertex.first().click({ timeout: 2000 });
+    // Use force: true because the Coach Mode heatmap overlay (r=4) might cover the hit target (r=3),
+    // but the click event bubbles to the parent group anyway.
+    await this.ghostVertex.first().click({ timeout: 5000, force: true });
   }
 
   async placeRoad() {
@@ -55,7 +57,7 @@ export class GamePage {
     // We do NOT click "Begin Placement" again because uiMode is already 'placing'.
 
     // Just wait for the ghost edge to appear and click it.
-    await this.ghostEdge.first().click({ timeout: 2000 });
+    await this.ghostEdge.first().click({ timeout: 5000, force: true });
   }
 
   async getRollButtonBoundingBox() {

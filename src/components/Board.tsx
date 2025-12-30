@@ -348,7 +348,13 @@ const HexOverlays = ({
                         e.stopPropagation();
                         if (isClickable) clickAction();
                     }}>
-                        <circle cx={corner.x} cy={corner.y} r={3} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
+                        <circle
+                            cx={corner.x} cy={corner.y}
+                            r={3}
+                            fill="transparent"
+                            style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                            data-testid={isGhost ? "ghost-vertex" : undefined}
+                        />
                         {isOccupied && (
                             <React.Fragment>
                                 <rect
