@@ -43,7 +43,7 @@ export class GamePage {
   async placeSettlement() {
     // Click "Begin Placement" to toggle mode
     // We use getByRole for better accessibility testing, or text if specific role is ambiguous
-    await this.page.getByText('Begin Placement').click();
+    await this.page.getByRole('button', { name: 'Begin Placement' }).click();
 
     // Wait for ghost vertices
     // Wait for ghost vertices and click the first one.
