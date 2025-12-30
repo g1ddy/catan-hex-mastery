@@ -18,7 +18,16 @@ export function SetupPage() {
   return (
     <div className="app-container min-h-screen flex flex-col items-center justify-center p-4 bg-gray-900 text-white">
       <Tooltip id="setup-tooltip" />
-      <h1 className="title text-4xl font-bold mb-8">Hex Mastery - Setup</h1>
+      <h1 className="title text-4xl font-bold mb-4">Hex Mastery - Setup</h1>
+
+      <div className="max-w-2xl text-center mb-8 px-4">
+        <p className="text-slate-300 leading-relaxed">
+          Welcome. This module is a specialized training interface for initial settlement placement.
+          Use the integrated Analyst Panel and Coach Mode to evaluate board texture and maximize production probability.
+          This is a strategic study tool, not a complete game simulation.
+        </p>
+      </div>
+
       <div className="setup-menu w-full max-w-lg text-center">
         <p className="text-xl mb-6">Select Number of Players:</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
