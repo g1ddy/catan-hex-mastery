@@ -5,15 +5,6 @@ import { GameState, TerrainType, Player, BoardState, Hex } from '../types';
 // but ensure it returns the vertex ID we expect for our tests.
 jest.mock('../hexUtils', () => ({
     getVerticesForHex: (coords: { q: number, r: number, s: number }) => {
-        // Return a stable list of vertex IDs based on the hex.
-        // For the purpose of these tests, we assume a vertex is shared by 3 hexes if we coordinate it right.
-        // However, `coach.ts` iterates ALL hexes and calls `getVerticesForHex`.
-        // Then it filters candidates.
-        // To make our `TARGET_VERTEX_ID` appear in the candidates, this mock must return it.
-        // Our TARGET_VERTEX_ID is `0,0,0::1,-1,0::1,0,-1`.
-        // This means it connects hex `0,0,0`, `1,-1,0`, and `1,0,-1`.
-        // So for these specific coords, we return that ID.
-        // For others, we return dummy IDs.
         const id = `${coords.q},${coords.r},${coords.s}`;
         const targetHexes = ['0,0,0', '1,-1,0', '1,0,-1'];
         if (targetHexes.includes(id)) {
@@ -122,7 +113,7 @@ describe('getBestSettlementSpots', () => {
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(17.6);
-            expect(target?.reason).toContain('13 Pips');
+            expect(target?.details.pips).toBe(13);
         });
 
         test('Should handle low pips (2=1, 3=2, 12=1)', () => {
@@ -137,7 +128,7 @@ describe('getBestSettlementSpots', () => {
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(6.8);
-            expect(target?.reason).toContain('4 Pips');
+            expect(target?.details.pips).toBe(4);
         });
     });
 
@@ -148,14 +139,6 @@ describe('getBestSettlementSpots', () => {
             const stats = {
                 totalPips: { wood: 5, brick: 30, sheep: 30, wheat: 30, ore: 5 } // Wood & Ore scarce
             };
-            // Hexes: Wood(6=5), Brick(5=4), Sheep(9=4).
-            // Pips: 13.
-            // Scarcity: Wood is scarce => Yes.
-            // Diversity: Yes (3 unique).
-            // Synergy: Yes (Wood+Brick).
-            // Logic: Score = Pips * Scarcity * Diversity + Synergy
-            // Score = 13 * 1.2 * 1.2 + 2 = 18.72 + 2 = 20.72.
-
             const hexes = [
                 { id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 },
                 { id: HEX_B_ID, terrain: TerrainType.Hills, value: 5 },
@@ -166,22 +149,14 @@ describe('getBestSettlementSpots', () => {
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(20.7);
-            expect(target?.reason).toContain('Scarcity Bonus');
+            expect(target?.details.scarcityBonus).toBe(true);
+            expect(target?.details.scarceResources).toContain('wood');
         });
 
         test('Should NOT apply scarcity multiplier if resource is abundant', () => {
-             // Wood is abundant (50/100).
              const stats = {
                 totalPips: { wood: 50, brick: 10, sheep: 10, wheat: 10, ore: 20 }
             };
-            // Hexes: Wood(6=5), Brick(5=4), Sheep(9=4).
-            // Pips: 13.
-            // Scarcity: None provided by this spot (Brick/Sheep are scarce but abundant here? No wait)
-            // Brick is 10/100 = 10% (not < 10%). So not scarce.
-            // Sheep is 10/100 = 10%.
-            // So no scarcity bonus.
-            // Score = 13 * 1.2 (Div) + 2 (Syn) = 17.6.
-
             const hexes = [
                 { id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 },
                 { id: HEX_B_ID, terrain: TerrainType.Hills, value: 5 },
@@ -192,7 +167,7 @@ describe('getBestSettlementSpots', () => {
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(17.6);
-            expect(target?.reason).not.toContain('Scarcity Bonus');
+            expect(target?.details.scarcityBonus).toBe(false);
         });
     });
 
@@ -208,8 +183,7 @@ describe('getBestSettlementSpots', () => {
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
-            expect(target?.reason).toContain('Diversity Bonus');
-            // 13 * 1.2 + 2 = 17.6
+            expect(target?.details.diversityBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
         });
 
@@ -219,15 +193,11 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_B_ID, terrain: TerrainType.Forest, value: 5 }, // 2nd Forest
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
-            // Pips: 13.
-            // Diversity: No.
-            // Synergy: No (No Brick, No Ore/Wheat).
-            // Score: 13.
             const G = createMockState(hexes);
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
-            expect(target?.reason).not.toContain('Diversity Bonus');
+            expect(target?.details.diversityBonus).toBe(false);
             expect(target?.score).toBeCloseTo(13.0);
         });
     });
@@ -240,11 +210,10 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_B_ID, terrain: TerrainType.Hills, value: 5 },
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
-            // 13 * 1.2 + 2 = 17.6
             const G = createMockState(hexes);
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
-            expect(target?.reason).toContain('Synergy');
+            expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
         });
 
@@ -254,12 +223,10 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_B_ID, terrain: TerrainType.Fields, value: 5 },
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
-            // Pips: 13. Div: 1.2. Syn: +2.
-            // 13 * 1.2 + 2 = 17.6.
             const G = createMockState(hexes);
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
-            expect(target?.reason).toContain('Synergy');
+            expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
         });
 
@@ -269,12 +236,10 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_B_ID, terrain: TerrainType.Mountains, value: 5 },
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
-            // Pips: 13. Div: 1.2. Syn: 0.
-            // 13 * 1.2 = 15.6.
             const G = createMockState(hexes);
             const results = getBestSettlementSpots(G, '0');
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
-            expect(target?.reason).not.toContain('Synergy');
+            expect(target?.details.synergyBonus).toBe(false);
             expect(target?.score).toBeCloseTo(15.6);
         });
     });
@@ -296,7 +261,7 @@ describe('getBestSettlementSpots', () => {
 
             // Base 13 * 1.2 = 15.6. Bonus +15. Total 30.6.
             expect(target?.score).toBeCloseTo(30.6);
-            expect(target?.reason).toContain('Balances Economy');
+            expect(target?.details.neededResources.length).toBe(3);
         });
 
         test('Should NOT add bonus for EXISTING resource types', () => {
@@ -314,7 +279,8 @@ describe('getBestSettlementSpots', () => {
 
             // Base 13 * 1.2 = 15.6. Bonus +10. Total 25.6.
             expect(target?.score).toBeCloseTo(25.6);
-            expect(target?.reason).toContain('Balances Economy');
+            expect(target?.details.neededResources).not.toContain('wood');
+            expect(target?.details.neededResources).toContain('brick');
         });
     });
 
@@ -342,11 +308,6 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            // Neighbor vertex is occupied.
-            // The coach logic checks distance by looking at shared hexes in ID.
-            // Let's create a neighbor that shares 2 hexes.
-            // Target: A::B::C
-            // Neighbor: A::B::D (shares A and B).
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
             G.board.vertices[neighborID] = { owner: '1', type: 'settlement' };
 
