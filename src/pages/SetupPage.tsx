@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from 'react-tooltip';
 import { GAME_CONFIG } from '../game/config';
+import 'react-tooltip/dist/react-tooltip.css';
 
 const LOCAL_MODE_WARNING = "3-4 Player modes are unavailable in Local Pass-and-Play.";
 const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
@@ -15,6 +17,7 @@ export function SetupPage() {
 
   return (
     <div className="app-container min-h-screen flex flex-col items-center justify-center p-4 bg-gray-900 text-white">
+      <Tooltip id="setup-tooltip" />
       <h1 className="title text-4xl font-bold mb-8">Hex Mastery - Setup</h1>
       <div className="setup-menu w-full max-w-lg text-center">
         <p className="text-xl mb-6">Select Number of Players:</p>
@@ -22,22 +25,27 @@ export function SetupPage() {
           {SUPPORTED_PLAYER_COUNTS.map((num) => {
             const isDisabled = isLocalMode && num > 2;
             return (
-              <button
+              <div
                   key={num}
-                  onClick={() => handlePlayerSelection(num)}
-                  className={`
-                    flex-1 py-4 px-6
-                    bg-slate-800/80 backdrop-blur-sm border border-slate-600
-                    hover:bg-slate-700 hover:border-slate-500
-                    text-white text-lg font-bold rounded-xl shadow-lg
-                    transition-all transform hover:-translate-y-1 active:scale-95
-                    disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
-                  `}
-                  disabled={isDisabled}
-                  title={isDisabled ? LOCAL_MODE_WARNING : ""}
+                  className="flex-1"
+                  data-tooltip-id={isDisabled ? "setup-tooltip" : undefined}
+                  data-tooltip-content={isDisabled ? LOCAL_MODE_WARNING : undefined}
               >
-                {num} Players
-              </button>
+                  <button
+                      onClick={() => handlePlayerSelection(num)}
+                      className={`
+                        w-full h-full py-4 px-6
+                        bg-slate-800/80 backdrop-blur-sm border border-slate-600
+                        hover:bg-slate-700 hover:border-slate-500
+                        text-white text-lg font-bold rounded-xl shadow-lg
+                        transition-all transform hover:-translate-y-1 active:scale-95
+                        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
+                      `}
+                      disabled={isDisabled}
+                  >
+                    {num} Players
+                  </button>
+              </div>
             );
           })}
         </div>

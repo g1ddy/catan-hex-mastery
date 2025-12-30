@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { BarChart2, X } from 'lucide-react';
+import { BarChart2, X, Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Resources } from '../game/types';
 import './GameLayout.css';
 
 interface GameLayoutProps {
@@ -20,6 +23,25 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     return (
       <div className="game-layout-desktop">
         <Toaster />
+        <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+        <Tooltip
+            id="cost-tooltip"
+            place="top"
+            className="z-[100]"
+            render={({ content }) => {
+                if (!content) return null;
+                const cost = JSON.parse(content) as Partial<Resources>;
+                return (
+                    <div className="flex gap-2">
+                        {cost.wood && <span className="flex items-center gap-1"><Trees className="text-green-500" size={16} />{cost.wood}</span>}
+                        {cost.brick && <span className="flex items-center gap-1"><BrickWall className="text-orange-500" size={16} />{cost.brick}</span>}
+                        {cost.sheep && <span className="flex items-center gap-1"><Cloud className="text-slate-300" size={16} />{cost.sheep}</span>}
+                        {cost.wheat && <span className="flex items-center gap-1"><Wheat className="text-yellow-500" size={16} />{cost.wheat}</span>}
+                        {cost.ore && <span className="flex items-center gap-1"><Mountain className="text-gray-400" size={16} />{cost.ore}</span>}
+                    </div>
+                );
+            }}
+        />
         {/* Main Game Area: Absolute Layers to ensure robustness */}
         <div className="board-area relative w-full h-full overflow-hidden">
             {/* 1. Board Canvas (Background) */}
@@ -52,6 +74,25 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
       <Toaster />
+      <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+      <Tooltip
+            id="cost-tooltip"
+            place="top"
+            className="z-[100]"
+            render={({ content }) => {
+                if (!content) return null;
+                const cost = JSON.parse(content) as Partial<Resources>;
+                return (
+                    <div className="flex gap-2">
+                        {cost.wood && <span className="flex items-center gap-1"><Trees className="text-green-500" size={16} />{cost.wood}</span>}
+                        {cost.brick && <span className="flex items-center gap-1"><BrickWall className="text-orange-500" size={16} />{cost.brick}</span>}
+                        {cost.sheep && <span className="flex items-center gap-1"><Cloud className="text-slate-300" size={16} />{cost.sheep}</span>}
+                        {cost.wheat && <span className="flex items-center gap-1"><Wheat className="text-yellow-500" size={16} />{cost.wheat}</span>}
+                        {cost.ore && <span className="flex items-center gap-1"><Mountain className="text-gray-400" size={16} />{cost.ore}</span>}
+                    </div>
+                );
+            }}
+        />
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
       <div className="absolute inset-0 z-0">
         {board}

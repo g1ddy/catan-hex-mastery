@@ -167,33 +167,36 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                            <button
-                                onClick={() => toggleBuildMode('road', canAffordRoad)}
-                                disabled={!canAffordRoad}
-                                aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
-                                title="Road (1 Wood, 1 Brick)"
-                            >
-                                <MapPin size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                                disabled={!canAffordSettlement}
-                                aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
-                                title="Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            >
-                                <Home size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('city', canAffordCity)}
-                                disabled={!canAffordCity}
-                                aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
-                                title="City (3 Ore, 2 Wheat)"
-                            >
-                                <Castle size={20} />
-                            </button>
+                            <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.road)}>
+                                <button
+                                    onClick={() => toggleBuildMode('road', canAffordRoad)}
+                                    disabled={!canAffordRoad}
+                                    aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
+                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
+                                >
+                                    <MapPin size={20} />
+                                </button>
+                            </div>
+                            <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.settlement)}>
+                                <button
+                                    onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
+                                    disabled={!canAffordSettlement}
+                                    aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
+                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
+                                >
+                                    <Home size={20} />
+                                </button>
+                            </div>
+                            <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.city)}>
+                                <button
+                                    onClick={() => toggleBuildMode('city', canAffordCity)}
+                                    disabled={!canAffordCity}
+                                    aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
+                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
+                                >
+                                    <Castle size={20} />
+                                </button>
+                            </div>
                              {/* Dev Card Button (Placeholder) - maybe hide on mobile to save space if not needed yet? Keeping for consistency but simplified */}
                         </div>
 
@@ -223,36 +226,39 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                  <span className="text-xs text-slate-500">({G.lastRoll[0]}+{G.lastRoll[1]})</span>
                              </div>
                          )}
-                        <button
-                            onClick={() => toggleBuildMode('road', canAffordRoad)}
-                            disabled={!canAffordRoad}
-                            aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
-                            title="Build Road (1 Wood, 1 Brick)"
-                        >
-                            <MapPin size={20} />
-                            <span className="hidden md:inline">Road</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                            disabled={!canAffordSettlement}
-                            aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
-                            title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                        >
-                            <Home size={20} />
-                            <span className="hidden md:inline">Settlement</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('city', canAffordCity)}
-                            disabled={!canAffordCity}
-                            aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
-                            title="Build City (3 Ore, 2 Wheat)"
-                        >
-                            <Castle size={20} />
-                            <span className="hidden md:inline">City</span>
-                        </button>
+                        <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.road)}>
+                            <button
+                                onClick={() => toggleBuildMode('road', canAffordRoad)}
+                                disabled={!canAffordRoad}
+                                aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
+                                className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
+                            >
+                                <MapPin size={20} />
+                                <span className="hidden md:inline">Road</span>
+                            </button>
+                        </div>
+                        <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.settlement)}>
+                            <button
+                                onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
+                                disabled={!canAffordSettlement}
+                                aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
+                                className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
+                            >
+                                <Home size={20} />
+                                <span className="hidden md:inline">Settlement</span>
+                            </button>
+                        </div>
+                        <div className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS.city)}>
+                            <button
+                                onClick={() => toggleBuildMode('city', canAffordCity)}
+                                disabled={!canAffordCity}
+                                aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
+                                className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
+                            >
+                                <Castle size={20} />
+                                <span className="hidden md:inline">City</span>
+                            </button>
+                        </div>
                          <button
                             className="p-3 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                             title="Dev Card (Coming Soon)"
