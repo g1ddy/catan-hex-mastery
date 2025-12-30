@@ -300,7 +300,6 @@ const HexOverlays = ({
                             isGhost = true;
                             clickAction = () => {
                                 moves.placeSettlement(vId);
-                                setUiMode('viewing'); // Reset after place
                             };
 
                             // Check recommendation
