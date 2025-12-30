@@ -363,7 +363,15 @@ const HexOverlays = ({
                             </React.Fragment>
                         )}
                         {isGhost && (
-                            <circle cx={corner.x} cy={corner.y} r={isRecommended ? 1.5 : 1} fill="white" opacity={0.5} className="ghost-vertex" />
+                            <circle
+                                cx={corner.x}
+                                cy={corner.y}
+                                r={isRecommended ? 1.5 : 1}
+                                fill="white"
+                                opacity={0.5}
+                                className="ghost-vertex"
+                                data-testid="ghost-vertex"
+                            />
                         )}
                         {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
@@ -473,6 +481,7 @@ const HexOverlays = ({
                                 width={6} height={2}
                                 fill="white" opacity={0.5}
                                 transform={`rotate(${angle} ${midX} ${midY})`}
+                                data-testid="ghost-edge"
                             />
                         )}
                     </g>
