@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
-import React from 'react';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
