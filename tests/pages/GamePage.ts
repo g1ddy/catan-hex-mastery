@@ -45,29 +45,14 @@ export class GamePage {
     await this.page.getByText('Place a Settlement').click();
 
     // Wait for ghost vertices
-    await this.ghostVertex.first().waitFor({ state: 'visible', timeout: 2000 });
-
-    // Click the first available ghost vertex
-    // Python test had a check for count > 0, Playwright auto-waits but we can be explicit
-    const count = await this.ghostVertex.count();
-    if (count > 0) {
-        await this.ghostVertex.first().click();
-    } else {
-        throw new Error('No ghost vertices found for settlement placement');
-    }
+    // Wait for ghost vertices and click the first one.
+    await this.ghostVertex.first().click({ timeout: 2000 });
   }
 
   async placeRoad() {
     await this.page.getByText('Place a Road').click();
 
-    await this.ghostEdge.first().waitFor({ state: 'visible', timeout: 2000 });
-
-    const count = await this.ghostEdge.count();
-    if (count > 0) {
-        await this.ghostEdge.first().click();
-    } else {
-        throw new Error('No ghost edges found for road placement');
-    }
+    await this.ghostEdge.first().click({ timeout: 2000 });
   }
 
   async getRollButtonBoundingBox() {
