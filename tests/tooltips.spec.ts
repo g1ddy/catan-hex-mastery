@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('Verify Tooltips and Build Buttons', async ({ page }) => {
+  // Explicitly set Desktop viewport to ensure consistent layout and selector behavior
+  await page.setViewportSize({ width: 1280, height: 800 });
+
   // 1. Setup Page Verification
   await page.goto('/');
 
@@ -29,20 +32,17 @@ test('Verify Tooltips and Build Buttons', async ({ page }) => {
   await expect(page.locator('text=Place a Settlement')).toBeVisible({ timeout: 10000 });
 
   // Check ResourceIconRow tooltips
-  // We look for spans that have the correct tooltip content for "Wood"
-  // The ResourceIconRow renders spans with data-tooltip-content="Wood" etc.
-  const woodIcon = page.locator('span[data-tooltip-content="Wood"]').first();
-  await expect(woodIcon).toBeVisible();
+  // We explicitly target the desktop container (.hidden.md:block) to ensure we get the visible one.
+  // The Mobile one (md:hidden) comes first in DOM but is hidden on desktop viewports.
+  const desktopIconRow = page.locator('.hidden.md\\:block');
 
+  const woodIcon = desktopIconRow.locator('span[data-tooltip-content="Wood"]').first();
+  await expect(woodIcon).toBeVisible();
   await expect(woodIcon).toHaveAttribute('data-tooltip-id', 'resource-tooltip');
 
-  // Check other resources to ensure map worked
-  await expect(page.locator('span[data-tooltip-content="Brick"]').first()).toBeVisible();
-  await expect(page.locator('span[data-tooltip-content="Sheep"]').first()).toBeVisible();
-  await expect(page.locator('span[data-tooltip-content="Wheat"]').first()).toBeVisible();
-  await expect(page.locator('span[data-tooltip-content="Ore"]').first()).toBeVisible();
-
-  // Note: Build buttons are not visible in 'setup' phase (which we are in now), so we can't test them here easily without
-  // playing through the setup. However, verifying the Setup tooltip and ResourceIconRow tooltips covers the key refactors
-  // (generic render function and map logic).
+  // Check other resources to ensure map worked, using the same robust selector
+  await expect(desktopIconRow.locator('span[data-tooltip-content="Brick"]').first()).toBeVisible();
+  await expect(desktopIconRow.locator('span[data-tooltip-content="Sheep"]').first()).toBeVisible();
+  await expect(desktopIconRow.locator('span[data-tooltip-content="Wheat"]').first()).toBeVisible();
+  await expect(desktopIconRow.locator('span[data-tooltip-content="Ore"]').first()).toBeVisible();
 });

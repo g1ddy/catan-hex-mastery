@@ -12,7 +12,6 @@ import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
-import { useIsMobile } from '../hooks/useIsMobile';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
@@ -65,7 +64,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
-  const isMobile = useIsMobile();
 
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
@@ -155,7 +153,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <PlayerPanel
           players={G.players}
           currentPlayerId={ctx.currentPlayer}
-          variant={isMobile ? 'docked' : 'floating'}
         />
       }
       gameControls={
