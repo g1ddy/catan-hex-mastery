@@ -13,7 +13,8 @@ import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { getBestSettlementSpots, CoachRecommendation } from '../game/analysis/coach';
+import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
+import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -34,6 +35,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   }, [ctx.currentPlayer, playerID, onPlayerChange]);
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
+  const [showCoachMode, setShowCoachMode] = useState<boolean>(true);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -66,7 +68,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const isMobile = useIsMobile();
 
   const BoardContent = (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="board absolute inset-0 overflow-hidden">
         {/* Tooltip for Coach Mode */}
         <Tooltip
             id="coach-tooltip"
@@ -137,6 +139,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 setBuildMode={setBuildMode}
                 uiMode={uiMode}
                 setUiMode={setUiMode}
+                showCoachMode={showCoachMode}
               />
             ))}
           </g>
@@ -173,6 +176,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           G={G}
           onRegenerate={() => moves.regenerateBoard()}
           showRegenerate={ctx.phase === 'setup'}
+          showCoachMode={showCoachMode}
+          setShowCoachMode={setShowCoachMode}
         />
       }
     />
@@ -180,7 +185,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 };
 
 const HexOverlays = ({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode
 }: {
     hex: Hex,
     G: GameState,
@@ -189,15 +194,34 @@ const HexOverlays = ({
     buildMode: BuildMode,
     setBuildMode: (mode: BuildMode) => void,
     uiMode: UiMode,
-    setUiMode: (mode: UiMode) => void
+    setUiMode: (mode: UiMode) => void,
+    showCoachMode: boolean
 }) => {
-    // Coach Recommendations
-    const recommendations = React.useMemo(() => {
-        if (ctx.phase === 'setup' && uiMode === 'placing') {
-            return getBestSettlementSpots(G, ctx.currentPlayer);
+    // Coach Recommendations / Heatmap Scores
+    const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
+        if (!showCoachMode) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+
+        // Active when placing settlement in Setup OR Gameplay
+        const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
+        const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
+
+        if (isSetupPlacing || isGamePlacing) {
+            const allScores = getAllSettlementScores(G, ctx.currentPlayer);
+            if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+
+            const vals = allScores.map(s => s.score);
+            const sorted = [...allScores].sort((a, b) => b.score - a.score);
+            const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+
+            return {
+                scores: allScores,
+                minScore: Math.min(...vals),
+                maxScore: Math.max(...vals),
+                top3Set: new Set(top3Ids)
+            };
         }
-        return [];
-    }, [G, ctx.phase, uiMode, ctx.currentPlayer]);
+        return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer, showCoachMode]);
 
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
@@ -251,6 +275,8 @@ const HexOverlays = ({
                 let isGhost = false;
                 let isRecommended = false;
                 let recommendationData: CoachRecommendation | undefined;
+                let heatmapColor = "";
+                let isTop3 = false;
                 let clickAction = () => {};
 
                 if (isSetup) {
@@ -263,11 +289,17 @@ const HexOverlays = ({
                                 moves.placeSettlement(vId);
                             };
 
-                            // Check recommendation
-                            const rec = recommendations.find(r => r.vertexId === vId);
-                            if (rec) {
-                                isRecommended = true;
-                                recommendationData = rec;
+                            // Heatmap Logic
+                            if (showCoachMode) {
+                                const rec = scores.find(r => r.vertexId === vId);
+                                if (rec) {
+                                    isRecommended = true;
+                                    recommendationData = rec;
+                                    heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    if (top3Set.has(vId)) {
+                                        isTop3 = true;
+                                    }
+                                }
                             }
                         }
                     }
@@ -286,6 +318,19 @@ const HexOverlays = ({
                             clickAction = () => {
                                 moves.buildSettlement(vId);
                                 setBuildMode(null);
+                            }
+
+                             // Heatmap Logic
+                             if (showCoachMode) {
+                                const rec = scores.find(r => r.vertexId === vId);
+                                if (rec) {
+                                    isRecommended = true;
+                                    recommendationData = rec;
+                                    heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    if (top3Set.has(vId)) {
+                                        isTop3 = true;
+                                    }
+                                }
                             }
                         }
                     } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
@@ -322,29 +367,56 @@ const HexOverlays = ({
                                 )}
                             </React.Fragment>
                         )}
-                        {isGhost && (
-                            <circle
-                                cx={corner.x}
-                                cy={corner.y}
-                                r={isRecommended ? 1.5 : 1}
-                                fill="white"
-                                opacity={0.5}
-                                className="ghost-vertex"
-                                data-testid="ghost-vertex"
-                            />
+
+                        {/* Ghost Vertex (White Dot for Click Target) */}
+                        {isGhost && !isRecommended && (
+                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
                         )}
-                        {/* Highlight upgrade target */}
+
+                         {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
                              <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse" />
                         )}
-                        {/* Coach Recommendation Highlight */}
+
+                        {/* Heatmap Overlay */}
                         {isRecommended && (
                              <g
                                 className="coach-highlight"
                                 data-tooltip-id="coach-tooltip"
                                 data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
                              >
-                                <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
+                                {/* Base Heatmap Circle */}
+                                <circle
+                                    cx={corner.x} cy={corner.y}
+                                    r={4}
+                                    fill={heatmapColor}
+                                    opacity={0.6}
+                                    stroke="none"
+                                />
+
+                                {/* Top 3 Highlight (Gold Ring) */}
+                                {isTop3 && (
+                                    <circle
+                                        cx={corner.x}
+                                        cy={corner.y}
+                                        r={5}
+                                        fill="none"
+                                        stroke="#FFD700"
+                                        strokeWidth={2}
+                                        className="animate-pulse"
+                                    />
+                                )}
+
+                                {/* Subtle ring for all recommendations */}
+                                {!isTop3 && (
+                                    <circle
+                                        cx={corner.x} cy={corner.y}
+                                        r={4}
+                                        fill="none"
+                                        stroke={heatmapColor}
+                                        strokeWidth={0.5}
+                                    />
+                                )}
                              </g>
                         )}
                     </g>
