@@ -50,7 +50,7 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
 
   // Default assertions
   expect(counts.op100).toBeGreaterThanOrEqual(1);
-  expect(counts.op100).toBeLessThanOrEqual(5);
+  expect(counts.op100).toBeLessThanOrEqual(3);
   expect(counts.op0).toBeGreaterThan(5);
   expect(counts.op0 + counts.op100).toBe(totalCount);
 
