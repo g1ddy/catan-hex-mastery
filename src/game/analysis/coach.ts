@@ -29,7 +29,10 @@ const TERRAIN_TO_RESOURCE: Record<string, string> = {
     'Mountains': 'ore'
 };
 
-export function getBestSettlementSpots(G: GameState, playerID: string): CoachRecommendation[] {
+/**
+ * Calculates scores for all valid settlement spots on the board.
+ */
+export function getAllSettlementScores(G: GameState, playerID: string): CoachRecommendation[] {
     const recommendations: CoachRecommendation[] = [];
     const hexes = G.board.hexes;
     const vertices = G.board.vertices;
@@ -192,6 +195,30 @@ export function getBestSettlementSpots(G: GameState, playerID: string): CoachRec
         });
     });
 
-    // Sort by score desc
-    return recommendations.sort((a, b) => b.score - a.score).slice(0, 3);
+    return recommendations;
+}
+
+export function getBestSettlementSpots(G: GameState, playerID: string): CoachRecommendation[] {
+    const allScores = getAllSettlementScores(G, playerID);
+    // Sort by score desc and take top 3
+    return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
+}
+
+/**
+ * Returns a color string (HSL) interpolating between Red (Low), Yellow (Mid), and Green (High).
+ * @param score The score to map.
+ * @param min The minimum score in the range (corresponds to Red).
+ * @param max The maximum score in the range (corresponds to Green).
+ */
+export function getHeatmapColor(score: number, min: number, max: number): string {
+    if (min === max) return 'hsl(120, 100%, 50%)'; // Default Green if no range
+
+    // Normalize score between 0 and 1
+    let ratio = (score - min) / (max - min);
+    ratio = Math.max(0, Math.min(1, ratio)); // Clamp
+
+    // Interpolate Hue: 0 (Red) -> 60 (Yellow) -> 120 (Green)
+    const hue = ratio * 120;
+
+    return `hsl(${hue}, 100%, 50%)`;
 }

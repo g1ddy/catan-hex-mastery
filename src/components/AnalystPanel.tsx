@@ -8,9 +8,11 @@ interface AnalystPanelProps {
   onRegenerate?: () => void;
   showRegenerate?: boolean;
   G?: GameState;
+  showCoachMode?: boolean;
+  setShowCoachMode?: (show: boolean) => void;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate, G }) => {
+const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate, G, showCoachMode, setShowCoachMode }) => {
   const getFairnessColorClass = (score: number) => {
     if (score >= 90) return 'text-green-400';
     if (score >= 70) return 'text-orange-400';
@@ -21,8 +23,27 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
 
   return (
     <div className="text-slate-100 h-full">
-      <div className="flex justify-between items-center flex-wrap gap-2.5 mb-5">
-        <h2 className="text-xl font-bold">Analyst Dashboard</h2>
+      <div className="flex flex-col gap-4 mb-5">
+        <div className="flex justify-between items-center flex-wrap gap-2.5">
+            <h2 className="text-xl font-bold">Analyst Dashboard</h2>
+        </div>
+
+        {/* Coach Mode Toggle */}
+        {setShowCoachMode && (
+          <div className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700">
+             <span className="font-semibold text-sm">Coach Mode</span>
+             <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={showCoachMode}
+                    onChange={(e) => setShowCoachMode(e.target.checked)}
+                />
+                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+             </label>
+          </div>
+        )}
+
         {showRegenerate && onRegenerate && (
           <button className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors" onClick={onRegenerate}>
             Regenerate Board
