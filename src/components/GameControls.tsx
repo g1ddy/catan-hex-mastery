@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { GameState } from '../game/types';
+import { GameState, Resources } from '../game/types';
+import React from 'react';
+import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 
@@ -106,9 +108,27 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // Action Phase
         if (G.hasRolled || stage === 'action') {
-            const isActive = (mode: BuildMode) => buildMode === mode ? "bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]" : "bg-slate-800 text-slate-300 hover:bg-slate-700";
+            const resources = G.players[ctx.currentPlayer].resources;
 
-            const toggleBuildMode = (mode: BuildMode) => {
+            const canAfford = (cost: Partial<Resources>): boolean => {
+                return (Object.keys(cost) as Array<keyof Resources>).every(
+                    resource => resources[resource] >= (cost[resource] || 0)
+                );
+            };
+
+            const canAffordRoad = canAfford(BUILD_COSTS.road);
+            const canAffordSettlement = canAfford(BUILD_COSTS.settlement);
+            const canAffordCity = canAfford(BUILD_COSTS.city);
+
+            // Helper to generate class string based on affordability and active state
+            const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
+                if (buildMode === mode) return "bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]";
+                if (!canAfford) return "bg-slate-800 text-slate-500 cursor-not-allowed opacity-50";
+                return "bg-slate-800 text-slate-300 hover:bg-slate-700";
+            };
+
+            const toggleBuildMode = (mode: BuildMode, canAfford: boolean) => {
+                if (!canAfford && buildMode !== mode) return; // Prevent enabling if can't afford
                 setBuildMode(buildMode === mode ? null : mode);
             };
 
@@ -134,23 +154,26 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                             <button
-                                onClick={() => toggleBuildMode('road')}
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('road')}`}
-                                title="Road"
+                                onClick={() => toggleBuildMode('road', canAffordRoad)}
+                                disabled={!canAffordRoad}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
+                                title="Road (1 Wood, 1 Brick)"
                             >
                                 <MapPin size={20} />
                             </button>
                              <button
-                                onClick={() => toggleBuildMode('settlement')}
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('settlement')}`}
-                                title="Settlement"
+                                onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
+                                disabled={!canAffordSettlement}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
+                                title="Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                             >
                                 <Home size={20} />
                             </button>
                              <button
-                                onClick={() => toggleBuildMode('city')}
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${isActive('city')}`}
-                                title="City"
+                                onClick={() => toggleBuildMode('city', canAffordCity)}
+                                disabled={!canAffordCity}
+                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
+                                title="City (3 Ore, 2 Wheat)"
                             >
                                 <Castle size={20} />
                             </button>
@@ -183,24 +206,27 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                              </div>
                          )}
                         <button
-                            onClick={() => toggleBuildMode('road')}
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('road')}`}
+                            onClick={() => toggleBuildMode('road', canAffordRoad)}
+                            disabled={!canAffordRoad}
+                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
                             title="Build Road (1 Wood, 1 Brick)"
                         >
                             <MapPin size={20} />
                             <span className="hidden md:inline">Road</span>
                         </button>
                          <button
-                            onClick={() => toggleBuildMode('settlement')}
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('settlement')}`}
+                            onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
+                            disabled={!canAffordSettlement}
+                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
                             title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                         >
                             <Home size={20} />
                             <span className="hidden md:inline">Settlement</span>
                         </button>
                          <button
-                            onClick={() => toggleBuildMode('city')}
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${isActive('city')}`}
+                            onClick={() => toggleBuildMode('city', canAffordCity)}
+                            disabled={!canAffordCity}
+                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
                             title="Build City (3 Ore, 2 Wheat)"
                         >
                             <Castle size={20} />
