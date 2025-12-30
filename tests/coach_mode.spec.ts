@@ -16,16 +16,19 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // We need to open it to access the toggle.
   const openStatsBtn = page.getByLabel('Open Stats');
 
-  const coachToggle = page.locator('input[type="checkbox"]').first();
+  // Locate the input for verification, but use the label for clicking
+  const coachToggleInput = page.locator('input[type="checkbox"]').first();
+  // Find the label wrapping the input
+  const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
 
   if (await openStatsBtn.isVisible()) {
     await openStatsBtn.click();
     // Wait for the toggle to appear in the DOM/become visible
-    await expect(coachToggle).toBeVisible();
+    await expect(coachToggleLabel).toBeVisible();
   }
 
   // Now find the toggle. It's an input inside the dashboard.
-  await expect(coachToggle).not.toBeChecked();
+  await expect(coachToggleInput).not.toBeChecked();
 
   // 4. Verify Heatmap Classes
   const highlights = page.locator('.coach-highlight');
@@ -52,7 +55,11 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   expect(counts.op0 + counts.op100).toBe(totalCount);
 
   // 5. Test Toggle ON (Full Mode)
-  await coachToggle.click({ force: true });
+  // Click the label instead of the hidden input for better browser compatibility (Safari)
+  await coachToggleLabel.click();
+
+  // Verify state changed
+  await expect(coachToggleInput).toBeChecked();
 
   // Use built-in assertions to wait for state change
   await expect(page.locator('.coach-highlight.opacity-0')).toHaveCount(0);
@@ -60,7 +67,10 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
 
 
   // 6. Test Toggle OFF again
-  await coachToggle.click({ force: true });
+  await coachToggleLabel.click();
+
+  // Verify state changed
+  await expect(coachToggleInput).not.toBeChecked();
 
   // Wait for state to revert
   await expect(page.locator('.coach-highlight.opacity-0')).not.toHaveCount(0);
