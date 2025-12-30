@@ -94,7 +94,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                       </div>
                   </div>
               </div>
-          ), { duration: 4000, position: 'top-center' });
+          ), { id: 'production-roll-toast', duration: 4000, position: 'top-center' });
       }
 
   }, [G.lastRoll]);
