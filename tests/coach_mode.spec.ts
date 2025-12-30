@@ -26,8 +26,8 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 4. Verify Heatmap Elements
   const highlights = page.locator('.coach-highlight');
 
-  // Wait a bit for calculation/render
-  await page.waitForTimeout(1000);
+  // Wait for the first highlight to be visible.
+  await expect(highlights.first()).toBeVisible();
 
   const count = await highlights.count();
   console.log(`Found ${count} coach highlights`);
