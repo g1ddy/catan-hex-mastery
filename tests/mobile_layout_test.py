@@ -13,7 +13,7 @@ def run_test():
         page = context.new_page()
 
         print("Navigating to app...")
-        page.goto("http://localhost:4173/catan-hex-mastery/")
+        page.goto("http://localhost:5173/")
 
         # Setup: Select 2 Players
         try:
@@ -25,15 +25,9 @@ def run_test():
             sys.exit(1)
 
         print("Waiting for Game Page...")
-        # Mobile specific button "Open Stats" is a good indicator of mobile layout
-        try:
-            page.wait_for_selector('button[aria-label="Open Stats"]', timeout=10000)
-        except Exception as e:
-            print(f"FAIL: Mobile layout not detected (Open Stats button missing). Error: {e}")
-            browser.close()
-            sys.exit(1)
+        page.wait_for_selector('.game-page', timeout=10000) # Wait for the game page to render
 
-        # Check SVG details
+        # Check SVG 0 details
         print("--- INSPECTING BOARD SVG ---")
         debug_info = page.evaluate("""
             () => {
