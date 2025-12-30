@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { GameState, Player } from '../game/types';
 import { Trees } from 'lucide-react';
 import { ResourceIconRow } from './ResourceIconRow';
@@ -6,78 +6,87 @@ import { ResourceIconRow } from './ResourceIconRow';
 interface PlayerPanelProps {
   players: GameState['players'];
   currentPlayerId: string;
-  variant?: 'floating' | 'docked';
 }
 
-export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayerId, variant = 'floating' }) => {
+export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayerId }) => {
   const playerList = Object.values(players);
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  if (variant === 'docked') {
-    // New Overlay Mobile Style
-    // Top-center floating panel. Glassmorphism.
-    return (
-      <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl text-slate-100 shadow-xl overflow-hidden transition-all">
-        {/* Header / Summary Row */}
-        <div className="flex items-center justify-between p-2 px-3" onClick={() => setIsExpanded(!isExpanded)}>
-             <div className="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide w-full justify-center">
-                {playerList.map((player: Player) => {
-                    const isActive = player.id === currentPlayerId;
-
-                    if (isActive) {
-                        // Active Player: Show Compact Resources Row
-                        return (
-                            <div key={player.id} className="flex items-center gap-2 p-1 px-2 rounded bg-slate-800 border border-slate-600">
-                                <div className="flex items-center gap-1 font-bold text-sm text-amber-400">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
-                                    P{Number(player.id) + 1}
-                                </div>
-                                <div className="h-4 w-px bg-slate-600 mx-1"></div>
-                                <ResourceIconRow resources={player.resources} size="sm" />
-                            </div>
-                        );
-                    } else {
-                        // Opponent: Summary Only
-                         return (
-                            <div key={player.id} className="flex items-center gap-2 p-1 px-2 rounded bg-transparent border border-transparent opacity-75">
-                                <div className="flex items-center gap-1 font-bold text-xs text-slate-300">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
-                                    P{Number(player.id) + 1}
-                                </div>
-                                <div className="text-[10px] text-slate-400">
-                                    VP:{player.victoryPoints} | <Trees size={10} className="inline"/> {Object.values(player.resources).reduce((a, b) => a + b, 0)}
-                                </div>
-                            </div>
-                        );
-                    }
-                })}
-            </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Floating (Desktop)
   return (
-    <div className="player-panel absolute top-20 left-4 w-64 bg-slate-900/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-100 z-[100]">
-      <h3 className="font-bold text-lg mb-2">Players</h3>
-      <div className="flex flex-col gap-3">
-        {playerList.map((player: Player) => (
-          <div key={player.id}
-               className={`p-2 rounded border transition-colors ${player.id === currentPlayerId ? 'border-slate-400 bg-slate-800' : 'border-slate-700 bg-transparent'}`}
-          >
-            <div className="flex items-center gap-2 font-bold text-base">
-              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
-              Player {Number(player.id) + 1}
+    <div className="
+        player-panel
+        absolute
+        top-4 left-4 right-4
+        md:top-20 md:left-4 md:right-auto md:w-64
+        bg-slate-900/90 backdrop-blur-md border border-slate-700
+        rounded-xl shadow-xl text-slate-100 z-[100]
+        transition-all
+    ">
+      {/* Header - Desktop Only */}
+      <h3 className="hidden md:block font-bold text-lg mb-2 p-4 pb-0">Players</h3>
+
+      {/* Content Container */}
+      <div className="
+          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center md:justify-start
+          md:flex-col md:overflow-visible md:p-4 md:pt-2 md:gap-3
+      ">
+        {playerList.map((player: Player) => {
+          const isActive = player.id === currentPlayerId;
+          // Styles for active state differences
+          const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
+          const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+
+          return (
+            <div key={player.id} className={`
+                flex items-center gap-2 rounded border transition-colors flex-shrink-0
+                p-1 px-2
+                ${mobileActive}
+                md:w-full md:block md:p-2 md:opacity-100
+                ${desktopBorder}
+            `}>
+              {/* Header: Identity */}
+              <div className="flex items-center gap-1 font-bold text-sm md:text-base md:mb-1">
+                <div className="w-2 h-2 md:w-3 md:h-3 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
+
+                {/* Text: P1 vs Player 1 */}
+                <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
+                    P{Number(player.id) + 1}
+                </span>
+                <span className="hidden md:inline text-slate-100">
+                    Player {Number(player.id) + 1}
+                </span>
+              </div>
+
+              {/* Desktop Details: VP, Sett, Roads */}
+              <div className="hidden md:block text-sm text-slate-300 mt-1 mb-2">
+                VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
+              </div>
+
+              {/* Resources & Mobile Summary */}
+              <div className="flex items-center md:block">
+                {/* Mobile Divider (Only if active) */}
+                <div className={`md:hidden h-4 w-px bg-slate-600 mx-1 ${isActive ? 'block' : 'hidden'}`}></div>
+
+                {/* Resource Row - Show if active on mobile, always on desktop */}
+                <div className={`${isActive ? 'block' : 'hidden'} md:block`}>
+                     {/* Use explicit display classes to switch sizes or just use one size that fits both?
+                         Desktop uses 'md', Mobile uses 'sm'.
+                     */}
+                     <div className="md:hidden">
+                        <ResourceIconRow resources={player.resources} size="sm" />
+                     </div>
+                     <div className="hidden md:block">
+                        <ResourceIconRow resources={player.resources} size="md" />
+                     </div>
+                </div>
+
+                 {/* Mobile Inactive Summary (VP + Count) */}
+                 <div className={`md:hidden text-[10px] text-slate-400 flex items-center gap-1 ${!isActive ? 'block' : 'hidden'}`}>
+                    VP:{player.victoryPoints} | <Trees size={10} className="inline"/> {Object.values(player.resources).reduce((a, b) => a + b, 0)}
+                 </div>
+              </div>
             </div>
-            <div className="text-sm text-slate-300 mt-1">
-              VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
-            </div>
-            <div className="flex gap-3 text-sm mt-2 items-center">
-              <ResourceIconRow resources={player.resources} size="md" />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

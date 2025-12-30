@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Player Panel Tests', () => {
   test('Desktop: Player Panel is visible and tooltips work', async ({ page }) => {
+    // Explicitly set Desktop viewport to ensure responsive classes (md:) trigger correctly
+    // regardless of the browser project configuration (e.g. Mobile Safari worker).
+    await page.setViewportSize({ width: 1280, height: 800 });
+
     // Navigate to game with 2 players
     await page.goto('/');
     await page.click('button:has-text("2 Players")');
@@ -18,13 +22,19 @@ test.describe('Player Panel Tests', () => {
     const playerPanel = page.locator('.player-panel');
     await expect(playerPanel).toBeVisible();
 
+    // Verify "Players" header is visible on Desktop
+    await expect(playerPanel.locator('h3:has-text("Players")')).toBeVisible();
+
     // Verify Player 1 and Player 2 are listed
+    // On desktop, "Player 1" text should be visible.
     await expect(playerPanel.locator('text=Player 1')).toBeVisible();
     await expect(playerPanel.locator('text=Player 2')).toBeVisible();
 
     // Find a resource icon (Wood) in the player panel
-    // We target the span that has data-tooltip-content="Wood" inside the player panel
-    const woodIcon = playerPanel.locator('span[data-tooltip-content="Wood"]').first();
+    // We explicitly target the desktop container (.hidden.md:block) to ensure we get the visible one.
+    // The class structure in PlayerPanel.tsx is <div className="hidden md:block">...<ResourceIconRow>
+    const desktopIconRow = playerPanel.locator('.hidden.md\\:block');
+    const woodIcon = desktopIconRow.locator('span[data-tooltip-content="Wood"]').first();
     await expect(woodIcon).toBeVisible();
 
     // Hover over the icon to trigger the tooltip
@@ -57,12 +67,28 @@ test.describe('Player Panel Tests', () => {
     await expect(page.locator('text=Place a Settlement')).toBeVisible();
 
     // In mobile, verify the summary row exists (Docked panel)
-    const p1Label = page.locator('text=P1');
-    await expect(p1Label).toBeVisible();
+    // The "Players" header should be hidden
+    const playerPanel = page.locator('.player-panel');
+    await expect(playerPanel.locator('h3:has-text("Players")')).toBeHidden();
 
-    // Verify resource icons for active player are visible immediately (as per code)
-    // The active player block in mobile has bg-slate-800 and should show icons.
-    const woodIcon = page.locator('span[data-tooltip-content="Wood"]').first();
+    // "Player 1" full text should be hidden, "P1" should be visible
+    const p1Label = playerPanel.locator('text=P1');
+    await expect(p1Label).toBeVisible();
+    await expect(playerPanel.locator('text=Player 1')).toBeHidden();
+
+    // Verify resource icons for active player are visible immediately.
+    // In our refactor, mobile icons are in the `.md:hidden` container.
+    // However, since we just want to verify *any* visible wood icon:
+    const woodIcon = playerPanel.locator('span[data-tooltip-content="Wood"]').first();
+
+    // Check it's visible. Since viewport is mobile, the desktop one is hidden via CSS,
+    // so .first() usually grabs the first one in DOM.
+    // If the mobile one comes first in DOM (it does), this works.
+    // To be safe, we can filter by visibility.
+    const visibleWoodIcon = playerPanel.locator('span[data-tooltip-content="Wood"]').filter({ has: page.locator('visible=true') }).first();
+    // Actually, pseudo-selectors like visible=true aren't standard in locator filter 'has'.
+    // Let's just trust that on mobile viewport, the desktop one is hidden.
+
     await expect(woodIcon).toBeVisible();
 
     // Trigger tooltip on mobile (tap/click)
