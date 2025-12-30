@@ -1,4 +1,3 @@
-import time
 import sys
 from playwright.sync_api import sync_playwright
 
@@ -41,25 +40,32 @@ def run_test():
             print("Action: Place Settlement")
             # Click instruction to toggle mode
             page.click("text=Place a Settlement")
-            time.sleep(0.5)
-            ghost = page.locator(".ghost-vertex").first
-            if ghost.count() > 0:
-                ghost.click(force=True)
+
+            # Wait for ghost vertices to appear
+            # The app logic sets uiMode='placing', which renders the ghost vertices
+            ghost_locator = page.locator(".ghost-vertex")
+            ghost_locator.first.wait_for(state="visible", timeout=2000)
+
+            if ghost_locator.count() > 0:
+                # Remove force=True to ensure actionability
+                ghost_locator.first.click()
             else:
                 print("Error: No ghost vertices found!")
-            time.sleep(1)
 
         # Helper to click a ghost edge (for road)
         def place_road():
             print("Action: Place Road")
             page.click("text=Place a Road")
-            time.sleep(0.5)
-            ghost = page.locator("rect[fill='white'][opacity='0.5']").first
-            if ghost.count() > 0:
-                ghost.click(force=True)
+
+            # Wait for ghost edges to appear
+            ghost_locator = page.locator("rect[fill='white'][opacity='0.5']")
+            ghost_locator.first.wait_for(state="visible", timeout=2000)
+
+            if ghost_locator.count() > 0:
+                # Remove force=True
+                ghost_locator.first.click()
             else:
                 print("Error: No ghost edges found!")
-            time.sleep(1)
 
         # Run Setup Sequence (Snake Draft: P1, P2, P2, P1)
         # P1

@@ -23,7 +23,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
         {/* Main Game Area: Flex Column */}
         <div className="board-area flex flex-col relative w-full h-full">
             {/* Top: Board Canvas & Overlays */}
-            <div className="flex-grow relative h-full w-full overflow-hidden">
+            <div className="flex-grow relative w-full overflow-hidden">
                 {board}
                 {/* Player Panel remains floating for now, but contained here */}
                 {playerPanel}
