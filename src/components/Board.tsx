@@ -13,9 +13,11 @@ import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { getBestSettlementSpots } from '../game/analysis/coach';
+import { getBestSettlementSpots, CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
 import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
@@ -104,6 +106,42 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const BoardContent = (
     <div className="absolute inset-0 overflow-hidden">
+        {/* Tooltip for Coach Mode */}
+        <Tooltip
+            id="coach-tooltip"
+            place="top"
+            className="coach-tooltip"
+            render={({ content }) => {
+                if (!content) return null;
+                const rec = JSON.parse(content) as CoachRecommendation;
+                const { score, details } = rec;
+                const parts = [];
+                // Pips
+                parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
+                // Scarcity
+                if (details.scarcityBonus && details.scarceResources.length > 0) {
+                    parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                // Diversity
+                if (details.diversityBonus) {
+                    parts.push('High Diversity');
+                }
+                // Synergy
+                if (details.synergyBonus) {
+                    parts.push('Synergy');
+                }
+                // Needed
+                if (details.neededResources.length > 0) {
+                     parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                return (
+                    <div>
+                        <div className="font-bold mb-1">Score: {score}</div>
+                        <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
+                    </div>
+                );
+            }}
+        />
 
       <HexGrid
         width="100%"
@@ -251,7 +289,7 @@ const HexOverlays = ({
                 let isClickable = false;
                 let isGhost = false;
                 let isRecommended = false;
-                let recommendationReason = "";
+                let recommendationData: CoachRecommendation | undefined;
                 let clickAction = () => {};
 
                 if (isSetup) {
@@ -269,7 +307,7 @@ const HexOverlays = ({
                             const rec = recommendations.find(r => r.vertexId === vId);
                             if (rec) {
                                 isRecommended = true;
-                                recommendationReason = `Score: ${rec.score} (${rec.reason})`;
+                                recommendationData = rec;
                             }
                         }
                     }
@@ -333,9 +371,12 @@ const HexOverlays = ({
                         )}
                         {/* Coach Recommendation Highlight */}
                         {isRecommended && (
-                             <g className="coach-highlight">
+                             <g
+                                className="coach-highlight"
+                                data-tooltip-id="coach-tooltip"
+                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                             >
                                 <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
-                                <title>{recommendationReason}</title>
                              </g>
                         )}
                     </g>
