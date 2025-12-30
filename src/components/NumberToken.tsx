@@ -5,21 +5,30 @@ interface NumberTokenProps {
   pips: number;
 }
 
+const TOKEN_COLORS = {
+  RED: '#dc2626', // red-600
+  DEFAULT: '#111827', // gray-900
+  BACKGROUND: '#f3e5ab',
+  STROKE: '#6b7280',
+};
+
+const GEOMETRY = {
+  RADIUS: 3.8,
+  PIP_RADIUS: 0.25,
+  PIP_GAP: 0.3, // slightly tighter than 0.5 to keep them together
+  PIP_Y: 2.2,   // Position pips below the number
+  FONT_SIZE: 3,
+  NUMBER_Y: 1,
+  STROKE_WIDTH: 0.2,
+};
+
 export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
   const isRed = value === 6 || value === 8;
-  const color = isRed ? '#dc2626' : '#111827'; // red-600 : gray-900
-
-  // Configuration for geometry (SVG units)
-  // Assuming the previous width="8" meant the token is 8 units wide.
-  const radius = 3.8;
-  const pipRadius = 0.25;
-  const pipGap = 0.3; // slightly tighter than 0.5 to keep them together
-  const pipY = 2.2;   // Position pips below the number
-  const fontSize = 3;
+  const color = isRed ? TOKEN_COLORS.RED : TOKEN_COLORS.DEFAULT;
 
   // Calculate total width of pips to center them
-  const totalPipWidth = (pips * (pipRadius * 2)) + ((pips - 1) * pipGap);
-  const startX = -(totalPipWidth / 2) + pipRadius;
+  const totalPipWidth = (pips * (GEOMETRY.PIP_RADIUS * 2)) + ((pips - 1) * GEOMETRY.PIP_GAP);
+  const startX = -(totalPipWidth / 2) + GEOMETRY.PIP_RADIUS;
 
   return (
     <g>
@@ -27,20 +36,20 @@ export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
       <circle
         cx="0"
         cy="0"
-        r={radius}
-        fill="#f3e5ab"
-        stroke="#6b7280"
+        r={GEOMETRY.RADIUS}
+        fill={TOKEN_COLORS.BACKGROUND}
+        stroke={TOKEN_COLORS.STROKE}
         strokeOpacity="0.5"
-        strokeWidth="0.2"
+        strokeWidth={GEOMETRY.STROKE_WIDTH}
       />
 
       {/* Number Value */}
       <text
         x="0"
-        y="1" // Vertically aligned - slightly down to visually center with pips below
+        y={GEOMETRY.NUMBER_Y} // Vertically aligned
         textAnchor="middle"
         fill={color}
-        fontSize={fontSize}
+        fontSize={GEOMETRY.FONT_SIZE}
         fontWeight="bold"
         style={{ pointerEvents: 'none', userSelect: 'none' }}
       >
@@ -52,9 +61,9 @@ export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
         {Array.from({ length: pips }).map((_, i) => (
           <circle
             key={i}
-            cx={startX + i * (pipRadius * 2 + pipGap)}
-            cy={pipY}
-            r={pipRadius}
+            cx={startX + i * (GEOMETRY.PIP_RADIUS * 2 + GEOMETRY.PIP_GAP)}
+            cy={GEOMETRY.PIP_Y}
+            r={GEOMETRY.PIP_RADIUS}
             fill={color}
           />
         ))}

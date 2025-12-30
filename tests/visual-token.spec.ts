@@ -14,46 +14,34 @@ test('Verify NumberToken SVG Structure', async ({ page }) => {
   // Wait for board - using a generic SVG check inside the main content area
   await expect(page.locator('svg').first()).toBeVisible();
 
-  // Find a token with value '6'
-  // logic: find a <text> with "6", then get its parent <g> (which is the NumberToken)
-  // We use xpath or locator filtering
-  const tokenSixText = page.locator('text="6"').first();
-  await expect(tokenSixText).toBeVisible();
+  const verifyToken = async (value: number, pipsCount: number, color: string) => {
+    // Find the text element with the value
+    const tokenText = page.locator(`text="${value}"`).first();
+    await expect(tokenText).toBeVisible();
 
-  // In the SVG structure:
-  // <g> (NumberToken)
-  //   <circle> (Background)
-  //   <text> (Number)
-  //   <g> (Pips Group)
-  //     <circle> (Pip) ...
+    // Select the parent group (NumberToken) using XPath parent selector
+    const tokenGroup = tokenText.locator('..');
 
-  // So we need to go up from text.
-  const tokenGroup = tokenSixText.locator('..');
+    // Verify background circle
+    const bgCircle = tokenGroup.locator('> circle').first();
+    await expect(bgCircle).toHaveAttribute('fill', '#f3e5ab');
 
-  // Verify background circle
-  const bgCircle = tokenGroup.locator('> circle').first();
-  await expect(bgCircle).toHaveAttribute('fill', '#f3e5ab');
+    // Verify Pips Group
+    const pipsGroup = tokenGroup.locator('> g');
+    await expect(pipsGroup).toBeVisible();
 
-  // Verify Pips Group
-  const pipsGroup = tokenGroup.locator('> g');
-  await expect(pipsGroup).toBeVisible();
+    // Verify pips count
+    const pips = pipsGroup.locator('circle');
+    await expect(pips).toHaveCount(pipsCount);
 
-  // Verify pips count for 6 is 5
-  const pips = pipsGroup.locator('circle');
-  await expect(pips).toHaveCount(5);
+    // Verify pip color
+    const fill = await pips.first().getAttribute('fill');
+    expect(fill).toBe(color);
+  };
 
-  // Verify pip color for 6 is red
-  // We need to fetch the fill attribute
-  const fill = await pips.first().getAttribute('fill');
-  // It might be #dc2626 or rgb(...) depending on browser, but in SVG DOM it usually keeps the attribute value.
-  expect(fill).toBe('#dc2626');
+  // Verify a red number token (6 has 5 pips)
+  await verifyToken(6, 5, '#dc2626');
 
-  // Verify a non-red number, e.g., '4' (3 pips)
-  const tokenFourText = page.locator('text="4"').first();
-  const tokenFourGroup = tokenFourText.locator('..');
-  const pipsFour = tokenFourGroup.locator('> g > circle');
-  await expect(pipsFour).toHaveCount(3);
-  // Color should be gray-900 (#111827)
-  const fillFour = await pipsFour.first().getAttribute('fill');
-  expect(fillFour).toBe('#111827');
+  // Verify a non-red number token (4 has 3 pips)
+  await verifyToken(4, 3, '#111827');
 });
