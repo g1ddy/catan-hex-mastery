@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 
 export class GamePage {
   readonly page: Page;
@@ -41,8 +41,9 @@ export class GamePage {
   }
 
   async placeSettlement() {
-    // Click instruction to toggle mode (assuming text logic from python test)
-    await this.page.getByText('Place a Settlement').click();
+    // Click "Begin Placement" to toggle mode
+    // We use getByRole for better accessibility testing, or text if specific role is ambiguous
+    await this.page.getByRole('button', { name: 'Begin Placement' }).click();
 
     // Wait for ghost vertices
     // Wait for ghost vertices and click the first one.
@@ -50,8 +51,10 @@ export class GamePage {
   }
 
   async placeRoad() {
-    await this.page.getByText('Place a Road').click();
+    // Road placement follows Settlement immediately in the new flow.
+    // We do NOT click "Begin Placement" again because uiMode is already 'placing'.
 
+    // Just wait for the ghost edge to appear and click it.
     await this.ghostEdge.first().click({ timeout: 2000 });
   }
 
