@@ -1,7 +1,6 @@
 import { CatanGame } from '../Game';
 import { GameState, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
-import * as _ from 'lodash';
 
 describe('Unit Test: Roll Dice & Resource Distribution', () => {
     // Helper to get the rollDice move from the Game definition
