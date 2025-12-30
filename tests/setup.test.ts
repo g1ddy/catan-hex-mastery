@@ -31,14 +31,15 @@ describe('Setup Phase Logic', () => {
 
   test('Cannot place settlement on top of another', () => {
     // Get a valid vertex from the board
-    const { G } = client.store.getState();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { G: _G } = client.store.getState();
     // Just pick a random vertex ID that would exist.
     // We can rely on hexUtils to construct one or iterate generated hexes.
     // Let's generate one from the center hex 0,0,0 and its neighbors.
     // 0,0,0 neighbors: 1,-1,0 and 1,0,-1
     // Vertex: 0,0,0::1,-1,0::1,0,-1 (sorted string)
     // Actually, let's just grab a hex from G.board.hexes
-    const hexId = Object.keys(G.board.hexes)[0]; // e.g., '0,0,0'
+    // const _hexId = Object.keys(G.board.hexes)[0]; // e.g., '0,0,0'
     // This isn't a vertex ID.
     // We need a valid vertex ID.
     // We can import `getVerticesForHex` but it's in src.
@@ -107,7 +108,8 @@ describe('Setup Phase Logic', () => {
   });
 
   test('Distance rule', () => {
-      const { G } = client.store.getState();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { G: _G } = client.store.getState();
       // P0 places at v1
       const v1 = "0,0,0::1,-1,0::1,0,-1";
       client.moves.placeSettlement(v1);

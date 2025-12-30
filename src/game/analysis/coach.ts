@@ -4,7 +4,15 @@ import { getVerticesForHex } from '../hexUtils';
 export interface CoachRecommendation {
     vertexId: string;
     score: number;
-    reason: string;
+    reason?: string; // Kept for backward compatibility if needed, though we will generate tooltips
+    details: {
+        pips: number;
+        scarcityBonus: boolean;
+        scarceResources: string[];
+        diversityBonus: boolean;
+        synergyBonus: boolean;
+        neededResources: string[];
+    };
 }
 
 const SCARCITY_THRESHOLD = 0.10;
@@ -62,13 +70,6 @@ export function getAllSettlementScores(G: GameState, playerID: string): CoachRec
     if (settlementCount === 1) {
         // Collect resources from the first settlement
         const s1VId = player.settlements[0];
-        // The vertex ID might be stored. We need to parse it to find adjacent hexes.
-        // We can reuse getHexesForVertex or parse manually.
-        // Assuming hexUtils exports or we replicate logic.
-        // Since getHexesForVertex returns IDs, we can look them up.
-        // But getHexesForVertex is not imported. I'll need to update imports or parse manually.
-        // Actually, vertexID is "h1::h2::h3".
-
         const s1HexIds = s1VId.split('::');
         s1HexIds.forEach(hid => {
             const h = hexes[hid];
@@ -127,23 +128,31 @@ export function getAllSettlementScores(G: GameState, playerID: string): CoachRec
 
         // Base Score = Pips
         let score = pips;
+        const details = {
+            pips: pips,
+            scarcityBonus: false,
+            scarceResources: [] as string[],
+            diversityBonus: false,
+            synergyBonus: false,
+            neededResources: [] as string[]
+        };
+
         const reasons: string[] = [`${pips} Pips`];
+        const uniqueResources = new Set(resources);
 
         // 1. Scarcity Multiplier
-        let hasScarcity = false;
-        resources.forEach(r => {
-            if (scarcityMap[r]) hasScarcity = true;
-        });
-        if (hasScarcity) {
+        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]);
+        if (scarceResources.length > 0) {
             score *= SCARCITY_MULTIPLIER;
+            details.scarcityBonus = true;
+            details.scarceResources = scarceResources;
             reasons.push('Scarcity Bonus');
         }
 
         // 2. Diversity Multiplier
-        // Check if resources are unique
-        const uniqueResources = new Set(resources);
         if (uniqueResources.size === 3 && resources.length === 3) {
             score *= DIVERSITY_MULTIPLIER;
+            details.diversityBonus = true;
             reasons.push('Diversity Bonus');
         }
 
@@ -157,18 +166,12 @@ export function getAllSettlementScores(G: GameState, playerID: string): CoachRec
 
             if ((hasWood && hasBrick) || (hasOre && hasWheat)) {
                 score += SYNERGY_BONUS;
+                details.synergyBonus = true;
                 reasons.push('Synergy');
             }
         } else if (settlementCount === 1) {
             // "One of Everything" Logic
             // For each resource this spot provides...
-            // Note: If duplicate types in this spot (e.g. 2 Ore), do we add +5 twice if we need Ore?
-            // Clarification was: "+5 points PER missing resource type acquired."
-            // "A spot with Ore gets +5."
-            // "A spot with Ore AND Wheat gets +10."
-            // It implies per TYPE.
-
-            // So we iterate the unique resources this spot provides.
             const newResources: string[] = [];
             uniqueResources.forEach(r => {
                 if (!existingResources.has(r)) {
@@ -179,14 +182,16 @@ export function getAllSettlementScores(G: GameState, playerID: string): CoachRec
 
             if (newResources.length > 0) {
                 // Sort for deterministic output
-                reasons.push(`Balances Economy (Added ${newResources.sort().join(', ')})`);
+                details.neededResources = newResources.sort();
+                reasons.push(`Balances Economy (Added ${newResources.join(', ')})`);
             }
         }
 
         recommendations.push({
             vertexId: vId,
             score: Math.round(score * 10) / 10, // Round to 1 decimal
-            reason: reasons.join(', ')
+            reason: reasons.join(', '), // Keep for compatibility if needed
+            details: details
         });
     });
 

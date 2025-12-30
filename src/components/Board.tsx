@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 // @ts-ignore
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState, Hex, Resources } from '../game/types';
+import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
 import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
@@ -14,20 +14,15 @@ import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
+import { getBestSettlementSpots, CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
-import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
+import { ProductionToast } from './ProductionToast';
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
 }
-
-const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
-    wood: <Trees size={16} className="text-green-700" />,
-    brick: <BrickWall size={16} className="text-red-700" />,
-    wheat: <Wheat size={16} className="text-yellow-600" />,
-    ore: <Mountain size={16} className="text-slate-600" />,
-    sheep: <Cloud size={16} className="text-blue-300" />
-};
 
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
   const hexes = Object.values(G.board.hexes);
@@ -61,39 +56,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       const rewards = G.lastRollRewards;
       if (rewards && Object.keys(rewards).length > 0) {
           toast.custom((t) => (
-              <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-slate-800 shadow-lg rounded-lg pointer-events-auto flex flex-col ring-1 ring-black ring-opacity-5`}>
-                  <div className="flex-1 w-0 p-4">
-                      <div className="flex items-start">
-                          <div className="ml-3 flex-1">
-                              <p className="text-sm font-medium text-slate-100">
-                                  Production (Roll: {sum})
-                              </p>
-                              <div className="mt-1 text-sm text-slate-300">
-                                  {Object.entries(rewards).map(([pid, res]) => {
-                                      const playerColor = G.players[pid].color;
-                                      return (
-                                          <div key={pid} className="flex items-center gap-2 mt-1">
-                                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: playerColor }} />
-                                              <span className="font-bold">Player {Number(pid) + 1}:</span>
-                                              <div className="flex gap-2">
-                                                  {Object.entries(res).map(([type, amount]) => {
-                                                      if (!amount) return null;
-                                                      return (
-                                                          <span key={type} className="flex items-center gap-0.5 bg-slate-700 px-1.5 rounded text-xs">
-                                                              +{amount} {RESOURCE_ICONS[type as keyof Resources]}
-                                                          </span>
-                                                      );
-                                                  })}
-                                              </div>
-                                          </div>
-                                      );
-                                  })}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          ), { duration: 4000, position: 'top-center' });
+              <ProductionToast G={G} sum={sum} visible={t.visible} />
+          ), { id: 'production-roll-toast', duration: 4000, position: 'top-center' });
       }
 
   }, [G.lastRoll]);
@@ -105,6 +69,42 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const BoardContent = (
     <div className="absolute inset-0 overflow-hidden">
+        {/* Tooltip for Coach Mode */}
+        <Tooltip
+            id="coach-tooltip"
+            place="top"
+            className="coach-tooltip"
+            render={({ content }) => {
+                if (!content) return null;
+                const rec = JSON.parse(content) as CoachRecommendation;
+                const { score, details } = rec;
+                const parts = [];
+                // Pips
+                parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
+                // Scarcity
+                if (details.scarcityBonus && details.scarceResources.length > 0) {
+                    parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                // Diversity
+                if (details.diversityBonus) {
+                    parts.push('High Diversity');
+                }
+                // Synergy
+                if (details.synergyBonus) {
+                    parts.push('Synergy');
+                }
+                // Needed
+                if (details.neededResources.length > 0) {
+                     parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                }
+                return (
+                    <div>
+                        <div className="font-bold mb-1">Score: {score}</div>
+                        <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
+                    </div>
+                );
+            }}
+        />
 
       <HexGrid
         width="100%"
@@ -167,7 +167,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           setBuildMode={setBuildMode}
           uiMode={uiMode}
           setUiMode={setUiMode}
-          variant={isMobile ? 'docked' : 'floating'}
+          variant={'docked'}
         />
       }
       dashboard={
@@ -272,6 +272,8 @@ const HexOverlays = ({
                 let isRecommended = false; // "Recommended" now implies Heatmap visibility
                 let recommendationReason = "";
                 let heatmapColor = "";
+                let isRecommended = false;
+                let recommendationData: CoachRecommendation | undefined;
                 let clickAction = () => {};
 
                 if (isSetup) {
@@ -282,7 +284,6 @@ const HexOverlays = ({
                             isGhost = true;
                             clickAction = () => {
                                 moves.placeSettlement(vId);
-                                setUiMode('viewing'); // Reset after place
                             };
 
                             // Heatmap Logic
@@ -293,6 +294,11 @@ const HexOverlays = ({
                                     recommendationReason = `Score: ${rec.score} (${rec.reason})`;
                                     heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
                                 }
+                            // Check recommendation
+                            const rec = recommendations.find(r => r.vertexId === vId);
+                            if (rec) {
+                                isRecommended = true;
+                                recommendationData = rec;
                             }
                         }
                     }
@@ -361,6 +367,16 @@ const HexOverlays = ({
                         {/* Ghost Vertex (White Dot for Click Target) */}
                         {isGhost && !isRecommended && (
                             <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
+                        {isGhost && (
+                            <circle
+                                cx={corner.x}
+                                cy={corner.y}
+                                r={isRecommended ? 1.5 : 1}
+                                fill="white"
+                                opacity={0.5}
+                                className="ghost-vertex"
+                                data-testid="ghost-vertex"
+                            />
                         )}
 
                         {/* Highlight upgrade target */}
@@ -388,6 +404,12 @@ const HexOverlays = ({
                                     strokeWidth={0.5}
                                 />
                                 <title>{recommendationReason}</title>
+                             <g
+                                className="coach-highlight"
+                                data-tooltip-id="coach-tooltip"
+                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                             >
+                                <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
                              </g>
                         )}
                     </g>
@@ -484,6 +506,7 @@ const HexOverlays = ({
                                 width={6} height={2}
                                 fill="white" opacity={0.5}
                                 transform={`rotate(${angle} ${midX} ${midY})`}
+                                data-testid="ghost-edge"
                             />
                         )}
                     </g>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
-import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
+import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
+import { BUILD_BUTTON_CONFIG } from './uiConfig';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -17,6 +18,23 @@ interface GameControlsProps {
     setUiMode: (mode: UiMode) => void;
     variant?: 'floating' | 'docked';
 }
+
+const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
+    <button
+        onClick={onClick}
+        className={className}
+    >
+        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>Begin Placement</span>
+    </button>
+);
+
+const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ text, className }) => (
+    <div className={className}>
+        <span className={className?.includes('text-lg') ? "text-lg font-semibold text-amber-400" : "text-sm font-semibold text-amber-400"}>
+            {text}
+        </span>
+    </div>
+);
 
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === 'setup';
@@ -45,43 +63,45 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         }
 
         const handleClick = () => {
-            if (canInteract) {
-                setUiMode(uiMode === 'viewing' ? 'placing' : 'viewing');
+            if (canInteract && uiMode === 'viewing') {
+                setUiMode('placing');
             }
         };
 
-        const activeClass = uiMode === 'placing' ? 'ring-2 ring-amber-400 bg-slate-800' : '';
-        const pointerClass = canInteract ? 'cursor-pointer hover:bg-slate-800 active:scale-95' : 'pointer-events-none opacity-70';
-
         if (variant === 'docked') {
              // Mobile Bottom Floating Bar Style
+             if (uiMode === 'viewing') {
+                 return (
+                    <BeginPlacementButton
+                        onClick={handleClick}
+                        className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                    />
+                 );
+             }
+
             return (
-                 <div
+                 <InstructionDisplay
+                    text={instruction}
+                    className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
+                 />
+            );
+        }
+
+        // Desktop Floating Variant (kept for completeness if reused)
+        if (uiMode === 'viewing') {
+             return (
+                <BeginPlacementButton
                     onClick={handleClick}
-                    role="button"
-                    tabIndex={canInteract ? 0 : -1}
-                    onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
-                    className={`flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
-                 >
-                    <span className={`text-sm font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
-                        {uiMode === 'placing' ? 'Tap a highlighted spot!' : instruction}
-                    </span>
-                </div>
+                    className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full shadow-lg border border-blue-400/50 z-[100] transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                />
             );
         }
 
         return (
-            <div
-                onClick={handleClick}
-                role="button"
-                tabIndex={canInteract ? 0 : -1}
-                onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
-                className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100] transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
-            >
-                <span className={`text-lg font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
-                    {uiMode === 'placing' ? 'Select a location on the board' : instruction}
-                </span>
-            </div>
+            <InstructionDisplay
+                text={instruction}
+                className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100]"
+            />
         );
     }
 
@@ -133,6 +153,19 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const canAffordSettlement = canAfford(BUILD_COSTS.settlement);
             const canAffordCity = canAfford(BUILD_COSTS.city);
 
+            // Map afford status to key
+            const affordMap = {
+                road: canAffordRoad,
+                settlement: canAffordSettlement,
+                city: canAffordCity
+            };
+
+            const costString = (type: keyof typeof BUILD_COSTS) => {
+                 const cost = BUILD_COSTS[type];
+                 const parts = Object.entries(cost).map(([res, amt]) => `${amt} ${res.charAt(0).toUpperCase() + res.slice(1)}`);
+                 return `Cost: ${parts.join(', ')}`;
+            };
+
             // Helper to generate class string based on affordability and active state
             const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
                 const base = "focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none";
@@ -167,33 +200,21 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                          {/* Build Menu Row */}
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                            <button
-                                onClick={() => toggleBuildMode('road', canAffordRoad)}
-                                disabled={!canAffordRoad}
-                                aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
-                                title="Road (1 Wood, 1 Brick)"
-                            >
-                                <MapPin size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                                disabled={!canAffordSettlement}
-                                aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
-                                title="Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            >
-                                <Home size={20} />
-                            </button>
-                             <button
-                                onClick={() => toggleBuildMode('city', canAffordCity)}
-                                disabled={!canAffordCity}
-                                aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                                className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
-                                title="City (3 Ore, 2 Wheat)"
-                            >
-                                <Castle size={20} />
-                            </button>
+                            {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
+                                const affordable = affordMap[type];
+                                return (
+                                    <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                                        <button
+                                            onClick={() => toggleBuildMode(type, affordable)}
+                                            disabled={!affordable}
+                                            aria-label={`${ariaPrefix} (${costString(type)})`}
+                                            className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, affordable)}`}
+                                        >
+                                            <Icon size={20} />
+                                        </button>
+                                    </div>
+                                );
+                            })}
                              {/* Dev Card Button (Placeholder) - maybe hide on mobile to save space if not needed yet? Keeping for consistency but simplified */}
                         </div>
 
@@ -223,36 +244,22 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                  <span className="text-xs text-slate-500">({G.lastRoll[0]}+{G.lastRoll[1]})</span>
                              </div>
                          )}
-                        <button
-                            onClick={() => toggleBuildMode('road', canAffordRoad)}
-                            disabled={!canAffordRoad}
-                            aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
-                            title="Build Road (1 Wood, 1 Brick)"
-                        >
-                            <MapPin size={20} />
-                            <span className="hidden md:inline">Road</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
-                            disabled={!canAffordSettlement}
-                            aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
-                            title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
-                        >
-                            <Home size={20} />
-                            <span className="hidden md:inline">Settlement</span>
-                        </button>
-                         <button
-                            onClick={() => toggleBuildMode('city', canAffordCity)}
-                            disabled={!canAffordCity}
-                            aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
-                            className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
-                            title="Build City (3 Ore, 2 Wheat)"
-                        >
-                            <Castle size={20} />
-                            <span className="hidden md:inline">City</span>
-                        </button>
+                        {BUILD_BUTTON_CONFIG.map(({ type, label, Icon, ariaPrefix }) => {
+                            const affordable = affordMap[type];
+                            return (
+                                <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                                    <button
+                                        onClick={() => toggleBuildMode(type, affordable)}
+                                        disabled={!affordable}
+                                        aria-label={`${ariaPrefix} (${costString(type)})`}
+                                        className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass(type, affordable)}`}
+                                    >
+                                        <Icon size={20} />
+                                        <span className="hidden md:inline">{label}</span>
+                                    </button>
+                                </div>
+                            );
+                        })}
                          <button
                             className="p-3 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                             title="Dev Card (Coming Soon)"

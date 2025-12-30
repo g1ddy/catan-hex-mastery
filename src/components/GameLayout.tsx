@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { BarChart2, X } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Resources } from '../game/types';
 import './GameLayout.css';
+import { RESOURCE_META } from './uiConfig';
 
 interface GameLayoutProps {
   board: React.ReactNode;
@@ -11,22 +15,72 @@ interface GameLayoutProps {
   gameControls: React.ReactNode;
 }
 
+const renderCostTooltip = ({ content }: { content: string | null }) => {
+  if (!content) return null;
+
+  try {
+    const cost = JSON.parse(content) as Partial<Resources>;
+    const hasCost = Object.values(cost).some((val) => val && val > 0);
+
+    if (!hasCost) return null;
+
+    return (
+      <div className="flex gap-2">
+        {RESOURCE_META.map(({ name, Icon, color }) => {
+          const amount = cost[name];
+          if (!amount) return null;
+          return (
+            <span key={name} className="flex items-center gap-1">
+              <Icon className={color} size={16} />
+              {amount}
+            </span>
+          );
+        })}
+      </div>
+    );
+  } catch (error) {
+    console.error('Failed to parse tooltip content:', error);
+    return null;
+  }
+};
+
 export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls }) => {
   const isMobile = useIsMobile();
   const [showDashboard, setShowDashboard] = useState(false);
 
   if (!isMobile) {
-    // Desktop Layout: Side-by-side
-    // Note: playerPanel and gameControls are rendered inside the board area,
-    // assuming they are passed as absolute positioned elements (variant="floating") for desktop.
+    // Desktop Layout: Side-by-side with Bottom Dock
     return (
       <div className="game-layout-desktop">
         <Toaster />
-        <div className="board-area relative">
-            {board}
+        <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+        <Tooltip
+            id="cost-tooltip"
+            place="top"
+            className="z-[100]"
+            render={renderCostTooltip}
+        />
+        {/* Main Game Area: Absolute Layers to ensure robustness */}
+        <div className="board-area relative w-full h-full overflow-hidden">
+            {/* 1. Board Canvas (Background) */}
+            <div className="absolute inset-0 z-0">
+                {board}
+            </div>
+
+            {/* 2. Overlays */}
+            {/* Player Panel remains floating */}
             {playerPanel}
-            {gameControls}
+
+            {/* 3. Bottom Docked Controls Bar */}
+            {/* Positioned absolutely at the bottom to guarantee visibility */}
+            <div className="absolute bottom-12 left-6 right-6 z-20 pointer-events-none flex justify-center">
+                <div className="pointer-events-auto w-full max-w-4xl flex">
+                     {gameControls}
+                </div>
+            </div>
         </div>
+
+        {/* Right: Analyst Sidebar */}
         <aside className="sidebar-area bg-slate-900/90 backdrop-blur-md border-l border-slate-700 shadow-2xl overflow-y-auto p-5">
           {dashboard}
         </aside>
@@ -38,6 +92,13 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
       <Toaster />
+      <Tooltip id="resource-tooltip" place="top" className="z-[100]" />
+      <Tooltip
+            id="cost-tooltip"
+            place="top"
+            className="z-[100]"
+            render={renderCostTooltip}
+        />
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
       <div className="absolute inset-0 z-0">
         {board}
