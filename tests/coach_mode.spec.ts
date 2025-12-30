@@ -12,6 +12,16 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   await page.getByRole('button', { name: 'Begin Placement' }).click();
 
   // 3. Verify Default State (Coach Mode OFF / Minimal View)
+  // On Mobile, the Analyst Panel (dashboard) is hidden in a bottom sheet.
+  // We need to open it to access the toggle.
+  const openStatsBtn = page.getByLabel('Open Stats');
+  if (await openStatsBtn.isVisible()) {
+    await openStatsBtn.click();
+    // Wait for animation/render
+    await page.waitForTimeout(500);
+  }
+
+  // Now find the toggle. It's an input inside the dashboard.
   const coachToggle = page.locator('input[type="checkbox"]').first();
   await expect(coachToggle).not.toBeChecked();
 
@@ -46,19 +56,11 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   expect(counts.op0 + counts.op100).toBe(totalCount);
 
   // 5. Test Toggle ON (Full Mode)
+  // Note: Toggle is inside the dashboard, which we ensured is open if needed.
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
 
   // Use built-in assertions to wait for state change
-  // We expect ALL highlights to eventually be visible (opacity-100) and none hidden (opacity-0)
-  // Since we can't easily assert "all elements have class" in one go without a loop or filter which is async,
-  // we'll check a sample or use a retry loop logic via toPass if needed,
-  // but let's try the suggestion: filter locator.
-  // Note: Playwright's locator filter works on text/has, but specific class filtering on a list is tricky
-  // without iterating.
-  // However, we can assert that NO elements with opacity-0 exist.
   await expect(page.locator('.coach-highlight.opacity-0')).toHaveCount(0);
-  // And that we have many opacity-100
-  // Note: The class string is "coach-highlight ... opacity-100", so .opacity-100 selector works.
   await expect(page.locator('.coach-highlight.opacity-100')).toHaveCount(totalCount);
 
 
@@ -66,7 +68,6 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
 
   // Wait for state to revert
-  // We expect opacity-0 elements to return
   await expect(page.locator('.coach-highlight.opacity-0')).not.toHaveCount(0);
 
   // Verify precise counts eventually match default expectations
