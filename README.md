@@ -44,9 +44,10 @@ Hex-Mastery is a modular resource-trading game engine designed to train players 
 *   [ ] Visual Overhaul: Final polish on NumberToken components.
 
 ### Phase 6: Full Game Loop & Rules
-*   [ ] Turn Phases (Trade vs Build).
-*   [ ] Robber and Win Conditions.
-*   [ ] Victory Point tracking and End Game state.
+*   [ ] Turn Phases (Trade vs. Build).
+*   [ ] Robber mechanic.
+*   [ ] Victory Point tracking.
+*   [ ] Win conditions and end-game state.
 
 ## 🚀 Getting Started
 
