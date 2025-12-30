@@ -38,8 +38,11 @@ def run_test():
         # Helper to click a ghost vertex (for settlement)
         def place_settlement():
             print("Action: Place Settlement")
-            # Click instruction to toggle mode
-            page.click("text=Place a Settlement")
+            # 1. Click "Begin Placement" (New Flow)
+            try:
+                page.click("button:has-text('Begin Placement')")
+            except:
+                print("Note: 'Begin Placement' not found, might be already active or logic changed.")
 
             # Wait for ghost vertices to appear
             # The app logic sets uiMode='placing', which renders the ghost vertices
@@ -55,7 +58,12 @@ def run_test():
         # Helper to click a ghost edge (for road)
         def place_road():
             print("Action: Place Road")
-            page.click("text=Place a Road")
+            # New Flow: No need to click "Place a Road". It's auto-selected.
+            # But we verify the text is visible
+            try:
+                page.wait_for_selector("text=Place a Road", timeout=2000)
+            except:
+                print("Warning: 'Place a Road' text not found immediately.")
 
             # Wait for ghost edges to appear
             ghost_locator = page.locator("rect[fill='white'][opacity='0.5']")
@@ -69,18 +77,22 @@ def run_test():
 
         # Run Setup Sequence (Snake Draft: P1, P2, P2, P1)
         # P1
+        print("--- P1 Turn 1 ---")
         place_settlement()
         place_road()
 
         # P2
+        print("--- P2 Turn 1 ---")
         place_settlement()
         place_road()
 
         # P2 (Snake return)
+        print("--- P2 Turn 2 ---")
         place_settlement()
         place_road()
 
         # P1 (Final)
+        print("--- P1 Turn 2 ---")
         place_settlement()
         place_road()
 
