@@ -21,7 +21,7 @@ test('Verify Tooltips and Build Buttons', async ({ page }) => {
   await page.click('button:has-text("2 Players")');
 
   // Click "Begin Placement" to start the setup phase
-  const beginButton = page.locator('button:has-text("Begin Placement")');
+  const beginButton = page.getByRole('button', { name: 'Begin Placement' });
   await expect(beginButton).toBeVisible();
   await beginButton.click();
 
