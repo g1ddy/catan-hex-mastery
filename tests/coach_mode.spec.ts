@@ -47,23 +47,36 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
 
   // 5. Test Toggle ON (Full Mode)
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
-  await page.waitForTimeout(500);
 
-  counts = await countClasses();
-  console.log(`After Toggle ON - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
+  // Use built-in assertions to wait for state change
+  // We expect ALL highlights to eventually be visible (opacity-100) and none hidden (opacity-0)
+  // Since we can't easily assert "all elements have class" in one go without a loop or filter which is async,
+  // we'll check a sample or use a retry loop logic via toPass if needed,
+  // but let's try the suggestion: filter locator.
+  // Note: Playwright's locator filter works on text/has, but specific class filtering on a list is tricky
+  // without iterating.
+  // However, we can assert that NO elements with opacity-0 exist.
+  await expect(page.locator('.coach-highlight.opacity-0')).toHaveCount(0);
+  // And that we have many opacity-100
+  // Note: The class string is "coach-highlight ... opacity-100", so .opacity-100 selector works.
+  await expect(page.locator('.coach-highlight.opacity-100')).toHaveCount(totalCount);
 
-  expect(counts.op100).toBe(totalCount);
-  expect(counts.op0).toBe(0);
 
   // 6. Test Toggle OFF again
   await coachToggle.evaluate(el => (el as HTMLInputElement).click());
-  await page.waitForTimeout(500);
 
-  counts = await countClasses();
-  console.log(`After Toggle OFF - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
+  // Wait for state to revert
+  // We expect opacity-0 elements to return
+  await expect(page.locator('.coach-highlight.opacity-0')).not.toHaveCount(0);
 
-  // Should return to default state
-  expect(counts.op100).toBeGreaterThanOrEqual(1);
-  expect(counts.op100).toBeLessThanOrEqual(5);
-  expect(counts.op0).toBeGreaterThan(5);
+  // Verify precise counts eventually match default expectations
+  await expect(async () => {
+    const hiddenCount = await page.locator('.coach-highlight.opacity-0').count();
+    const visibleCount = await page.locator('.coach-highlight.opacity-100').count();
+
+    expect(visibleCount).toBeGreaterThanOrEqual(1);
+    expect(visibleCount).toBeLessThanOrEqual(5);
+    expect(hiddenCount).toBeGreaterThan(5);
+    expect(visibleCount + hiddenCount).toBe(totalCount);
+  }).toPass();
 });

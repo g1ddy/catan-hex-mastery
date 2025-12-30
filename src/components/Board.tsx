@@ -277,6 +277,18 @@ const HexOverlays = ({
                 let isTop3 = false;
                 let clickAction = () => {};
 
+                const applyCoachRecommendation = () => {
+                    const rec = scores.find(r => r.vertexId === vId);
+                    if (rec) {
+                        isRecommended = true;
+                        recommendationData = rec;
+                        heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                        if (top3Set.has(vId)) {
+                            isTop3 = true;
+                        }
+                    }
+                };
+
                 if (isSetup) {
                     if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
                         // Only activate ghost if uiMode is placing
@@ -286,17 +298,7 @@ const HexOverlays = ({
                             clickAction = () => {
                                 moves.placeSettlement(vId);
                             };
-
-                            // Heatmap Logic
-                            const rec = scores.find(r => r.vertexId === vId);
-                            if (rec) {
-                                isRecommended = true;
-                                recommendationData = rec;
-                                heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
-                                if (top3Set.has(vId)) {
-                                    isTop3 = true;
-                                }
-                            }
+                            applyCoachRecommendation();
                         }
                     }
                 } else if (isGameplay) {
@@ -315,17 +317,7 @@ const HexOverlays = ({
                                 moves.buildSettlement(vId);
                                 setBuildMode(null);
                             }
-
-                             // Heatmap Logic
-                             const rec = scores.find(r => r.vertexId === vId);
-                             if (rec) {
-                                 isRecommended = true;
-                                 recommendationData = rec;
-                                 heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
-                                 if (top3Set.has(vId)) {
-                                     isTop3 = true;
-                                 }
-                             }
+                            applyCoachRecommendation();
                         }
                     } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
                         isClickable = true;
