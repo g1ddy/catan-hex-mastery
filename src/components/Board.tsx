@@ -35,7 +35,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   }, [ctx.currentPlayer, playerID, onPlayerChange]);
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
-  const [showCoachMode, setShowCoachMode] = useState<boolean>(true);
+  const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -199,8 +199,6 @@ const HexOverlays = ({
 }) => {
     // Coach Recommendations / Heatmap Scores
     const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
-        if (!showCoachMode) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-
         // Active when placing settlement in Setup OR Gameplay
         const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
         const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
@@ -221,7 +219,7 @@ const HexOverlays = ({
             };
         }
         return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer, showCoachMode]);
+    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
 
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
@@ -279,6 +277,18 @@ const HexOverlays = ({
                 let isTop3 = false;
                 let clickAction = () => {};
 
+                const applyCoachRecommendation = () => {
+                    const rec = scores.find(r => r.vertexId === vId);
+                    if (rec) {
+                        isRecommended = true;
+                        recommendationData = rec;
+                        heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                        if (top3Set.has(vId)) {
+                            isTop3 = true;
+                        }
+                    }
+                };
+
                 if (isSetup) {
                     if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
                         // Only activate ghost if uiMode is placing
@@ -288,19 +298,7 @@ const HexOverlays = ({
                             clickAction = () => {
                                 moves.placeSettlement(vId);
                             };
-
-                            // Heatmap Logic
-                            if (showCoachMode) {
-                                const rec = scores.find(r => r.vertexId === vId);
-                                if (rec) {
-                                    isRecommended = true;
-                                    recommendationData = rec;
-                                    heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
-                                    if (top3Set.has(vId)) {
-                                        isTop3 = true;
-                                    }
-                                }
-                            }
+                            applyCoachRecommendation();
                         }
                     }
                 } else if (isGameplay) {
@@ -319,19 +317,7 @@ const HexOverlays = ({
                                 moves.buildSettlement(vId);
                                 setBuildMode(null);
                             }
-
-                             // Heatmap Logic
-                             if (showCoachMode) {
-                                const rec = scores.find(r => r.vertexId === vId);
-                                if (rec) {
-                                    isRecommended = true;
-                                    recommendationData = rec;
-                                    heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
-                                    if (top3Set.has(vId)) {
-                                        isTop3 = true;
-                                    }
-                                }
-                            }
+                            applyCoachRecommendation();
                         }
                     } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
                         isClickable = true;
@@ -344,7 +330,7 @@ const HexOverlays = ({
                 }
 
                 return (
-                    <g key={i} onClick={(e) => {
+                    <g key={i} className="group" onClick={(e) => {
                         e.stopPropagation();
                         if (isClickable) clickAction();
                     }}>
@@ -387,7 +373,9 @@ const HexOverlays = ({
                         {/* Heatmap Overlay */}
                         {isRecommended && (
                              <g
-                                className="coach-highlight"
+                                className={`coach-highlight transition-opacity duration-200 ${
+                                    isTop3 || showCoachMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                }`}
                                 data-tooltip-id="coach-tooltip"
                                 data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
                              >

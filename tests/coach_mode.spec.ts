@@ -11,52 +11,78 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 2. Setup Phase: Click "Begin Placement" to enter placing mode
   await page.getByRole('button', { name: 'Begin Placement' }).click();
 
-  // 3. Enable Coach Mode
-  // Based on AnalystPanel.tsx:
-  // <div ...>Coach Mode</span> <label ...><input type="checkbox" .../></label>
-  // The label wraps the input, but the text "Coach Mode" is in a sibling span.
-  // We can target the input inside a label that is a sibling of "Coach Mode" text,
-  // OR just find the checkbox on the page (there's only one toggle).
-  // But to be safe:
-  const coachToggle = page.locator('input[type="checkbox"]').first();
+  // 3. Verify Default State (Coach Mode OFF / Minimal View)
+  // On Mobile, the Analyst Panel (dashboard) is hidden in a bottom sheet.
+  // We need to open it to access the toggle.
+  const openStatsBtn = page.getByLabel('Open Stats');
 
-  // Ensure it is checked (default is true in Board.tsx)
-  await expect(coachToggle).toBeChecked();
+  // Locate the input for verification, but use the label for clicking
+  const coachToggleInput = page.locator('input[type="checkbox"]').first();
+  // Find the label wrapping the input
+  const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
 
-  // 4. Verify Heatmap Elements
+  if (await openStatsBtn.isVisible()) {
+    await openStatsBtn.click();
+    // Wait for the toggle to appear in the DOM/become visible
+    await expect(coachToggleLabel).toBeVisible();
+  }
+
+  // Now find the toggle. It's an input inside the dashboard.
+  await expect(coachToggleInput).not.toBeChecked();
+
+  // 4. Verify Heatmap Classes
   const highlights = page.locator('.coach-highlight');
+  await expect(highlights.first()).toBeAttached();
+  const totalCount = await highlights.count();
+  console.log(`Found ${totalCount} total coach highlights`);
+  expect(totalCount).toBeGreaterThan(10);
 
-  // Wait for the first highlight to be visible.
-  await expect(highlights.first()).toBeVisible();
+  // Helper function to count classes (Corrected to use page-level locators)
+  const countClasses = async () => {
+    // We target elements that have BOTH classes
+    const op100 = await page.locator('.coach-highlight.opacity-100').count();
+    const op0 = await page.locator('.coach-highlight.opacity-0').count();
+    return { op100, op0 };
+  };
 
-  const count = await highlights.count();
-  console.log(`Found ${count} coach highlights`);
-  expect(count).toBeGreaterThan(10);
+  let counts = await countClasses();
+  console.log(`Default State - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
 
-  // 5. Verify Top 3 Highlighting
-  // Structure: <g class="coach-highlight"> <circle stroke="#FFD700" ... /> </g>
-  const top3 = page.locator('.coach-highlight circle[stroke="#FFD700"]');
-  const top3Count = await top3.count();
-  console.log(`Found ${top3Count} top 3 highlights`);
+  // Default assertions
+  expect(counts.op100).toBeGreaterThanOrEqual(1);
+  expect(counts.op100).toBeLessThanOrEqual(3);
+  expect(counts.op0).toBeGreaterThan(5);
+  expect(counts.op0 + counts.op100).toBe(totalCount);
 
-  expect(top3Count).toBeGreaterThanOrEqual(1);
-  expect(top3Count).toBeLessThanOrEqual(3);
+  // 5. Test Toggle ON (Full Mode)
+  // Click the label instead of the hidden input for better browser compatibility (Safari)
+  await coachToggleLabel.click();
 
-  // 6. Test Toggle OFF
-  // Playwright's `uncheck` works on inputs.
-  // Since the input has `class="sr-only"`, Playwright might complain about actionability.
-  // We should force click it or click the label.
-  await coachToggle.evaluate(el => (el as HTMLInputElement).click());
+  // Verify state changed
+  await expect(coachToggleInput).toBeChecked();
 
-  // Wait for render
-  await page.waitForTimeout(500);
+  // Use built-in assertions to wait for state change
+  await expect(page.locator('.coach-highlight.opacity-0')).toHaveCount(0);
+  await expect(page.locator('.coach-highlight.opacity-100')).toHaveCount(totalCount);
 
-  const highlightsAfterOff = page.locator('.coach-highlight');
-  expect(await highlightsAfterOff.count()).toBe(0);
 
-  // 7. Test Toggle ON again
-  await coachToggle.evaluate(el => (el as HTMLInputElement).click());
-  await page.waitForTimeout(500);
+  // 6. Test Toggle OFF again
+  await coachToggleLabel.click();
 
-  expect(await page.locator('.coach-highlight').count()).toBeGreaterThan(10);
+  // Verify state changed
+  await expect(coachToggleInput).not.toBeChecked();
+
+  // Wait for state to revert
+  await expect(page.locator('.coach-highlight.opacity-0')).not.toHaveCount(0);
+
+  // Verify precise counts eventually match default expectations
+  await expect(async () => {
+    const op0 = await page.locator('.coach-highlight.opacity-0').count();
+    const op100 = await page.locator('.coach-highlight.opacity-100').count();
+
+    expect(op100).toBeGreaterThanOrEqual(1);
+    expect(op100).toBeLessThanOrEqual(5);
+    expect(op0).toBeGreaterThan(5);
+    expect(op100 + op0).toBe(totalCount);
+  }).toPass();
 });
