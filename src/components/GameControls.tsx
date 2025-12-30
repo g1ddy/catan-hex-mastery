@@ -56,7 +56,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         if (variant === 'docked') {
              // Mobile Bottom Floating Bar Style
             return (
-                 <div onClick={handleClick} className={`flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all ${pointerClass} ${activeClass}`}>
+                 <div
+                    onClick={handleClick}
+                    role="button"
+                    tabIndex={canInteract ? 0 : -1}
+                    onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
+                    className={`flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
+                 >
                     <span className={`text-sm font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
                         {uiMode === 'placing' ? 'Tap a highlighted spot!' : instruction}
                     </span>
@@ -65,7 +71,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         }
 
         return (
-            <div onClick={handleClick} className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100] transition-all ${pointerClass} ${activeClass}`}>
+            <div
+                onClick={handleClick}
+                role="button"
+                tabIndex={canInteract ? 0 : -1}
+                onKeyDown={(e) => canInteract && (e.key === 'Enter' || e.key === ' ') && handleClick()}
+                className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100] transition-all focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${pointerClass} ${activeClass}`}
+            >
                 <span className={`text-lg font-semibold ${uiMode === 'placing' ? 'text-amber-400' : 'animate-pulse'}`}>
                     {uiMode === 'placing' ? 'Select a location on the board' : instruction}
                 </span>
@@ -82,7 +94,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         <button
                             onClick={() => { setIsRolling(true); moves.rollDice(); }}
                             disabled={G.hasRolled || isRolling}
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center"
+                            aria-label="Roll Dice"
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
                             <Dice size={24} />
                             <span className="text-base font-bold">Roll Dice</span>
@@ -96,7 +109,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     <button
                         onClick={() => { setIsRolling(true); moves.rollDice(); }}
                         disabled={G.hasRolled || isRolling}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100"
+                        aria-label="Roll Dice"
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
                         <Dice size={24} />
                         <span className="text-lg font-bold">Roll Dice</span>
@@ -121,9 +135,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
             // Helper to generate class string based on affordability and active state
             const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
-                if (buildMode === mode) return "bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]";
-                if (!canAfford) return "bg-slate-800 text-slate-500 cursor-not-allowed opacity-50";
-                return "bg-slate-800 text-slate-300 hover:bg-slate-700";
+                const base = "focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none";
+                if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
+                if (!canAfford) return `${base} bg-slate-800 text-slate-500 cursor-not-allowed opacity-50`;
+                return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700`;
             };
 
             const toggleBuildMode = (mode: BuildMode, canAfford: boolean) => {
@@ -155,6 +170,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             <button
                                 onClick={() => toggleBuildMode('road', canAffordRoad)}
                                 disabled={!canAffordRoad}
+                                aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
                                 className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('road', canAffordRoad)}`}
                                 title="Road (1 Wood, 1 Brick)"
                             >
@@ -163,6 +179,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                              <button
                                 onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
                                 disabled={!canAffordSettlement}
+                                aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                                 className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('settlement', canAffordSettlement)}`}
                                 title="Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                             >
@@ -171,6 +188,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                              <button
                                 onClick={() => toggleBuildMode('city', canAffordCity)}
                                 disabled={!canAffordCity}
+                                aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
                                 className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass('city', canAffordCity)}`}
                                 title="City (3 Ore, 2 Wheat)"
                             >
@@ -183,7 +201,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         <button
                             onClick={handleEndTurn}
                             disabled={isEndingTurn}
-                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap"
+                            aria-label="End Turn"
+                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
                             <span>End</span>
                             <ArrowRight size={16} />
@@ -207,6 +226,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         <button
                             onClick={() => toggleBuildMode('road', canAffordRoad)}
                             disabled={!canAffordRoad}
+                            aria-label="Build Road (Cost: 1 Wood, 1 Brick)"
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('road', canAffordRoad)}`}
                             title="Build Road (1 Wood, 1 Brick)"
                         >
@@ -216,6 +236,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                          <button
                             onClick={() => toggleBuildMode('settlement', canAffordSettlement)}
                             disabled={!canAffordSettlement}
+                            aria-label="Build Settlement (Cost: 1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('settlement', canAffordSettlement)}`}
                             title="Build Settlement (1 Wood, 1 Brick, 1 Wheat, 1 Sheep)"
                         >
@@ -225,6 +246,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                          <button
                             onClick={() => toggleBuildMode('city', canAffordCity)}
                             disabled={!canAffordCity}
+                            aria-label="Build City (Cost: 3 Ore, 2 Wheat)"
                             className={`p-3 rounded-lg transition-all flex items-center gap-2 ${getButtonClass('city', canAffordCity)}`}
                             title="Build City (3 Ore, 2 Wheat)"
                         >
@@ -232,8 +254,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             <span className="hidden md:inline">City</span>
                         </button>
                          <button
-                            className="p-3 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-2"
+                            className="p-3 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                             title="Dev Card (Coming Soon)"
+                            aria-label="Dev Card (Coming Soon)"
+                            disabled
                         >
                             <Scroll size={20} />
                             <span className="hidden md:inline">Dev Card</span>
@@ -244,7 +268,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     <button
                         onClick={handleEndTurn}
                         disabled={isEndingTurn}
-                        className="flex items-center gap-2 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 disabled:active:scale-100 font-bold"
+                        aria-label="End Turn"
+                        className="flex items-center gap-2 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 disabled:active:scale-100 font-bold focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
                         <span>End Turn</span>
                         <ArrowRight size={20} />
