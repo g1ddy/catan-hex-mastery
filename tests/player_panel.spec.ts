@@ -64,5 +64,16 @@ test.describe('Player Panel Tests', () => {
     // The active player block in mobile has bg-slate-800 and should show icons.
     const woodIcon = page.locator('span[data-tooltip-content="Wood"]').first();
     await expect(woodIcon).toBeVisible();
+
+    // Trigger tooltip on mobile (tap/click)
+    await woodIcon.click();
+
+    // Verify the tooltip is visible on mobile
+    const tooltip = page.locator('#resource-tooltip');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveText('Wood');
+
+    // Check z-index on mobile as well
+    await expect(tooltip).toHaveClass(/z-\[1000\]/);
   });
 });
