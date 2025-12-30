@@ -34,7 +34,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
             {/* 3. Bottom Docked Controls Bar */}
             {/* Positioned absolutely at the bottom to guarantee visibility */}
             <div className="absolute bottom-6 left-6 right-6 z-20 pointer-events-none flex justify-center">
-                <div className="pointer-events-auto w-full max-w-4xl">
+                <div className="pointer-events-auto w-full max-w-4xl flex">
                      {gameControls}
                 </div>
             </div>
