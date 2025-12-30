@@ -49,18 +49,15 @@ export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
 
       {/* Pips */}
       <g>
-        {Array.from({ length: pips }).map((_, i) => {
-          const cx = startX + i * (pipRadius * 2 + pipGap);
-          return (
-            <circle
-              key={i}
-              cx={cx}
-              cy={pipY}
-              r={pipRadius}
-              fill={color}
-            />
-          );
-        })}
+        {Array.from({ length: pips }).map((_, i) => (
+          <circle
+            key={i}
+            cx={startX + i * (pipRadius * 2 + pipGap)}
+            cy={pipY}
+            r={pipRadius}
+            fill={color}
+          />
+        ))}
       </g>
     </g>
   );
