@@ -18,19 +18,19 @@ This file contains context and strict guidelines for AI assistants (Cursor, Copi
 *   **Vertex ID:** A hash of the 3 adjacent hex coordinates (e.g., specific string format).
 *   **Edge ID:** A hash of the 2 adjacent hex coordinates.
 
-## 🚧 Current Task: Phase 5 (UI/UX Polish)
+## 🚧 Current Task: Phase 5 (UI/UX Polish) & Prep for Phase 6
 
-We are currently working on **Phase 5: UI/UX Polish**, prioritizing readability and mobile usability before the Full Game Loop (Phase 6).
+We are currently finalizing **Phase 5: UI/UX Polish** and preparing for **Phase 6: Full Game Loop**.
+
+**Completed Features (Do Not Regress):**
+*   **Analyst Module**: Real-time stats (Pips, Fairness, Scarcity) are fully implemented.
+*   **Coach**: The heuristic engine correctly scores settlements based on Pips, Scarcity, Diversity, and Synergy. Recommendations are visualized on the board.
+*   **Mobile Layout**: The "Vertical Stack" layout and docked controls are stable.
 
 **Priorities:**
-1.  **Readability**: Replace raw SVG text with high-contrast `NumberToken` components.
-2.  **Iconography**: Use `lucide-react` icons instead of text labels.
-3.  **Constraints**: Enforce 2-player limit for Local/Pass-and-Play mode.
-
-**Requirements:**
-*   **NumberToken**: Use `<foreignObject>` inside SVG to leverage Tailwind styling (Beige circles, shadows).
-*   **Icons**: Standardize on `Trees`, `BrickWall`, `Wheat`, `Mountain`, and `Cloud` (for Sheep).
-*   **Configuration**: Respect `GAME_CONFIG.mode` for feature flags.
+1.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
+2.  **Code Cleanup**: Verify no unused CSS or "magic strings" remain before starting complex game logic.
+3.  **Phase 6 Readiness**: Ensure the state machine in `Game.ts` is ready to handle Trade phases and Win conditions.
 
 ## 🚫 Constraints
 *   **No Class Components:** Use React Functional Components + Hooks only.
