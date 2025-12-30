@@ -20,8 +20,10 @@ test('Verify Tooltips and Build Buttons', async ({ page }) => {
   // Click "2 Players" to enter game
   await page.click('button:has-text("2 Players")');
 
-  // Click "Begin Placement" to show instructions
-  await page.getByRole('button', { name: 'Begin Placement' }).click();
+  // Click "Begin Placement" to start the setup phase
+  const beginButton = page.locator('button:has-text("Begin Placement")');
+  await expect(beginButton).toBeVisible();
+  await beginButton.click();
 
   // Wait for Game Controls to load - looking for initial setup instruction
   await expect(page.locator('text=Place a Settlement')).toBeVisible({ timeout: 10000 });
