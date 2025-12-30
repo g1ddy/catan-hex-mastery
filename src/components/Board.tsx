@@ -14,7 +14,7 @@ import { BOARD_CONFIG } from '../game/config';
 import { GameControls, BuildMode, UiMode } from './GameControls';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
-import { getBestSettlementSpots, CoachRecommendation } from '../game/analysis/coach';
+import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -270,9 +270,7 @@ const HexOverlays = ({
                 let isClickable = false;
                 let isGhost = false;
                 let isRecommended = false; // "Recommended" now implies Heatmap visibility
-                let recommendationReason = "";
                 let heatmapColor = "";
-                let isRecommended = false;
                 let recommendationData: CoachRecommendation | undefined;
                 let clickAction = () => {};
 
@@ -291,14 +289,9 @@ const HexOverlays = ({
                                 const rec = scores.find(r => r.vertexId === vId);
                                 if (rec) {
                                     isRecommended = true;
-                                    recommendationReason = `Score: ${rec.score} (${rec.reason})`;
                                     heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    recommendationData = rec;
                                 }
-                            // Check recommendation
-                            const rec = recommendations.find(r => r.vertexId === vId);
-                            if (rec) {
-                                isRecommended = true;
-                                recommendationData = rec;
                             }
                         }
                     }
@@ -324,8 +317,8 @@ const HexOverlays = ({
                                 const rec = scores.find(r => r.vertexId === vId);
                                 if (rec) {
                                     isRecommended = true;
-                                    recommendationReason = `Score: ${rec.score} (${rec.reason})`;
                                     heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
+                                    recommendationData = rec;
                                 }
                             }
                         }
@@ -366,17 +359,7 @@ const HexOverlays = ({
 
                         {/* Ghost Vertex (White Dot for Click Target) */}
                         {isGhost && !isRecommended && (
-                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
-                        {isGhost && (
-                            <circle
-                                cx={corner.x}
-                                cy={corner.y}
-                                r={isRecommended ? 1.5 : 1}
-                                fill="white"
-                                opacity={0.5}
-                                className="ghost-vertex"
-                                data-testid="ghost-vertex"
-                            />
+                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" data-testid="ghost-vertex" />
                         )}
 
                         {/* Highlight upgrade target */}
@@ -386,7 +369,11 @@ const HexOverlays = ({
 
                         {/* Heatmap Overlay (Replaces Ghost/Gold Ring) */}
                         {isRecommended && (
-                             <g className="coach-highlight">
+                             <g
+                                className="coach-highlight"
+                                data-tooltip-id="coach-tooltip"
+                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                             >
                                 {/* Semi-transparent filled circle */}
                                 <circle
                                     cx={corner.x} cy={corner.y}
@@ -403,13 +390,6 @@ const HexOverlays = ({
                                     stroke={heatmapColor}
                                     strokeWidth={0.5}
                                 />
-                                <title>{recommendationReason}</title>
-                             <g
-                                className="coach-highlight"
-                                data-tooltip-id="coach-tooltip"
-                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
-                             >
-                                <circle cx={corner.x} cy={corner.y} r={5} fill="none" stroke="#FFD700" strokeWidth={2} className="animate-pulse" />
                              </g>
                         )}
                     </g>
