@@ -21,6 +21,7 @@ describe('Unit Test: Resource Costs', () => {
         setupPhase: { activeRound: 1, activeSettlement: null },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
+        lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         hasRolled: false,
     };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Home, MapPin, Castle, Scroll } from 'lucide-react';
@@ -22,6 +22,14 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     const isSetup = ctx.phase === 'setup';
     const isGameplay = ctx.phase === 'GAMEPLAY';
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
+
+    const [isRolling, setIsRolling] = useState(false);
+    const [isEndingTurn, setIsEndingTurn] = useState(false);
+
+    useEffect(() => {
+        setIsRolling(false);
+        setIsEndingTurn(false);
+    }, [ctx.currentPlayer, ctx.phase]);
 
     if (isSetup) {
         let instruction = "Wait for your turn...";
@@ -72,8 +80,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
                         <button
-                            onClick={() => moves.rollDice()}
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 w-full justify-center"
+                            onClick={() => { setIsRolling(true); moves.rollDice(); }}
+                            disabled={G.hasRolled || isRolling}
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center"
                         >
                             <Dice size={24} />
                             <span className="text-base font-bold">Roll Dice</span>
@@ -85,8 +94,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return (
                 <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[100]">
                     <button
-                        onClick={() => moves.rollDice()}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95"
+                        onClick={() => { setIsRolling(true); moves.rollDice(); }}
+                        disabled={G.hasRolled || isRolling}
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100"
                     >
                         <Dice size={24} />
                         <span className="text-lg font-bold">Roll Dice</span>
@@ -122,6 +132,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             };
 
             const handleEndTurn = () => {
+                setIsEndingTurn(true);
                 setBuildMode(null);
                 moves.endTurn();
             };
@@ -171,7 +182,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         {/* End Turn */}
                         <button
                             onClick={handleEndTurn}
-                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 font-bold text-sm ml-2 whitespace-nowrap"
+                            disabled={isEndingTurn}
+                            className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap"
                         >
                             <span>End</span>
                             <ArrowRight size={16} />
@@ -231,7 +243,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     {/* End Turn */}
                     <button
                         onClick={handleEndTurn}
-                        className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 font-bold"
+                        disabled={isEndingTurn}
+                        className="flex items-center gap-2 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 disabled:active:scale-100 font-bold"
                     >
                         <span>End Turn</span>
                         <ArrowRight size={20} />
