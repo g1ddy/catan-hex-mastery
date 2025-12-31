@@ -1,5 +1,5 @@
 import { distributeResources } from './resources';
-import { GameState, TerrainType, Player, Resources, BoardState, BoardStats } from '../types';
+import { GameState, TerrainType, Player, BoardState, BoardStats } from '../types';
 
 // Mock getVerticesForHex
 jest.mock('../hexUtils', () => ({
