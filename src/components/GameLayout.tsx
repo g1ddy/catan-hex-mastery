@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import {
+    Z_INDEX_BOARD,
+    Z_INDEX_BOTTOM_SHEET,
+    Z_INDEX_GAME_CONTROLS_CONTAINER,
+    Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE,
+    Z_INDEX_TOOLTIP
+} from '../styles/z-indices';
 import { BarChart2, X } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
@@ -53,17 +60,17 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     return (
       <div className="game-layout-desktop">
         <Toaster />
-        <Tooltip id="resource-tooltip" place="top" className="z-[1000]" />
+        <Tooltip id="resource-tooltip" place="top" className={`z-[${Z_INDEX_TOOLTIP}]`} />
         <Tooltip
             id="cost-tooltip"
             place="top"
-            className="z-[1000]"
+            className={`z-[${Z_INDEX_TOOLTIP}]`}
             render={renderCostTooltip}
         />
         {/* Main Game Area: Absolute Layers to ensure robustness */}
         <div className="board-area relative w-full h-full overflow-hidden">
             {/* 1. Board Canvas (Background) */}
-            <div className="absolute inset-0 z-0">
+            <div className={`absolute inset-0 z-${Z_INDEX_BOARD}`}>
                 {board}
             </div>
 
@@ -73,7 +80,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
 
             {/* 3. Bottom Docked Controls Bar */}
             {/* Positioned absolutely at the bottom to guarantee visibility */}
-            <div className="absolute bottom-12 left-6 right-6 z-20 pointer-events-none flex justify-center">
+            <div className={`absolute bottom-12 left-6 right-6 z-${Z_INDEX_GAME_CONTROLS_CONTAINER} pointer-events-none flex justify-center`}>
                 <div className="pointer-events-auto w-full max-w-4xl flex">
                      {gameControls}
                 </div>
@@ -92,27 +99,27 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-900">
       <Toaster />
-      <Tooltip id="resource-tooltip" place="top" className="z-[1000]" />
+      <Tooltip id="resource-tooltip" place="top" className={`z-[${Z_INDEX_TOOLTIP}]`} />
       <Tooltip
             id="cost-tooltip"
             place="top"
-            className="z-[1000]"
+            className={`z-[${Z_INDEX_TOOLTIP}]`}
             render={renderCostTooltip}
         />
       {/* 1. Wallpaper Board: Absolute, Full Screen */}
-      <div className="absolute inset-0 z-0">
+      <div className={`absolute inset-0 z-${Z_INDEX_BOARD}`}>
         {board}
       </div>
 
       {/* 2. Top Center Overlay: Player Panel */}
-      <div className="absolute top-4 left-4 right-4 z-10 pointer-events-none flex justify-center">
+      <div className={`absolute top-4 left-4 right-4 z-${Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE} pointer-events-none flex justify-center`}>
           <div className="pointer-events-auto">
              {playerPanel}
           </div>
       </div>
 
       {/* 3. Bottom Floating Action Bar */}
-      <div className="absolute bottom-6 left-4 right-4 z-20 pointer-events-none flex items-center justify-between gap-4">
+      <div className={`absolute bottom-6 left-4 right-4 z-${Z_INDEX_GAME_CONTROLS_CONTAINER} pointer-events-none flex items-center justify-between gap-4`}>
          {/* Stats Toggle */}
           <button
               className="flex-none p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 pointer-events-auto border border-slate-700 shadow-lg"
@@ -132,7 +139,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
       {showDashboard && (
         <div className="bottom-sheet-overlay">
           <div className="backdrop" onClick={() => setShowDashboard(false)} />
-          <div className="bottom-sheet bg-slate-900/95 backdrop-blur-md border-t border-slate-700 text-slate-100 z-[200]">
+          <div className={`bottom-sheet bg-slate-900/95 backdrop-blur-md border-t border-slate-700 text-slate-100 z-[${Z_INDEX_BOTTOM_SHEET}]`}>
             <button
               className="close-sheet-btn text-slate-300 hover:text-white"
               onClick={() => setShowDashboard(false)}
