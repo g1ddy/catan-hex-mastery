@@ -1,4 +1,5 @@
 import React from 'react';
+import { Z_INDEX_FLOATING_UI } from '../styles/z-indices';
 import { GameState, Player } from '../game/types';
 import { Trees } from 'lucide-react';
 import { ResourceIconRow } from './ResourceIconRow';
@@ -12,15 +13,15 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
   const playerList = Object.values(players);
 
   return (
-    <div className="
+    <div className={`
         player-panel
         absolute
         top-4 left-4 right-4
         md:top-20 md:left-4 md:right-auto md:w-64
         bg-slate-900/90 backdrop-blur-md border border-slate-700
-        rounded-xl shadow-xl text-slate-100 z-[100]
+        rounded-xl shadow-xl text-slate-100 z-[${Z_INDEX_FLOATING_UI}]
         transition-all
-    ">
+    `}>
       {/* Header - Desktop Only */}
       <h3 className="hidden md:block font-bold text-lg mb-2 p-4 pb-0">Players</h3>
 
