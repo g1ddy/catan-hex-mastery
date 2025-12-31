@@ -8,6 +8,7 @@ import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { distributeResources } from './mechanics/resources';
+import { PHASES } from './constants';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -80,15 +81,15 @@ export const CatanGame: Game<GameState> = {
   turn: {
      onBegin: ({ G, events, ctx }) => {
          G.hasRolled = false;
-         // Only force 'rolling' phase if we are not in setup
-         if (ctx.phase !== 'setup') {
-            events.setPhase('rolling');
+         // Only force 'rolling' phase if we are not in setup and not already in rolling
+         if (ctx.phase !== PHASES.SETUP && ctx.phase !== PHASES.ROLLING) {
+            events.setPhase(PHASES.ROLLING);
          }
      }
   },
 
   phases: {
-    setup: {
+    [PHASES.SETUP]: {
       start: true,
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
@@ -106,9 +107,9 @@ export const CatanGame: Game<GameState> = {
         );
         return allPlayersDone;
       },
-      next: 'rolling', // Transition to rolling phase
+      next: PHASES.ROLLING, // Transition to rolling phase
     },
-    rolling: {
+    [PHASES.ROLLING]: {
         moves: { rollDice },
         onEnd: ({ G }) => {
              // Calculate distribution here
@@ -116,10 +117,10 @@ export const CatanGame: Game<GameState> = {
              const rewards = distributeResources(G, rollValue);
              G.lastRollRewards = rewards;
         },
-        next: 'action', // Auto-transition to action phase
+        next: PHASES.ACTION, // Auto-transition to action phase
         // Ensure turn doesn't end automatically, just phase switch
     },
-    action: {
+    [PHASES.ACTION]: {
         moves: {
             buildRoad,
             buildSettlement,

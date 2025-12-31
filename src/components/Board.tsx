@@ -18,6 +18,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
 import { Home, Castle } from 'lucide-react';
+import { PHASES } from '../game/constants';
 
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
@@ -228,8 +229,8 @@ const HexOverlays = ({
     // Coach Recommendations / Heatmap Scores
     const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
         // Active when placing settlement in Setup OR Gameplay
-        const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
-        const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
+        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
+        const isGamePlacing = (ctx.phase === PHASES.ACTION) && buildMode === 'settlement';
 
         if (isSetupPlacing || isGamePlacing) {
             const allScores = getAllSettlementScores(G, ctx.currentPlayer);
@@ -293,8 +294,9 @@ const HexOverlays = ({
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
 
                 // Interaction Logic
-                const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isSetup = ctx.phase === PHASES.SETUP;
+                // Interaction logic mostly for action phase, but checking phase generically
+                const isAction = ctx.phase === PHASES.ACTION;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
                 let isClickable = false;
@@ -329,7 +331,7 @@ const HexOverlays = ({
                             applyCoachRecommendation();
                         }
                     }
-                } else if (isGameplay) {
+                } else if (isAction) {
                     if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
                         // Strict connectivity check for settlements
                         const adjEdges = getEdgesForVertex(vId);
@@ -451,8 +453,8 @@ const HexOverlays = ({
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
 
                 // Interaction Logic
-                const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isSetup = ctx.phase === PHASES.SETUP;
+                const isAction = ctx.phase === PHASES.ACTION;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
                 let isClickable = false;
@@ -474,7 +476,7 @@ const HexOverlays = ({
                             }
                         }
                      }
-                } else if (isGameplay) {
+                } else if (isAction) {
                     if (buildMode === 'road' && !isOccupied) {
                          const endpoints = getVerticesForEdge(eId);
 
