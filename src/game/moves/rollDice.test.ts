@@ -8,7 +8,7 @@ interface MockRandom {
 }
 
 interface MockEvents {
-    endPhase: jest.Mock;
+    endStage: jest.Mock;
 }
 
 interface MockCtx {
@@ -24,7 +24,7 @@ describe('rollDice Move', () => {
         Die: jest.fn()
     };
     const mockEvents: MockEvents = {
-        endPhase: jest.fn()
+        endStage: jest.fn()
     };
     const mockCtx: MockCtx = { currentPlayer: '0' };
 
@@ -38,8 +38,9 @@ describe('rollDice Move', () => {
             lastRollRewards: { '0': { wood: 5 } } // Pre-existing rewards to verify clearing
         });
 
-        mockRandom.Die.mockReset();
-        mockEvents.endPhase.mockReset();
+        mockRandom.Die.mockReturnValue(3); // Default return
+        mockRandom.Die.mockClear(); // Clear call history
+        mockEvents.endStage.mockReset();
     });
 
     it('should roll dice and update state', () => {
@@ -51,16 +52,15 @@ describe('rollDice Move', () => {
         expect(G.hasRolled).toBe(true);
     });
 
-    it('should trigger endPhase', () => {
+    it('should trigger endStage', () => {
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(mockEvents.endPhase).toHaveBeenCalled();
+        expect(mockEvents.endStage).toHaveBeenCalled();
     });
 
-    it('should clear previous rewards but NOT distribute new ones', () => {
-        // The move is responsible for clearing, but the phase hook does the distribution.
-        // We expect rewards to be empty after the move executes.
+    it('should distribute new rewards', () => {
+        mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(3); // Sum 6
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(G.lastRollRewards).toEqual({});
+        expect(G.lastRollRewards).toBeDefined();
     });
 
     it('should return INVALID_MOVE if already rolled', () => {

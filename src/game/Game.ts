@@ -7,8 +7,7 @@ import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
-import { distributeResources } from './mechanics/resources';
-import { PHASES } from './constants';
+import { PHASES, STAGES } from './constants';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -76,24 +75,12 @@ export const CatanGame: Game<GameState> = {
     };
   },
 
-  // Global Turn Config
-  // Ensure we always start in the 'rolling' phase when a new turn begins.
-  turn: {
-     onBegin: ({ G, events, ctx }) => {
-         G.hasRolled = false;
-         // Only force 'rolling' phase if we are not in setup and not already in rolling
-         if (ctx.phase !== PHASES.SETUP && ctx.phase !== PHASES.ROLLING) {
-            events.setPhase(PHASES.ROLLING);
-         }
-     }
-  },
-
   phases: {
     [PHASES.SETUP]: {
       start: true,
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
-        activePlayers: { currentPlayer: 'placeSettlement' },
+        activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
       },
       moves: {
         placeSettlement,
@@ -107,27 +94,29 @@ export const CatanGame: Game<GameState> = {
         );
         return allPlayersDone;
       },
-      next: PHASES.ROLLING, // Transition to rolling phase
+      next: PHASES.GAMEPLAY,
     },
-    [PHASES.ROLLING]: {
-        moves: { rollDice },
-        onEnd: ({ G }) => {
-             // Calculate distribution here
-             const rollValue = G.lastRoll[0] + G.lastRoll[1];
-             const rewards = distributeResources(G, rollValue);
-             G.lastRollRewards = rewards;
+    [PHASES.GAMEPLAY]: {
+      turn: {
+        activePlayers: { currentPlayer: STAGES.ROLLING },
+        onBegin: ({ G }) => {
+           G.hasRolled = false;
         },
-        next: PHASES.ACTION, // Auto-transition to action phase
-        // Ensure turn doesn't end automatically, just phase switch
-    },
-    [PHASES.ACTION]: {
-        moves: {
-            buildRoad,
-            buildSettlement,
-            buildCity,
-            endTurn
-        },
-        // turn onBegin here? No, inherited from global or persist.
-    },
+        stages: {
+           [STAGES.ROLLING]: {
+              moves: { rollDice },
+              next: STAGES.ACTING
+           },
+           [STAGES.ACTING]: {
+              moves: {
+                  buildRoad,
+                  buildSettlement,
+                  buildCity,
+                  endTurn
+              }
+           }
+        }
+      }
+    }
   },
 };
