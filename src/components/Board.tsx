@@ -68,6 +68,30 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
 
+  // Calculate Coach Recommendations Once Per Render (Optimized)
+  const coachData = React.useMemo(() => {
+    // Active when placing settlement in Setup OR Gameplay
+    const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
+    const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
+
+    if (isSetupPlacing || isGamePlacing) {
+        const allScores = getAllSettlementScores(G, ctx.currentPlayer);
+        if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+
+        const vals = allScores.map(s => s.score);
+        const sorted = [...allScores].sort((a, b) => b.score - a.score);
+        const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+
+        return {
+            scores: allScores,
+            minScore: Math.min(...vals),
+            maxScore: Math.max(...vals),
+            top3Set: new Set(top3Ids)
+        };
+    }
+    return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+  }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
+
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
         {/* Tooltip for Coach Mode */}
@@ -141,6 +165,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 uiMode={uiMode}
                 setUiMode={setUiMode}
                 showCoachMode={showCoachMode}
+                coachData={coachData}
               />
             ))}
           </g>
@@ -212,8 +237,15 @@ const BuildingIcon: React.FC<BuildingIconProps> = ({ vertex, corner, ownerColor 
     );
 };
 
+interface CoachData {
+    scores: CoachRecommendation[];
+    minScore: number;
+    maxScore: number;
+    top3Set: Set<string>;
+}
+
 const HexOverlays = ({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
 }: {
     hex: Hex,
     G: GameState,
@@ -223,31 +255,11 @@ const HexOverlays = ({
     setBuildMode: (mode: BuildMode) => void,
     uiMode: UiMode,
     setUiMode: (mode: UiMode) => void,
-    showCoachMode: boolean
+    showCoachMode: boolean,
+    coachData: CoachData
 }) => {
-    // Coach Recommendations / Heatmap Scores
-    const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
-        // Active when placing settlement in Setup OR Gameplay
-        const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
-        const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
-
-        if (isSetupPlacing || isGamePlacing) {
-            const allScores = getAllSettlementScores(G, ctx.currentPlayer);
-            if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-
-            const vals = allScores.map(s => s.score);
-            const sorted = [...allScores].sort((a, b) => b.score - a.score);
-            const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
-
-            return {
-                scores: allScores,
-                minScore: Math.min(...vals),
-                maxScore: Math.max(...vals),
-                top3Set: new Set(top3Ids)
-            };
-        }
-        return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
+    // Coach Recommendations / Heatmap Scores (Passed from Parent)
+    const { scores, minScore, maxScore, top3Set } = coachData;
 
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
