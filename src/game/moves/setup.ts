@@ -5,7 +5,7 @@ import { getVerticesForHex, getEdgeId } from '../hexUtils';
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
   // 1. Validation: Occupancy
   if (G.board.vertices[vertexId]) {
-    return 'INVALID_MOVE'; // Already occupied
+    throw new Error("This vertex is already occupied");
   }
 
   // 2. Validation: Distance Rule
@@ -13,7 +13,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   const neighbors = getVertexNeighbors(vertexId);
   for (const nId of neighbors) {
     if (G.board.vertices[nId]) {
-      return 'INVALID_MOVE'; // Distance rule violation
+      throw new Error("Settlement is too close to another building");
     }
   }
 
@@ -63,18 +63,18 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
   // 1. Validation: Occupancy
   if (G.board.edges[edgeId]) {
-    return 'INVALID_MOVE';
+    throw new Error("This edge is already occupied");
   }
 
   // 2. Validation: Connection
   // Must connect to G.setupPhase.activeSettlement
   if (!G.setupPhase.activeSettlement) {
-      return 'INVALID_MOVE'; // Should not happen in flow
+      throw new Error("No active settlement found to connect to");
   }
 
   const connectedEdges = getEdgesForVertex(G.setupPhase.activeSettlement);
   if (!connectedEdges.includes(edgeId)) {
-      return 'INVALID_MOVE';
+      throw new Error("Road must connect to your just-placed settlement");
   }
 
   // Execution

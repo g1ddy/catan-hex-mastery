@@ -14,6 +14,7 @@ import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameContro
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
+import { safeMove } from '../utils/moveUtils';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
@@ -326,7 +327,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.placeSettlement(vId);
+                                safeMove(() => moves.placeSettlement(vId));
                             };
                             applyCoachRecommendation();
                         }
@@ -344,7 +345,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.buildSettlement(vId);
+                                safeMove(() => moves.buildSettlement(vId));
                                 setBuildMode(null);
                             }
                             applyCoachRecommendation();
@@ -353,7 +354,7 @@ const HexOverlays = ({
                         isClickable = true;
                         isGhost = false; // It's upgrading an existing one
                         clickAction = () => {
-                             moves.buildCity(vId);
+                             safeMove(() => moves.buildCity(vId));
                              setBuildMode(null);
                         }
                     }
@@ -470,7 +471,7 @@ const HexOverlays = ({
                                 isClickable = true;
                                 isGhost = true;
                                 clickAction = () => {
-                                    moves.placeRoad(eId);
+                                    safeMove(() => moves.placeRoad(eId));
                                     setUiMode('viewing');
                                 };
                             }
@@ -499,7 +500,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.buildRoad(eId);
+                                safeMove(() => moves.buildRoad(eId));
                                 setBuildMode(null);
                             }
                         }
