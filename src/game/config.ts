@@ -16,7 +16,7 @@ export const BOARD_CONFIG = {
   // Magic numbers moved from Board.tsx
   VERTEX_RADIUS: 3,
   EDGE_RADIUS: 2.5,
-  GHOST_VERTEX_RADIUS: 2,
+  GHOST_VERTEX_RADIUS: 1,
 };
 
 export const COLORS = {
