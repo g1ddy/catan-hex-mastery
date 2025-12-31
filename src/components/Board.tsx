@@ -229,7 +229,7 @@ const HexOverlays = ({
     const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
         // Active when placing settlement in Setup OR Gameplay
         const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
-        const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
+        const isGamePlacing = ctx.phase === 'action' && buildMode === 'settlement';
 
         if (isSetupPlacing || isGamePlacing) {
             const allScores = getAllSettlementScores(G, ctx.currentPlayer);
@@ -294,7 +294,7 @@ const HexOverlays = ({
 
                 // Interaction Logic
                 const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isGameplay = ctx.phase === 'action';
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
                 let isClickable = false;
@@ -452,7 +452,7 @@ const HexOverlays = ({
 
                 // Interaction Logic
                 const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isGameplay = ctx.phase === 'action';
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
                 let isClickable = false;

@@ -42,7 +42,10 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
 
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === 'setup';
-    const isGameplay = ctx.phase === 'GAMEPLAY';
+    const isRollingPhase = ctx.phase === 'rolling';
+    const isActionPhase = ctx.phase === 'action';
+
+    // Stage is only relevant for setup phase where activePlayers is defined
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
 
     const [isRolling, setIsRolling] = useState(false);
@@ -109,45 +112,44 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         );
     }
 
-    if (isGameplay) {
-        // Roll Phase
-        if (!G.hasRolled && stage === 'roll') {
-            if (variant === 'docked') {
-                return (
-                    <div className="flex-grow flex justify-end items-center pointer-events-auto">
-                        <button
-                            onClick={() => { setIsRolling(true); moves.rollDice(); }}
-                            disabled={G.hasRolled || isRolling}
-                            aria-label="Roll Dice"
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
-                        >
-                            <Dice size={24} />
-                            <span className="text-base font-bold">Roll Dice</span>
-                        </button>
-                    </div>
-                );
-            }
-
-             return (
-                <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[${Z_INDEX_FLOATING_UI}]`}>
+    // Roll Phase
+    if (isRollingPhase) {
+        if (variant === 'docked') {
+            return (
+                <div className="flex-grow flex justify-end items-center pointer-events-auto">
                     <button
                         onClick={() => { setIsRolling(true); moves.rollDice(); }}
                         disabled={G.hasRolled || isRolling}
                         aria-label="Roll Dice"
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
                         <Dice size={24} />
-                        <span className="text-lg font-bold">Roll Dice</span>
+                        <span className="text-base font-bold">Roll Dice</span>
                     </button>
                 </div>
             );
         }
 
-        // Action Phase
-        if (G.hasRolled || stage === 'action') {
-            const resources = G.players[ctx.currentPlayer].resources;
+            return (
+            <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[${Z_INDEX_FLOATING_UI}]`}>
+                <button
+                    onClick={() => { setIsRolling(true); moves.rollDice(); }}
+                    disabled={G.hasRolled || isRolling}
+                    aria-label="Roll Dice"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                >
+                    <Dice size={24} />
+                    <span className="text-lg font-bold">Roll Dice</span>
+                </button>
+            </div>
+        );
+    }
 
-            const canAfford = (cost: Partial<Resources>): boolean => {
+    // Action Phase
+    if (isActionPhase) {
+        const resources = G.players[ctx.currentPlayer].resources;
+
+        const canAfford = (cost: Partial<Resources>): boolean => {
                 return (Object.keys(cost) as Array<keyof Resources>).every(
                     resource => resources[resource] >= (cost[resource] || 0)
                 );
@@ -288,7 +290,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 </div>
             );
         }
-    }
 
     return null;
 };

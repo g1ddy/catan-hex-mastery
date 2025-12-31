@@ -28,6 +28,8 @@ test.describe('Desktop Layout', () => {
 
         // P1 (Final)
         await game.placeSettlement();
+        // Add a small delay to ensure state propagation and ghost edge rendering
+        await page.waitForTimeout(500);
         await game.placeRoad();
 
         // Verification: Roll Dice Button position
