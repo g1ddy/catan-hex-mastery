@@ -117,7 +117,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
                         <button
-                            onClick={() => { setIsRolling(true); safeMove(() => moves.rollDice()); }}
+                            onClick={() => {
+                                setIsRolling(true);
+                                if (!safeMove(() => moves.rollDice())) {
+                                    setIsRolling(false);
+                                }
+                            }}
                             disabled={G.hasRolled || isRolling}
                             aria-label="Roll Dice"
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
@@ -132,7 +137,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return (
                 <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[${Z_INDEX_FLOATING_UI}]`}>
                     <button
-                        onClick={() => { setIsRolling(true); safeMove(() => moves.rollDice()); }}
+                        onClick={() => {
+                            setIsRolling(true);
+                            if (!safeMove(() => moves.rollDice())) {
+                                setIsRolling(false);
+                            }
+                        }}
                         disabled={G.hasRolled || isRolling}
                         aria-label="Roll Dice"
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
@@ -187,7 +197,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const handleEndTurn = () => {
                 setIsEndingTurn(true);
                 setBuildMode(null);
-                safeMove(() => moves.endTurn());
+                if (!safeMove(() => moves.endTurn())) {
+                    setIsEndingTurn(false);
+                }
             };
 
             const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
