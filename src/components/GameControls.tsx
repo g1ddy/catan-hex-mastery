@@ -5,12 +5,13 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll, Loader2 } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
+import { PHASES, STAGES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
 
-interface GameControlsProps {
+export interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
     moves: {
@@ -42,9 +43,12 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
 );
 
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
-    const isSetup = ctx.phase === 'setup';
-    const isGameplay = ctx.phase === 'GAMEPLAY';
-    const stage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isSetup = ctx.phase === PHASES.SETUP;
+    const isGameplay = ctx.phase === PHASES.GAMEPLAY;
+
+    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
+    const isActingStage = isGameplay && activeStage === STAGES.ACTING;
 
     const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
@@ -52,17 +56,17 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     useEffect(() => {
         setIsRolling(false);
         setIsEndingTurn(false);
-    }, [ctx.currentPlayer, ctx.phase]);
+    }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
     if (isSetup) {
         let instruction = "Wait for your turn...";
         let canInteract = false;
 
-        if (stage === 'placeSettlement') {
+        if (activeStage === STAGES.PLACE_SETTLEMENT) {
             instruction = "Place a Settlement";
             canInteract = true;
         }
-        if (stage === 'placeRoad') {
+        if (activeStage === STAGES.PLACE_ROAD) {
             instruction = "Place a Road";
             canInteract = true;
         }
@@ -111,11 +115,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     }
 
     if (isGameplay) {
-        // Roll Phase
-        if (!G.hasRolled && stage === 'roll') {
-            const rollDiceLabel = isRolling ? "Rolling..." : "Roll Dice";
-            const rollDiceIcon = isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />;
-
+        // Roll Stage
+        if (isRollingStage) {
             if (variant === 'docked') {
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
@@ -127,11 +128,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                 }
                             }}
                             disabled={G.hasRolled || isRolling}
-                            aria-label={rollDiceLabel}
+                            aria-label={isRolling ? "Rolling..." : "Roll Dice"}
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
-                            {rollDiceIcon}
-                            <span className="text-base font-bold">{rollDiceLabel}</span>
+                            {isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />}
+                            <span className="text-base font-bold">{isRolling ? "Rolling..." : "Roll Dice"}</span>
                         </button>
                     </div>
                 );
@@ -147,18 +148,19 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             }
                         }}
                         disabled={G.hasRolled || isRolling}
-                        aria-label={rollDiceLabel}
+                        aria-label={isRolling ? "Rolling..." : "Roll Dice"}
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
-                        {rollDiceIcon}
-                        <span className="text-lg font-bold">{rollDiceLabel}</span>
+                        {isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />}
+                        <span className="text-lg font-bold">{isRolling ? "Rolling..." : "Roll Dice"}</span>
                     </button>
                 </div>
             );
         }
 
-        // Action Phase
-        if (G.hasRolled || stage === 'action') {
+        // Acting Stage
+        // Note: checking isActingStage is sufficient, as the state transition ensures we are here after rolling.
+        if (isActingStage) {
             const resources = G.players[ctx.currentPlayer].resources;
 
             const canAfford = (cost: Partial<Resources>): boolean => {
@@ -246,11 +248,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         <button
                             onClick={handleEndTurn}
                             disabled={isEndingTurn}
-                            aria-label={endTurnLabel}
+                            aria-label={isEndingTurn ? "Ending Turn..." : "End Turn"}
                             className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
                             <span>{isEndingTurn ? "Ending..." : "End"}</span>
-                            {isEndingTurn ? React.cloneElement(endTurnIcon as React.ReactElement, { size: 16 }) : React.cloneElement(endTurnIcon as React.ReactElement, { size: 16 })}
+                            {isEndingTurn ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
                         </button>
                     </div>
                 );
@@ -299,11 +301,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     <button
                         onClick={handleEndTurn}
                         disabled={isEndingTurn}
-                        aria-label={endTurnLabel}
+                        aria-label={isEndingTurn ? "Ending Turn..." : "End Turn"}
                         className="flex items-center gap-2 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 disabled:active:scale-100 font-bold focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
-                        <span>{endTurnLabel}</span>
-                        {isEndingTurn ? React.cloneElement(endTurnIcon as React.ReactElement, { size: 20 }) : React.cloneElement(endTurnIcon as React.ReactElement, { size: 20 })}
+                        <span>{isEndingTurn ? "Ending Turn..." : "End Turn"}</span>
+                        {isEndingTurn ? <Loader2 size={20} className="animate-spin" /> : <ArrowRight size={20} />}
                     </button>
                 </div>
             );

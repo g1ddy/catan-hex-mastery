@@ -10,7 +10,7 @@ import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
-import { GameControls, BuildMode, UiMode } from './GameControls';
+import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
@@ -19,6 +19,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
 import { Home, Castle } from 'lucide-react';
+import { PHASES, STAGES } from '../game/constants';
 
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
@@ -163,7 +164,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <GameControls
           G={G}
           ctx={ctx}
-          moves={moves as any}
+          moves={moves as unknown as GameControlsProps['moves']}
           buildMode={buildMode}
           setBuildMode={setBuildMode}
           uiMode={uiMode}
@@ -229,8 +230,8 @@ const HexOverlays = ({
     // Coach Recommendations / Heatmap Scores
     const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
         // Active when placing settlement in Setup OR Gameplay
-        const isSetupPlacing = ctx.phase === 'setup' && uiMode === 'placing';
-        const isGamePlacing = ctx.phase === 'GAMEPLAY' && buildMode === 'settlement';
+        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
+        const isGamePlacing = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
 
         if (isSetupPlacing || isGamePlacing) {
             const allScores = getAllSettlementScores(G, ctx.currentPlayer);
@@ -294,9 +295,12 @@ const HexOverlays = ({
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
 
                 // Interaction Logic
-                const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isSetup = ctx.phase === PHASES.SETUP;
+                // Interaction logic mostly for action phase, but checking phase generically
+                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
 
                 let isClickable = false;
                 let isGhost = false;
@@ -319,7 +323,7 @@ const HexOverlays = ({
                 };
 
                 if (isSetup) {
-                    if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
+                    if (currentStage === STAGES.PLACE_SETTLEMENT && !isOccupied && !isTooClose(vId)) {
                         // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
                             isClickable = true;
@@ -330,7 +334,7 @@ const HexOverlays = ({
                             applyCoachRecommendation();
                         }
                     }
-                } else if (isGameplay) {
+                } else if (isActingStage) {
                     if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
                         // Strict connectivity check for settlements
                         const adjEdges = getEdgesForVertex(vId);
@@ -379,8 +383,8 @@ const HexOverlays = ({
                         )}
 
                         {/* Ghost Vertex (White Dot for Click Target) */}
-                        {isGhost && !isRecommended && (
-                            <circle cx={corner.x} cy={corner.y} r={1} fill="white" opacity={0.5} className="ghost-vertex" />
+                        {isGhost && (
+                            <circle cx={corner.x} cy={corner.y} r={BOARD_CONFIG.GHOST_VERTEX_RADIUS} fill="white" opacity={0.5} className="ghost-vertex" />
                         )}
 
                          {/* Highlight upgrade target */}
@@ -452,16 +456,19 @@ const HexOverlays = ({
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
 
                 // Interaction Logic
-                const isSetup = ctx.phase === 'setup';
-                const isGameplay = ctx.phase === 'GAMEPLAY';
+                const isSetup = ctx.phase === PHASES.SETUP;
+                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
+
 
                 let isClickable = false;
                 let isGhost = false;
                 let clickAction = () => {};
 
                 if (isSetup) {
-                     if (currentStage === 'placeRoad' && !isOccupied) {
+                     if (currentStage === STAGES.PLACE_ROAD && !isOccupied) {
                          // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
                             const isConnected = G.setupPhase.activeSettlement && getEdgesForVertex(G.setupPhase.activeSettlement).includes(eId);
@@ -475,7 +482,7 @@ const HexOverlays = ({
                             }
                         }
                      }
-                } else if (isGameplay) {
+                } else if (isActingStage) {
                     if (buildMode === 'road' && !isOccupied) {
                          const endpoints = getVerticesForEdge(eId);
 

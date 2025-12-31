@@ -3,7 +3,7 @@ import { Client } from 'boardgame.io/client';
 import { getSnakeDraftOrder } from '../src/game/turnOrder';
 
 describe('Setup Phase Logic', () => {
-  let client: any;
+  let client: ReturnType<typeof Client>;
 
   beforeEach(() => {
     client = Client({
