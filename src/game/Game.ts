@@ -80,8 +80,8 @@ export const CatanGame: Game<GameState> = {
   turn: {
      onBegin: ({ G, events, ctx }) => {
          G.hasRolled = false;
-         // Only force 'rolling' phase if we are not in setup
-         if (ctx.phase !== 'setup') {
+         // Only force 'rolling' phase if we are not in setup and not already in rolling
+         if (ctx.phase !== 'setup' && ctx.phase !== 'rolling') {
             events.setPhase('rolling');
          }
      }
