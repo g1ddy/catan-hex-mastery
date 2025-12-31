@@ -14,7 +14,7 @@ svg.grid {
 }
 
 /* Disable tap highlight on interactive SVG elements */
-svg.grid g, svg.grid circle, svg.grid rect, svg.grid polygon {
+svg g, svg circle, svg rect, svg polygon {
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }

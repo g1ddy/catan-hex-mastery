@@ -382,7 +382,7 @@ const HexOverlays = ({
 
                         {/* Ghost Vertex (White Dot for Click Target) */}
                         {isGhost && (
-                            <circle cx={corner.x} cy={corner.y} r={2} fill="white" opacity={0.5} className="ghost-vertex" />
+                            <circle cx={corner.x} cy={corner.y} r={BOARD_CONFIG.GHOST_VERTEX_RADIUS} fill="white" opacity={0.5} className="ghost-vertex" />
                         )}
 
                          {/* Highlight upgrade target */}
