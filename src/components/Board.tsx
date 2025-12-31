@@ -279,6 +279,14 @@ const HexOverlays = ({
         return potentialOwners.find(ownerId => G.board.hexes[ownerId]) || potentialOwners[0];
     };
 
+    const safeMove = (action: () => void) => {
+        try {
+            action();
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
+
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
@@ -324,7 +332,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.placeSettlement(vId);
+                                safeMove(() => moves.placeSettlement(vId));
                             };
                             applyCoachRecommendation();
                         }
@@ -342,7 +350,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.buildSettlement(vId);
+                                safeMove(() => moves.buildSettlement(vId));
                                 setBuildMode(null);
                             }
                             applyCoachRecommendation();
@@ -351,7 +359,7 @@ const HexOverlays = ({
                         isClickable = true;
                         isGhost = false; // It's upgrading an existing one
                         clickAction = () => {
-                             moves.buildCity(vId);
+                             safeMove(() => moves.buildCity(vId));
                              setBuildMode(null);
                         }
                     }
@@ -468,7 +476,7 @@ const HexOverlays = ({
                                 isClickable = true;
                                 isGhost = true;
                                 clickAction = () => {
-                                    moves.placeRoad(eId);
+                                    safeMove(() => moves.placeRoad(eId));
                                     setUiMode('viewing');
                                 };
                             }
@@ -497,7 +505,7 @@ const HexOverlays = ({
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
-                                moves.buildRoad(eId);
+                                safeMove(() => moves.buildRoad(eId));
                                 setBuildMode(null);
                             }
                         }

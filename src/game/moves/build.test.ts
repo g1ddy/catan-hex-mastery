@@ -38,8 +38,8 @@ describe('Gameplay Moves', () => {
     describe('buildRoad', () => {
         it('should fail if not enough resources', () => {
              // 0 resources
-             const result = (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, '0,0,0::1,0,-1');
-             expect(result).toBe('INVALID_MOVE');
+             const call = () => (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, '0,0,0::1,0,-1');
+             expect(call).toThrow("Not enough resources to build a road (requires Wood, Brick)");
         });
 
         it('should build road if resources and connectivity exist', () => {
@@ -71,8 +71,8 @@ describe('Gameplay Moves', () => {
     describe('buildSettlement', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
-             const result = (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
-             expect(result).toBe('INVALID_MOVE');
+             const call = () => (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+             expect(call).toThrow("Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)");
         });
 
         it('should deduct resources on success', () => {
@@ -107,8 +107,8 @@ describe('Gameplay Moves', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
              G.board.vertices[vId] = { owner: '0', type: 'settlement' };
-             const result = (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
-             expect(result).toBe('INVALID_MOVE');
+             const call = () => (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+             expect(call).toThrow("Not enough resources to build a city (requires 3 Ore, 2 Wheat)");
         });
 
         it('should upgrade settlement to city', () => {

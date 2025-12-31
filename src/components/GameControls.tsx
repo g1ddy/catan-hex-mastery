@@ -5,6 +5,7 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
+import toast from 'react-hot-toast';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -52,6 +53,14 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase]);
+
+    const safeMove = (action: () => void) => {
+        try {
+            action();
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
 
     if (isSetup) {
         let instruction = "Wait for your turn...";
@@ -116,7 +125,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
                         <button
-                            onClick={() => { setIsRolling(true); moves.rollDice(); }}
+                            onClick={() => { setIsRolling(true); safeMove(() => moves.rollDice()); }}
                             disabled={G.hasRolled || isRolling}
                             aria-label="Roll Dice"
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
@@ -131,7 +140,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return (
                 <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[${Z_INDEX_FLOATING_UI}]`}>
                     <button
-                        onClick={() => { setIsRolling(true); moves.rollDice(); }}
+                        onClick={() => { setIsRolling(true); safeMove(() => moves.rollDice()); }}
                         disabled={G.hasRolled || isRolling}
                         aria-label="Roll Dice"
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
@@ -186,7 +195,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const handleEndTurn = () => {
                 setIsEndingTurn(true);
                 setBuildMode(null);
-                moves.endTurn();
+                safeMove(() => moves.endTurn());
             };
 
             const lastRollSum = G.lastRoll[0] + G.lastRoll[1];

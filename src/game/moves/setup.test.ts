@@ -87,9 +87,8 @@ describe('Setup Phase Moves', () => {
 
             const validEdge = "0,0,0::1,-1,0";
 
-            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
+            placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
-            expect(result).not.toBe('INVALID_MOVE');
             expect(G.board.edges[validEdge]).toBeDefined();
             expect(G.setupPhase.activeSettlement).toBeNull(); // Should be reset
             expect(events.endTurn).toHaveBeenCalled();
@@ -98,8 +97,8 @@ describe('Setup Phase Moves', () => {
         it('should fail if no activeSettlement set', () => {
             G.setupPhase.activeSettlement = null;
             const validEdge = "0,0,0::1,-1,0";
-            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
-            expect(result).toBe('INVALID_MOVE');
+            const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
+            expect(call).toThrow("No active settlement found to connect to");
         });
 
         it('should fail if road is NOT connected to activeSettlement', () => {
@@ -109,9 +108,9 @@ describe('Setup Phase Moves', () => {
             // Pick an edge far away
             const disconnectedEdge = "5,0,-5::5,-1,-4";
 
-            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, disconnectedEdge);
+            const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, disconnectedEdge);
 
-            expect(result).toBe('INVALID_MOVE');
+            expect(call).toThrow("Road must connect to your just-placed settlement");
             expect(G.board.edges[disconnectedEdge]).toBeUndefined();
             expect(G.setupPhase.activeSettlement).toBe(vId); // Not reset
         });

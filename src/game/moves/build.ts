@@ -27,12 +27,12 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
 
     // 1. Cost Check
     if (player.resources.wood < cost.wood || player.resources.brick < cost.brick) {
-        return 'INVALID_MOVE';
+        throw new Error("Not enough resources to build a road (requires Wood, Brick)");
     }
 
     // 2. Validation: Occupancy
     if (G.board.edges[edgeId]) {
-        return 'INVALID_MOVE';
+        throw new Error("This edge is already occupied");
     }
 
     // 3. Validation: Connection
@@ -57,7 +57,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
         });
     };
 
-    if (!endpoints.some(hasConnection)) return 'INVALID_MOVE';
+    if (!endpoints.some(hasConnection)) throw new Error("Road must connect to your existing road or settlement");
 
     // Execution
     G.board.edges[edgeId] = { owner: ctx.currentPlayer };
@@ -75,19 +75,19 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
         player.resources.brick < cost.brick ||
         player.resources.wheat < cost.wheat ||
         player.resources.sheep < cost.sheep) {
-        return 'INVALID_MOVE';
+        throw new Error("Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)");
     }
 
     // 2. Validation: Occupancy
     if (G.board.vertices[vertexId]) {
-        return 'INVALID_MOVE';
+        throw new Error("This vertex is already occupied");
     }
 
     // 3. Validation: Distance Rule
     const neighbors = getVertexNeighbors(vertexId);
     for (const nId of neighbors) {
         if (G.board.vertices[nId]) {
-            return 'INVALID_MOVE';
+            throw new Error("Settlement is too close to another building (Distance Rule)");
         }
     }
 
@@ -98,7 +98,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
         return edge && edge.owner === ctx.currentPlayer;
     });
 
-    if (!hasOwnRoad) return 'INVALID_MOVE';
+    if (!hasOwnRoad) throw new Error("Settlement must connect to your own road");
 
     // Execution
     G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
@@ -116,13 +116,13 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
 
     // 1. Cost Check
     if (player.resources.ore < cost.ore || player.resources.wheat < cost.wheat) {
-        return 'INVALID_MOVE';
+        throw new Error("Not enough resources to build a city (requires 3 Ore, 2 Wheat)");
     }
 
     // 2. Validation: Must be own settlement
     const vertex = G.board.vertices[vertexId];
     if (!vertex || vertex.owner !== ctx.currentPlayer || vertex.type !== 'settlement') {
-        return 'INVALID_MOVE';
+        throw new Error("You can only upgrade your own settlements to cities");
     }
 
     // Execution
