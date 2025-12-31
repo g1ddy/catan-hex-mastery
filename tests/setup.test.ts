@@ -79,11 +79,7 @@ describe('Setup Phase Logic', () => {
     // boardgame.io Client checks validity.
 
     // Force invalid move (occupancy)
-    try {
-        client.moves.placeSettlement(vId);
-    } catch (e: any) {
-        expect(e.message).toBe("This vertex is already occupied");
-    }
+    expect(() => client.moves.placeSettlement(vId)).toThrow("This vertex is already occupied");
     state = client.store.getState();
     // Move should be invalid, so state shouldn't change (still owned by 0)
     // And ideally ctx.currentPlayer shouldn't change if move failed?
@@ -103,13 +99,7 @@ describe('Setup Phase Logic', () => {
 
     // P1 tries to place on vId (occupied by P0)
     // Expect specific error message for occupied vertex
-    try {
-        client.moves.placeSettlement(vId);
-        // If we reach here, it failed to throw (which is a fail)
-        // But since we are testing 'it failed', catching is good.
-    } catch (e: any) {
-        expect(e.message).toBe("This vertex is already occupied");
-    }
+    expect(() => client.moves.placeSettlement(vId)).toThrow("This vertex is already occupied");
 
     // Verify it failed. P1 should still be 'placeSettlement' and currentPlayer should still be '1' (or move returned invalid).
     state = client.store.getState();
@@ -144,11 +134,7 @@ describe('Setup Phase Logic', () => {
       const vNeighbor = "0,-1,1::0,0,0::1,-1,0";
 
       // Expect specific error message for distance rule
-      try {
-          client.moves.placeSettlement(vNeighbor);
-      } catch (e: any) {
-          expect(e.message).toBe("Settlement is too close to another building");
-      }
+      expect(() => client.moves.placeSettlement(vNeighbor)).toThrow("Settlement is too close to another building");
 
       const state = client.store.getState();
 

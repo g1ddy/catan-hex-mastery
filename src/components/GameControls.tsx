@@ -5,7 +5,7 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
-import toast from 'react-hot-toast';
+import { safeMove } from '../utils/moveUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -53,14 +53,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase]);
-
-    const safeMove = (action: () => void) => {
-        try {
-            action();
-        } catch (error: any) {
-            toast.error(error.message);
-        }
-    };
 
     if (isSetup) {
         let instruction = "Wait for your turn...";

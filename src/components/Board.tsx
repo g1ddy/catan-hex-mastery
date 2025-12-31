@@ -14,6 +14,7 @@ import { GameControls, BuildMode, UiMode } from './GameControls';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
+import { safeMove } from '../utils/moveUtils';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
@@ -277,14 +278,6 @@ const HexOverlays = ({
         // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
         // which would cause the element to not render at all.
         return potentialOwners.find(ownerId => G.board.hexes[ownerId]) || potentialOwners[0];
-    };
-
-    const safeMove = (action: () => void) => {
-        try {
-            action();
-        } catch (error: any) {
-            toast.error(error.message);
-        }
     };
 
     return (
