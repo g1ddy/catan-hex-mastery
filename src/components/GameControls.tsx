@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Z_INDEX_FLOATING_UI } from '../styles/z-indices';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
-import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
+import { Dices as Dice, ArrowRight, Scroll, Loader2 } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { safeMove } from '../utils/moveUtils';
@@ -113,6 +113,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     if (isGameplay) {
         // Roll Phase
         if (!G.hasRolled && stage === 'roll') {
+            const rollDiceLabel = isRolling ? "Rolling..." : "Roll Dice";
+            const rollDiceIcon = isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />;
+
             if (variant === 'docked') {
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
@@ -124,11 +127,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                 }
                             }}
                             disabled={G.hasRolled || isRolling}
-                            aria-label="Roll Dice"
+                            aria-label={rollDiceLabel}
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 w-full justify-center focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
-                            <Dice size={24} />
-                            <span className="text-base font-bold">Roll Dice</span>
+                            {rollDiceIcon}
+                            <span className="text-base font-bold">{rollDiceLabel}</span>
                         </button>
                     </div>
                 );
@@ -144,11 +147,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             }
                         }}
                         disabled={G.hasRolled || isRolling}
-                        aria-label="Roll Dice"
+                        aria-label={rollDiceLabel}
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-4 rounded-xl shadow-xl transition-all active:scale-95 disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
-                        <Dice size={24} />
-                        <span className="text-lg font-bold">Roll Dice</span>
+                        {rollDiceIcon}
+                        <span className="text-lg font-bold">{rollDiceLabel}</span>
                     </button>
                 </div>
             );
@@ -204,6 +207,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
             const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
 
+            // End turn logic
+            const endTurnLabel = isEndingTurn ? "Ending Turn..." : "End Turn";
+            const endTurnIcon = isEndingTurn ? <Loader2 className="animate-spin" /> : <ArrowRight />;
+
             if (variant === 'docked') {
                 return (
                      <div className="flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg">
@@ -239,11 +246,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         <button
                             onClick={handleEndTurn}
                             disabled={isEndingTurn}
-                            aria-label="End Turn"
+                            aria-label={endTurnLabel}
                             className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                         >
-                            <span>End</span>
-                            <ArrowRight size={16} />
+                            <span>{isEndingTurn ? "Ending..." : "End"}</span>
+                            {isEndingTurn ? React.cloneElement(endTurnIcon as React.ReactElement, { size: 16 }) : React.cloneElement(endTurnIcon as React.ReactElement, { size: 16 })}
                         </button>
                     </div>
                 );
@@ -292,11 +299,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     <button
                         onClick={handleEndTurn}
                         disabled={isEndingTurn}
-                        aria-label="End Turn"
+                        aria-label={endTurnLabel}
                         className="flex items-center gap-2 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95 disabled:active:scale-100 font-bold focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
-                        <span>End Turn</span>
-                        <ArrowRight size={20} />
+                        <span>{endTurnLabel}</span>
+                        {isEndingTurn ? React.cloneElement(endTurnIcon as React.ReactElement, { size: 20 }) : React.cloneElement(endTurnIcon as React.ReactElement, { size: 20 })}
                     </button>
                 </div>
             );
