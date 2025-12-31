@@ -9,7 +9,7 @@ import { BUILD_BUTTON_CONFIG } from './uiConfig';
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
 
-interface GameControlsProps {
+export interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
     moves: {
