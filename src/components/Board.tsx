@@ -185,6 +185,34 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   );
 };
 
+interface BuildingIconProps {
+    vertex: { type: 'settlement' | 'city'; owner: string };
+    corner: { x: number; y: number };
+    ownerColor: string | null | undefined;
+}
+
+const BuildingIcon: React.FC<BuildingIconProps> = ({ vertex, corner, ownerColor }) => {
+    const isSettlement = vertex.type === 'settlement';
+    const Icon = isSettlement ? Home : Castle;
+    const size = isSettlement ? SETTLEMENT_ICON_SIZE : CITY_ICON_SIZE;
+    const typeName = isSettlement ? 'settlement' : 'city';
+
+    return (
+        <Icon
+            x={corner.x - size / 2}
+            y={corner.y - size / 2}
+            width={size}
+            height={size}
+            fill={ownerColor || 'none'}
+            stroke="black"
+            strokeWidth={1}
+            data-testid={`${typeName}-icon`}
+            aria-label={`${typeName.charAt(0).toUpperCase() + typeName.slice(1)} owned by Player ${Number(vertex.owner) + 1}`}
+            role="img"
+        />
+    );
+};
+
 const HexOverlays = ({
     hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode
 }: {
@@ -343,27 +371,11 @@ const HexOverlays = ({
                             data-testid={isGhost ? "ghost-vertex" : undefined}
                         />
                         {isOccupied && (
-                            (() => {
-                                const isSettlement = vertex.type === 'settlement';
-                                const Icon = isSettlement ? Home : Castle;
-                                const size = isSettlement ? SETTLEMENT_ICON_SIZE : CITY_ICON_SIZE;
-                                const typeName = isSettlement ? 'settlement' : 'city';
-
-                                return (
-                                    <Icon
-                                        x={corner.x - size / 2}
-                                        y={corner.y - size / 2}
-                                        width={size}
-                                        height={size}
-                                        fill={ownerColor || 'none'}
-                                        stroke="black"
-                                        strokeWidth={1}
-                                        data-testid={`${typeName}-icon`}
-                                        aria-label={`${typeName.charAt(0).toUpperCase() + typeName.slice(1)} owned by Player ${Number(vertex.owner) + 1}`}
-                                        role="img"
-                                    />
-                                );
-                            })()
+                            <BuildingIcon
+                                vertex={vertex}
+                                corner={corner}
+                                ownerColor={ownerColor}
+                            />
                         )}
 
                         {/* Ghost Vertex (White Dot for Click Target) */}
