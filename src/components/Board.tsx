@@ -343,36 +343,27 @@ const HexOverlays = ({
                             data-testid={isGhost ? "ghost-vertex" : undefined}
                         />
                         {isOccupied && (
-                            <React.Fragment>
-                                {vertex.type === 'settlement' && (
-                                    <Home
-                                        x={corner.x - SETTLEMENT_ICON_SIZE / 2}
-                                        y={corner.y - SETTLEMENT_ICON_SIZE / 2}
-                                        width={SETTLEMENT_ICON_SIZE}
-                                        height={SETTLEMENT_ICON_SIZE}
+                            (() => {
+                                const isSettlement = vertex.type === 'settlement';
+                                const Icon = isSettlement ? Home : Castle;
+                                const size = isSettlement ? SETTLEMENT_ICON_SIZE : CITY_ICON_SIZE;
+                                const typeName = isSettlement ? 'settlement' : 'city';
+
+                                return (
+                                    <Icon
+                                        x={corner.x - size / 2}
+                                        y={corner.y - size / 2}
+                                        width={size}
+                                        height={size}
                                         fill={ownerColor || 'none'}
                                         stroke="black"
                                         strokeWidth={1}
-                                        data-testid="settlement-icon"
-                                        aria-label={`Settlement owned by Player ${vertex.owner}`}
+                                        data-testid={`${typeName}-icon`}
+                                        aria-label={`${typeName.charAt(0).toUpperCase() + typeName.slice(1)} owned by Player ${Number(vertex.owner) + 1}`}
                                         role="img"
                                     />
-                                )}
-                                {vertex.type === 'city' && (
-                                    <Castle
-                                        x={corner.x - CITY_ICON_SIZE / 2}
-                                        y={corner.y - CITY_ICON_SIZE / 2}
-                                        width={CITY_ICON_SIZE}
-                                        height={CITY_ICON_SIZE}
-                                        fill={ownerColor || 'none'}
-                                        stroke="black"
-                                        strokeWidth={1}
-                                        data-testid="city-icon"
-                                        aria-label={`City owned by Player ${vertex.owner}`}
-                                        role="img"
-                                    />
-                                )}
-                            </React.Fragment>
+                                );
+                            })()
                         )}
 
                         {/* Ghost Vertex (White Dot for Click Target) */}
