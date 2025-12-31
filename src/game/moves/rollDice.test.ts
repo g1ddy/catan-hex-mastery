@@ -1,7 +1,6 @@
 import { rollDice } from './roll';
 import { GameState } from '../types';
 import { createTestGameState } from '../testUtils';
-import { STAGES } from '../constants';
 
 // Define strict interfaces for mocks to avoid 'any'
 interface MockRandom {
@@ -9,7 +8,7 @@ interface MockRandom {
 }
 
 interface MockEvents {
-    setStage: jest.Mock;
+    endStage: jest.Mock;
 }
 
 interface MockCtx {
@@ -25,7 +24,7 @@ describe('rollDice Move', () => {
         Die: jest.fn()
     };
     const mockEvents: MockEvents = {
-        setStage: jest.fn()
+        endStage: jest.fn()
     };
     const mockCtx: MockCtx = { currentPlayer: '0' };
 
@@ -40,7 +39,8 @@ describe('rollDice Move', () => {
         });
 
         mockRandom.Die.mockReturnValue(3); // Default return
-        mockEvents.setStage.mockReset();
+        mockRandom.Die.mockClear(); // Clear call history
+        mockEvents.endStage.mockReset();
     });
 
     it('should roll dice and update state', () => {
@@ -52,22 +52,14 @@ describe('rollDice Move', () => {
         expect(G.hasRolled).toBe(true);
     });
 
-    it('should trigger transition to ACTING stage', () => {
+    it('should trigger endStage', () => {
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(mockEvents.setStage).toHaveBeenCalledWith(STAGES.ACTING);
+        expect(mockEvents.endStage).toHaveBeenCalled();
     });
 
     it('should distribute new rewards', () => {
-        // Now the move handles distribution immediately
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(3); // Sum 6
-        // We can't easily mock distributeResources as it's a direct import,
-        // but we can check if G.lastRollRewards is updated or at least not empty if we had a board.
-        // Since we are using a mock board, we might need to rely on the fact that it's called.
-        // Or simply verify it returns an object (which distributeResources does).
-
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        // Assuming generateBoard (called in createTestGameState) creates a board.
-        // For unit test isolation, we accept whatever distributeResources returns.
         expect(G.lastRollRewards).toBeDefined();
     });
 
@@ -75,5 +67,6 @@ describe('rollDice Move', () => {
         G.hasRolled = true;
         const result = move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(result).toBe('INVALID_MOVE');
+        expect(mockRandom.Die).not.toHaveBeenCalled();
     });
 });

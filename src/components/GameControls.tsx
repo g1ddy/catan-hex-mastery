@@ -160,7 +160,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // Acting Stage
         // Note: checking isActingStage is sufficient, as the state transition ensures we are here after rolling.
-        if (isActingStage || (isGameplay && G.hasRolled)) {
+        if (isActingStage) {
             const resources = G.players[ctx.currentPlayer].resources;
 
             const canAfford = (cost: Partial<Resources>): boolean => {

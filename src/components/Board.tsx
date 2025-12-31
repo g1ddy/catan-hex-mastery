@@ -300,7 +300,7 @@ const HexOverlays = ({
                 const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
-                const isActingStage = isGameplay && (currentStage === STAGES.ACTING || G.hasRolled);
+                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
 
                 let isClickable = false;
                 let isGhost = false;
@@ -460,7 +460,7 @@ const HexOverlays = ({
                 const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
 
-                const isActingStage = isGameplay && (currentStage === STAGES.ACTING || G.hasRolled);
+                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
 
 
                 let isClickable = false;
