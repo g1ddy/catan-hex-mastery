@@ -28,6 +28,9 @@ describe('rollDice Move', () => {
     };
     const mockCtx: MockCtx = { currentPlayer: '0' };
 
+    // Define the move once for reuse (DRY)
+    const move = rollDice as unknown as RollDiceMove;
+
     beforeEach(() => {
         G = createTestGameState({
             lastRoll: [0, 0],
@@ -42,8 +45,6 @@ describe('rollDice Move', () => {
     it('should roll dice and update state', () => {
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(4);
 
-        // Cast rollDice to the specific function signature we use in tests
-        const move = rollDice as unknown as RollDiceMove;
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 4]);
@@ -51,7 +52,6 @@ describe('rollDice Move', () => {
     });
 
     it('should trigger endPhase', () => {
-        const move = rollDice as unknown as RollDiceMove;
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(mockEvents.endPhase).toHaveBeenCalled();
     });
@@ -59,14 +59,12 @@ describe('rollDice Move', () => {
     it('should clear previous rewards but NOT distribute new ones', () => {
         // The move is responsible for clearing, but the phase hook does the distribution.
         // We expect rewards to be empty after the move executes.
-        const move = rollDice as unknown as RollDiceMove;
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(G.lastRollRewards).toEqual({});
     });
 
     it('should return INVALID_MOVE if already rolled', () => {
         G.hasRolled = true;
-        const move = rollDice as unknown as RollDiceMove;
         const result = move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(result).toBe('INVALID_MOVE');
         expect(mockRandom.Die).not.toHaveBeenCalled();
