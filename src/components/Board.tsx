@@ -10,7 +10,7 @@ import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
 import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
 import { BOARD_CONFIG } from '../game/config';
-import { GameControls, BuildMode, UiMode } from './GameControls';
+import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
 import toast from 'react-hot-toast';
@@ -162,7 +162,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <GameControls
           G={G}
           ctx={ctx}
-          moves={moves as any}
+          moves={moves as unknown as GameControlsProps['moves']}
           buildMode={buildMode}
           setBuildMode={setBuildMode}
           uiMode={uiMode}

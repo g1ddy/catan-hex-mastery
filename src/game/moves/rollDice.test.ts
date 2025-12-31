@@ -2,15 +2,34 @@ import { rollDice } from './roll';
 import { GameState } from '../types';
 import { createTestGameState } from '../testUtils';
 
+// Define strict interfaces for mocks to avoid 'any'
+interface MockRandom {
+    Die: jest.Mock;
+}
+
+interface MockEvents {
+    endPhase: jest.Mock;
+}
+
+interface MockCtx {
+    currentPlayer: string;
+}
+
+// Define the expected signature for the move function when called directly in tests
+type RollDiceMove = (args: { G: GameState; random: MockRandom; events: MockEvents; ctx: MockCtx }) => void | 'INVALID_MOVE';
+
 describe('rollDice Move', () => {
     let G: GameState;
-    const mockRandom = {
+    const mockRandom: MockRandom = {
         Die: jest.fn()
     };
-    const mockEvents = {
+    const mockEvents: MockEvents = {
         endPhase: jest.fn()
     };
-    const mockCtx = { currentPlayer: '0' } as any;
+    const mockCtx: MockCtx = { currentPlayer: '0' };
+
+    // Define the move once for reuse (DRY)
+    const move = rollDice as unknown as RollDiceMove;
 
     beforeEach(() => {
         G = createTestGameState({
@@ -26,27 +45,27 @@ describe('rollDice Move', () => {
     it('should roll dice and update state', () => {
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(4);
 
-        (rollDice as any)({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 4]);
         expect(G.hasRolled).toBe(true);
     });
 
     it('should trigger endPhase', () => {
-        (rollDice as any)({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(mockEvents.endPhase).toHaveBeenCalled();
     });
 
     it('should clear previous rewards but NOT distribute new ones', () => {
         // The move is responsible for clearing, but the phase hook does the distribution.
         // We expect rewards to be empty after the move executes.
-        (rollDice as any)({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(G.lastRollRewards).toEqual({});
     });
 
     it('should return INVALID_MOVE if already rolled', () => {
         G.hasRolled = true;
-        const result = (rollDice as any)({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        const result = move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(result).toBe('INVALID_MOVE');
         expect(mockRandom.Die).not.toHaveBeenCalled();
     });
