@@ -7,8 +7,8 @@ module.exports = {
   ],
   rules: {
     // Custom rules or overrides can go here
-    '@typescript-eslint/no-explicit-any': 'off', // Too many existing instances
-    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn', // Too many existing instances
+    '@typescript-eslint/ban-ts-comment': 'warn',
     'no-empty-pattern': 'warn',
     '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }]
   },

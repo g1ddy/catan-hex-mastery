@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// @ts-ignore
+// @ts-expect-error -- `react-hexgrid` lacks type definitions
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';

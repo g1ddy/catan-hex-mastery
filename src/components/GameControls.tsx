@@ -11,7 +11,10 @@ export type UiMode = 'viewing' | 'placing';
 interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
-    moves: Record<string, any>;
+    moves: {
+        rollDice: () => void;
+        endTurn: () => void;
+    };
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;

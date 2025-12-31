@@ -42,8 +42,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
           };
           const res = resourceMap[hex.terrain];
           if (res) {
-            // @ts-ignore
-            G.players[ctx.currentPlayer].resources[res]++;
+            G.players[ctx.currentPlayer].resources[res as keyof typeof G.players[string]['resources']]++;
           }
       }
     });

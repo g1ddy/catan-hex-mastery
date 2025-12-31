@@ -1,5 +1,5 @@
 import React from 'react';
-// @ts-ignore
+// @ts-expect-error -- `react-hexgrid` lacks type definitions
 import { Hexagon } from 'react-hexgrid';
 import { Hex, TerrainType } from '../game/types';
 import { NumberToken } from './NumberToken';
