@@ -115,7 +115,6 @@ export const CatanGame: Game<GameState> = {
              const rollValue = G.lastRoll[0] + G.lastRoll[1];
              const rewards = distributeResources(G, rollValue);
              G.lastRollRewards = rewards;
-             return G;
         },
         next: 'action', // Auto-transition to action phase
         // Ensure turn doesn't end automatically, just phase switch

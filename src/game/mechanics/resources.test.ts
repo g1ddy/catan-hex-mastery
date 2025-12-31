@@ -1,5 +1,5 @@
 import { distributeResources } from './resources';
-import { GameState, TerrainType } from '../types';
+import { GameState, TerrainType, Player, Resources, BoardState, BoardStats } from '../types';
 
 // Mock getVerticesForHex
 jest.mock('../hexUtils', () => ({
@@ -9,11 +9,45 @@ jest.mock('../hexUtils', () => ({
     }
 }));
 
+// --- Test Helpers ---
+
+const createTestPlayer = (id: string, overrides: Partial<Player> = {}): Player => ({
+    id,
+    color: 'red',
+    resources: {
+        wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0,
+        ...overrides.resources
+    },
+    settlements: [],
+    roads: [],
+    victoryPoints: 0,
+    ...overrides,
+});
+
+const createTestGameState = (overrides: Partial<GameState> = {}): GameState => ({
+    board: {
+        hexes: {},
+        vertices: {},
+        edges: {},
+        ...(overrides.board || {})
+    } as BoardState,
+    players: {},
+    setupPhase: { activeRound: 1, activeSettlement: null },
+    setupOrder: [],
+    lastRoll: [0, 0],
+    lastRollRewards: {},
+    boardStats: {} as BoardStats,
+    hasRolled: false,
+    ...overrides
+});
+
+// --- Tests ---
+
 describe('distributeResources', () => {
     let G: GameState;
 
     beforeEach(() => {
-        G = {
+        G = createTestGameState({
             board: {
                 hexes: {
                     '0,0,0': {
@@ -36,11 +70,10 @@ describe('distributeResources', () => {
                 edges: {}
             },
             players: {
-                '0': { id: '0', resources: { wood: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 } as any,
-                '1': { id: '1', resources: { wood: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 } as any
-            },
-            lastRollRewards: {}
-        } as unknown as GameState;
+                '0': createTestPlayer('0', { resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),
+                '1': createTestPlayer('1', { resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } })
+            }
+        });
     });
 
     test('Should distribute resources for settlements (1x)', () => {
