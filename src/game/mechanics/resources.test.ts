@@ -1,5 +1,6 @@
 import { distributeResources } from './resources';
-import { GameState, TerrainType, Player, BoardState, BoardStats } from '../types';
+import { GameState, TerrainType } from '../types';
+import { createTestGameState, createTestPlayer } from '../testUtils';
 
 // Mock getVerticesForHex
 jest.mock('../hexUtils', () => ({
@@ -8,38 +9,6 @@ jest.mock('../hexUtils', () => ({
         return [`${coords.q},${coords.r},${coords.s}`];
     }
 }));
-
-// --- Test Helpers ---
-
-const createTestPlayer = (id: string, overrides: Partial<Player> = {}): Player => ({
-    id,
-    color: 'red',
-    resources: {
-        wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0,
-        ...overrides.resources
-    },
-    settlements: [],
-    roads: [],
-    victoryPoints: 0,
-    ...overrides,
-});
-
-const createTestGameState = (overrides: Partial<GameState> = {}): GameState => ({
-    board: {
-        hexes: {},
-        vertices: {},
-        edges: {},
-        ...(overrides.board || {})
-    } as BoardState,
-    players: {},
-    setupPhase: { activeRound: 1, activeSettlement: null },
-    setupOrder: [],
-    lastRoll: [0, 0],
-    lastRollRewards: {},
-    boardStats: {} as BoardStats,
-    hasRolled: false,
-    ...overrides
-});
 
 // --- Tests ---
 

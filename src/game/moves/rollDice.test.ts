@@ -1,5 +1,6 @@
 import { rollDice } from './roll';
 import { GameState } from '../types';
+import { createTestGameState } from '../testUtils';
 
 describe('rollDice Move', () => {
     let G: GameState;
@@ -12,11 +13,11 @@ describe('rollDice Move', () => {
     const mockCtx = { currentPlayer: '0' } as any;
 
     beforeEach(() => {
-        G = {
+        G = createTestGameState({
             lastRoll: [0, 0],
             hasRolled: false,
             lastRollRewards: { '0': { wood: 5 } } // Pre-existing rewards to verify clearing
-        } as unknown as GameState;
+        });
 
         mockRandom.Die.mockReset();
         mockEvents.endPhase.mockReset();
