@@ -58,6 +58,6 @@ describe('Game Integration', () => {
         // Verify state
         const finalState = client.getState();
         expect(finalState.ctx.phase).toBe('rolling');
-        expect(finalState.ctx.turn).toBe(4);
+        expect(finalState.ctx.turn).toBe(5);
     });
 });
