@@ -1,9 +1,10 @@
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from '../src/game/Game';
 import { getVertexId, getEdgeId } from '../src/game/hexUtils';
+import { PHASES, STAGES } from '../src/game/constants';
 
 describe('Game Integration', () => {
-    it('should complete setup phase and transition to rolling phase without infinite loop', () => {
+    it('should complete setup phase and transition to gameplay phase without infinite loop', () => {
         // Initialize client for 2 players
         const client = Client({
             game: CatanGame,
@@ -57,7 +58,10 @@ describe('Game Integration', () => {
 
         // Verify state
         const finalState = client.getState();
-        expect(finalState.ctx.phase).toBe('rolling');
+        expect(finalState.ctx.phase).toBe(PHASES.GAMEPLAY);
+        // Should start in rolling stage
+        const activeStage = finalState.ctx.activePlayers?.[finalState.ctx.currentPlayer];
+        expect(activeStage).toBe(STAGES.ROLLING);
         expect(finalState.ctx.turn).toBe(5);
     });
 });

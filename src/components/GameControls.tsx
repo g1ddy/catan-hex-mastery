@@ -5,7 +5,7 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
-import { PHASES } from '../game/constants';
+import { PHASES, STAGES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
@@ -44,11 +44,11 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
 
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
-    // Gameplay phases include ROLLING and ACTION
-    const isGameplay = ctx.phase === PHASES.ROLLING || ctx.phase === PHASES.ACTION;
-    const isRollingPhase = ctx.phase === PHASES.ROLLING;
-    const isActionPhase = ctx.phase === PHASES.ACTION;
-    const stage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isGameplay = ctx.phase === PHASES.GAMEPLAY;
+
+    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
+    const isActingStage = isGameplay && activeStage === STAGES.ACTING;
 
     const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
@@ -56,17 +56,17 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     useEffect(() => {
         setIsRolling(false);
         setIsEndingTurn(false);
-    }, [ctx.currentPlayer, ctx.phase]);
+    }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
     if (isSetup) {
         let instruction = "Wait for your turn...";
         let canInteract = false;
 
-        if (stage === 'placeSettlement') {
+        if (activeStage === STAGES.PLACE_SETTLEMENT) {
             instruction = "Place a Settlement";
             canInteract = true;
         }
-        if (stage === 'placeRoad') {
+        if (activeStage === STAGES.PLACE_ROAD) {
             instruction = "Place a Road";
             canInteract = true;
         }
@@ -115,10 +115,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     }
 
     if (isGameplay) {
-        // Roll Phase: Active if phase is ROLLING (or implicit logic with !hasRolled)
-        // Original logic checked for stage === 'roll', but phase-based is cleaner now.
-        // We stick to the phase check mainly.
-        if (isRollingPhase && !G.hasRolled) {
+        // Roll Stage
+        if (isRollingStage) {
             if (variant === 'docked') {
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
@@ -160,9 +158,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             );
         }
 
-        // Action Phase
-        // We show action controls if it is the action phase OR if we have rolled (backward compatibility or just safety)
-        if (isActionPhase || G.hasRolled) {
+        // Acting Stage
+        // Note: checking isActingStage is sufficient, as the state transition ensures we are here after rolling.
+        if (isActingStage || (isGameplay && G.hasRolled)) {
             const resources = G.players[ctx.currentPlayer].resources;
 
             const canAfford = (cost: Partial<Resources>): boolean => {

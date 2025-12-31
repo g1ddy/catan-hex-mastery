@@ -19,7 +19,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { ProductionToast } from './ProductionToast';
 import { Home, Castle } from 'lucide-react';
-import { PHASES } from '../game/constants';
+import { PHASES, STAGES } from '../game/constants';
 
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
@@ -231,7 +231,7 @@ const HexOverlays = ({
     const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
         // Active when placing settlement in Setup OR Gameplay
         const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
-        const isGamePlacing = (ctx.phase === PHASES.ACTION) && buildMode === 'settlement';
+        const isGamePlacing = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
 
         if (isSetupPlacing || isGamePlacing) {
             const allScores = getAllSettlementScores(G, ctx.currentPlayer);
@@ -297,8 +297,10 @@ const HexOverlays = ({
                 // Interaction Logic
                 const isSetup = ctx.phase === PHASES.SETUP;
                 // Interaction logic mostly for action phase, but checking phase generically
-                const isAction = ctx.phase === PHASES.ACTION;
+                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                const isActingStage = isGameplay && (currentStage === STAGES.ACTING || G.hasRolled);
 
                 let isClickable = false;
                 let isGhost = false;
@@ -321,7 +323,7 @@ const HexOverlays = ({
                 };
 
                 if (isSetup) {
-                    if (currentStage === 'placeSettlement' && !isOccupied && !isTooClose(vId)) {
+                    if (currentStage === STAGES.PLACE_SETTLEMENT && !isOccupied && !isTooClose(vId)) {
                         // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
                             isClickable = true;
@@ -332,7 +334,7 @@ const HexOverlays = ({
                             applyCoachRecommendation();
                         }
                     }
-                } else if (isAction) {
+                } else if (isActingStage) {
                     if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
                         // Strict connectivity check for settlements
                         const adjEdges = getEdgesForVertex(vId);
@@ -455,15 +457,18 @@ const HexOverlays = ({
 
                 // Interaction Logic
                 const isSetup = ctx.phase === PHASES.SETUP;
-                const isAction = ctx.phase === PHASES.ACTION;
+                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+                const isActingStage = isGameplay && (currentStage === STAGES.ACTING || G.hasRolled);
+
 
                 let isClickable = false;
                 let isGhost = false;
                 let clickAction = () => {};
 
                 if (isSetup) {
-                     if (currentStage === 'placeRoad' && !isOccupied) {
+                     if (currentStage === STAGES.PLACE_ROAD && !isOccupied) {
                          // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
                             const isConnected = G.setupPhase.activeSettlement && getEdgesForVertex(G.setupPhase.activeSettlement).includes(eId);
@@ -477,7 +482,7 @@ const HexOverlays = ({
                             }
                         }
                      }
-                } else if (isAction) {
+                } else if (isActingStage) {
                     if (buildMode === 'road' && !isOccupied) {
                          const endpoints = getVerticesForEdge(eId);
 
