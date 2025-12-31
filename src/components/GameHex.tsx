@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import { Hexagon } from 'react-hexgrid';
 import { Hex, TerrainType } from '../game/types';
 import { NumberToken } from './NumberToken';

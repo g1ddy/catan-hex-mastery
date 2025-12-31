@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Z_INDEX_FLOATING_UI } from '../styles/z-indices';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
@@ -11,7 +12,10 @@ export type UiMode = 'viewing' | 'placing';
 interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
-    moves: Record<string, any>;
+    moves: {
+        rollDice: () => void;
+        endTurn: () => void;
+    };
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;
@@ -92,7 +96,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return (
                 <BeginPlacementButton
                     onClick={handleClick}
-                    className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full shadow-lg border border-blue-400/50 z-[100] transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                    className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full shadow-lg border border-blue-400/50 z-[${Z_INDEX_FLOATING_UI}] transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse`}
                 />
             );
         }
@@ -100,7 +104,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         return (
             <InstructionDisplay
                 text={instruction}
-                className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[100]"
+                className={`absolute top-20 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-lg border border-slate-700 z-[${Z_INDEX_FLOATING_UI}]`}
             />
         );
     }
@@ -125,7 +129,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             }
 
              return (
-                <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[100]">
+                <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto z-[${Z_INDEX_FLOATING_UI}]`}>
                     <button
                         onClick={() => { setIsRolling(true); moves.rollDice(); }}
                         disabled={G.hasRolled || isRolling}
@@ -233,7 +237,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             }
 
             return (
-                <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto max-w-[90vw] z-[100]">
+                <div className={`absolute bottom-6 right-6 flex flex-col items-end space-y-4 pointer-events-auto max-w-[90vw] z-[${Z_INDEX_FLOATING_UI}]`}>
                      {/* Build Menu */}
                     <div className="bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-2xl flex flex-wrap gap-2 justify-end">
                          {/* Last Roll Display */}

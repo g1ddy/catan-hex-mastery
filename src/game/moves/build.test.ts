@@ -1,11 +1,13 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState } from '../types';
 import { BUILD_COSTS } from '../config';
+import { Ctx } from 'boardgame.io';
+
+type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
 
 describe('Gameplay Moves', () => {
     let G: GameState;
-    let ctx: any;
-    let events: any;
+    let ctx: { currentPlayer: string };
 
     beforeEach(() => {
         G = {
@@ -31,14 +33,12 @@ describe('Gameplay Moves', () => {
             hasRolled: true
         } as unknown as GameState;
         ctx = { currentPlayer: '0' };
-        events = { endTurn: jest.fn() };
     });
 
     describe('buildRoad', () => {
         it('should fail if not enough resources', () => {
              // 0 resources
-             // @ts-ignore
-             const result = buildRoad({ G, ctx, events } as any, '0,0,0::1,0,-1');
+             const result = (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, '0,0,0::1,0,-1');
              expect(result).toBe('INVALID_MOVE');
         });
 
@@ -57,8 +57,7 @@ describe('Gameplay Moves', () => {
 
              G.board.vertices[vId] = { owner: '0', type: 'settlement' };
 
-             // @ts-ignore
-             const result = buildRoad({ G, ctx, events } as any, eId);
+             const result = (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, eId);
 
              expect(result).not.toBe('INVALID_MOVE');
              expect(G.board.edges[eId]).toBeDefined();
@@ -72,8 +71,7 @@ describe('Gameplay Moves', () => {
     describe('buildSettlement', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
-             // @ts-ignore
-             const result = buildSettlement({ G, ctx } as any, vId);
+             const result = (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
              expect(result).toBe('INVALID_MOVE');
         });
 
@@ -92,8 +90,7 @@ describe('Gameplay Moves', () => {
             const eId = "0,0,0::1,-1,0";
             G.board.edges[eId] = { owner: '0' };
 
-            // @ts-ignore
-            const result = buildSettlement({ G, ctx } as any, vId);
+            const result = (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
 
             expect(result).not.toBe('INVALID_MOVE');
             expect(G.board.vertices[vId]).toBeDefined();
@@ -110,8 +107,7 @@ describe('Gameplay Moves', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
              G.board.vertices[vId] = { owner: '0', type: 'settlement' };
-             // @ts-ignore
-             const result = buildCity({ G, ctx } as any, vId);
+             const result = (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
              expect(result).toBe('INVALID_MOVE');
         });
 
@@ -128,8 +124,7 @@ describe('Gameplay Moves', () => {
              G.players['0'].settlements.push(vId);
              G.players['0'].victoryPoints = 1;
 
-             // @ts-ignore
-             const result = buildCity({ G, ctx } as any, vId);
+             const result = (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
 
              expect(result).not.toBe('INVALID_MOVE');
              expect(G.board.vertices[vId].type).toBe('city');
