@@ -1,64 +1,20 @@
 import { Game, Move } from 'boardgame.io';
-import { GameState, Player, Resources, TERRAIN_CONFIG } from './types';
+import { GameState, Player, Resources } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
+import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
-import { getVerticesForHex } from './hexUtils';
+import { distributeResources } from './mechanics/resources';
+import { PHASES } from './constants';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
     G.board.hexes = hexesMap;
     G.boardStats = calculateBoardStats(hexesMap);
-};
-
-const rollDice: Move<GameState> = ({ G, random, events }) => {
-    if (G.hasRolled) return 'INVALID_MOVE';
-
-    const d1 = random.Die(6);
-    const d2 = random.Die(6);
-    const roll = d1 + d2;
-    G.lastRoll = [d1, d2];
-    G.hasRolled = true;
-    G.lastRollRewards = {};
-
-    // Distribute Resources
-    if (roll !== 7) {
-        Object.values(G.board.hexes).forEach(hex => {
-            if (hex.tokenValue === roll) {
-                const resource = TERRAIN_CONFIG[hex.terrain];
-                if (resource) { // Skip Desert/Sea
-                     const vertices = getVerticesForHex(hex.coords);
-                     vertices.forEach(vId => {
-                         const vertex = G.board.vertices[vId];
-                         if (vertex && G.players[vertex.owner]) {
-                             const amount = vertex.type === 'city' ? 2 : 1;
-                             const owner = vertex.owner;
-
-                             // Update Player Resources
-                             G.players[owner].resources[resource as keyof Resources] += amount;
-
-                             // Log Reward
-                             if (!G.lastRollRewards[owner]) {
-                                 G.lastRollRewards[owner] = {};
-                             }
-                             const current = G.lastRollRewards[owner][resource as keyof Resources] || 0;
-                             G.lastRollRewards[owner][resource as keyof Resources] = current + amount;
-                         }
-                     });
-                }
-            }
-        });
-    }
-
-    // End the roll stage.
-    // If we have an 'action' stage, we transition to it.
-    if (events && events.setStage) {
-        events.setStage('action');
-    }
 };
 
 export const CatanGame: Game<GameState> = {
@@ -120,8 +76,20 @@ export const CatanGame: Game<GameState> = {
     };
   },
 
+  // Global Turn Config
+  // Ensure we always start in the 'rolling' phase when a new turn begins.
+  turn: {
+     onBegin: ({ G, events, ctx }) => {
+         G.hasRolled = false;
+         // Only force 'rolling' phase if we are not in setup and not already in rolling
+         if (ctx.phase !== PHASES.SETUP && ctx.phase !== PHASES.ROLLING) {
+            events.setPhase(PHASES.ROLLING);
+         }
+     }
+  },
+
   phases: {
-    setup: {
+    [PHASES.SETUP]: {
       start: true,
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
@@ -139,32 +107,27 @@ export const CatanGame: Game<GameState> = {
         );
         return allPlayersDone;
       },
-      next: 'GAMEPLAY',
+      next: PHASES.ROLLING, // Transition to rolling phase
     },
-    GAMEPLAY: {
-      turn: {
-        onBegin: ({ G }) => {
-          G.hasRolled = false;
+    [PHASES.ROLLING]: {
+        moves: { rollDice },
+        onEnd: ({ G }) => {
+             // Calculate distribution here
+             const rollValue = G.lastRoll[0] + G.lastRoll[1];
+             const rewards = distributeResources(G, rollValue);
+             G.lastRollRewards = rewards;
         },
-        activePlayers: {
-           currentPlayer: 'roll'
+        next: PHASES.ACTION, // Auto-transition to action phase
+        // Ensure turn doesn't end automatically, just phase switch
+    },
+    [PHASES.ACTION]: {
+        moves: {
+            buildRoad,
+            buildSettlement,
+            buildCity,
+            endTurn
         },
-        stages: {
-            roll: {
-                moves: { rollDice },
-                next: 'action'
-            },
-            action: {
-                moves: {
-                    buildRoad,
-                    buildSettlement,
-                    buildCity,
-                    endTurn
-                }
-            }
-        }
-      },
-      moves: {}
+        // turn onBegin here? No, inherited from global or persist.
     },
   },
 };

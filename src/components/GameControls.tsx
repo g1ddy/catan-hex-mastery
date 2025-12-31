@@ -5,12 +5,13 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Scroll } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
+import { PHASES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
 
-interface GameControlsProps {
+export interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
     moves: {
@@ -42,8 +43,11 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
 );
 
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, variant = 'floating' }) => {
-    const isSetup = ctx.phase === 'setup';
-    const isGameplay = ctx.phase === 'GAMEPLAY';
+    const isSetup = ctx.phase === PHASES.SETUP;
+    // Gameplay phases include ROLLING and ACTION
+    const isGameplay = ctx.phase === PHASES.ROLLING || ctx.phase === PHASES.ACTION;
+    const isRollingPhase = ctx.phase === PHASES.ROLLING;
+    const isActionPhase = ctx.phase === PHASES.ACTION;
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
 
     const [isRolling, setIsRolling] = useState(false);
@@ -111,8 +115,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     }
 
     if (isGameplay) {
-        // Roll Phase
-        if (!G.hasRolled && stage === 'roll') {
+        // Roll Phase: Active if phase is ROLLING (or implicit logic with !hasRolled)
+        // Original logic checked for stage === 'roll', but phase-based is cleaner now.
+        // We stick to the phase check mainly.
+        if (isRollingPhase && !G.hasRolled) {
             if (variant === 'docked') {
                 return (
                     <div className="flex-grow flex justify-end items-center pointer-events-auto">
@@ -155,7 +161,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         }
 
         // Action Phase
-        if (G.hasRolled || stage === 'action') {
+        // We show action controls if it is the action phase OR if we have rolled (backward compatibility or just safety)
+        if (isActionPhase || G.hasRolled) {
             const resources = G.players[ctx.currentPlayer].resources;
 
             const canAfford = (cost: Partial<Resources>): boolean => {
