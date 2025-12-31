@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// @ts-ignore
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
@@ -163,7 +162,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <GameControls
           G={G}
           ctx={ctx}
-          moves={moves}
+          moves={moves as any}
           buildMode={buildMode}
           setBuildMode={setBuildMode}
           uiMode={uiMode}

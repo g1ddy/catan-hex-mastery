@@ -45,7 +45,7 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
     return { op100, op0 };
   };
 
-  let counts = await countClasses();
+  const counts = await countClasses();
   console.log(`Default State - Opacity 100: ${counts.op100}, Opacity 0: ${counts.op0}`);
 
   // Default assertions

@@ -1,12 +1,15 @@
 import { CatanGame } from '../Game';
 import { GameState, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
-import { Ctx } from 'boardgame.io';
+import { Ctx, Move } from 'boardgame.io';
+import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
+import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random';
+
+type MoveFn = (args: { G: GameState; ctx: Ctx, events?: EventsAPI, random?: RandomAPI }, ...payload: unknown[]) => unknown;
 
 describe('Unit Test: Roll Dice & Resource Distribution', () => {
     // Helper to get the rollDice move from the Game definition
-    // We cast it to the correct function signature to avoid TS errors when calling it
-    const rollDiceMove = CatanGame.phases?.GAMEPLAY?.turn?.stages?.roll?.moves?.rollDice as (args: any) => any;
+    const rollDiceMove: Move<GameState> | undefined = CatanGame.phases?.GAMEPLAY?.turn?.stages?.roll?.moves?.rollDice;
 
     if (!rollDiceMove) {
         throw new Error("rollDice move not found in CatanGame definition");
@@ -83,7 +86,7 @@ describe('Unit Test: Roll Dice & Resource Distribution', () => {
         mockRandom.Die.mockReturnValueOnce(4).mockReturnValueOnce(4);
 
         // Execute move
-        rollDiceMove({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        (rollDiceMove as MoveFn)({ G, random: mockRandom as any, events: mockEvents as any, ctx: mockCtx });
 
         // Assertions
         expect(G.lastRoll).toEqual([4, 4]);
@@ -102,7 +105,7 @@ describe('Unit Test: Roll Dice & Resource Distribution', () => {
         // Mock dice to roll 3 + 3 = 6 (No hex has 6)
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(3);
 
-        rollDiceMove({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        (rollDiceMove as MoveFn)({ G, random: mockRandom as any, events: mockEvents as any, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 3]);
         expect(G.players['0'].resources.wood).toBe(0);
@@ -114,7 +117,7 @@ describe('Unit Test: Roll Dice & Resource Distribution', () => {
         // Mock dice to roll 3 + 4 = 7
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(4);
 
-        rollDiceMove({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        (rollDiceMove as MoveFn)({ G, random: mockRandom as any, events: mockEvents as any, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 4]);
         expect(G.players['0'].resources.wood).toBe(0);

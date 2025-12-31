@@ -4,8 +4,8 @@ import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 
 // Cast moves to function type for direct testing
-const placeSettlementFn = placeSettlement as (args: any, vertexId: string) => any;
-const placeRoadFn = placeRoad as (args: any, edgeId: string) => any;
+const placeSettlementFn = placeSettlement as (args: unknown, vertexId: string) => unknown;
+const placeRoadFn = placeRoad as (args: unknown, edgeId: string) => unknown;
 
 // Create a safe Mock Events object
 const createMockEvents = (): EventsAPI => ({
@@ -72,7 +72,7 @@ describe('Setup Phase Moves', () => {
     describe('placeSettlement', () => {
         it('should place settlement and set activeSettlement', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
-            placeSettlementFn({ G, ctx, events, random: {} as any, playerID: '0' }, vId);
+            placeSettlementFn({ G, ctx, events, playerID: '0' }, vId);
 
             expect(G.board.vertices[vId]).toBeDefined();
             expect(G.setupPhase.activeSettlement).toBe(vId);
@@ -87,7 +87,7 @@ describe('Setup Phase Moves', () => {
 
             const validEdge = "0,0,0::1,-1,0";
 
-            const result = placeRoadFn({ G, ctx, events, random: {} as any, playerID: '0' }, validEdge);
+            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
             expect(result).not.toBe('INVALID_MOVE');
             expect(G.board.edges[validEdge]).toBeDefined();
@@ -98,7 +98,7 @@ describe('Setup Phase Moves', () => {
         it('should fail if no activeSettlement set', () => {
             G.setupPhase.activeSettlement = null;
             const validEdge = "0,0,0::1,-1,0";
-            const result = placeRoadFn({ G, ctx, events, random: {} as any, playerID: '0' }, validEdge);
+            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
             expect(result).toBe('INVALID_MOVE');
         });
 
@@ -109,7 +109,7 @@ describe('Setup Phase Moves', () => {
             // Pick an edge far away
             const disconnectedEdge = "5,0,-5::5,-1,-4";
 
-            const result = placeRoadFn({ G, ctx, events, random: {} as any, playerID: '0' }, disconnectedEdge);
+            const result = placeRoadFn({ G, ctx, events, playerID: '0' }, disconnectedEdge);
 
             expect(result).toBe('INVALID_MOVE');
             expect(G.board.edges[disconnectedEdge]).toBeUndefined();

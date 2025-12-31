@@ -1,5 +1,5 @@
 import { getBestSettlementSpots } from './coach';
-import { GameState, TerrainType, Player, BoardState, Hex } from '../types';
+import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.
@@ -25,7 +25,7 @@ describe('getBestSettlementSpots', () => {
         hexConfig: { id: string, terrain: TerrainType, value: number }[],
         settlementCount: number = 0,
         firstSettlementResources: string[] = [],
-        boardStatsOverride?: any
+        boardStatsOverride?: Partial<BoardStats>
     ): GameState => {
         const hexes: Record<string, Hex> = {};
         hexConfig.forEach(h => {

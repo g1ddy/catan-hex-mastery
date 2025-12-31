@@ -3,6 +3,8 @@ import { GameState } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
+type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
+
 describe('Unit Test: Resource Costs', () => {
     const mockContext: Ctx = { currentPlayer: '0' } as Ctx;
 
@@ -34,19 +36,19 @@ describe('Unit Test: Resource Costs', () => {
 
     describe('buildRoad', () => {
         it('should fail with zero resources', () => {
-            expect((buildRoad as any)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
+            expect((buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
         });
 
         it('should fail with partial resources', () => {
             G.players['0'].resources = { wood: 1, brick: 0, wheat: 10, sheep: 10, ore: 10 };
-            expect((buildRoad as any)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
+            expect((buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
         });
 
         it('should not deduct resources on an invalid placement', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 0, ore: 0 };
             // Occupy edge to force INVALID_MOVE from Occupancy check (which comes AFTER cost check)
             G.board.edges['edge1'] = { owner: '1' };
-            expect((buildRoad as any)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
+            expect((buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1')).toBe('INVALID_MOVE');
 
             // Resources should NOT be deducted
             expect(G.players['0'].resources.wood).toBe(1);
@@ -57,24 +59,24 @@ describe('Unit Test: Resource Costs', () => {
     describe('buildSettlement', () => {
         it('should fail if missing sheep', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 1, sheep: 0, ore: 0 };
-            expect((buildSettlement as any)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
+            expect((buildSettlement as MoveFn)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
         });
 
         it('should fail if missing wheat', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 1, ore: 0 };
-            expect((buildSettlement as any)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
+            expect((buildSettlement as MoveFn)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
         });
     });
 
     describe('buildCity', () => {
         it('should fail if missing wheat', () => {
             G.players['0'].resources = { wood: 10, brick: 10, wheat: 1, ore: 3, sheep: 0 };
-            expect((buildCity as any)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
+            expect((buildCity as MoveFn)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
         });
 
         it('should fail if missing ore', () => {
             G.players['0'].resources = { wheat: 2, ore: 2, wood: 0, brick: 0, sheep: 0 };
-            expect((buildCity as any)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
+            expect((buildCity as MoveFn)({ G, ctx: mockContext }, 'v1')).toBe('INVALID_MOVE');
         });
     });
 });
