@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
-    Z_INDEX_GAME_CONTROLS_CONTAINER
+    Z_INDEX_GAME_CONTROLS_CONTAINER,
+    Z_INDEX_FLOATING_UI
 } from '../styles/z-indices';
 import { BarChart2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
@@ -18,6 +19,7 @@ interface GameLayoutProps {
   dashboard: React.ReactNode;
   playerPanel: React.ReactNode;
   gameControls: React.ReactNode;
+
 }
 
 const renderCostTooltip = ({ content }: { content: string | null }) => {
@@ -53,11 +55,14 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   const isMobile = useIsMobile();
   const [isAnalystOpen, setIsAnalystOpen] = useState(!isMobile); // Default open on desktop
 
-  // Toggle button component
-  const AnalystToggle = (
+  // Toggle button component (Only visible when panel is closed on Desktop)
+  // On Mobile, the panel is a drawer, so the button acts as the main trigger always.
+  const showToggle = isMobile || !isAnalystOpen;
+
+  const AnalystToggle = showToggle ? (
     <button
         className={`
-            fixed top-4 left-4 z-[${Z_INDEX_GAME_CONTROLS_CONTAINER}]
+            fixed top-4 left-4 z-[${Z_INDEX_FLOATING_UI}]
             p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300
             hover:text-white hover:bg-slate-700 transition-all active:scale-95
             border border-slate-700 shadow-lg
@@ -67,7 +72,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
     >
         <BarChart2 size={24} />
     </button>
-  );
+  ) : null;
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row">
@@ -79,9 +84,6 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           className={`z-[${Z_INDEX_TOOLTIP}]`}
           render={renderCostTooltip}
       />
-
-      {/* 1. Mobile Top Toggle Button (Always visible for now) */}
-      {AnalystToggle}
 
       {/* 2. Analyst Panel (Sidebar on Desktop, Drawer on Mobile) */}
       <AnalystShell isOpen={isAnalystOpen} onToggle={() => setIsAnalystOpen(!isAnalystOpen)}>
@@ -95,12 +97,6 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           <div className="flex-grow flex flex-col md:flex-row relative overflow-hidden">
 
               {/* Board Area */}
-              {/*
-                  Removed 'h-full' to prevent forcing 100% height in flex-col (mobile),
-                  which would push PlayerPanel out of view.
-                  'flex-grow' ensures it takes available space.
-                  'relative' contains the absolute board layer.
-              */}
               <div className="flex-grow relative w-full">
                    {/* Board Background Layer */}
                    <div className={`absolute inset-0 z-[${Z_INDEX_BOARD}]`}>
@@ -130,6 +126,9 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
               </div>
           </div>
       </main>
+
+      {/* 1. Toggle Button (Rendered last to ensure z-index priority) */}
+      {AnalystToggle}
 
     </div>
   );
