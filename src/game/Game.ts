@@ -8,6 +8,7 @@ import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES } from './constants';
+import { PLAYER_COLORS } from '../components/uiConfig';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -42,13 +43,12 @@ export const CatanGame: Game<GameState> = {
       ore: 0,
     };
 
-    const colors = ['#E53935', '#1E88E5', '#FB8C00', '#FDD835', '#8E24AA', '#43A047']; // Red, Blue, Orange, White/Yellow, Purple, Green
     const players: Record<string, Player> = {};
 
     for (let i = 0; i < numPlayers; i++) {
       players[i.toString()] = {
         id: i.toString(),
-        color: colors[i % colors.length],
+        color: PLAYER_COLORS[i % PLAYER_COLORS.length],
         resources: { ...initialResources },
         settlements: [],
         roads: [],
@@ -117,6 +117,14 @@ export const CatanGame: Game<GameState> = {
            }
         }
       }
+    },
+    [PHASES.TRADE]: {
+        // Placeholder for Trade Phase logic
+        moves: {}
+    },
+    [PHASES.GAME_OVER]: {
+        // Placeholder for Game Over logic
+        moves: {}
     }
   },
 };

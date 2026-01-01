@@ -9,7 +9,7 @@ export interface ResourceMeta {
 
 export const RESOURCE_META: ResourceMeta[] = [
   { name: 'wood', label: 'Wood', Icon: Trees, color: 'text-green-500' },
-  { name: 'brick', label: 'Brick', Icon: BrickWall, color: 'text-orange-500' }, // Note: GameLayout used orange-500, Row used orange-700. I'll stick to 500 for consistency or 700 if contrast is needed. Let's use 500 as per GameLayout suggestion
+  { name: 'brick', label: 'Brick', Icon: BrickWall, color: 'text-orange-500' },
   { name: 'sheep', label: 'Sheep', Icon: Cloud, color: 'text-slate-300' },
   { name: 'wheat', label: 'Wheat', Icon: Wheat, color: 'text-yellow-500' },
   { name: 'ore', label: 'Ore', Icon: Mountain, color: 'text-gray-400' },
@@ -26,4 +26,13 @@ export const BUILD_BUTTON_CONFIG: BuildButtonConfig[] = [
   { type: 'road', label: 'Road', Icon: MapPin, ariaPrefix: 'Build Road' },
   { type: 'settlement', label: 'Settlement', Icon: Home, ariaPrefix: 'Build Settlement' },
   { type: 'city', label: 'City', Icon: Castle, ariaPrefix: 'Build City' },
+];
+
+export const PLAYER_COLORS = [
+  '#E53935', // Red
+  '#1E88E5', // Blue
+  '#FB8C00', // Orange
+  '#FDD835', // White/Yellow
+  '#8E24AA', // Purple
+  '#43A047', // Green
 ];
