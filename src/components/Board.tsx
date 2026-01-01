@@ -169,7 +169,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           setBuildMode={setBuildMode}
           uiMode={uiMode}
           setUiMode={setUiMode}
-          variant={'docked'}
         />
       }
       dashboard={
