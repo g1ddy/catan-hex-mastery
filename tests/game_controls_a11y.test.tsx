@@ -85,12 +85,11 @@ describe('GameControls Accessibility', () => {
         render(<GameControls {...setupProps} />);
 
         // Find the instruction text container
-        const instructionText = screen.getByText('Place a Settlement');
-        const containerDiv = instructionText.parentElement;
+        const statusContainer = screen.getByRole('status');
 
-        // Check for attributes on the container
-        expect(containerDiv).toHaveAttribute('role', 'status');
-        expect(containerDiv).toHaveAttribute('aria-live', 'polite');
+        // Check for attributes and content on the container
+        expect(statusContainer).toHaveAttribute('aria-live', 'polite');
+        expect(statusContainer).toHaveTextContent('Place a Settlement');
     });
 
     test('Build buttons have aria-pressed attribute', () => {
