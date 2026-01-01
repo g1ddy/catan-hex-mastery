@@ -120,9 +120,14 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 if (!content) return null;
                 let rec: CoachRecommendation;
                 try {
-                  rec = JSON.parse(content) as CoachRecommendation;
+                  const parsed = JSON.parse(content);
+                  if (parsed && typeof parsed === 'object' && 'score' in parsed && 'details' in parsed) {
+                    rec = parsed as CoachRecommendation;
+                  } else {
+                    throw new Error('Invalid CoachRecommendation structure');
+                  }
                 } catch (e) {
-                  console.error('Failed to parse coach tooltip:', e);
+                  console.error('Failed to parse or validate coach tooltip content:', e);
                   return null;
                 }
                 const { score, details } = rec;
