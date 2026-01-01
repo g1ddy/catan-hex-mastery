@@ -50,22 +50,24 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
       {/* Overlay/Backdrop */}
       <div
         className={`
-          fixed inset-0 z-[${Z_INDEX_BOTTOM_SHEET}] bg-black/50 backdrop-blur-sm transition-opacity duration-300
+          fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300
           ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}
+        style={{ zIndex: Z_INDEX_BOTTOM_SHEET }}
         onClick={onToggle}
       />
 
       {/* Drawer Panel */}
       <div
         className={`
-          fixed top-0 left-0 right-0 z-[${Z_INDEX_BOTTOM_SHEET}]
+          fixed top-0 left-0 right-0
           bg-slate-900/95 backdrop-blur-md border-b border-slate-700
           shadow-2xl text-slate-100
           transition-transform duration-300 ease-out
           max-h-[80vh] flex flex-col
           ${isOpen ? 'translate-y-0' : '-translate-y-full invisible'}
         `}
+        style={{ zIndex: Z_INDEX_BOTTOM_SHEET }}
       >
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
