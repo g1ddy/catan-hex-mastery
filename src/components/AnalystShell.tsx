@@ -1,7 +1,7 @@
 import React from 'react';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { X, ChevronLeft } from 'lucide-react';
-import { Z_INDEX_BOTTOM_SHEET } from '../styles/z-indices';
+import { Z_INDEX_OVERLAY_PANEL } from '../styles/z-indices';
 
 interface AnalystShellProps {
   children: React.ReactNode;
@@ -53,7 +53,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
           fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300
           ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}
-        style={{ zIndex: Z_INDEX_BOTTOM_SHEET }}
+        style={{ zIndex: Z_INDEX_OVERLAY_PANEL }}
         onClick={onToggle}
       />
 
@@ -67,7 +67,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
           max-h-[80vh] flex flex-col
           ${isOpen ? 'translate-y-0' : '-translate-y-full invisible'}
         `}
-        style={{ zIndex: Z_INDEX_BOTTOM_SHEET }}
+        style={{ zIndex: Z_INDEX_OVERLAY_PANEL }}
       >
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
