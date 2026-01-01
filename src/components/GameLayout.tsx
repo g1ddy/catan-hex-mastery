@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import {
     Z_INDEX_BOARD,
-    Z_INDEX_BOTTOM_SHEET,
-    Z_INDEX_GAME_CONTROLS_CONTAINER,
-    Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE,
-    Z_INDEX_TOOLTIP
+    Z_INDEX_TOOLTIP,
+    Z_INDEX_GAME_CONTROLS_CONTAINER
 } from '../styles/z-indices';
-import { BarChart2, X } from 'lucide-react';
+import { BarChart2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { Resources } from '../game/types';
-import './GameLayout.css';
 import { RESOURCE_META } from './uiConfig';
+import { AnalystShell } from './AnalystShell';
 
 interface GameLayoutProps {
   board: React.ReactNode;
@@ -53,106 +51,86 @@ const renderCostTooltip = ({ content }: { content: string | null }) => {
 
 export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls }) => {
   const isMobile = useIsMobile();
-  const [showDashboard, setShowDashboard] = useState(false);
+  const [isAnalystOpen, setIsAnalystOpen] = useState(!isMobile); // Default open on desktop
 
-  if (!isMobile) {
-    // Desktop Layout: Side-by-side with Bottom Dock
-    return (
-      <div className="game-layout-desktop">
-        <Toaster />
-        <Tooltip id="resource-tooltip" place="top" className={`z-[${Z_INDEX_TOOLTIP}]`} />
-        <Tooltip
-            id="cost-tooltip"
-            place="top"
-            className={`z-[${Z_INDEX_TOOLTIP}]`}
-            render={renderCostTooltip}
-        />
-        {/* Main Game Area: Absolute Layers to ensure robustness */}
-        <div className="board-area relative w-full h-full overflow-hidden">
-            {/* 1. Board Canvas (Background) */}
-            <div className={`absolute inset-0 z-[${Z_INDEX_BOARD}]`}>
-                {board}
-            </div>
+  // Toggle button component
+  const AnalystToggle = (
+    <button
+        className={`
+            fixed top-4 left-4 z-[${Z_INDEX_GAME_CONTROLS_CONTAINER}]
+            p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300
+            hover:text-white hover:bg-slate-700 transition-all active:scale-95
+            border border-slate-700 shadow-lg
+        `}
+        onClick={() => setIsAnalystOpen(!isAnalystOpen)}
+        aria-label="Toggle Analyst Dashboard"
+    >
+        <BarChart2 size={24} />
+    </button>
+  );
 
-            {/* 2. Overlays */}
-            {/* Player Panel remains floating */}
-            {playerPanel}
-
-            {/* 3. Bottom Docked Controls Bar */}
-            {/* Positioned absolutely at the bottom to guarantee visibility */}
-            <div className={`absolute bottom-12 left-6 right-6 z-[${Z_INDEX_GAME_CONTROLS_CONTAINER}] pointer-events-none flex justify-center`}>
-                <div className="pointer-events-auto w-full max-w-4xl flex">
-                     {gameControls}
-                </div>
-            </div>
-        </div>
-
-        {/* Right: Analyst Sidebar */}
-        <aside className="sidebar-area bg-slate-900/90 backdrop-blur-md border-l border-slate-700 shadow-2xl overflow-y-auto p-5">
-          {dashboard}
-        </aside>
-      </div>
-    );
-  }
-
-  // Mobile Layout: Overlay "Map-First"
   return (
-    <div className="relative w-full h-full overflow-hidden bg-slate-900">
+    <div className="relative w-screen h-screen overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row">
       <Toaster />
       <Tooltip id="resource-tooltip" place="top" className={`z-[${Z_INDEX_TOOLTIP}]`} />
       <Tooltip
-            id="cost-tooltip"
-            place="top"
-            className={`z-[${Z_INDEX_TOOLTIP}]`}
-            render={renderCostTooltip}
-        />
-      {/* 1. Wallpaper Board: Absolute, Full Screen */}
-      <div className={`absolute inset-0 z-[${Z_INDEX_BOARD}]`}>
-        {board}
-      </div>
+          id="cost-tooltip"
+          place="top"
+          className={`z-[${Z_INDEX_TOOLTIP}]`}
+          render={renderCostTooltip}
+      />
 
-      {/* 2. Top Center Overlay: Player Panel */}
-      <div className={`absolute top-4 left-4 right-4 z-[${Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE}] pointer-events-none flex justify-center`}>
-          <div className="pointer-events-auto">
-             {playerPanel}
+      {/* 1. Mobile Top Toggle Button (Always visible for now) */}
+      {AnalystToggle}
+
+      {/* 2. Analyst Panel (Sidebar on Desktop, Drawer on Mobile) */}
+      <AnalystShell isOpen={isAnalystOpen} onToggle={() => setIsAnalystOpen(!isAnalystOpen)}>
+          {dashboard}
+      </AnalystShell>
+
+      {/* 3. Main Content Area */}
+      <main className="flex-grow flex flex-col h-full relative overflow-hidden">
+
+          {/* Middle Section: Board + Player Panel */}
+          <div className="flex-grow flex flex-col md:flex-row relative overflow-hidden">
+
+              {/* Board Area */}
+              {/*
+                  Removed 'h-full' to prevent forcing 100% height in flex-col (mobile),
+                  which would push PlayerPanel out of view.
+                  'flex-grow' ensures it takes available space.
+                  'relative' contains the absolute board layer.
+              */}
+              <div className="flex-grow relative w-full">
+                   {/* Board Background Layer */}
+                   <div className={`absolute inset-0 z-[${Z_INDEX_BOARD}]`}>
+                        {board}
+                   </div>
+              </div>
+
+              {/* Player Panel Area */}
+              <div className="
+                  flex-shrink-0 z-10 p-2 md:p-0
+                  md:h-full md:w-64 md:border-l md:border-slate-700 md:bg-slate-900/50
+              ">
+                   <div className="md:h-full md:overflow-y-auto">
+                        {playerPanel}
+                   </div>
+              </div>
           </div>
-      </div>
 
-      {/* 3. Bottom Floating Action Bar */}
-      <div className={`absolute bottom-6 left-4 right-4 z-[${Z_INDEX_GAME_CONTROLS_CONTAINER}] pointer-events-none flex items-center justify-between gap-4`}>
-         {/* Stats Toggle */}
-          <button
-              className="flex-none p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 pointer-events-auto border border-slate-700 shadow-lg"
-              onClick={() => setShowDashboard(true)}
-              aria-label="Open Stats"
-          >
-              <BarChart2 size={24} />
-          </button>
-
-         {/* Game Controls */}
-         <div className="pointer-events-auto flex-grow">
-            {gameControls}
-         </div>
-      </div>
-
-      {/* Bottom Sheet Overlay (Analyst Panel) */}
-      {showDashboard && (
-        <div className="bottom-sheet-overlay">
-          <div className="backdrop" onClick={() => setShowDashboard(false)} />
-          <div className={`bottom-sheet bg-slate-900/95 backdrop-blur-md border-t border-slate-700 text-slate-100 z-[${Z_INDEX_BOTTOM_SHEET}]`}>
-            <button
-              className="close-sheet-btn text-slate-300 hover:text-white"
-              onClick={() => setShowDashboard(false)}
-              aria-label="Close Stats"
-            >
-              <X size={24} />
-            </button>
-            <div className="sheet-content px-5 pb-5">
-              {dashboard}
-            </div>
+          {/* Bottom Section: Game Controls */}
+          <div className={`
+              flex-shrink-0 z-[${Z_INDEX_GAME_CONTROLS_CONTAINER}]
+              p-2 pb-6 md:p-4
+              flex justify-center
+          `}>
+              <div className="w-full max-w-4xl">
+                 {gameControls}
+              </div>
           </div>
-        </div>
-      )}
+      </main>
+
     </div>
   );
 };

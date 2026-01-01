@@ -21,6 +21,7 @@ export interface GameControlsProps {
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
+    className?: string;
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -40,7 +41,7 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
     </div>
 );
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode }) => {
+export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
 
@@ -56,6 +57,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
+    // Setup Phase
     if (isSetup) {
         let instruction = "Wait for your turn...";
         let canInteract = false;
@@ -77,18 +79,22 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         if (uiMode === 'viewing') {
              return (
-                <BeginPlacementButton
-                    onClick={handleClick}
-                    className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
-                />
+                <div className={`flex-grow flex pointer-events-auto ${className}`}>
+                    <BeginPlacementButton
+                        onClick={handleClick}
+                        className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                    />
+                </div>
              );
         }
 
         return (
-             <InstructionDisplay
-                text={instruction}
-                className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
-             />
+             <div className={`flex-grow flex pointer-events-auto ${className}`}>
+                <InstructionDisplay
+                    text={instruction}
+                    className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
+                />
+             </div>
         );
     }
 
@@ -99,7 +105,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const rollIcon = isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />;
 
             return (
-                <div className="flex-grow flex justify-end items-center pointer-events-auto">
+                <div className={`flex-grow flex justify-end items-center pointer-events-auto ${className}`}>
                     <button
                         onClick={() => {
                             setIsRolling(true);
@@ -168,7 +174,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />;
 
             return (
-                 <div className="flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg">
+                 <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
                      {/* Last Roll Display */}
                      {lastRollSum > 0 && (
                          <div className="flex items-center gap-2 mr-1 px-2 py-1 border-r border-slate-700/50">
