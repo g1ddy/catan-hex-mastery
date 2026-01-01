@@ -11,7 +11,7 @@ test.describe('Desktop Layout', () => {
         await game.goto();
         await game.selectTwoPlayers();
 
-        await expect(game.gameLayoutDesktop).toBeVisible({ timeout: 30000 });
+        await expect(game.gameLayout).toBeVisible({ timeout: 30000 });
 
         // Run Setup Sequence (Snake Draft: P1, P2, P2, P1)
         // P1
