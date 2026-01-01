@@ -28,6 +28,13 @@ export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
 }
 
+interface CoachData {
+    recommendations: Record<string, CoachRecommendation>;
+    minScore: number;
+    maxScore: number;
+    top3Set: Set<string>;
+}
+
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
   const hexes = Object.values(G.board.hexes);
 
@@ -69,6 +76,38 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
+
+    // Calculate Coach Data at Board Level (O(Vertices)) instead of per-hex
+    const coachData: CoachData = React.useMemo(() => {
+        const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+
+        // Active when placing settlement in Setup OR Gameplay
+        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
+        const isGamePlacing = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
+
+        if (!isSetupPlacing && !isGamePlacing) {
+            return EMPTY_COACH_DATA;
+        }
+
+        const allScores = getAllSettlementScores(G, ctx.currentPlayer);
+        if (allScores.length === 0) {
+            return EMPTY_COACH_DATA;
+        }
+
+        const vals = allScores.map(s => s.score);
+        const sorted = [...allScores].sort((a, b) => b.score - a.score);
+        const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+
+        // Convert to Map for O(1) Lookup
+        const recMap = Object.fromEntries(allScores.map(rec => [rec.vertexId, rec]));
+
+        return {
+            recommendations: recMap,
+            minScore: Math.min(...vals),
+            maxScore: Math.max(...vals),
+            top3Set: new Set(top3Ids)
+        };
+    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
 
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
@@ -143,6 +182,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 uiMode={uiMode}
                 setUiMode={setUiMode}
                 showCoachMode={showCoachMode}
+                coachData={coachData}
               />
             ))}
           </g>
@@ -215,7 +255,7 @@ const BuildingIcon: React.FC<BuildingIconProps> = ({ vertex, corner, ownerColor 
 };
 
 const HexOverlays = ({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
 }: {
     hex: Hex,
     G: GameState,
@@ -225,31 +265,11 @@ const HexOverlays = ({
     setBuildMode: (mode: BuildMode) => void,
     uiMode: UiMode,
     setUiMode: (mode: UiMode) => void,
-    showCoachMode: boolean
+    showCoachMode: boolean,
+    coachData: CoachData
 }) => {
-    // Coach Recommendations / Heatmap Scores
-    const { scores, minScore, maxScore, top3Set } = React.useMemo(() => {
-        // Active when placing settlement in Setup OR Gameplay
-        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
-        const isGamePlacing = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
-
-        if (isSetupPlacing || isGamePlacing) {
-            const allScores = getAllSettlementScores(G, ctx.currentPlayer);
-            if (allScores.length === 0) return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-
-            const vals = allScores.map(s => s.score);
-            const sorted = [...allScores].sort((a, b) => b.score - a.score);
-            const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
-
-            return {
-                scores: allScores,
-                minScore: Math.min(...vals),
-                maxScore: Math.max(...vals),
-                top3Set: new Set(top3Ids)
-            };
-        }
-        return { scores: [], minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
+    // Unpack pre-calculated coach data from parent
+    const { recommendations, minScore, maxScore, top3Set } = coachData;
 
     const isTooClose = (vertexId: string) => {
         const occupied = Object.keys(G.board.vertices);
@@ -311,7 +331,7 @@ const HexOverlays = ({
                 let clickAction = () => {};
 
                 const applyCoachRecommendation = () => {
-                    const rec = scores.find(r => r.vertexId === vId);
+                    const rec = recommendations[vId];
                     if (rec) {
                         isRecommended = true;
                         recommendationData = rec;
