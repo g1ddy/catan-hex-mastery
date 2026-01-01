@@ -10,7 +10,7 @@ test.describe('Game Layout and Navigation', () => {
   test('Desktop: Sidebar collapses and expands', async ({ page }) => {
     // 1. Setup Desktop Viewport
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:4173/catan-hex-mastery/#/');
+    await page.goto('/');
     await page.getByRole('button', { name: '2 Players' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
@@ -41,7 +41,7 @@ test.describe('Game Layout and Navigation', () => {
   test('Mobile: Drawer opens and closes', async ({ page }) => {
     // 1. Setup Mobile Viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('http://localhost:4173/catan-hex-mastery/#/');
+    await page.goto('/');
     await page.getByRole('button', { name: '2 Players' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
