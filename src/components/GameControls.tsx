@@ -33,7 +33,7 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
 );
 
 const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ text, className }) => (
-    <div className={className}>
+    <div className={className} role="status" aria-live="polite">
         <span className={className?.includes('text-lg') ? "text-lg font-semibold text-amber-400" : "text-sm font-semibold text-amber-400"}>
             {text}
         </span>
@@ -187,6 +187,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                         onClick={() => toggleBuildMode(type, affordable)}
                                         disabled={!affordable}
                                         aria-label={`${ariaPrefix} (${costString(type)})`}
+                                        aria-pressed={buildMode === type}
                                         className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, affordable)}`}
                                     >
                                         <Icon size={20} />

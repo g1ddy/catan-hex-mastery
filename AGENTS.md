@@ -86,3 +86,26 @@ This test checks:
 1.  Background color (dark slate-900).
 2.  Board visibility (SVG dimensions > 0 and `display: block`).
 3.  Controls visibility.
+
+## Environment & Setup
+
+Dependencies and tools in `setup.sh` are intended to be part of the environment snapshot. However, if you encounter missing dependencies or tools, run `./setup.sh` to refresh the environment.
+
+### Testing React Components
+
+*   **Environment:** The default Jest environment is `node`. For React component tests (`.tsx`), you **must** explicitly use `jsdom` and configure `ts-jest` to handle JSX.
+*   **Command Pattern:** Use the component-specific configuration file to run tests:
+    ```bash
+    npx jest --config jest.components.config.cjs tests/my_component.test.tsx
+    ```
+*   **Dependencies:** Ensure `jest-environment-jsdom` is installed and matches the major version of `jest` (currently v29).
+*   **Mocking:** You must mock `lucide-react` and `react-tooltip` in component tests to avoid rendering errors in JSDOM. Use this pattern in your test files:
+    ```typescript
+    jest.mock('lucide-react', () => ({
+      IconName: () => <div data-testid="icon-name" />,
+      // ... map other icons used
+    }));
+    jest.mock('react-tooltip', () => ({
+      Tooltip: () => null,
+    }));
+    ```
