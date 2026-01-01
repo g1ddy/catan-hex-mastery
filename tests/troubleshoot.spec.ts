@@ -7,7 +7,7 @@ test.describe('Layout Troubleshooting', () => {
 
   test('Capture Desktop Screenshots', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:4173/catan-hex-mastery/#/');
+    await page.goto('/');
     await page.getByRole('button', { name: '2 Players' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
@@ -23,7 +23,7 @@ test.describe('Layout Troubleshooting', () => {
 
   test('Capture Mobile Screenshots', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('http://localhost:4173/catan-hex-mastery/#/');
+    await page.goto('/');
     await page.getByRole('button', { name: '2 Players' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
