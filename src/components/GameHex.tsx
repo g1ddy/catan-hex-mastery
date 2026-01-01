@@ -19,18 +19,19 @@ const TERRAIN_COLORS: Record<TerrainType, string> = {
   [TerrainType.Sea]: '#87CEEB'
 };
 
-const getPipsCount = (num: number): number => {
-  const map: Record<number, number> = {
-      2:1, 12:1,
-      3:2, 11:2,
-      4:3, 10:3,
-      5:4, 9:4,
-      6:5, 8:5
-  };
-  return map[num] || 0;
+const PIPS_MAP: Record<number, number> = {
+  2: 1, 12: 1,
+  3: 2, 11: 2,
+  4: 3, 10: 3,
+  5: 4, 9: 4,
+  6: 5, 8: 5
 };
 
-export const GameHex: React.FC<GameHexProps> = ({ hex, onClick, isProducing }) => {
+const getPipsCount = (num: number): number => {
+  return PIPS_MAP[num] || 0;
+};
+
+const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing }) => {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 
@@ -54,3 +55,5 @@ export const GameHex: React.FC<GameHexProps> = ({ hex, onClick, isProducing }) =
     </g>
   );
 };
+
+export const GameHex = React.memo(GameHexComponent);
