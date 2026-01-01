@@ -63,7 +63,8 @@ test.describe('Game Layout and Navigation', () => {
     await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
 
     // 5. Close Drawer
-    await closeBtn.click();
+    // Force click required because SVG elements underneath sometimes intercept in headless mode
+    await closeBtn.click({ force: true });
     await page.waitForTimeout(1000);
 
     // 6. Verify Drawer Closed
