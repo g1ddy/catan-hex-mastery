@@ -28,10 +28,8 @@ test.describe('Game Layout and Navigation', () => {
     await expect(toggleBtn).toBeVisible();
 
     // 5. Expand Sidebar
-    // Use force: true as a robust fallback against any stacking context issues in headless mode
-    // Wait for transition to stabilize
-    await toggleBtn.click({ force: true });
-    await page.waitForTimeout(1000);
+    // Click should wait for stability
+    await toggleBtn.click();
 
     // 6. Verify Sidebar Open Again
     await expect(collapseBtn).toBeVisible();
@@ -54,18 +52,16 @@ test.describe('Game Layout and Navigation', () => {
     await expect(closeBtn).not.toBeVisible();
 
     // 3. Open Drawer
-    // Use force: true to bypass potential SVG occlusion in headless mode
-    await toggleBtn.click({ force: true });
-    await page.waitForTimeout(1000);
+    // Click should wait for stability
+    await toggleBtn.click();
 
     // 4. Verify Drawer Open
     await expect(closeBtn).toBeVisible();
     await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
 
     // 5. Close Drawer
-    // Force click required because SVG elements underneath sometimes intercept in headless mode
-    await closeBtn.click({ force: true });
-    await page.waitForTimeout(1000);
+    // Click should wait for stability
+    await closeBtn.click();
 
     // 6. Verify Drawer Closed
     await expect(closeBtn).not.toBeVisible();
