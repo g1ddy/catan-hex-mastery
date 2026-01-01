@@ -118,7 +118,13 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             className="coach-tooltip"
             render={({ content }) => {
                 if (!content) return null;
-                const rec = JSON.parse(content) as CoachRecommendation;
+                let rec: CoachRecommendation;
+                try {
+                  rec = JSON.parse(content) as CoachRecommendation;
+                } catch (e) {
+                  console.error('Failed to parse coach tooltip:', e);
+                  return null;
+                }
                 const { score, details } = rec;
                 const parts = [];
                 // Pips
