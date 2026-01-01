@@ -13,7 +13,7 @@ describe('Game Integration', () => {
 
         client.start();
 
-        const makeMove = (playerID: string, moveName: string, ...args: any[]) => {
+        const makeMove = (playerID: string, moveName: string, ...args: unknown[]) => {
              const state = client.getState();
              if (state.ctx.currentPlayer !== playerID) {
                  throw new Error(`Expected current player ${playerID}, got ${state.ctx.currentPlayer}`);

@@ -24,6 +24,8 @@ import { PHASES, STAGES } from '../game/constants';
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
 
+const NO_OP = () => {};
+
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
 }
@@ -164,7 +166,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
               <GameHex
                 key={hex.id}
                 hex={hex}
-                onClick={() => {}}
+                onClick={NO_OP}
                 isProducing={producingHexIds.includes(hex.id)}
               />
             ))}

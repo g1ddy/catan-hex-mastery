@@ -4,8 +4,14 @@ export const safeMove = (action: () => void): boolean => {
     try {
         action();
         return true;
-    } catch (error: any) {
-        toast.error(error.message);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            toast.error(error.message);
+        } else if (typeof error === 'string') {
+            toast.error(error);
+        } else {
+            toast.error('An unknown error occurred');
+        }
         return false;
     }
 };
