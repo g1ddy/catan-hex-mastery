@@ -67,7 +67,7 @@ When implementing logic, remember the "Why".
 
 ## "Source of Truth" Files
 *   `README.md`: The roadmap and high-level goals.
-*   `Catan Strategy and Starting Rules.txt`: The rulebook and strategic engine logic.
+*   `docs/Catan Strategy and Starting Rules.txt`: The rulebook and strategic engine logic.
 
 ## Verification
 ### Mobile Layout Verification
@@ -89,14 +89,14 @@ This test checks:
 
 ## Environment & Setup
 
-Dependencies and tools in `setup.sh` are intended to be part of the environment snapshot. However, if you encounter missing dependencies or tools, run `./setup.sh` to refresh the environment.
+Dependencies and tools in `setup.sh` are intended to be part of the environment snapshot. However, if you encounter missing dependencies or tools, run `./scripts/setup.sh` to refresh the environment.
 
 ### Testing React Components
 
 *   **Environment:** The default Jest environment is `node`. For React component tests (`.tsx`), you **must** explicitly use `jsdom` and configure `ts-jest` to handle JSX.
 *   **Command Pattern:** Use the component-specific configuration file to run tests:
     ```bash
-    npx jest --config jest.components.config.cjs tests/my_component.test.tsx
+    npx jest --config config/jest.components.config.cjs tests/my_component.test.tsx
     ```
 *   **Dependencies:** Ensure `jest-environment-jsdom` is installed and matches the major version of `jest` (currently v29).
 *   **Mocking:** You must mock `lucide-react` and `react-tooltip` in component tests to avoid rendering errors in JSDOM. Use this pattern in your test files:
