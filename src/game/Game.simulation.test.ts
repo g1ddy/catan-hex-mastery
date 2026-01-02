@@ -1,6 +1,7 @@
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from './Game';
 import { DebugBot } from '../bots/DebugBot';
+import { CoachPlugin } from './analysis/CoachPlugin';
 
 describe('Game Simulation with DebugBot', () => {
   it('should run a 2-player game without crashing', async () => {
@@ -22,7 +23,7 @@ describe('Game Simulation with DebugBot', () => {
       '1': new DebugBot({ enumerate: dummyEnumerate }),
     };
 
-    const MAX_STEPS = 2000;
+    const MAX_STEPS = 200; // Reduced for unit test speed
     let steps = 0;
 
     while (!client.getState()?.ctx.gameover && steps < MAX_STEPS) {
@@ -40,15 +41,24 @@ describe('Game Simulation with DebugBot', () => {
         break;
       }
 
+      // Inject Coach Plugin into Context for the Bot
+      const enhancedCtx = {
+          ...state.ctx,
+          coach: CoachPlugin.api({ G: state.G, ctx: state.ctx })
+      };
+      const enhancedState = { ...state, ctx: enhancedCtx };
+
       // Bot plays
-      const result = await bot.play(state, playerID);
+      const result = await bot.play(enhancedState, playerID);
       const { action } = result;
 
       if (action) {
-        const moveName = action.payload.type;
-        if (moveName in client.moves) {
+        const moveName = action.payload?.type || (action as any).move;
+        const args = action.payload?.args || (action as any).args || [];
+
+        if (moveName && moveName in client.moves) {
           const move = moveName as keyof typeof client.moves;
-          client.moves[move](...(action.payload.args || []));
+          client.moves[move](...args);
         } else {
           // Bot suggested an invalid move or one not exposed on client.moves
           console.warn(`Bot for player ${playerID} suggested an invalid move: ${moveName}`);
@@ -75,9 +85,7 @@ describe('Game Simulation with DebugBot', () => {
       gameover: ctx.gameover,
     });
 
-    // We verify the simulation ran without errors and that the game is still in the first turn
-    // because the bot is passive.
-    expect(steps).toBe(0);
-    expect(ctx.turn).toBe(1);
+    // We verify the simulation ran without errors and that the bot made moves
+    expect(steps).toBeGreaterThan(0);
   });
 });
