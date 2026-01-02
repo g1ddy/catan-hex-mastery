@@ -100,7 +100,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           {/* Top Section: Game Status Banner */}
           {gameStatus && (
               <div
-                  className="absolute top-16 md:top-4 left-0 right-0 flex justify-center pointer-events-none"
+                  className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none"
                   style={{ zIndex: Z_INDEX_FLOATING_UI + 10 }} // Ensure it's above everything
               >
                   {gameStatus}

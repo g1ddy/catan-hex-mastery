@@ -15,6 +15,7 @@ import { CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
+import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner } from './GameStatusBanner';
 import { Home, Castle } from 'lucide-react';
 import { PHASES, STAGES } from '../game/constants';
@@ -110,6 +111,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             id="coach-tooltip"
             place="top"
             className="coach-tooltip"
+            style={{ zIndex: Z_INDEX_TOOLTIP }}
             render={({ content }) => {
                 if (!content) return null;
                 let rec: CoachRecommendation;
