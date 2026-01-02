@@ -53,7 +53,7 @@ test.describe('Player Panel Tests', () => {
     await expect(tooltip).toHaveCSS('z-index', '1000');
   });
 
-  test('Mobile: Docked Player Panel works', async ({ page, isMobile }) => {
+  test('Mobile: Docked Player Panel works', async ({ page, isMobile: _isMobile }) => {
     // Ideally we should skip if !isMobile, but we allow checking mobile layout on Desktop via viewport resizing
     // So we don't skip here.
 
