@@ -80,9 +80,9 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              <div className={`flex-grow flex pointer-events-auto ${className}`}>
                  <button
                     onClick={() => setUiMode('viewing')}
-                    className="w-full h-full flex items-center justify-center text-slate-300 px-4 py-3 bg-slate-800/90 hover:bg-slate-700 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all active:scale-95"
+                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-red-600 hover:bg-red-500 backdrop-blur-md border border-red-500/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                  >
-                     <span className="text-base font-semibold">Cancel Placement</span>
+                     <span className="text-base font-bold">Cancel Placement</span>
                  </button>
              </div>
         );
@@ -148,7 +148,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // Roll Logic
         const rollLabel = isRolling ? "Rolling..." : "Roll";
-        const rollIcon = isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />;
+        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin" /> : <Dice size={16} />;
 
         const handleRoll = () => {
             if (!isMoveAllowed('rollDice')) return;
@@ -209,10 +209,10 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         onClick={handleRoll}
                         disabled={G.hasRolled || isRolling}
                         aria-label={rollLabel}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                        className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                     >
                         {rollIcon}
-                        <span className="text-base font-bold">{rollLabel}</span>
+                        <span>{rollLabel}</span>
                     </button>
                 )}
 
