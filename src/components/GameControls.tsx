@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
-import { Dices as Dice, ArrowRight, Loader2 } from 'lucide-react';
+import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
@@ -167,6 +167,24 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                  {/* 1. Build Buttons */}
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+                    {/* Trade Button (Coming Soon) */}
+                    <div
+                        className="inline-block flex-shrink-0"
+                        data-tooltip-id="resource-tooltip"
+                        data-tooltip-content="Coming Soon"
+                    >
+                        <button
+                            disabled={true}
+                            aria-label="Trade (Coming Soon)"
+                            className="p-3 rounded-lg flex items-center justify-center btn-focus-ring bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed"
+                        >
+                            <Handshake size={20} />
+                        </button>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="w-px h-8 bg-slate-700 mx-1 flex-shrink-0" />
+
                     {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
                         const affordable = affordMap[type];
                         const moveAllowed = isMoveAllowed(moveNameMap[type]);

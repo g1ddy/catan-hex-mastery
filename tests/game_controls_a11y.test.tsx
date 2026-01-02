@@ -22,6 +22,7 @@ jest.mock('lucide-react', () => ({
     Home: () => <div data-testid="icon-home" />,
     Castle: () => <div data-testid="icon-castle" />,
     Scroll: () => <div data-testid="icon-scroll" />,
+    Handshake: () => <div data-testid="icon-handshake" />,
 }));
 
 // Mock react-tooltip
