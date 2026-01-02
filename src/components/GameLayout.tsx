@@ -3,8 +3,7 @@ import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
     Z_INDEX_GAME_CONTROLS_CONTAINER,
-    Z_INDEX_FLOATING_UI,
-    Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE
+    Z_INDEX_FLOATING_UI
 } from '../styles/z-indices';
 import { BarChart2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
@@ -109,7 +108,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           )}
 
           {/* Middle Section: Board + Player Panel */}
-          <div className="flex-grow flex flex-col md:flex-row relative overflow-hidden">
+          <div className="flex-grow flex flex-col relative overflow-hidden">
 
               {/* Board Area */}
               <div className="flex-grow relative w-full">
@@ -125,12 +124,13 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
               {/* Player Panel Area */}
               <div
                   className="
-                    flex-shrink-0 p-2 md:p-0
-                    md:h-full md:w-64 md:border-l md:border-slate-700 md:bg-slate-900/50
+                    flex-shrink-0 p-2
+                    md:absolute md:bottom-4 md:right-4 md:p-0
+                    md:w-auto md:bg-transparent
                   "
-                  style={{ zIndex: Z_INDEX_PLAYER_PANEL_CONTAINER_MOBILE }}
+                  style={{ zIndex: Z_INDEX_FLOATING_UI }}
               >
-                   <div className="md:h-full md:overflow-y-auto">
+                   <div className="">
                         {playerPanel}
                    </div>
               </div>

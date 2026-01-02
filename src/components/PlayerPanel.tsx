@@ -25,8 +25,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
 
       {/* Content Container */}
       <div className="
-          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center md:justify-start
-          md:flex-col md:overflow-visible md:p-4 md:pt-2 md:gap-3
+          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center
+          md:overflow-visible md:p-4 md:gap-3
       ">
         {playerList.map((player: Player) => {
           const isActive = player.id === currentPlayerId;
@@ -39,25 +39,29 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                 flex items-center gap-2 rounded border transition-colors flex-shrink-0
                 p-1 px-2
                 ${mobileActive}
-                md:w-full md:block md:p-2 md:opacity-100
+                md:w-auto md:flex md:flex-row md:items-center md:gap-4 md:p-2 md:opacity-100
                 ${desktopBorder}
             `}>
               {/* Header: Identity */}
-              <div className="flex items-center gap-1 font-bold text-sm md:text-base md:mb-1">
+              <div className="flex items-center gap-1 font-bold text-sm md:text-base md:mb-0">
                 <div className="w-2 h-2 md:w-3 md:h-3 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
 
                 {/* Text: P1 vs Player 1 */}
                 <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
                     P{Number(player.id) + 1}
                 </span>
-                <span className="hidden md:inline text-slate-100">
+                <span className="hidden md:inline text-slate-100 whitespace-nowrap">
                     Player {Number(player.id) + 1}
                 </span>
               </div>
 
               {/* Desktop Details: VP, Sett, Roads */}
-              <div className="hidden md:block text-sm text-slate-300 mt-1 mb-2">
-                VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
+              <div className="hidden md:flex gap-3 text-sm text-slate-300 mx-2 items-center whitespace-nowrap">
+                <span>VP: {player.victoryPoints}</span>
+                <span className="text-slate-600">|</span>
+                <span>Sett: {player.settlements.length}</span>
+                <span className="text-slate-600">|</span>
+                <span>Roads: {player.roads.length}</span>
               </div>
 
               {/* Resources & Mobile Summary */}
@@ -74,7 +78,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                         <ResourceIconRow resources={player.resources} size="sm" />
                      </div>
                      <div className="hidden md:block">
-                        <ResourceIconRow resources={player.resources} size="md" />
+                        <ResourceIconRow resources={player.resources} size="sm" />
                      </div>
                 </div>
 
