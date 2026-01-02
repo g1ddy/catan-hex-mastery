@@ -67,7 +67,7 @@ When implementing logic, remember the "Why".
 
 ## "Source of Truth" Files
 *   `README.md`: The roadmap and high-level goals.
-*   `Catan Strategy and Starting Rules.txt`: The rulebook and strategic engine logic.
+*   `docs/Catan Strategy and Starting Rules.txt`: The rulebook and strategic engine logic.
 
 ## Verification
 ### Mobile Layout Verification
@@ -89,7 +89,7 @@ This test checks:
 
 ## Environment & Setup
 
-Dependencies and tools in `setup.sh` are intended to be part of the environment snapshot. However, if you encounter missing dependencies or tools, run `./setup.sh` to refresh the environment.
+Dependencies and tools in `setup.sh` are intended to be part of the environment snapshot. However, if you encounter missing dependencies or tools, run `./scripts/setup.sh` to refresh the environment.
 
 ### Testing React Components
 
