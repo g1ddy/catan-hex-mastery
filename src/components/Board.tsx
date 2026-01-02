@@ -8,8 +8,7 @@ import { hexCornerOffset } from '../game/geometry';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
-import { useResponsiveViewBox } from '../hooks/useResponsiveViewBox';
-import { BOARD_CONFIG } from '../game/config';
+import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
@@ -75,7 +74,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   }, [G.lastRoll]);
 
-  const viewBox = useResponsiveViewBox();
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
 
@@ -164,7 +162,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       <HexGrid
         width="100%"
         height="100%"
-        viewBox={viewBox}
+        viewBox={BOARD_VIEWBOX}
       >
         <Layout
           size={BOARD_CONFIG.HEX_SIZE}
