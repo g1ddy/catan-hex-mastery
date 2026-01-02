@@ -19,6 +19,11 @@ export const BOARD_CONFIG = {
   GHOST_VERTEX_RADIUS: 2,
 };
 
+// Calculate static viewBox centered on the board
+const totalWidth = BOARD_CONFIG.BASE_WIDTH + (BOARD_CONFIG.VIEWBOX_PADDING * 2);
+const totalHeight = BOARD_CONFIG.BASE_HEIGHT + (BOARD_CONFIG.VIEWBOX_PADDING * 2);
+export const BOARD_VIEWBOX = `${-totalWidth / 2} ${-totalHeight / 2} ${totalWidth} ${totalHeight}`;
+
 export const COLORS = {
   GHOST_VERTEX: 'white',
   GHOST_OPACITY: 0.3,
