@@ -2,8 +2,8 @@
 
 export const BOARD_CONFIG = {
   // HexGrid dimensions (used for aspect ratio calculations, not hard pixels)
-  BASE_WIDTH: 100,
-  BASE_HEIGHT: 100,
+  BASE_WIDTH: 74,
+  BASE_HEIGHT: 68,
 
   // Layout spacing
   HEX_SIZE: { x: 8, y: 8 },
