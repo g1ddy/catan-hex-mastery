@@ -56,7 +56,7 @@ describe('GameStatusBanner', () => {
         // Player 1 when it's Player 0's turn
         const setupProps = { ...props, playerID: '1', uiMode: 'placing' as const };
         render(<GameStatusBanner {...setupProps} />);
-        expect(screen.getByText('Wait...')).toBeInTheDocument();
+        expect(screen.getByText('Wait for your turn...')).toBeInTheDocument();
     });
 
     test('renders gameplay instruction', () => {

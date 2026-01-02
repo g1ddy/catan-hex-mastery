@@ -64,7 +64,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
         const isMyTurn = playerID === ctx.currentPlayer;
 
         if (!isMyTurn) {
-            message = "Wait...";
+            message = "Wait for your turn...";
         } else if (isSetup) {
             const setupInstructions: Record<string, string> = {
                 [STAGES.PLACE_SETTLEMENT]: "Place Settlement",
@@ -74,7 +74,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
             if (activeStage && setupInstructions[activeStage]) {
                 message = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
             } else {
-                message = "Wait...";
+                message = "Wait for your turn...";
             }
         } else if (isGameplay) {
             if (isRollingStage) {
@@ -88,7 +88,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
 
                 message = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
             } else {
-                message = "Wait...";
+                message = "Wait for your turn...";
             }
         }
     }
