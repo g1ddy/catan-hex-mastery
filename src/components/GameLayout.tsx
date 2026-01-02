@@ -79,7 +79,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   return (
     <div
       data-testid="game-layout"
-      className="relative w-screen h-screen overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
+      className="relative w-full h-[100dvh] md:h-screen overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
     >
       <Toaster />
       <Tooltip id="resource-tooltip" place="top" style={{ zIndex: Z_INDEX_TOOLTIP }} />
