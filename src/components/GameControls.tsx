@@ -82,7 +82,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className={`flex-grow flex pointer-events-auto ${className}`}>
                     <BeginPlacementButton
                         onClick={handleClick}
-                        className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
                     />
                 </div>
              );
@@ -92,7 +92,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              <div className={`flex-grow flex pointer-events-auto ${className}`}>
                 <InstructionDisplay
                     text={instruction}
-                    className="flex-grow flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
+                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
                 />
              </div>
         );
