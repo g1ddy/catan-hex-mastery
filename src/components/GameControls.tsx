@@ -17,6 +17,7 @@ export interface GameControlsProps {
         rollDice: () => void;
         endTurn: () => void;
     };
+    playerID?: string; // Optional because it might not be passed in tests or legacy usage
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;
@@ -41,7 +42,7 @@ const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ te
     </div>
 );
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
+export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, playerID, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
 
@@ -62,13 +63,21 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         let instruction = "Wait for your turn...";
         let canInteract = false;
 
-        if (activeStage === STAGES.PLACE_SETTLEMENT) {
-            instruction = "Place a Settlement";
-            canInteract = true;
-        }
-        if (activeStage === STAGES.PLACE_ROAD) {
-            instruction = "Place a Road";
-            canInteract = true;
+        const player = G.players[ctx.currentPlayer];
+        // Only allow interaction if it's the current player's turn AND the local user is that player
+        const isMyTurn = playerID === ctx.currentPlayer;
+
+        if (isMyTurn) {
+             const sCount = player.settlements.length;
+             const rCount = player.roads.length;
+
+             if (sCount === rCount) {
+                 instruction = "Place a Settlement";
+                 canInteract = true;
+             } else if (sCount > rCount) {
+                 instruction = "Place a Road";
+                 canInteract = true;
+             }
         }
 
         const handleClick = () => {
@@ -78,6 +87,18 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         };
 
         if (uiMode === 'viewing') {
+             // Only show button if it's actually the user's turn to place something
+             if (!canInteract) {
+                 return (
+                    <div className={`flex-grow flex pointer-events-auto ${className}`}>
+                        <InstructionDisplay
+                            text={instruction}
+                            className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
+                        />
+                    </div>
+                 );
+             }
+
              return (
                 <div className={`flex-grow flex pointer-events-auto ${className}`}>
                     <BeginPlacementButton

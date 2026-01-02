@@ -20,7 +20,6 @@ describe('Unit Test: Resource Costs', () => {
             },
         },
         board: { edges: {}, vertices: {}, hexes: {} },
-        setupPhase: { activeRound: 1, activeSettlement: null },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
         lastRollRewards: {},

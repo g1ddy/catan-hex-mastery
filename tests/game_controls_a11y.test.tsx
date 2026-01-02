@@ -46,7 +46,6 @@ describe('GameControls Accessibility', () => {
                 victoryPoints: 0,
             }
         },
-        setupPhase: { activeRound: 1, activeSettlement: null },
         setupOrder: ['0'],
         lastRoll: [0, 0],
         lastRollRewards: {},
@@ -74,6 +73,7 @@ describe('GameControls Accessibility', () => {
         G: mockG,
         ctx: mockCtx,
         moves: mockMoves,
+        playerID: '0',
         buildMode: null as BuildMode,
         setBuildMode: jest.fn(),
         uiMode: 'viewing' as UiMode,
@@ -81,8 +81,15 @@ describe('GameControls Accessibility', () => {
     };
 
     test('Setup InstructionDisplay has accessibility attributes', () => {
-        const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: { '0': STAGES.PLACE_SETTLEMENT } };
-        const setupProps = { ...props, ctx: setupCtx, uiMode: 'placing' as UiMode };
+        // Mock G such that settlements == roads (0 == 0), implying "Place Settlement"
+        const setupG = {
+            ...mockG,
+            players: {
+                '0': { ...mockG.players['0'], settlements: [], roads: [] }
+            }
+        };
+        const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: null }; // Remove activePlayers stage dependency
+        const setupProps = { ...props, G: setupG, ctx: setupCtx, uiMode: 'placing' as UiMode };
 
         render(<GameControls {...setupProps} />);
 

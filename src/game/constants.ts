@@ -8,9 +8,6 @@ export const PHASES = {
 export const STAGES = {
   ROLLING: 'rolling',
   ACTING: 'acting',
-  // Setup stages
-  PLACE_SETTLEMENT: 'placeSettlement',
-  PLACE_ROAD: 'placeRoad',
   // Future stages
   TRADING: 'trading',
 } as const;

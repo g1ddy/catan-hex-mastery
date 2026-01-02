@@ -2,7 +2,15 @@ import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { getVerticesForHex, getEdgeId } from '../hexUtils';
 
-export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
+export const placeSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+  const player = G.players[ctx.currentPlayer];
+
+  // Validation: Sequence
+  // Can only place settlement if #settlements == #roads (0=0 or 1=1)
+  if (player.settlements.length !== player.roads.length) {
+    throw new Error("You must place a road before placing another settlement");
+  }
+
   // 1. Validation: Occupancy
   if (G.board.vertices[vertexId]) {
     throw new Error("This vertex is already occupied");
@@ -19,13 +27,12 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 
   // Execution
   G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
-  G.players[ctx.currentPlayer].settlements.push(vertexId);
-  G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
-  G.setupPhase.activeSettlement = vertexId;
+  player.settlements.push(vertexId);
+  player.victoryPoints += 1; // Settlement worth 1 VP
 
   // Resource Grant (Round 2 Only)
   // Check if this is the second settlement for this player
-  if (G.players[ctx.currentPlayer].settlements.length === 2) {
+  if (player.settlements.length === 2) {
     // Grant resources
     const touchingHexes = getHexesForVertex(vertexId);
     touchingHexes.forEach(hId => {
@@ -42,47 +49,45 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
           };
           const res = resourceMap[hex.terrain];
           if (res) {
-            G.players[ctx.currentPlayer].resources[res as keyof typeof G.players[string]['resources']]++;
+            player.resources[res as keyof typeof player.resources]++;
           }
       }
     });
   }
-
-  // Update active round metadata (optional but good for tracking)
-  const numPlayers = Object.keys(G.players).length;
-  if (ctx.turn >= numPlayers && G.setupPhase.activeRound === 1) {
-      G.setupPhase.activeRound = 2;
-  }
-
-  // State Transition
-  if (events && events.setStage) {
-      events.setStage('placeRoad');
-  }
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
+  const player = G.players[ctx.currentPlayer];
+
+  // Validation: Sequence
+  // Can only place road if #settlements > #roads (1>0 or 2>1)
+  if (player.settlements.length <= player.roads.length) {
+      throw new Error("You must place a settlement before placing a road");
+  }
+
   // 1. Validation: Occupancy
   if (G.board.edges[edgeId]) {
     throw new Error("This edge is already occupied");
   }
 
   // 2. Validation: Connection
-  // Must connect to G.setupPhase.activeSettlement
-  if (!G.setupPhase.activeSettlement) {
-      throw new Error("No active settlement found to connect to");
+  // Must connect to the JUST placed settlement (the last one in the array)
+  const lastPlacedSettlement = player.settlements[player.settlements.length - 1];
+  if (!lastPlacedSettlement) {
+      throw new Error("No settlement found to connect to");
   }
 
-  const connectedEdges = getEdgesForVertex(G.setupPhase.activeSettlement);
+  const connectedEdges = getEdgesForVertex(lastPlacedSettlement);
   if (!connectedEdges.includes(edgeId)) {
       throw new Error("Road must connect to your just-placed settlement");
   }
 
   // Execution
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
-  G.players[ctx.currentPlayer].roads.push(edgeId);
-  G.setupPhase.activeSettlement = null; // Reset
+  player.roads.push(edgeId);
 
   // State Transition
+  // End turn after placing road
   if (events && events.endTurn) {
       events.endTurn();
   }

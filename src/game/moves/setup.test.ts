@@ -49,7 +49,6 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
             victoryPoints: 0
         }
     },
-    setupPhase: { activeRound: 1, activeSettlement: null },
     setupOrder: ['0'],
     lastRoll: [0, 0],
     lastRollRewards: {},
@@ -70,40 +69,53 @@ describe('Setup Phase Moves', () => {
     });
 
     describe('placeSettlement', () => {
-        it('should place settlement and set activeSettlement', () => {
+        it('should place settlement if no items placed', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             placeSettlementFn({ G, ctx, events, playerID: '0' }, vId);
 
             expect(G.board.vertices[vId]).toBeDefined();
-            expect(G.setupPhase.activeSettlement).toBe(vId);
-            expect(events.setStage).toHaveBeenCalledWith('placeRoad');
+            expect(G.players['0'].settlements).toContain(vId);
+            // setStage is removed, no longer needed to check
+        });
+
+        it('should fail if sequence is invalid (have 1 settlement, 0 roads)', () => {
+            const vId = "0,0,0::1,-1,0::0,-1,1";
+            // Pre-condition: Player has 1 settlement already
+            G.players['0'].settlements = [vId];
+            G.board.vertices[vId] = { owner: '0', type: 'settlement' };
+
+            const nextVId = "1,0,-1::2,-1,-1::1,-1,0";
+
+            const call = () => placeSettlementFn({ G, ctx, events, playerID: '0' }, nextVId);
+            expect(call).toThrow("You must place a road before placing another settlement");
         });
     });
 
     describe('placeRoad', () => {
-        it('should allow road connected to activeSettlement', () => {
+        it('should allow road connected to last settlement', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
-            G.setupPhase.activeSettlement = vId;
+            // Simulate Just Placed Settlement
+            G.players['0'].settlements = [vId];
+            G.board.vertices[vId] = { owner: '0', type: 'settlement' };
 
             const validEdge = "0,0,0::1,-1,0";
 
             placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
             expect(G.board.edges[validEdge]).toBeDefined();
-            expect(G.setupPhase.activeSettlement).toBeNull(); // Should be reset
             expect(events.endTurn).toHaveBeenCalled();
         });
 
-        it('should fail if no activeSettlement set', () => {
-            G.setupPhase.activeSettlement = null;
-            const validEdge = "0,0,0::1,-1,0";
-            const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
-            expect(call).toThrow("No active settlement found to connect to");
+        it('should fail if no settlement exists', () => {
+             const validEdge = "0,0,0::1,-1,0";
+             const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
+             expect(call).toThrow("You must place a settlement before placing a road");
         });
 
-        it('should fail if road is NOT connected to activeSettlement', () => {
+        it('should fail if road is NOT connected to JUST placed settlement', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
-            G.setupPhase.activeSettlement = vId;
+            G.players['0'].settlements = [vId];
+            G.board.vertices[vId] = { owner: '0', type: 'settlement' };
 
             // Pick an edge far away
             const disconnectedEdge = "5,0,-5::5,-1,-4";
@@ -112,7 +124,6 @@ describe('Setup Phase Moves', () => {
 
             expect(call).toThrow("Road must connect to your just-placed settlement");
             expect(G.board.edges[disconnectedEdge]).toBeUndefined();
-            expect(G.setupPhase.activeSettlement).toBe(vId); // Not reset
         });
     });
 });

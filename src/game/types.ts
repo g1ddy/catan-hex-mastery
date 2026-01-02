@@ -48,11 +48,6 @@ export interface Player {
   victoryPoints: number;
 }
 
-export interface SetupPhaseState {
-  activeRound: 1 | 2;
-  activeSettlement: string | null;
-}
-
 export interface BoardState {
   hexes: Record<string, Hex>;
   vertices: Record<string, { owner: string; type: 'settlement' | 'city' }>; // owner is player ID
@@ -68,7 +63,6 @@ export interface BoardStats {
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
-  setupPhase: SetupPhaseState;
   setupOrder: string[];
   lastRoll: [number, number];
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained

@@ -21,7 +21,6 @@ export const createTestGameState = (overrides: Partial<GameState> = {}): GameSta
         ...(overrides.board || {})
     } as BoardState,
     players: {},
-    setupPhase: { activeRound: 1, activeSettlement: null },
     setupOrder: [],
     lastRoll: [0, 0],
     lastRollRewards: {},

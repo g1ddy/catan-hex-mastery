@@ -218,6 +218,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           G={G}
           ctx={ctx}
           moves={moves as unknown as GameControlsProps['moves']}
+          playerID={playerID || undefined}
           buildMode={buildMode}
           setBuildMode={setBuildMode}
           uiMode={uiMode}
@@ -355,7 +356,11 @@ const HexOverlays = ({
                 };
 
                 if (isSetup) {
-                    if (currentStage === STAGES.PLACE_SETTLEMENT && !isOccupied && !isTooClose(vId)) {
+                    const player = G.players[ctx.currentPlayer];
+                    // Derive state logic
+                    const canPlaceSettlement = player.settlements.length === player.roads.length;
+
+                    if (canPlaceSettlement && !isOccupied && !isTooClose(vId)) {
                         // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
                             isClickable = true;
@@ -500,10 +505,16 @@ const HexOverlays = ({
                 let clickAction = () => {};
 
                 if (isSetup) {
-                     if (currentStage === STAGES.PLACE_ROAD && !isOccupied) {
+                    const player = G.players[ctx.currentPlayer];
+                    const canPlaceRoad = player.settlements.length > player.roads.length;
+
+                     if (canPlaceRoad && !isOccupied) {
                          // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
-                            const isConnected = G.setupPhase.activeSettlement && getEdgesForVertex(G.setupPhase.activeSettlement).includes(eId);
+                            // Logic: Road must connect to the LAST placed settlement
+                            const lastSettlement = player.settlements[player.settlements.length - 1];
+                            const isConnected = lastSettlement && getEdgesForVertex(lastSettlement).includes(eId);
+
                             if (isConnected) {
                                 isClickable = true;
                                 isGhost = true;
