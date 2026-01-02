@@ -34,78 +34,70 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
         return <ProductionToast G={G} sum={sum} visible={true} />;
     }
 
+    let message = "";
+    let colorClass = "text-amber-400"; // Default color
+
     // Game Over Logic
     if (ctx.gameover) {
-        let msg = "Game Over";
-        let colorClass = "text-slate-200";
+        message = "Game Over";
+        colorClass = "text-slate-200";
 
         if (ctx.gameover.draw) {
-            msg = "Draw!";
+            message = "Draw!";
             colorClass = "text-slate-200";
         } else if (ctx.gameover.winner) {
             if (ctx.gameover.winner === playerID) {
-                msg = "You Win!!!";
+                message = "You Win!!!";
                 colorClass = "text-amber-400 animate-pulse";
             } else {
-                msg = "You Lose";
+                message = "You Lose";
                 colorClass = "text-red-400";
             }
         }
+    } else {
+        // Regular Gameplay Logic
+        const isSetup = ctx.phase === PHASES.SETUP;
+        const isGameplay = ctx.phase === PHASES.GAMEPLAY;
+        const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
+        const isActingStage = isGameplay && activeStage === STAGES.ACTING;
+        const isMyTurn = playerID === ctx.currentPlayer;
 
-        return (
-             <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
-                <span className={`text-lg font-bold ${colorClass}`}>
-                    {msg}
-                </span>
-            </div>
-        );
-    }
-
-    // Otherwise, determine instruction
-    let instruction = "";
-    const isSetup = ctx.phase === PHASES.SETUP;
-    const isGameplay = ctx.phase === PHASES.GAMEPLAY;
-    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
-    const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
-    const isActingStage = isGameplay && activeStage === STAGES.ACTING;
-    const isMyTurn = playerID === ctx.currentPlayer;
-
-    if (!isMyTurn) {
-        instruction = "Wait...";
-    } else if (isSetup) {
-        const setupInstructions: Record<string, string> = {
-            [STAGES.PLACE_SETTLEMENT]: "Place Settlement",
-            [STAGES.PLACE_ROAD]: "Place Road",
-        };
-
-        if (activeStage && setupInstructions[activeStage]) {
-             instruction = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
-        } else {
-             instruction = "Wait...";
-        }
-    } else if (isGameplay) {
-        if (isRollingStage) {
-             instruction = "Roll Dice";
-        } else if (isActingStage) {
-            const buildModeInstructions: Record<string, string> = {
-                road: "Place Road",
-                settlement: "Place Settlement",
-                city: "Build City",
+        if (!isMyTurn) {
+            message = "Wait...";
+        } else if (isSetup) {
+            const setupInstructions: Record<string, string> = {
+                [STAGES.PLACE_SETTLEMENT]: "Place Settlement",
+                [STAGES.PLACE_ROAD]: "Place Road",
             };
 
-            instruction = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
-        } else {
-             // Should cover cases where it's my turn but stage is weird
-             instruction = "Wait...";
+            if (activeStage && setupInstructions[activeStage]) {
+                message = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
+            } else {
+                message = "Wait...";
+            }
+        } else if (isGameplay) {
+            if (isRollingStage) {
+                message = "Roll Dice";
+            } else if (isActingStage) {
+                const buildModeInstructions: Record<string, string> = {
+                    road: "Place Road",
+                    settlement: "Place Settlement",
+                    city: "Build City",
+                };
+
+                message = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
+            } else {
+                message = "Wait...";
+            }
         }
     }
 
-    // Styling matches ProductionToast container
-    // Added truncate to prevent overflow if text is somehow still too long
+    // Unified Return
     return (
         <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
-            <span className="text-lg font-bold text-amber-400 truncate">
-                {instruction}
+            <span className={`text-lg font-bold truncate ${colorClass}`}>
+                {message}
             </span>
         </div>
     );

@@ -29,7 +29,7 @@ test('Verify Tooltips and Build Buttons', async ({ page }) => {
   await beginButton.click();
 
   // Wait for Game Controls to load - looking for initial setup instruction
-  await expect(page.locator('text=Place a Settlement')).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('text=Place Settlement')).toBeVisible({ timeout: 10000 });
 
   // Check ResourceIconRow tooltips
   // We explicitly target the desktop container (.hidden.md:block) to ensure we get the visible one.

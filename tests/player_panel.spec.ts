@@ -19,7 +19,7 @@ test.describe('Player Panel Tests', () => {
     await beginButton.click();
 
     // Now wait for the instruction text
-    await expect(page.locator('text=Place a Settlement')).toBeVisible();
+    await expect(page.locator('text=Place Settlement')).toBeVisible();
 
     // Verify Player Panel is visible
     const playerPanel = page.locator('.player-panel');
@@ -70,7 +70,7 @@ test.describe('Player Panel Tests', () => {
     await beginButton.click();
 
     // Wait for instruction
-    await expect(page.locator('text=Place a Settlement')).toBeVisible();
+    await expect(page.locator('text=Place Settlement')).toBeVisible();
 
     // In mobile, verify the summary row exists (Docked panel)
     // The "Players" header should be hidden
