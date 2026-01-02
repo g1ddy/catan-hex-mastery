@@ -11,6 +11,13 @@ jest.mock('../hexUtils', () => ({
             return ['0,0,0::1,-1,0::1,0,-1', `dummy_${id}_1`, `dummy_${id}_2`];
         }
         return [`v_${id}_1`, `v_${id}_2`];
+    },
+    // Mock getVertexNeighbors to just return the mocked neighbor from the test case if it matches
+    getVertexNeighbors: (vertexId: string) => {
+        if (vertexId === '0,0,0::1,-1,0::1,0,-1') { // TARGET_VERTEX_ID
+            return ['0,0,0::1,-1,0::some_other_hex'];
+        }
+        return [];
     }
 }));
 

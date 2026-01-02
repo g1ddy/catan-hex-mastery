@@ -1,6 +1,15 @@
 import { CubeCoordinates } from './types';
 import { getVertexNeighborIndices } from './geometry';
 
+const DIFF_TO_DIR: Record<string, number> = {
+  "1,-1,0": 0,
+  "1,0,-1": 1,
+  "0,1,-1": 2,
+  "-1,1,0": 3,
+  "-1,0,1": 4,
+  "0,-1,1": 5
+};
+
 export const getNeighbors = (coords: CubeCoordinates): CubeCoordinates[] => {
   const directions = [
     { q: 1, r: -1, s: 0 },
@@ -109,3 +118,55 @@ export const getHexesForVertex = (vertexId: string): string[] => {
     const hexes = parseVertexId(vertexId);
     return hexes.map(h => `${h.q},${h.r},${h.s}`);
 }
+
+/**
+ * Returns the IDs of the 3 vertices adjacent to the given vertex.
+ * Uses geometric calculation (O(1)) rather than string scanning (O(N)).
+ */
+export const getVertexNeighbors = (vertexId: string): string[] => {
+    const hexes = parseVertexId(vertexId);
+    const neighbors: string[] = [];
+
+    // For each pair of hexes (h1, h2) forming an edge radiating from the vertex,
+    // find the OTHER common neighbor that is not the 3rd hex of the current vertex.
+    const pairs = [
+      { a: hexes[0], b: hexes[1], other: hexes[2] },
+      { a: hexes[1], b: hexes[2], other: hexes[0] },
+      { a: hexes[2], b: hexes[0], other: hexes[1] }
+    ];
+
+    for (const { a, b, other } of pairs) {
+      const dq = b.q - a.q;
+      const dr = b.r - a.r;
+      const ds = b.s - a.s;
+      const dirKey = `${dq},${dr},${ds}`;
+      const dir = DIFF_TO_DIR[dirKey];
+
+      if (dir === undefined) {
+        continue;
+      }
+
+      // Common neighbors of A and B (where B is at dir relative to A) are at (dir - 1) and (dir + 1).
+      // Since we use modulo 6, we handle negative numbers.
+      const n1Index = (dir + 5) % 6; // -1
+      const n2Index = (dir + 1) % 6; // +1
+
+      const allNeighborsOfA = getNeighbors(a);
+      const n1 = allNeighborsOfA[n1Index];
+      const n2 = allNeighborsOfA[n2Index];
+
+      // One of n1/n2 is 'other'. The other one is the new neighbor.
+      let target: CubeCoordinates | null = null;
+      if (compareCoords(n1, other)) {
+        target = n2;
+      } else if (compareCoords(n2, other)) {
+        target = n1;
+      }
+
+      if (target) {
+        neighbors.push(getVertexId(a, b, target));
+      }
+    }
+
+    return neighbors;
+  };
