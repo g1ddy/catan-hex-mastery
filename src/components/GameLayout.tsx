@@ -130,9 +130,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
                   "
                   style={{ zIndex: Z_INDEX_FLOATING_UI }}
               >
-                   <div className="">
-                        {playerPanel}
-                   </div>
+                   {playerPanel}
               </div>
           </div>
 
