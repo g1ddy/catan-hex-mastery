@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn-focus-ring {
+    @apply focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none;
+  }
+}
+
 /* Fix for react-hexgrid conflict with Tailwind */
 /* react-hexgrid adds className="grid" to the SVG, which Tailwind interprets as display: grid */
 svg.grid {

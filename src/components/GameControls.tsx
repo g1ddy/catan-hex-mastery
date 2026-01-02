@@ -70,7 +70,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className={`flex-grow flex pointer-events-auto ${className}`}>
                     <BeginPlacementButton
                         onClick={handleClick}
-                        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none animate-pulse"
+                        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse"
                     />
                 </div>
              );
@@ -80,7 +80,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              <div className={`flex-grow flex pointer-events-auto ${className}`}>
                  <button
                     onClick={() => setUiMode('viewing')}
-                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-red-600 hover:bg-red-500 backdrop-blur-md border border-red-500/50 rounded-xl shadow-lg transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-red-600 hover:bg-red-500 backdrop-blur-md border border-red-500/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring"
                  >
                      <span className="text-base font-bold">Cancel Placement</span>
                  </button>
@@ -123,7 +123,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         };
 
         const getButtonClass = (mode: BuildMode) => {
-            const base = "focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none";
+            const base = "btn-focus-ring";
             if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
             return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed`;
         };
@@ -196,7 +196,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     onClick={handleEndTurn}
                     disabled={!isMoveAllowed('endTurn') || isEndingTurn}
                     aria-label={endTurnLabelDesktop}
-                    className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                    className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap btn-focus-ring"
                 >
                     <span className="md:hidden">{endTurnLabel}</span>
                     <span className="hidden md:inline">{endTurnLabelDesktop}</span>
@@ -209,7 +209,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         onClick={handleRoll}
                         disabled={G.hasRolled || isRolling}
                         aria-label={rollLabel}
-                        className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
+                        className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap btn-focus-ring"
                     >
                         {rollIcon}
                         <span>{rollLabel}</span>
