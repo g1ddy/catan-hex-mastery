@@ -12,13 +12,7 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // Screenshot 1: Desktop Sidebar Open (Default)
-    await page.screenshot({ path: 'troubleshoot_desktop_open.png', fullPage: true });
-
-    // Close Sidebar
-    await page.getByRole('button', { name: 'Collapse Sidebar' }).click();
-    await page.waitForTimeout(500); // Wait for transition
-    // Screenshot 2: Desktop Sidebar Closed
-    await page.screenshot({ path: 'troubleshoot_desktop_closed.png', fullPage: true });
+    await page.screenshot({ path: 'latest_desktop.png', fullPage: true });
   });
 
   test('Capture Mobile Screenshots', async ({ page }) => {
