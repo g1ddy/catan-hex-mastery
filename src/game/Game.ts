@@ -23,18 +23,20 @@ export const CatanGame: Game<GameState> = {
   maxPlayers: 4,
 
   endIf: ({ G, ctx }) => {
-    // 1. CHECK FOR WINNER (10 Victory Points)
-    const winnerId = Object.keys(G.players).find(playerId => {
-      const player = G.players[playerId];
-      return player.victoryPoints >= 10;
-    });
+    const WINNING_SCORE = 10;
+    const MAX_TURNS = 100;
 
-    if (winnerId) {
-      return { winner: winnerId };
+    // 1. CHECK FOR WINNER (WINNING_SCORE Victory Points)
+    const winner = Object.values(G.players).find(
+      player => player.victoryPoints >= WINNING_SCORE
+    );
+
+    if (winner) {
+      return { winner: winner.id };
     }
 
-    // 2. CHECK FOR DRAW (100 Turns Limit)
-    if (ctx.turn > 100) {
+    // 2. CHECK FOR DRAW (MAX_TURNS Turns Limit)
+    if (ctx.turn > MAX_TURNS) {
       return { draw: true };
     }
   },
