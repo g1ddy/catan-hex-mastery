@@ -54,7 +54,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
         if (activeStage && setupInstructions[activeStage]) {
              instruction = uiMode === 'placing' ? setupInstructions[activeStage] : "Select 'Begin Placement' to start";
         } else {
-             instruction = "Wait for your turn...";
+             instruction = "Wait...";
         }
     } else if (isGameplay) {
         if (isRollingStage) {
