@@ -1,6 +1,8 @@
 export const PHASES = {
   SETUP: 'setup',
   GAMEPLAY: 'gameplay',
+  TRADE: 'trade',
+  GAME_OVER: 'gameOver',
 } as const;
 
 export const STAGES = {
@@ -9,4 +11,6 @@ export const STAGES = {
   // Setup stages
   PLACE_SETTLEMENT: 'placeSettlement',
   PLACE_ROAD: 'placeRoad',
+  // Future stages
+  TRADING: 'trading',
 } as const;

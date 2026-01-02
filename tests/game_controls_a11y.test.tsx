@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { GameControls, BuildMode, UiMode } from '../src/components/GameControls';
 import { GameState } from '../src/game/types';
 import { PHASES, STAGES } from '../src/game/constants';
+import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 
 // Mock Lucide icons
@@ -29,7 +30,7 @@ jest.mock('react-tooltip', () => ({
 
 // Mock safeMove
 jest.mock('../src/utils/moveUtils', () => ({
-    safeMove: (fn: any) => fn(),
+    safeMove: (fn: () => void) => fn(),
 }));
 
 describe('GameControls Accessibility', () => {
@@ -51,7 +52,7 @@ describe('GameControls Accessibility', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         hasRolled: true,
-    } as any;
+    } as unknown as GameState;
 
     const mockCtx = {
         phase: PHASES.GAMEPLAY,
@@ -61,7 +62,8 @@ describe('GameControls Accessibility', () => {
         playOrder: ['0'],
         playOrderPos: 0,
         turn: 1,
-    } as any;
+        gameover: undefined,
+    } as unknown as Ctx;
 
     const mockMoves = {
         rollDice: jest.fn(),
