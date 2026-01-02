@@ -93,8 +93,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // Helper to check if a move is allowed in the current stage
         const isMoveAllowed = (moveName: string): boolean => {
-             if (!activeStage || !STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES]) return false;
-             return (STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES] as readonly string[]).includes(moveName);
+            const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
+            return !!allowedMoves && (allowedMoves as readonly string[]).includes(moveName);
         };
 
         // Build Button Logic
