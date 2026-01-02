@@ -10,11 +10,31 @@ import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
-const regenerateBoard: Move<GameState> = ({ G }) => {
+const regenerateBoard: Move<GameState> = ({ G, events }) => {
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
     G.board.hexes = hexesMap;
     G.boardStats = calculateBoardStats(hexesMap);
+
+    // Soft Reset: Clear all player placements and resources
+    Object.values(G.players).forEach(player => {
+        player.settlements = [];
+        player.roads = [];
+        player.resources = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
+        player.victoryPoints = 0;
+    });
+
+    // Reset vertices/edges ownership in board
+    Object.keys(G.board.vertices).forEach(k => delete G.board.vertices[k]);
+    Object.keys(G.board.edges).forEach(k => delete G.board.edges[k]);
+
+    // Reset roll state
+    G.lastRoll = [0, 0];
+    G.hasRolled = false;
+
+    // Reset Stage to Place Settlement to avoid stuck state (e.g. if in Place Road but no settlement exists)
+    // Using setActivePlayers to strictly force the stage for the current player
+    if (events) events.setActivePlayers({ currentPlayer: STAGES.PLACE_SETTLEMENT });
 };
 
 // Map string names to move functions for use in definition
@@ -118,10 +138,10 @@ export const CatanGame: Game<GameState> = {
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
         stages: {
             [STAGES.PLACE_SETTLEMENT]: {
-              moves: { placeSettlement }
+              moves: { placeSettlement, regenerateBoard }
             },
             [STAGES.PLACE_ROAD]: {
-              moves: { placeRoad }
+              moves: { placeRoad, regenerateBoard }
             }
         },
       },
