@@ -9,6 +9,7 @@ import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES } from './constants';
 import { PLAYER_COLORS } from '../components/uiConfig';
+import { CoachPlugin } from './analysis/coachPlugin';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -21,6 +22,7 @@ export const CatanGame: Game<GameState> = {
   name: 'catan',
   minPlayers: 2,
   maxPlayers: 4,
+  plugins: [CoachPlugin],
 
   endIf: ({ G, ctx }) => {
     const WINNING_SCORE = 10;

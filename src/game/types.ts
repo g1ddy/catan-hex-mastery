@@ -1,3 +1,6 @@
+import { Ctx as BoardgameIoCtx } from 'boardgame.io';
+import { CoachRecommendation } from './analysis/coach';
+
 export interface CubeCoordinates {
   q: number;
   r: number;
@@ -73,4 +76,11 @@ export interface GameState {
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
   hasRolled: boolean;
+}
+
+export interface CatanCtx extends BoardgameIoCtx {
+    coach: {
+        getAdvice: (playerID: string) => CoachRecommendation[];
+        evaluate: (playerID: string, vertexId?: string) => CoachRecommendation | undefined;
+    }
 }
