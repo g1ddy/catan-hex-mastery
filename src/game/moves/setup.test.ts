@@ -78,6 +78,7 @@ describe('Setup Phase Moves', () => {
             expect(G.players['0'].settlements).toContain(vId);
             // events.setStage is no longer called, handled by config
             expect(events.setStage).not.toHaveBeenCalled();
+            expect(events.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'placeRoad' });
         });
     });
 

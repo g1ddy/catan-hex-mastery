@@ -9,6 +9,7 @@ interface MockRandom {
 
 interface MockEvents {
     endStage: jest.Mock;
+    setActivePlayers: jest.Mock;
 }
 
 interface MockCtx {
@@ -24,7 +25,8 @@ describe('rollDice Move', () => {
         Die: jest.fn()
     };
     const mockEvents: MockEvents = {
-        endStage: jest.fn()
+        endStage: jest.fn(),
+        setActivePlayers: jest.fn()
     };
     const mockCtx: MockCtx = { currentPlayer: '0' };
 
@@ -41,6 +43,7 @@ describe('rollDice Move', () => {
         mockRandom.Die.mockReturnValue(3); // Default return
         mockRandom.Die.mockClear(); // Clear call history
         mockEvents.endStage.mockReset();
+        mockEvents.setActivePlayers.mockReset();
     });
 
     it('should roll dice and update state', () => {
@@ -50,6 +53,11 @@ describe('rollDice Move', () => {
 
         expect(G.lastRoll).toEqual([3, 4]);
         expect(G.hasRolled).toBe(true);
+    });
+
+    it('should verify stage transition', () => {
+        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
+        expect(mockEvents.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'acting' });
     });
 
     it('should distribute new rewards', () => {

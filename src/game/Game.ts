@@ -22,6 +22,23 @@ export const CatanGame: Game<GameState> = {
   minPlayers: 2,
   maxPlayers: 4,
 
+  endIf: ({ G, ctx }) => {
+    // 1. CHECK FOR WINNER (10 Victory Points)
+    const winnerId = Object.keys(G.players).find(playerId => {
+      const player = G.players[playerId];
+      return player.victoryPoints >= 10;
+    });
+
+    if (winnerId) {
+      return { winner: winnerId };
+    }
+
+    // 2. CHECK FOR DRAW (100 Turns Limit)
+    if (ctx.turn > 100) {
+      return { draw: true };
+    }
+  },
+
   setup: ({ ctx }, _setupData?: unknown): GameState => {
     if (!ctx.numPlayers) {
       throw new Error("Number of players must be provided");
@@ -122,13 +139,6 @@ export const CatanGame: Game<GameState> = {
               }
            }
         }
-      },
-      moves: {
-        rollDice,
-        buildRoad,
-        buildSettlement,
-        buildCity,
-        endTurn
       }
     },
     [PHASES.TRADE]: {
