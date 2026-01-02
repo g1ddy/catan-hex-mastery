@@ -5,8 +5,9 @@ test.describe('Desktop Layout', () => {
     // Only run this test in Chromium (Desktop)
     test.skip(({ isMobile }) => isMobile, 'Desktop only test');
 
-    test('Verify Game Setup and Layout', async ({ page }) => {
+    test('Verify Game Setup and Layout', async ({ page, baseURL }) => {
         const game = new GamePage(page);
+        console.log('Navigating to:', baseURL);
 
         await game.goto();
         await game.selectTwoPlayers();

@@ -17,7 +17,8 @@ export class GamePage {
     this.gameLayout = page.getByTestId('game-layout');
 
     // Game controls
-    this.rollDiceButton = page.getByRole('button', { name: 'Roll Dice' });
+    // Updated to 'Roll' to match new UI
+    this.rollDiceButton = page.getByRole('button', { name: 'Roll', exact: true });
 
     // Ghost elements for board interaction (Exception allowed for CSS selectors on SVG visual elements)
     this.ghostVertex = page.getByTestId('ghost-vertex');
