@@ -39,7 +39,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
     const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
-    const isActingStage = isGameplay && activeStage === STAGES.ACTING;
 
     const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);

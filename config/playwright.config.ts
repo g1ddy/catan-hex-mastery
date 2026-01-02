@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:4175/catan-hex-mastery/';
+const BASE_URL = 'http://localhost:4173/catan-hex-mastery/';
 
 export default defineConfig({
   testDir: '../tests',
