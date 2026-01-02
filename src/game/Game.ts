@@ -76,10 +76,18 @@ export const CatanGame: Game<GameState> = {
       start: true,
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
+        activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
+        stages: {
+          [STAGES.PLACE_SETTLEMENT]: {
+            moves: { placeSettlement, regenerateBoard },
+            next: STAGES.PLACE_ROAD
+          },
+          [STAGES.PLACE_ROAD]: {
+            moves: { placeRoad, regenerateBoard }
+          }
+        }
       },
       moves: {
-        placeSettlement,
-        placeRoad,
         regenerateBoard
       },
       endIf: ({ G }) => {

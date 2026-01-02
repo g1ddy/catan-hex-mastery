@@ -2,11 +2,12 @@ import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { getVerticesForHex, getEdgeId } from '../hexUtils';
 
-export const placeSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
   const player = G.players[ctx.currentPlayer];
 
   // Validation: Sequence
-  // Can only place settlement if #settlements == #roads (0=0 or 1=1)
+  // Note: Stage enforcement ensures this method is only callable in PLACE_SETTLEMENT stage.
+  // We keep this check as a secondary safety measure or if stages are ever misconfigured.
   if (player.settlements.length !== player.roads.length) {
     throw new Error("You must place a road before placing another settlement");
   }
@@ -54,13 +55,18 @@ export const placeSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
       }
     });
   }
+
+  // State Transition: Advance to Road Placement
+  if (events && events.endStage) {
+      events.endStage();
+  }
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
   const player = G.players[ctx.currentPlayer];
 
   // Validation: Sequence
-  // Can only place road if #settlements > #roads (1>0 or 2>1)
+  // Stage enforcement ensures this is only callable in PLACE_ROAD stage.
   if (player.settlements.length <= player.roads.length) {
       throw new Error("You must place a settlement before placing a road");
   }
@@ -72,10 +78,9 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
 
   // 2. Validation: Connection
   // Must connect to the JUST placed settlement (the last one in the array)
+  // Logic: The last settlement in the list is the one placed in the immediately preceding 'placeSettlement' stage.
   const lastPlacedSettlement = player.settlements[player.settlements.length - 1];
-  if (!lastPlacedSettlement) {
-      throw new Error("No settlement found to connect to");
-  }
+  // Note: lastPlacedSettlement guaranteed to exist because player.settlements.length > player.roads.length >= 0
 
   const connectedEdges = getEdgesForVertex(lastPlacedSettlement);
   if (!connectedEdges.includes(edgeId)) {

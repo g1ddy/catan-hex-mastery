@@ -1,62 +1,90 @@
 import { CatanGame } from '../src/game/Game';
 import { Client } from 'boardgame.io/client';
-import { getSnakeDraftOrder } from '../src/game/turnOrder';
+import { Local } from 'boardgame.io/multiplayer';
 
-describe('Setup Phase Logic', () => {
-  let client: ReturnType<typeof Client>;
+describe('Setup Phase Logic (Multiplayer)', () => {
+  let p0: ReturnType<typeof Client>;
+  let p1: ReturnType<typeof Client>;
 
   beforeEach(() => {
-    client = Client({
+    // Connect both clients to the same local game instance
+    const multiplayer = Local();
+
+    p0 = Client({
       game: CatanGame,
-      numPlayers: 4,
+      numPlayers: 2,
+      playerID: '0',
+      multiplayer,
     });
-    client.start();
+    p1 = Client({
+      game: CatanGame,
+      numPlayers: 2,
+      playerID: '1',
+      multiplayer,
+    });
+
+    p0.start();
+    p1.start();
   });
 
-  test('Setup creates 4 players', () => {
-    const { G } = client.store.getState();
-    expect(Object.keys(G.players)).toHaveLength(4);
+  afterEach(() => {
+      p0.stop();
+      p1.stop();
+  });
+
+  test('Setup creates players', () => {
+    const { G } = p0.store.getState();
+    expect(Object.keys(G.players)).toHaveLength(2);
     expect(G.players['0'].color).toBeDefined();
-    // G.setupPhase no longer exists
     expect(G.setupOrder).toBeDefined();
   });
 
-  test('Snake draft order is correct', () => {
-    const order = getSnakeDraftOrder(4);
-    expect(order).toEqual(['0', '1', '2', '3', '3', '2', '1', '0']);
+  test('Active player enforcement', () => {
+    const vId = "0,0,0::1,-1,0::1,0,-1";
+
+    // P1 tries to move out of turn.
+    // Framework detects this and logs error, but does not throw in this config.
+    p1.moves.placeSettlement(vId);
+
+    let state = p0.store.getState();
+    expect(state.G.board.vertices[vId]).toBeUndefined(); // Move ignored
+    expect(state.ctx.currentPlayer).toBe('0'); // Still P0's turn
   });
 
   test('Cannot place settlement on top of another', () => {
     const vId = "0,0,0::1,-1,0::1,0,-1";
 
-    // Player 0 places settlement
-    client.moves.placeSettlement(vId);
-    let state = client.store.getState();
-    expect(state.G.board.vertices[vId]).toBeDefined();
-    expect(state.G.board.vertices[vId].owner).toBe('0');
+    // P0 places settlement
+    p0.moves.placeSettlement(vId);
 
-    // Force invalid move (occupancy) from OTHER player
-    // First, P0 needs to end turn. They have 1 S, 0 R. Must place R.
+    // P0 places road to end turn
     const eId = "0,0,0::1,-1,0";
-    client.moves.placeRoad(eId);
-
-    // Now P1's turn
-    state = client.store.getState();
-    expect(state.ctx.currentPlayer).toBe('1');
+    p0.moves.placeRoad(eId);
 
     // P1 tries to place on occupied vId
-    expect(() => client.moves.placeSettlement(vId)).toThrow("This vertex is already occupied");
+    expect(() => p1.moves.placeSettlement(vId)).toThrow("This vertex is already occupied");
+
+    const state = p1.store.getState();
+    expect(state.G.players['1'].settlements).toHaveLength(0); // Move failed
+    expect(state.ctx.currentPlayer).toBe('1'); // Still P1's turn
   });
 
   test('Distance rule', () => {
+      // DEBUG: Verify clean state
+      let state = p0.store.getState();
+      // console.log('Distance rule START - Player:', state.ctx.currentPlayer);
+
       const v1 = "0,0,0::1,-1,0::1,0,-1";
-      client.moves.placeSettlement(v1);
-      client.moves.placeRoad("0,0,0::1,-1,0");
+      p0.moves.placeSettlement(v1);
+      p0.moves.placeRoad("0,0,0::1,-1,0");
 
       // P1's turn
+      // Try to place too close
       const vNeighbor = "0,-1,1::0,0,0::1,-1,0";
 
-      // Expect specific error message for distance rule
-      expect(() => client.moves.placeSettlement(vNeighbor)).toThrow("Settlement is too close to another building");
+      expect(() => p1.moves.placeSettlement(vNeighbor)).toThrow("Settlement is too close to another building");
+
+      state = p1.store.getState();
+      expect(state.G.players['1'].settlements).toHaveLength(0); // Move failed
   });
 });

@@ -88,7 +88,7 @@ describe('GameControls Accessibility', () => {
                 '0': { ...mockG.players['0'], settlements: [], roads: [] }
             }
         };
-        const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: null }; // Remove activePlayers stage dependency
+        const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: { '0': STAGES.PLACE_SETTLEMENT } };
         const setupProps = { ...props, G: setupG, ctx: setupCtx, uiMode: 'placing' as UiMode };
 
         render(<GameControls {...setupProps} />);
