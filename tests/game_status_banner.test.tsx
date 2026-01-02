@@ -49,21 +49,21 @@ describe('GameStatusBanner', () => {
     test('renders setup instruction', () => {
         const setupProps = { ...props, uiMode: 'placing' as const };
         render(<GameStatusBanner {...setupProps} />);
-        expect(screen.getByText('Place a Settlement')).toBeInTheDocument();
+        expect(screen.getByText('Place Settlement')).toBeInTheDocument();
     });
 
     test('renders wait instruction for inactive player', () => {
         // Player 1 when it's Player 0's turn
         const setupProps = { ...props, playerID: '1', uiMode: 'placing' as const };
         render(<GameStatusBanner {...setupProps} />);
-        expect(screen.getByText('Wait for your turn...')).toBeInTheDocument();
+        expect(screen.getByText('Wait...')).toBeInTheDocument();
     });
 
     test('renders gameplay instruction', () => {
          const gameplayCtx = { ...mockCtx, phase: PHASES.GAMEPLAY, activePlayers: { '0': STAGES.ACTING } };
          const gameplayProps = { ...props, ctx: gameplayCtx, buildMode: 'road' as const };
          render(<GameStatusBanner {...gameplayProps} />);
-         expect(screen.getByText('Place a Road')).toBeInTheDocument();
+         expect(screen.getByText('Place Road')).toBeInTheDocument();
     });
 
     test('renders roll result temporarily', () => {
@@ -85,5 +85,26 @@ describe('GameStatusBanner', () => {
 
         expect(screen.queryByText(/Roll:/)).not.toBeInTheDocument();
         jest.useRealTimers();
+    });
+
+    test('renders Win message', () => {
+        const gameOverCtx = { ...mockCtx, gameover: { winner: '0' } };
+        const gameOverProps = { ...props, ctx: gameOverCtx };
+        render(<GameStatusBanner {...gameOverProps} />);
+        expect(screen.getByText('You Win!!!')).toBeInTheDocument();
+    });
+
+    test('renders Lose message', () => {
+        const gameOverCtx = { ...mockCtx, gameover: { winner: '1' } };
+        const gameOverProps = { ...props, ctx: gameOverCtx };
+        render(<GameStatusBanner {...gameOverProps} />);
+        expect(screen.getByText('You Lose')).toBeInTheDocument();
+    });
+
+    test('renders Draw message', () => {
+        const gameOverCtx = { ...mockCtx, gameover: { draw: true } };
+        const gameOverProps = { ...props, ctx: gameOverCtx };
+        render(<GameStatusBanner {...gameOverProps} />);
+        expect(screen.getByText('Draw!')).toBeInTheDocument();
     });
 });

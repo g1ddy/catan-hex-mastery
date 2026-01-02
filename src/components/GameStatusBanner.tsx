@@ -34,6 +34,33 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
         return <ProductionToast G={G} sum={sum} visible={true} />;
     }
 
+    // Game Over Logic
+    if (ctx.gameover) {
+        let msg = "Game Over";
+        let colorClass = "text-slate-200";
+
+        if (ctx.gameover.draw) {
+            msg = "Draw!";
+            colorClass = "text-slate-200";
+        } else if (ctx.gameover.winner) {
+            if (ctx.gameover.winner === playerID) {
+                msg = "You Win!!!";
+                colorClass = "text-amber-400 animate-pulse";
+            } else {
+                msg = "You Lose";
+                colorClass = "text-red-400";
+            }
+        }
+
+        return (
+             <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
+                <span className={`text-lg font-bold ${colorClass}`}>
+                    {msg}
+                </span>
+            </div>
+        );
+    }
+
     // Otherwise, determine instruction
     let instruction = "";
     const isSetup = ctx.phase === PHASES.SETUP;
@@ -44,29 +71,29 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
     const isMyTurn = playerID === ctx.currentPlayer;
 
     if (!isMyTurn) {
-        instruction = "Wait for your turn...";
+        instruction = "Wait...";
     } else if (isSetup) {
         const setupInstructions: Record<string, string> = {
-            [STAGES.PLACE_SETTLEMENT]: "Place a Settlement",
-            [STAGES.PLACE_ROAD]: "Place a Road",
+            [STAGES.PLACE_SETTLEMENT]: "Place Settlement",
+            [STAGES.PLACE_ROAD]: "Place Road",
         };
 
         if (activeStage && setupInstructions[activeStage]) {
-             instruction = uiMode === 'placing' ? setupInstructions[activeStage] : "Select 'Begin Placement' to start";
+             instruction = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
         } else {
              instruction = "Wait...";
         }
     } else if (isGameplay) {
         if (isRollingStage) {
-             instruction = "Roll the Dice";
+             instruction = "Roll Dice";
         } else if (isActingStage) {
             const buildModeInstructions: Record<string, string> = {
-                road: "Place a Road",
-                settlement: "Place a Settlement",
-                city: "Upgrade a Settlement to City",
+                road: "Place Road",
+                settlement: "Place Settlement",
+                city: "Build City",
             };
 
-            instruction = (buildMode && buildModeInstructions[buildMode]) || "Select an Action or End Turn";
+            instruction = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
         } else {
              // Should cover cases where it's my turn but stage is weird
              instruction = "Wait...";
@@ -74,9 +101,10 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
     }
 
     // Styling matches ProductionToast container
+    // Added truncate to prevent overflow if text is somehow still too long
     return (
-        <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[90vw] bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
-            <span className="text-lg font-bold text-amber-400">
+        <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
+            <span className="text-lg font-bold text-amber-400 truncate">
                 {instruction}
             </span>
         </div>
