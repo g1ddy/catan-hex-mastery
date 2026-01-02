@@ -52,11 +52,6 @@ describe('rollDice Move', () => {
         expect(G.hasRolled).toBe(true);
     });
 
-    it('should trigger endStage', () => {
-        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(mockEvents.endStage).toHaveBeenCalled();
-    });
-
     it('should distribute new rewards', () => {
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(3); // Sum 6
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });

@@ -65,7 +65,6 @@ export const CatanGame: Game<GameState> = {
       players,
       setupPhase: {
         activeRound: 1,
-        activeSettlement: null,
       },
       setupOrder: getSnakeDraftOrder(numPlayers),
       lastRoll: [0, 0],
@@ -81,6 +80,14 @@ export const CatanGame: Game<GameState> = {
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
+        stages: {
+            [STAGES.PLACE_SETTLEMENT]: {
+              moves: { placeSettlement }
+            },
+            [STAGES.PLACE_ROAD]: {
+              moves: { placeRoad }
+            }
+        },
       },
       moves: {
         placeSettlement,
@@ -104,8 +111,7 @@ export const CatanGame: Game<GameState> = {
         },
         stages: {
            [STAGES.ROLLING]: {
-              moves: { rollDice },
-              next: STAGES.ACTING
+              moves: { rollDice }
            },
            [STAGES.ACTING]: {
               moves: {
@@ -116,6 +122,13 @@ export const CatanGame: Game<GameState> = {
               }
            }
         }
+      },
+      moves: {
+        rollDice,
+        buildRoad,
+        buildSettlement,
+        buildCity,
+        endTurn
       }
     },
     [PHASES.TRADE]: {

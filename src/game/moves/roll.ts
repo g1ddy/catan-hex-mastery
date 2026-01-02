@@ -1,5 +1,6 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../types';
+import { STAGES } from '../constants';
 import { distributeResources } from '../mechanics/resources';
 
 export const rollDice: Move<GameState> = ({ G, random, events }) => {
@@ -17,8 +18,8 @@ export const rollDice: Move<GameState> = ({ G, random, events }) => {
     const rollValue = d1 + d2;
     G.lastRollRewards = distributeResources(G, rollValue);
 
-    // End Rolling Stage -> Transition to Acting Stage (via next: STAGES.ACTING)
-    if (events && events.endStage) {
-        events.endStage();
+    // End Rolling Stage -> Transition to Acting Stage
+    if (events && events.setActivePlayers) {
+        events.setActivePlayers({ currentPlayer: STAGES.ACTING });
     }
 };

@@ -72,21 +72,7 @@ describe('Setup Phase Logic', () => {
     expect(state.G.board.vertices[vId]).toBeDefined();
     expect(state.G.board.vertices[vId].owner).toBe('0');
 
-    // Try to place again (same player or next player doesn't matter for occupancy check)
-    // Actually next player should be '1'.
-    // But we need to verify the move failed.
-    // The Client wrapper returns the result of the move?
-    // boardgame.io Client checks validity.
-
-    // Force invalid move (occupancy)
-    expect(() => client.moves.placeSettlement(vId)).toThrow("This vertex is already occupied");
-    state = client.store.getState();
-    // Move should be invalid, so state shouldn't change (still owned by 0)
-    // And ideally ctx.currentPlayer shouldn't change if move failed?
-    // Wait, if P0 placed successfully, they are now in 'placeRoad' stage.
-    // They cannot place another settlement anyway.
-
-    // So to test occupancy, we need to advance to another player and try to place on occupied spot.
+    // To test occupancy, we need to advance to another player and try to place on occupied spot.
     // P0 places road to end turn.
     // Find an edge connected to vId.
     // Edge: "0,0,0::1,-1,0"
