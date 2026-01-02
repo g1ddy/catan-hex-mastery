@@ -169,7 +169,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                     {/* Trade Button (Coming Soon) */}
                     <div
-                        className="inline-block flex-shrink-0"
+                        className="inline-block flex-shrink-0 border-r border-slate-700/50 pr-1"
                         data-tooltip-id="resource-tooltip"
                         data-tooltip-content="Coming Soon"
                     >
@@ -181,9 +181,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                             <Handshake size={20} />
                         </button>
                     </div>
-
-                    {/* Divider */}
-                    <div className="w-px h-8 bg-slate-700 mx-1 flex-shrink-0" />
 
                     {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
                         const affordable = affordMap[type];
