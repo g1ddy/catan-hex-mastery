@@ -111,20 +111,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return `Cost: ${parts.join(', ')}`;
         };
 
-        const getButtonClass = (mode: BuildMode, canAfford: boolean) => {
+        const getButtonClass = (mode: BuildMode) => {
             const base = "focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none";
-            // If in rolling stage, buttons are visible but disabled (opacity handled by disabled attribute usually, but we want explicit styling)
-            // Actually, standard disabled attribute adds opacity. We can keep these classes.
             if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
-            if (!canAfford && isActingStage) return `${base} bg-slate-800 text-slate-500 cursor-not-allowed opacity-50`;
-            // For rolling stage (isActingStage is false), we will disable via prop, so standard disabled styles apply.
-            // We can ensure disabled styles are consistent.
-            return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed`;
+            return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed`;
         };
 
-        const toggleBuildMode = (mode: BuildMode, canAfford: boolean) => {
-            if (!isActingStage) return;
-            if (!canAfford && buildMode !== mode) return;
+        const toggleBuildMode = (mode: BuildMode) => {
             setBuildMode(buildMode === mode ? null : mode);
         };
 
@@ -165,16 +158,18 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                     {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
                         const affordable = affordMap[type];
-                        const isEnabled = isActingStage && affordable;
+                        // Enable button if it is affordable OR if it is currently selected (to allow deselection)
+                        // But strictly only in acting stage.
+                        const isEnabled = isActingStage && (affordable || buildMode === type);
 
                         return (
                             <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
                                 <button
-                                    onClick={() => toggleBuildMode(type, affordable)}
+                                    onClick={() => toggleBuildMode(type)}
                                     disabled={!isEnabled}
                                     aria-label={`${ariaPrefix} (${costString(type)})`}
                                     aria-pressed={buildMode === type}
-                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, affordable)}`}
+                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type)}`}
                                 >
                                     <Icon size={20} />
                                 </button>
