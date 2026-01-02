@@ -40,7 +40,15 @@ describe('Game Simulation with DebugBot', () => {
       const { action } = result;
 
       if (action) {
-        client.submitAction(action);
+        const moveName = action.payload.type;
+        if (moveName in client.moves) {
+          const move = moveName as keyof typeof client.moves;
+          client.moves[move](...(action.payload.args || []));
+        } else {
+          // Bot suggested an invalid move or one not exposed on client.moves
+          console.warn(`Bot for player ${playerID} suggested an invalid move: ${moveName}`);
+          break;
+        }
       } else {
         // Bot is passive (no moves enumerated), so we break to avoid infinite loop.
         console.log(`Bot for player ${playerID} returned no action (Passive Mode).`);
@@ -60,8 +68,9 @@ describe('Game Simulation with DebugBot', () => {
       gameover: ctx.gameover,
     });
 
-    // We verify the simulation ran without errors.
-    // Note: ctx.turn remains 1 because the bot is currently passive during the Setup phase.
-    expect(steps).toBeGreaterThanOrEqual(0);
+    // We verify the simulation ran without errors and that the game is still in the first turn
+    // because the bot is passive.
+    expect(steps).toBe(0);
+    expect(ctx.turn).toBe(1);
   });
 });
