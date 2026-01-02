@@ -67,6 +67,7 @@ describe('GameStatusBanner', () => {
     });
 
     test('renders roll result temporarily', () => {
+        jest.useFakeTimers();
         // Initially no roll
         const { rerender } = render(<GameStatusBanner {...props} />);
         expect(screen.queryByText(/Roll:/)).not.toBeInTheDocument();
@@ -77,10 +78,12 @@ describe('GameStatusBanner', () => {
 
         expect(screen.getByText('Roll: 7')).toBeInTheDocument();
 
-        // Fast-forward time to check it disappears (requires jest fake timers)
-        // jest.useFakeTimers();
-        // act(() => jest.advanceTimersByTime(4000));
-        // expect(screen.queryByText('Roll: 7')).not.toBeInTheDocument();
-        // jest.useRealTimers();
+        // Fast-forward time to check it disappears
+        act(() => {
+            jest.advanceTimersByTime(4000);
+        });
+
+        expect(screen.queryByText(/Roll:/)).not.toBeInTheDocument();
+        jest.useRealTimers();
     });
 });

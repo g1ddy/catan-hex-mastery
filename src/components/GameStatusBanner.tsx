@@ -16,24 +16,22 @@ interface GameStatusBannerProps {
 export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, playerID, uiMode, buildMode }) => {
     const [showRollResult, setShowRollResult] = useState(false);
 
+    // Calculate roll sum once
+    const [d1, d2] = G.lastRoll;
+    const sum = d1 + d2;
+
     // Watch for new rolls
     useEffect(() => {
-        const [d1, d2] = G.lastRoll;
-        const sum = d1 + d2;
         if (sum > 0) {
             setShowRollResult(true);
             const timer = setTimeout(() => setShowRollResult(false), 4000);
             return () => clearTimeout(timer);
         }
-    }, [G.lastRoll]);
+    }, [G.lastRoll]); // Depend on G.lastRoll object reference to catch updates
 
     // If showing roll result, render ProductionToast (reused)
-    // We wrap it in the same container style as the Instruction for consistency,
-    // OR we just use ProductionToast's layout if it matches.
-    // ProductionToast already has the glassmorphism pill style.
     if (showRollResult) {
-        const [d1, d2] = G.lastRoll;
-        return <ProductionToast G={G} sum={d1 + d2} visible={true} />;
+        return <ProductionToast G={G} sum={sum} visible={true} />;
     }
 
     // Otherwise, determine instruction
@@ -48,21 +46,27 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
     if (!isMyTurn) {
         instruction = "Wait for your turn...";
     } else if (isSetup) {
-        if (activeStage === STAGES.PLACE_SETTLEMENT) {
-            instruction = uiMode === 'placing' ? "Place a Settlement" : "Select 'Begin Placement' to start";
-        } else if (activeStage === STAGES.PLACE_ROAD) {
-            instruction = uiMode === 'placing' ? "Place a Road" : "Select 'Begin Placement' to start";
+        const setupInstructions: Record<string, string> = {
+            [STAGES.PLACE_SETTLEMENT]: "Place a Settlement",
+            [STAGES.PLACE_ROAD]: "Place a Road",
+        };
+
+        if (activeStage && setupInstructions[activeStage]) {
+             instruction = uiMode === 'placing' ? setupInstructions[activeStage] : "Select 'Begin Placement' to start";
         } else {
-            instruction = "Wait for your turn...";
+             instruction = "Wait for your turn...";
         }
     } else if (isGameplay) {
         if (isRollingStage) {
              instruction = "Roll the Dice";
         } else if (isActingStage) {
-            if (buildMode === 'road') instruction = "Place a Road";
-            else if (buildMode === 'settlement') instruction = "Place a Settlement";
-            else if (buildMode === 'city') instruction = "Upgrade a Settlement to City";
-            else instruction = "Select an Action or End Turn";
+            const buildModeInstructions: Record<string, string> = {
+                road: "Place a Road",
+                settlement: "Place a Settlement",
+                city: "Upgrade a Settlement to City",
+            };
+
+            instruction = (buildMode && buildModeInstructions[buildMode]) || "Select an Action or End Turn";
         } else {
              // Should cover cases where it's my turn but stage is weird
              instruction = "Wait...";
