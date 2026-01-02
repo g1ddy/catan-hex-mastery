@@ -25,8 +25,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
 
       {/* Content Container */}
       <div className="
-          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center md:justify-start
-          md:flex-col md:overflow-visible md:p-4 md:pt-2 md:gap-3
+          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center
+          md:flex-col md:overflow-visible md:p-4 md:gap-3
       ">
         {playerList.map((player: Player) => {
           const isActive = player.id === currentPlayerId;
@@ -39,7 +39,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                 flex items-center gap-2 rounded border transition-colors flex-shrink-0
                 p-1 px-2
                 ${mobileActive}
-                md:w-full md:block md:p-2 md:opacity-100
+                md:w-64 md:block md:p-3 md:opacity-100
                 ${desktopBorder}
             `}>
               {/* Header: Identity */}
@@ -50,7 +50,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                 <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
                     P{Number(player.id) + 1}
                 </span>
-                <span className="hidden md:inline text-slate-100">
+                <span className="hidden md:inline text-slate-100 whitespace-nowrap">
                     Player {Number(player.id) + 1}
                 </span>
               </div>
