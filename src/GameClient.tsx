@@ -11,9 +11,15 @@ interface GameClientProps {
   onPlayerChange?: (playerID: string) => void;
 }
 
-export const GameClient = Client({
+export const LocalGameClient = Client({
   game: CatanGame,
   board: Board,
   debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
   multiplayer: Local({ bots: { 'random': DebugBot } }),
+}) as unknown as React.ComponentType<GameClientProps>;
+
+export const SinglePlayerGameClient = Client({
+  game: CatanGame,
+  board: Board,
+  debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
 }) as unknown as React.ComponentType<GameClientProps>;
