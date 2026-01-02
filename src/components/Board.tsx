@@ -3,7 +3,7 @@ import { HexGrid, Layout, Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { GameHex } from './GameHex';
-import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge, getVertexNeighbors } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
@@ -284,18 +284,8 @@ const HexOverlays = ({
     const { recommendations, minScore, maxScore, top3Set } = coachData;
 
     const isTooClose = (vertexId: string) => {
-        const occupied = Object.keys(G.board.vertices);
-        const thisV = vertexId.split('::');
-
-        for (const occId of occupied) {
-            const thatV = occId.split('::');
-            let matchCount = 0;
-            for(const h1 of thisV) {
-                if(thatV.includes(h1)) matchCount++;
-            }
-            if (matchCount >= 2) return true;
-        }
-        return false;
+        const neighbors = getVertexNeighbors(vertexId);
+        return neighbors.some(n => G.board.vertices[n]);
     };
 
     const size = 8;

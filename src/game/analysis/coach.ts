@@ -1,5 +1,5 @@
 import { GameState } from '../types';
-import { getVerticesForHex } from '../hexUtils';
+import { getVerticesForHex, getVertexNeighbors } from '../hexUtils';
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -91,22 +91,10 @@ export function getAllSettlementScores(G: GameState, playerID: string): CoachRec
         if (vertices[vId]) return;
 
         // Skip if too close to another building (Distance Rule)
-        const occupied = Object.keys(vertices);
-        let tooClose = false;
-        const thisV = vId.split('::');
+        const neighbors = getVertexNeighbors(vId);
+        if (neighbors.some(n => vertices[n])) return;
 
-        for (const occId of occupied) {
-            const thatV = occId.split('::');
-            let matchCount = 0;
-            for(const h1 of thisV) {
-                if(thatV.includes(h1)) matchCount++;
-            }
-            if (matchCount >= 2) {
-                tooClose = true;
-                break;
-            }
-        }
-        if (tooClose) return;
+        const thisV = vId.split('::');
 
         // Score the vertex
         let pips = 0;
