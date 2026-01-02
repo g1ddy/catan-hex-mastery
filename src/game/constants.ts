@@ -14,3 +14,10 @@ export const STAGES = {
   // Future stages
   TRADING: 'trading',
 } as const;
+
+export const STAGE_MOVES = {
+    [STAGES.ROLLING]: ['rollDice'],
+    [STAGES.ACTING]: ['buildRoad', 'buildSettlement', 'buildCity', 'endTurn'],
+    [STAGES.PLACE_SETTLEMENT]: ['placeSettlement'],
+    [STAGES.PLACE_ROAD]: ['placeRoad'],
+} as const;

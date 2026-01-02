@@ -4,7 +4,7 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2 } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
@@ -92,6 +92,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
     if (isGameplay) {
         const resources = G.players[ctx.currentPlayer].resources;
 
+        // Helper to check if a move is allowed in the current stage
+        const isMoveAllowed = (moveName: string): boolean => {
+             if (!activeStage || !STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES]) return false;
+             return (STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES] as readonly string[]).includes(moveName);
+        };
+
         // Build Button Logic
         const canAfford = (cost: Partial<Resources>): boolean => {
             return (Object.keys(cost) as Array<keyof Resources>).every(
@@ -103,6 +109,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             road: canAfford(BUILD_COSTS.road),
             settlement: canAfford(BUILD_COSTS.settlement),
             city: canAfford(BUILD_COSTS.city)
+        };
+
+        const moveNameMap: Record<string, string> = {
+            road: 'buildRoad',
+            settlement: 'buildSettlement',
+            city: 'buildCity'
         };
 
         const costString = (type: keyof typeof BUILD_COSTS) => {
@@ -123,7 +135,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         // End Turn Logic
         const handleEndTurn = () => {
-            if (!isActingStage) return;
+            if (!isMoveAllowed('endTurn')) return;
             setIsEndingTurn(true);
             setBuildMode(null);
             if (!safeMove(() => moves.endTurn())) {
@@ -140,7 +152,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         const rollIcon = isRolling ? <Loader2 size={24} className="animate-spin" /> : <Dice size={24} />;
 
         const handleRoll = () => {
-            if (!isRollingStage) return;
+            if (!isMoveAllowed('rollDice')) return;
             setIsRolling(true);
             if (!safeMove(() => moves.rollDice())) {
                 setIsRolling(false);
@@ -148,8 +160,8 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
-        const showLastRoll = isActingStage && lastRollSum > 0;
-        const showRollButton = isRollingStage;
+        const showLastRoll = !isMoveAllowed('rollDice') && lastRollSum > 0;
+        const showRollButton = isMoveAllowed('rollDice') || isRollingStage; // Keep visible during transition/check
 
         return (
              <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
@@ -158,9 +170,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                     {BUILD_BUTTON_CONFIG.map(({ type, Icon, ariaPrefix }) => {
                         const affordable = affordMap[type];
+                        const moveAllowed = isMoveAllowed(moveNameMap[type]);
+
                         // Enable button if it is affordable OR if it is currently selected (to allow deselection)
-                        // But strictly only in acting stage.
-                        const isEnabled = isActingStage && (affordable || buildMode === type);
+                        // But strictly only if the move is allowed in the current stage.
+                        const isEnabled = moveAllowed && (affordable || buildMode === type);
 
                         return (
                             <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
@@ -181,7 +195,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 {/* 2. End Turn */}
                 <button
                     onClick={handleEndTurn}
-                    disabled={!isActingStage || isEndingTurn}
+                    disabled={!isMoveAllowed('endTurn') || isEndingTurn}
                     aria-label={endTurnLabelDesktop}
                     className="flex items-center gap-1 bg-red-600 hover:bg-red-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm ml-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none"
                 >

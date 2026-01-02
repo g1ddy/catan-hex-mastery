@@ -7,7 +7,7 @@ import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
-import { PHASES, STAGES } from './constants';
+import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
@@ -15,6 +15,23 @@ const regenerateBoard: Move<GameState> = ({ G }) => {
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
     G.board.hexes = hexesMap;
     G.boardStats = calculateBoardStats(hexesMap);
+};
+
+// Map string names to move functions for use in definition
+const MOVE_MAP = {
+    rollDice,
+    buildRoad,
+    buildSettlement,
+    buildCity,
+    endTurn,
+    placeSettlement,
+    placeRoad
+};
+
+// Helper to pick moves from STAGE_MOVES
+const getMovesForStage = (stage: keyof typeof STAGE_MOVES) => {
+    const moves = STAGE_MOVES[stage];
+    return Object.fromEntries(moves.map(m => [m, MOVE_MAP[m as keyof typeof MOVE_MAP]]));
 };
 
 export const CatanGame: Game<GameState> = {
@@ -130,15 +147,10 @@ export const CatanGame: Game<GameState> = {
         },
         stages: {
            [STAGES.ROLLING]: {
-              moves: { rollDice }
+              moves: getMovesForStage(STAGES.ROLLING)
            },
            [STAGES.ACTING]: {
-              moves: {
-                  buildRoad,
-                  buildSettlement,
-                  buildCity,
-                  endTurn
-              }
+              moves: getMovesForStage(STAGES.ACTING)
            }
         }
       }
