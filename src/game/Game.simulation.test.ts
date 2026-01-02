@@ -27,6 +27,11 @@ describe('Game Simulation with DebugBot', () => {
 
     while (!client.getState()?.ctx.gameover && steps < MAX_STEPS) {
       const state = client.getState();
+      if (!state) {
+        console.warn('Game state is missing');
+        break;
+      }
+
       const playerID = state.ctx.currentPlayer;
       const bot = bots[playerID as keyof typeof bots];
 
@@ -58,8 +63,10 @@ describe('Game Simulation with DebugBot', () => {
       steps++;
     }
 
-    const state = client.getState();
-    const { ctx } = state;
+    const finalState = client.getState();
+    if (!finalState) throw new Error('Game ended with missing state');
+
+    const { ctx } = finalState;
 
     console.log('Simulation ended:', {
       steps,
