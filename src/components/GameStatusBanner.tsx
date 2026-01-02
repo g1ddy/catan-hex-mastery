@@ -27,7 +27,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
             const timer = setTimeout(() => setShowRollResult(false), 4000);
             return () => clearTimeout(timer);
         }
-    }, [G.lastRoll]); // Depend on G.lastRoll object reference to catch updates
+    }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
 
     // If showing roll result, render ProductionToast (reused)
     if (showRollResult) {
