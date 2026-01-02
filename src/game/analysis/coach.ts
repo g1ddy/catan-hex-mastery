@@ -2,21 +2,22 @@ import { GameState } from '../types';
 import { getVerticesForHex, getVertexNeighbors, getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 
 export interface CoachRecommendation {
-    vertexId?: string; // Optional for non-vertex moves
-    edgeId?: string; // For road moves
-    move?: string;
-    args?: any[];
-    score?: number;
-    reason?: string;
-    details?: {
-        pips?: number;
-        scarcityBonus?: boolean;
-        scarceResources?: string[];
-        diversityBonus?: boolean;
-        synergyBonus?: boolean;
-        neededResources?: string[];
-        // ... extend as needed
+    vertexId: string;
+    score: number;
+    reason: string;
+    details: {
+        pips: number;
+        scarcityBonus: boolean;
+        scarceResources: string[];
+        diversityBonus: boolean;
+        synergyBonus: boolean;
+        neededResources: string[];
     };
+}
+
+export interface BotMove {
+    move: string;
+    args: any[];
 }
 
 const SCARCITY_THRESHOLD = 0.10;
@@ -79,7 +80,7 @@ export class Coach {
         const settlementCount = player.settlements.length;
         const existingResources = new Set<string>();
 
-        if (settlementCount >= 1) { // Adjusted to >= 1 to handle future cases
+        if (settlementCount >= 1) {
             // Collect resources from existing settlements
             player.settlements.forEach(sVId => {
                 const s1HexIds = sVId.split('::');
@@ -191,7 +192,7 @@ export class Coach {
             recommendations.push({
                 vertexId: vId,
                 score: Math.round(score * 10) / 10, // Round to 1 decimal
-                reason: reasons.join(', '), // Keep for compatibility if needed
+                reason: reasons.join(', '),
                 details: details
             });
         });
@@ -202,10 +203,10 @@ export class Coach {
     public getBestSettlementSpots(playerID: string): CoachRecommendation[] {
         const allScores = this.getAllSettlementScores(playerID);
         // Sort by score desc and take top 3
-        return allScores.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 3);
+        return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
     }
 
-    public recommendSettlementPlacement(playerID: string): { move: string, args: any[] } | null {
+    public recommendSettlementPlacement(playerID: string): BotMove | null {
         const best = this.getBestSettlementSpots(playerID);
         if (best.length > 0 && best[0].vertexId) {
             return { move: 'placeSettlement', args: [best[0].vertexId] };
@@ -213,7 +214,7 @@ export class Coach {
         return null;
     }
 
-    public recommendRoadPlacement(playerID: string): { move: string, args: any[] } | null {
+    public recommendRoadPlacement(playerID: string): BotMove | null {
         const player = this.G.players[playerID];
         // In Setup, usually place road attached to the last placed settlement
         if (player.settlements.length > 0) {
@@ -230,7 +231,7 @@ export class Coach {
         return null; // Fallback or no valid move
     }
 
-    public recommendNextMove(playerID: string): { move: string, args: any[] } | null {
+    public recommendNextMove(playerID: string): BotMove | null {
          const player = this.G.players[playerID];
          const resources = player.resources;
 
