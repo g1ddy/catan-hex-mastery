@@ -24,9 +24,6 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
   return (
     <div className="text-slate-100 h-full">
       <div className="flex flex-col gap-4 mb-5">
-        <div className="flex justify-between items-center flex-wrap gap-2.5">
-            <h2 className="text-xl font-bold">Analyst Dashboard</h2>
-        </div>
 
         {/* Coach Mode Toggle */}
         {setShowCoachMode && (

@@ -10,7 +10,7 @@ test.describe('Mobile Layout', () => {
 
         await game.goto();
         await game.selectTwoPlayers();
-        await expect(game.gamePageMobile).toBeVisible({ timeout: 10000 });
+        await expect(game.gameLayout).toBeVisible({ timeout: 10000 });
 
         const debugInfo = await game.getBoardSvgInfo();
         expect(debugInfo).not.toBeNull();

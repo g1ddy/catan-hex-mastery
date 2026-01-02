@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 1. Navigate to the game (Setup Phase)
-  await page.goto('http://localhost:4173/catan-hex-mastery/#/');
-  await page.getByText('2 Players').click();
+  await page.goto('/');
+  await page.getByRole('button', { name: '2 Players' }).click();
 
   // Wait for game to load
-  await expect(page.getByText('5').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.getByTestId('game-layout')).toBeVisible({ timeout: 10000 });
 
   // 2. Setup Phase: Click "Begin Placement" to enter placing mode
   await page.getByRole('button', { name: 'Begin Placement' }).click();
@@ -14,7 +14,7 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 3. Verify Default State (Coach Mode OFF / Minimal View)
   // On Mobile, the Analyst Panel (dashboard) is hidden in a bottom sheet.
   // We need to open it to access the toggle.
-  const openStatsBtn = page.getByLabel('Open Stats');
+  const openStatsBtn = page.getByLabel('Toggle Analyst Dashboard');
 
   // Locate the input for verification, but use the label for clicking
   const coachToggleInput = page.locator('input[type="checkbox"]').first();

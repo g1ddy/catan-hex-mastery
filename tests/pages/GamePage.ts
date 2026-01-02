@@ -3,8 +3,7 @@ import { type Page, type Locator } from '@playwright/test';
 export class GamePage {
   readonly page: Page;
   readonly setupButton: Locator;
-  readonly gameLayoutDesktop: Locator;
-  readonly gamePageMobile: Locator;
+  readonly gameLayout: Locator;
   readonly rollDiceButton: Locator;
   readonly ghostVertex: Locator;
   readonly ghostEdge: Locator;
@@ -15,8 +14,7 @@ export class GamePage {
     this.setupButton = page.getByRole('button', { name: '2 Players' });
 
     // Layout verification locators
-    this.gameLayoutDesktop = page.locator('.game-layout-desktop');
-    this.gamePageMobile = page.locator('.game-page'); // From mobile_layout_test.py
+    this.gameLayout = page.getByTestId('game-layout');
 
     // Game controls
     this.rollDiceButton = page.getByRole('button', { name: 'Roll Dice' });
@@ -33,11 +31,8 @@ export class GamePage {
 
   async selectTwoPlayers() {
     await this.setupButton.click();
-    // Wait for the game layout to load. We check for the one appropriate for the current view.
-    // However, since both might exist in the DOM (just hidden/visible), we should wait for the one we expect to be visible.
-    // The safest bet is to wait for one of them to be *visible* first.
-    // To avoid strict mode violation (finding both), we can just wait for the first one that appears.
-    await this.gameLayoutDesktop.or(this.gamePageMobile).first().waitFor({ state: 'visible', timeout: 30000 });
+    // Wait for the game layout to load.
+    await this.gameLayout.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async placeSettlement() {

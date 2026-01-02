@@ -8,8 +8,8 @@
 // The highest z-index, reserved for tooltips to ensure they appear above all other content.
 export const Z_INDEX_TOOLTIP = 1000;
 
-// Z-index for the bottom sheet UI on mobile devices.
-export const Z_INDEX_BOTTOM_SHEET = 200;
+// Z-index for overlay panels (like mobile drawers) to ensure they appear above the board.
+export const Z_INDEX_OVERLAY_PANEL = 200;
 
 // Z-index for floating UI elements like buttons and panels that sit above the main content.
 export const Z_INDEX_FLOATING_UI = 100;

@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Player Panel Tests', () => {
-  test('Desktop: Player Panel is visible and tooltips work', async ({ page }) => {
+  test('Desktop: Player Panel is visible and tooltips work', async ({ page, isMobile }) => {
+    // Skip this test on mobile devices to prevent emulation conflicts
+    test.skip(isMobile, 'Skip desktop test on mobile devices');
+
     // Explicitly set Desktop viewport to ensure responsive classes (md:) trigger correctly
     // regardless of the browser project configuration (e.g. Mobile Safari worker).
     await page.setViewportSize({ width: 1280, height: 800 });
@@ -47,10 +50,13 @@ test.describe('Player Panel Tests', () => {
     await expect(tooltip).toHaveText('Wood');
 
     // Check z-index to be sure
-    await expect(tooltip).toHaveClass(/z-\[1000\]/);
+    await expect(tooltip).toHaveCSS('z-index', '1000');
   });
 
-  test('Mobile: Docked Player Panel works', async ({ page }) => {
+  test('Mobile: Docked Player Panel works', async ({ page, isMobile }) => {
+    // Ideally we should skip if !isMobile, but we allow checking mobile layout on Desktop via viewport resizing
+    // So we don't skip here.
+
     // Set viewport to mobile
     await page.setViewportSize({ width: 375, height: 667 });
 
@@ -92,6 +98,6 @@ test.describe('Player Panel Tests', () => {
     await expect(tooltip).toHaveText('Wood');
 
     // Check z-index on mobile as well
-    await expect(tooltip).toHaveClass(/z-\[1000\]/);
+    await expect(tooltip).toHaveCSS('z-index', '1000');
   });
 });
