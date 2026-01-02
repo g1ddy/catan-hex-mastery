@@ -74,7 +74,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
             if (activeStage && setupInstructions[activeStage]) {
                 message = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
             } else {
-                message = "Wait for your turn...";
+                message = "Waiting...";
             }
         } else if (isGameplay) {
             if (isRollingStage) {
@@ -88,7 +88,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
 
                 message = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
             } else {
-                message = "Wait for your turn...";
+                message = "Waiting...";
             }
         }
     }
