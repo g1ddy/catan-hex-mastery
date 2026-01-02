@@ -22,6 +22,25 @@ export const CatanGame: Game<GameState> = {
   minPlayers: 2,
   maxPlayers: 4,
 
+  endIf: ({ G, ctx }) => {
+    const WINNING_SCORE = 10;
+    const MAX_TURNS = 100;
+
+    // 1. CHECK FOR WINNER (WINNING_SCORE Victory Points)
+    const winner = Object.values(G.players).find(
+      player => player.victoryPoints >= WINNING_SCORE
+    );
+
+    if (winner) {
+      return { winner: winner.id };
+    }
+
+    // 2. CHECK FOR DRAW (MAX_TURNS Turns Limit)
+    if (ctx.turn > MAX_TURNS) {
+      return { draw: true };
+    }
+  },
+
   setup: ({ ctx }, _setupData?: unknown): GameState => {
     if (!ctx.numPlayers) {
       throw new Error("Number of players must be provided");
@@ -65,7 +84,6 @@ export const CatanGame: Game<GameState> = {
       players,
       setupPhase: {
         activeRound: 1,
-        activeSettlement: null,
       },
       setupOrder: getSnakeDraftOrder(numPlayers),
       lastRoll: [0, 0],
@@ -81,6 +99,14 @@ export const CatanGame: Game<GameState> = {
       turn: {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
+        stages: {
+            [STAGES.PLACE_SETTLEMENT]: {
+              moves: { placeSettlement }
+            },
+            [STAGES.PLACE_ROAD]: {
+              moves: { placeRoad }
+            }
+        },
       },
       moves: {
         placeSettlement,
@@ -104,8 +130,7 @@ export const CatanGame: Game<GameState> = {
         },
         stages: {
            [STAGES.ROLLING]: {
-              moves: { rollDice },
-              next: STAGES.ACTING
+              moves: { rollDice }
            },
            [STAGES.ACTING]: {
               moves: {

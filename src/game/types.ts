@@ -50,7 +50,6 @@ export interface Player {
 
 export interface SetupPhaseState {
   activeRound: 1 | 2;
-  activeSettlement: string | null;
 }
 
 export interface BoardState {

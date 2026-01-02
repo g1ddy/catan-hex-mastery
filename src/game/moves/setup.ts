@@ -1,5 +1,6 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
+import { STAGES } from '../constants';
 import { getVerticesForHex, getEdgeId } from '../hexUtils';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
@@ -21,7 +22,6 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
-  G.setupPhase.activeSettlement = vertexId;
 
   // Resource Grant (Round 2 Only)
   // Check if this is the second settlement for this player
@@ -55,8 +55,8 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   }
 
   // State Transition
-  if (events && events.setStage) {
-      events.setStage('placeRoad');
+  if (events && events.setActivePlayers) {
+      events.setActivePlayers({ currentPlayer: STAGES.PLACE_ROAD });
   }
 };
 
@@ -67,12 +67,14 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   }
 
   // 2. Validation: Connection
-  // Must connect to G.setupPhase.activeSettlement
-  if (!G.setupPhase.activeSettlement) {
+  // Must connect to the player's last placed settlement (immediate road placement rule)
+  const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
+
+  if (!lastSettlementId) {
       throw new Error("No active settlement found to connect to");
   }
 
-  const connectedEdges = getEdgesForVertex(G.setupPhase.activeSettlement);
+  const connectedEdges = getEdgesForVertex(lastSettlementId);
   if (!connectedEdges.includes(edgeId)) {
       throw new Error("Road must connect to your just-placed settlement");
   }
@@ -80,7 +82,6 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   // Execution
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
   G.players[ctx.currentPlayer].roads.push(edgeId);
-  G.setupPhase.activeSettlement = null; // Reset
 
   // State Transition
   if (events && events.endTurn) {

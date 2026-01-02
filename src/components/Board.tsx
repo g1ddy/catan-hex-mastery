@@ -491,7 +491,10 @@ const HexOverlays = ({
                      if (currentStage === STAGES.PLACE_ROAD && !isOccupied) {
                          // Only activate ghost if uiMode is placing
                         if (uiMode === 'placing') {
-                            const isConnected = G.setupPhase.activeSettlement && getEdgesForVertex(G.setupPhase.activeSettlement).includes(eId);
+                            // Valid connection logic: must connect to the player's last placed settlement
+                            const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
+                            const isConnected = lastSettlementId && getEdgesForVertex(lastSettlementId).includes(eId);
+
                             if (isConnected) {
                                 isClickable = true;
                                 isGhost = true;
