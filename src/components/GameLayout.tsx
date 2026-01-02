@@ -20,7 +20,7 @@ interface GameLayoutProps {
   dashboard: React.ReactNode;
   playerPanel: React.ReactNode;
   gameControls: React.ReactNode;
-
+  gameStatus?: React.ReactNode;
 }
 
 const renderCostTooltip = ({ content }: { content: string | null }) => {
@@ -52,7 +52,7 @@ const renderCostTooltip = ({ content }: { content: string | null }) => {
   }
 };
 
-export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls }) => {
+export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls, gameStatus }) => {
   const isMobile = useIsMobile();
   const [isAnalystOpen, setIsAnalystOpen] = useState(!isMobile); // Default open on desktop
 
@@ -97,6 +97,16 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
 
       {/* 3. Main Content Area */}
       <main className="flex-grow flex flex-col h-full relative overflow-hidden">
+
+          {/* Top Section: Game Status Banner */}
+          {gameStatus && (
+              <div
+                  className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none"
+                  style={{ zIndex: Z_INDEX_FLOATING_UI + 10 }} // Ensure it's above everything
+              >
+                  {gameStatus}
+              </div>
+          )}
 
           {/* Middle Section: Board + Player Panel */}
           <div className="flex-grow flex flex-col md:flex-row relative overflow-hidden">

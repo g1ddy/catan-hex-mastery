@@ -81,18 +81,15 @@ describe('GameControls Accessibility', () => {
         setUiMode: jest.fn(),
     };
 
-    test('Setup InstructionDisplay has accessibility attributes', () => {
+    test('Setup Placing Mode shows Cancel button', () => {
         const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: { '0': STAGES.PLACE_SETTLEMENT } };
         const setupProps = { ...props, ctx: setupCtx, uiMode: 'placing' as UiMode };
 
         render(<GameControls {...setupProps} />);
 
-        // Find the instruction text container
-        const statusContainer = screen.getByRole('status');
-
-        // Check for attributes and content on the container
-        expect(statusContainer).toHaveAttribute('aria-live', 'polite');
-        expect(statusContainer).toHaveTextContent('Place a Settlement');
+        const cancelButton = screen.getByText('Cancel Placement');
+        expect(cancelButton).toBeInTheDocument();
+        expect(cancelButton.closest('button')).toBeEnabled();
     });
 
     test('Build buttons have aria-pressed attribute', () => {
