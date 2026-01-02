@@ -7,7 +7,7 @@ describe('Game Simulation with DebugBot', () => {
     const client = Client({
       game: CatanGame,
       numPlayers: 2,
-    }) as any;
+    });
 
     client.start();
 
