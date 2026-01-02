@@ -33,14 +33,6 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
     </button>
 );
 
-const InstructionDisplay: React.FC<{ text: string, className?: string }> = ({ text, className }) => (
-    <div className={className} role="status" aria-live="polite">
-        <span className={className?.includes('text-lg') ? "text-lg font-semibold text-amber-400" : "text-sm font-semibold text-amber-400"}>
-            {text}
-        </span>
-    </div>
-);
-
 export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
@@ -59,15 +51,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
     // Setup Phase
     if (isSetup) {
-        let instruction = "Wait for your turn...";
         let canInteract = false;
 
         if (activeStage === STAGES.PLACE_SETTLEMENT) {
-            instruction = "Place a Settlement";
             canInteract = true;
         }
         if (activeStage === STAGES.PLACE_ROAD) {
-            instruction = "Place a Road";
             canInteract = true;
         }
 
@@ -88,12 +77,22 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              );
         }
 
+        // If in placing mode, we keep the button but make it look active/disabled or show "Cancel"
+        // For now, let's just keep the container empty or minimal to avoid layout shift,
+        // or show a "Cancel Placement" button if we wanted to allow cancelling (though logic isn't fully there).
+        // Since the instruction is now at the top, we don't need to show text here.
+        // But we shouldn't just return null if we want to maintain the bottom bar height.
+        // Actually, returning a placeholder or "Cancel" is better.
+        // Let's implement a "Cancel" to go back to viewing mode, which is a nice UX improvement too.
+
         return (
              <div className={`flex-grow flex pointer-events-auto ${className}`}>
-                <InstructionDisplay
-                    text={instruction}
-                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg"
-                />
+                 <button
+                    onClick={() => setUiMode('viewing')}
+                    className="w-full h-full flex items-center justify-center text-slate-300 px-4 py-3 bg-slate-800/90 hover:bg-slate-700 backdrop-blur-md border border-slate-700 rounded-xl shadow-lg transition-all active:scale-95"
+                 >
+                     <span className="text-base font-semibold">Cancel Placement</span>
+                 </button>
              </div>
         );
     }

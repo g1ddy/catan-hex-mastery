@@ -12,11 +12,10 @@ import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
 import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
 import { CoachRecommendation } from '../game/analysis/coach';
-import toast from 'react-hot-toast';
 import { safeMove } from '../utils/moveUtils';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import { ProductionToast } from './ProductionToast';
+import { GameStatusBanner } from './GameStatusBanner';
 import { Home, Castle } from 'lucide-react';
 import { PHASES, STAGES } from '../game/constants';
 
@@ -65,12 +64,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       }
 
       // 2. Toast Rewards
-      const rewards = G.lastRollRewards;
-      if (rewards && Object.keys(rewards).length > 0) {
-          toast.custom((t) => (
-              <ProductionToast G={G} sum={sum} visible={t.visible} />
-          ), { id: 'production-roll-toast', duration: 4000, position: 'top-center' });
-      }
+      // Moved to GameStatusBanner
 
   }, [G.lastRoll]);
 
@@ -209,6 +203,15 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <PlayerPanel
           players={G.players}
           currentPlayerId={ctx.currentPlayer}
+        />
+      }
+      gameStatus={
+        <GameStatusBanner
+            G={G}
+            ctx={ctx}
+            playerID={playerID}
+            uiMode={uiMode}
+            buildMode={buildMode}
         />
       }
       gameControls={
