@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { GameState, Resources } from '../game/types';
+import { GameState } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2 } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
+import { getAffordableBuilds } from '../game/mechanics/costs';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -98,17 +99,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         };
 
         // Build Button Logic
-        const canAfford = (cost: Partial<Resources>): boolean => {
-            return (Object.keys(cost) as Array<keyof Resources>).every(
-                resource => resources[resource] >= (cost[resource] || 0)
-            );
-        };
-
-        const affordMap = {
-            road: canAfford(BUILD_COSTS.road),
-            settlement: canAfford(BUILD_COSTS.settlement),
-            city: canAfford(BUILD_COSTS.city)
-        };
+        const affordMap = getAffordableBuilds(resources);
 
         const moveNameMap: Record<string, string> = {
             road: 'buildRoad',

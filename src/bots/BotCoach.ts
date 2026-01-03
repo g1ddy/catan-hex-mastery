@@ -1,6 +1,7 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getEdgesForVertex, getVerticesForEdge, getVertexNeighbors } from '../game/hexUtils';
+import { getAffordableBuilds } from '../game/mechanics/costs';
 
 export interface BotMove {
     move: string;
@@ -44,9 +45,10 @@ export class BotCoach {
     public recommendNextMove(playerID: string): BotMove | null {
          const player = this.G.players[playerID];
          const resources = player.resources;
+         const affordable = getAffordableBuilds(resources);
 
          // Priority 1: City (Ore: 3, Wheat: 2)
-         if (resources.ore >= 3 && resources.wheat >= 2) {
+         if (affordable.city) {
              // Find a settlement to upgrade
              // Filter for actual settlements (not cities)
              const upgradable = player.settlements.filter(vId => {
@@ -62,7 +64,7 @@ export class BotCoach {
          }
 
          // Priority 2: Settlement (Brick: 1, Wood: 1, Sheep: 1, Wheat: 1)
-         if (resources.brick >= 1 && resources.wood >= 1 && resources.sheep >= 1 && resources.wheat >= 1) {
+         if (affordable.settlement) {
              // Find valid spot connected to roads
              // This is complex, requires graph traversal from roads.
              // For now, scan all roads, check adjacent vertices.
@@ -81,7 +83,7 @@ export class BotCoach {
          }
 
          // Priority 3: Road (Brick: 1, Wood: 1)
-         if (resources.brick >= 1 && resources.wood >= 1) {
+         if (affordable.road) {
              // Find valid edge connected to roads or settlements
              // Scan settlements
              for (const sId of player.settlements) {
