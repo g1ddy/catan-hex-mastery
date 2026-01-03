@@ -18,6 +18,6 @@ export const STAGES = {
 export const STAGE_MOVES = {
     [STAGES.ROLLING]: ['rollDice'],
     [STAGES.ACTING]: ['buildRoad', 'buildSettlement', 'buildCity', 'endTurn'],
-    [STAGES.PLACE_SETTLEMENT]: ['placeSettlement'],
+    [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard'],
     [STAGES.PLACE_ROAD]: ['placeRoad'],
 } as const;

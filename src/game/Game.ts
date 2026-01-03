@@ -118,17 +118,12 @@ export const CatanGame: Game<GameState> = {
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
         stages: {
             [STAGES.PLACE_SETTLEMENT]: {
-              moves: { placeSettlement }
+              moves: { placeSettlement, regenerateBoard }
             },
             [STAGES.PLACE_ROAD]: {
               moves: { placeRoad }
             }
         },
-      },
-      moves: {
-        placeSettlement,
-        placeRoad,
-        regenerateBoard
       },
       endIf: ({ G }) => {
         // End setup phase if all players have placed 2 settlements and 2 roads
