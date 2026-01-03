@@ -14,7 +14,7 @@ import { Home, Castle } from 'lucide-react';
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
 
-interface CoachData {
+export interface CoachData {
     recommendations: Record<string, CoachRecommendation>;
     minScore: number;
     maxScore: number;
