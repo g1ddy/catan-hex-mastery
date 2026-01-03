@@ -18,7 +18,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner } from './GameStatusBanner';
 import { Home, Castle } from 'lucide-react';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 
 const SETTLEMENT_ICON_SIZE = 5;
 const CITY_ICON_SIZE = 6;
@@ -243,7 +243,12 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           stats={G.boardStats}
           G={G}
           onRegenerate={() => moves.regenerateBoard()}
-          showRegenerate={ctx.phase === 'setup'}
+          canRegenerate={(() => {
+            const stage = ctx.activePlayers?.[ctx.currentPlayer];
+            if (!stage) return false;
+            const allowedMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
+            return (allowedMoves as readonly string[])?.includes('regenerateBoard') ?? false;
+          })()}
           showCoachMode={showCoachMode}
           setShowCoachMode={setShowCoachMode}
         />
