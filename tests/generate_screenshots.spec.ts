@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Define output directory
+// Define output directory (ESM compatible)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const OUTPUT_DIR = path.join(__dirname, '../docs/images');
 
 test.describe('Documentation Screenshots', () => {
@@ -36,10 +39,9 @@ test.describe('Documentation Screenshots', () => {
     }
 
     // Wait for Heatmap to be visible (Gold rings)
-    // We look for the "ring" class or gold stroke color used in Coach Mode
     await expect(page.locator('[stroke="#FFD700"]').first()).toBeVisible();
 
-    await page.waitForTimeout(500); // Wait for fade-ins
+    await page.waitForTimeout(500);
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-heatmap.png') });
@@ -65,9 +67,9 @@ test.describe('Documentation Screenshots', () => {
     // Wait for tooltip to appear
     const tooltip = page.locator('.react-tooltip-core');
     await expect(tooltip).toBeVisible();
-    await page.waitForTimeout(500); // Wait for tooltip animation
+    await page.waitForTimeout(500);
 
-    // Take screenshot (Capture the central area where the tooltip likely is)
+    // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
   });
 
@@ -80,7 +82,7 @@ test.describe('Documentation Screenshots', () => {
     // Wait for layout
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
 
-    // Open the Analyst/Stats Drawer (Mobile toggle is usually visible)
+    // Open the Analyst/Stats Drawer
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
 
     // Wait for drawer to slide up
@@ -97,12 +99,37 @@ test.describe('Documentation Screenshots', () => {
     // Open Analyst Panel
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
 
-    // Wait for panel contents (e.g., Fairness Meter text)
+    // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
     await page.waitForTimeout(500);
 
-    // Take screenshot of the whole page (showing the sidebar on the right/left)
+    // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'analyst-panel.png') });
+  });
+
+  test('generate setup-draft.png', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+
+    // Wait for load
+    await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
+
+    // Click "Begin Placement"
+    const beginButton = page.getByRole('button', { name: 'Begin Placement' });
+    if (await beginButton.isVisible()) {
+        await beginButton.click();
+    }
+
+    // Wait for the "Cancel Placement" button
+    await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
+
+    // Also wait for ghost vertices
+    await expect(page.locator('[data-testid="ghost-vertex"]').first()).toBeVisible();
+
+    await page.waitForTimeout(500);
+
+    await page.screenshot({ path: path.join(OUTPUT_DIR, 'setup-draft.png') });
   });
 
 });
