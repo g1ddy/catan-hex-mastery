@@ -42,12 +42,13 @@ export function SetupPage() {
               >
                   <button
                       onClick={() => handlePlayerSelection(num)}
+                      aria-label={`Start game with ${num} players`}
                       className={`
                         w-full h-full py-4 px-6
                         bg-slate-800/80 backdrop-blur-sm border border-slate-600
                         hover:bg-slate-700 hover:border-slate-500
                         text-white text-lg font-bold rounded-xl shadow-lg
-                        transition-all transform hover:-translate-y-1 active:scale-95
+                        transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
                         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
                       `}
                       disabled={isDisabled}
