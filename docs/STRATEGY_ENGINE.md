@@ -76,7 +76,8 @@ The resulting scores are normalized and projected onto the board as a "Heatmap O
 *   **Gold Rings**: Indicate the Top 3 statistically best moves.
 *   **Color Gradient**: Green (Good) to Red (Poor).
 
-![Coach Mode Visualization](placeholder-for-coach-mode.png)
+![Coach Mode Heatmap](./images/coach-heatmap.png)
+![Coach Logic Tooltip](./images/coach-tooltip.png)
 
 ---
 

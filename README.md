@@ -4,7 +4,7 @@
 
 **Hex-Mastery** is a modern, web-based implementation of the classic trading game, built specifically to help you master the math, probability, and strategy behind the board.
 
-![Coach Mode Overlay](placeholder-coach-heatmap.png)
+![Desktop Game View](docs/images/hero-board-desktop.png)
 
 ## 🏆 Why Hex-Mastery?
 
@@ -20,16 +20,22 @@ Don't just guess—know. The Coach analyzes every valid settlement spot on the b
 *   **Resource Scarcity** (Is Ore rare this game?)
 *   **Synergy** (Do you have the Brick to match your Wood?)
 
+![Coach Mode Heatmap](docs/images/coach-heatmap.png)
+
 ### 📊 The Analyst Dashboard
 A real-time sidebar that acts as your HUD.
 *   **Fairness Meter**: See if the random board generation favored one player.
 *   **Pip Counter**: Track your total production potential vs. actual cards received.
 *   **Resource Heatmaps**: Instantly spot the "Ore Droughts" or "Wheat Gluts."
 
+![Analyst Panel](docs/images/analyst-panel.png)
+
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
 *   Play against our **Smart Bots** to test your initial placement strategies.
 *   Experiment with being Player 1 (Best Spot) vs. Player 4 (The Wheel).
+
+![Setup Phase / Snake Draft](docs/images/setup-draft.png)
 
 ## 📚 Documentation
 
