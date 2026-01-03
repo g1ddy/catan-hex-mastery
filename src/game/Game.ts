@@ -10,6 +10,7 @@ import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
+import { DebugBot } from '../bots/DebugBot';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -41,6 +42,12 @@ export const CatanGame: Game<GameState> = {
   minPlayers: 2,
   maxPlayers: 4,
   plugins: [CoachPlugin],
+  ai: {
+    enumerate: (() => {
+      const bot = new DebugBot({});
+      return (G, ctx) => bot.enumerate(G, ctx, ctx.currentPlayer);
+    })(),
+  },
 
   endIf: ({ G, ctx }) => {
     const WINNING_SCORE = 10;
