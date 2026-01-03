@@ -232,11 +232,12 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           stats={G.boardStats}
           G={G}
           onRegenerate={() => moves.regenerateBoard()}
-          showRegenerate={ctx.phase === 'setup'}
-          canRegenerate={
-            !!(ctx.activePlayers &&
-            (STAGE_MOVES[ctx.activePlayers[ctx.currentPlayer] as keyof typeof STAGE_MOVES] as readonly string[])?.includes('regenerateBoard'))
-          }
+          canRegenerate={(() => {
+            const stage = ctx.activePlayers?.[ctx.currentPlayer];
+            if (!stage) return false;
+            const allowedMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
+            return (allowedMoves as readonly string[])?.includes('regenerateBoard') ?? false;
+          })()}
           showCoachMode={showCoachMode}
           setShowCoachMode={setShowCoachMode}
         />

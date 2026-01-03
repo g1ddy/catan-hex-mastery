@@ -6,14 +6,13 @@ import { ResourceIconRow } from './ResourceIconRow';
 interface AnalystPanelProps {
   stats: BoardStats;
   onRegenerate?: () => void;
-  showRegenerate?: boolean;
-  canRegenerate?: boolean;
+  canRegenerate: boolean;
   G?: GameState;
   showCoachMode?: boolean;
   setShowCoachMode?: (show: boolean) => void;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRegenerate, canRegenerate = true, G, showCoachMode, setShowCoachMode }) => {
+const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canRegenerate = true, G, showCoachMode, setShowCoachMode }) => {
   const getFairnessColorClass = (score: number) => {
     if (score >= 90) return 'text-green-400';
     if (score >= 70) return 'text-orange-400';
@@ -43,7 +42,7 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, showRe
           </div>
         )}
 
-        {showRegenerate && onRegenerate && (
+        {onRegenerate && (
           <button
             disabled={!canRegenerate}
             className="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"

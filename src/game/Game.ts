@@ -25,7 +25,8 @@ const MOVE_MAP = {
     buildCity,
     endTurn,
     placeSettlement,
-    placeRoad
+    placeRoad,
+    regenerateBoard
 };
 
 // Helper to pick moves from STAGE_MOVES
@@ -118,10 +119,10 @@ export const CatanGame: Game<GameState> = {
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
         stages: {
             [STAGES.PLACE_SETTLEMENT]: {
-              moves: { placeSettlement, regenerateBoard }
+              moves: getMovesForStage(STAGES.PLACE_SETTLEMENT)
             },
             [STAGES.PLACE_ROAD]: {
-              moves: { placeRoad }
+              moves: getMovesForStage(STAGES.PLACE_ROAD)
             }
         },
       },
