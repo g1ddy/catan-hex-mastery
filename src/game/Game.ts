@@ -42,10 +42,10 @@ export const CatanGame: Game<GameState> = {
   maxPlayers: 4,
   plugins: [CoachPlugin],
   ai: {
-    enumerate: (G, ctx) => {
+    enumerate: (() => {
       const bot = new DebugBot({});
-      return bot.enumerate(G, ctx, ctx.currentPlayer);
-    },
+      return (G, ctx) => bot.enumerate(G, ctx, ctx.currentPlayer);
+    })(),
   },
 
   endIf: ({ G, ctx }) => {
