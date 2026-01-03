@@ -10,8 +10,8 @@ import AnalystPanel from './AnalystPanel';
 import { GameLayout } from './GameLayout';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
-import { getAllSettlementScores, getHeatmapColor } from '../game/analysis/coach';
-import { CoachRecommendation } from '../game/analysis/coach';
+import { getHeatmapColor } from '../game/analysis/coach';
+import { CoachRecommendation, Coach } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -84,7 +84,18 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             return EMPTY_COACH_DATA;
         }
 
-        const allScores = getAllSettlementScores(G, ctx.currentPlayer);
+        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
+        // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
+        const coach = (ctx as any).coach as Coach;
+
+        let allScores: CoachRecommendation[] = [];
+        if (coach && typeof coach.getAllSettlementScores === 'function') {
+            allScores = coach.getAllSettlementScores(ctx.currentPlayer);
+        } else {
+             // Fallback if plugin not loaded or visible
+             allScores = new Coach(G).getAllSettlementScores(ctx.currentPlayer);
+        }
+
         if (allScores.length === 0) {
             return EMPTY_COACH_DATA;
         }
