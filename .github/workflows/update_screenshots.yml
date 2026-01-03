@@ -37,7 +37,7 @@ jobs:
         # We use the 'preview' server for stable screenshot generation in CI
         run: |
           npm run preview > /dev/null 2>&1 &
-          npx playwright test tests/generate_screenshots.spec.ts -c config/playwright.config.ts
+          npx playwright test docs/scripts/generate_screenshots.spec.ts -c config/playwright.config.ts
         env:
           CI: true
 

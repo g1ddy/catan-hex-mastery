@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 // Define output directory (ESM compatible)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const OUTPUT_DIR = path.join(__dirname, '../docs/images');
+// From docs/scripts/ to docs/images/ is ../images
+const OUTPUT_DIR = path.join(__dirname, '../images');
 
 test.describe('Documentation Screenshots', () => {
 
@@ -13,8 +14,8 @@ test.describe('Documentation Screenshots', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
 
-    // Select 4 players to start the game
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    // Select 2 players (Enabled option)
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Wait for board to load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
@@ -27,7 +28,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate coach-heatmap.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Open Analyst Panel
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
@@ -50,7 +51,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate coach-tooltip.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Open Analyst Panel & Enable Coach Mode
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
@@ -77,7 +78,7 @@ test.describe('Documentation Screenshots', () => {
     // Mobile Viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Wait for layout
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
@@ -94,7 +95,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate analyst-panel.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Open Analyst Panel
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
@@ -110,7 +111,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate setup-draft.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 4 players' }).click();
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Wait for load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
