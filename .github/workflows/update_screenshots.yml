@@ -38,14 +38,11 @@ jobs:
         run: npm run build
 
       - name: Generate Screenshots
-        # We use the 'preview' server for stable screenshot generation in CI
-        # Run on a custom port (4174) to avoid conflicts with parallel workflows
+        # We use the dedicated config which handles the server (port 4174) and test discovery
         run: |
-          npm run preview -- --port 4174 > /dev/null 2>&1 &
-          npx playwright test docs/scripts/generate_screenshots.spec.ts -c config/playwright.config.ts
+          npx playwright test -c config/playwright.screenshots.config.ts
         env:
           CI: true
-          BASE_URL: http://localhost:4174
 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
