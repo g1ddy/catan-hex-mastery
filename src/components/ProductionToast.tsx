@@ -20,7 +20,11 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
     const rewards = G.lastRollRewards;
 
     return (
-        <div className={`${visible ? 'animate-enter' : 'animate-leave'} w-fit max-w-[90vw] bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-4 py-2`}>
+        <div
+            role="status"
+            aria-live="polite"
+            className={`${visible ? 'animate-enter' : 'animate-leave'} w-fit max-w-[90vw] bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-4 py-2`}
+        >
             <div className="flex items-center gap-4 text-slate-100">
                 {/* Roll Number */}
                 <div className="font-bold text-lg whitespace-nowrap text-amber-400">

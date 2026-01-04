@@ -95,7 +95,12 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
 
     // Unified Return
     return (
-        <div data-testid="game-status-banner" className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center">
+        <div
+            data-testid="game-status-banner"
+            role="status"
+            aria-live="polite"
+            className="animate-enter w-fit max-w-[60vw] md:max-w-fit bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-6 py-3 flex items-center justify-center"
+        >
             <span className={`text-lg font-bold truncate ${colorClass}`}>
                 {message}
             </span>

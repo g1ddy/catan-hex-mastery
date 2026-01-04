@@ -5,9 +5,11 @@ import { Coach } from '../game/analysis/coach';
 import { BotCoach, BotMove } from './BotCoach';
 
 export class DebugBot extends RandomBot {
-    private _enumerate: Function | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private _enumerate: ((...args: any[]) => any) | undefined;
 
-    constructor({ enumerate, ...args }: { enumerate: Function; [key: string]: any }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    constructor({ enumerate, ...args }: { enumerate: (...args: any[]) => any; [key: string]: any }) {
         // Pass enumerate to super to satisfy TS and base class requirements
         super({ enumerate: enumerate as any, ...args });
         this._enumerate = enumerate;
