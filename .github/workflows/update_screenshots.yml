@@ -7,6 +7,10 @@ on:
       - '!docs/images/**'  # Prevent infinite loop by excluding the output directory
     branches:
       - main
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '!docs/images/**'
 
 jobs:
   generate-screenshots:

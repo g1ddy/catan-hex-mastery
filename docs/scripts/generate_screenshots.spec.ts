@@ -19,7 +19,9 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for board to load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
-    await page.waitForTimeout(1000); // Allow animations/layout to settle
+
+    // Wait for the grid to be fully rendered before snapping
+    await expect(page.locator('svg.grid')).toBeVisible();
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'hero-board-desktop.png') });
@@ -35,14 +37,14 @@ test.describe('Documentation Screenshots', () => {
 
     // Enable Coach Mode
     const coachToggle = page.getByRole('checkbox', { name: /coach mode/i });
-    if (!(await coachToggle.isChecked())) {
-        await coachToggle.check();
-    }
+    await coachToggle.check();
 
-    // Wait for Heatmap to be visible (Gold rings)
+    // Wait for Heatmap to be visible (Gold rings indicate top moves)
     await expect(page.locator('[stroke="#FFD700"]').first()).toBeVisible();
 
-    await page.waitForTimeout(500);
+    // Wait for opacity transition on non-optimal hexes (confirming heatmap logic applied)
+    // We expect some elements to have opacity classes if Coach Mode is active
+    await expect(page.locator('.opacity-40').first()).toBeVisible();
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-heatmap.png') });
@@ -68,7 +70,6 @@ test.describe('Documentation Screenshots', () => {
     // Wait for tooltip to appear
     const tooltip = page.locator('.react-tooltip-core');
     await expect(tooltip).toBeVisible();
-    await page.waitForTimeout(500);
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
@@ -86,8 +87,8 @@ test.describe('Documentation Screenshots', () => {
     // Open the Analyst/Stats Drawer
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
 
-    // Wait for drawer to slide up
-    await page.waitForTimeout(500);
+    // Wait for drawer to slide up (check for visibility of content inside)
+    await expect(page.getByText('Fairness')).toBeVisible();
 
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'mobile-production.png') });
   });
@@ -102,7 +103,6 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
-    await page.waitForTimeout(500);
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'analyst-panel.png') });
@@ -116,19 +116,14 @@ test.describe('Documentation Screenshots', () => {
     // Wait for load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
 
-    // Click "Begin Placement"
-    const beginButton = page.getByRole('button', { name: 'Begin Placement' });
-    if (await beginButton.isVisible()) {
-        await beginButton.click();
-    }
+    // Click "Begin Placement" directly (fail if not found)
+    await page.getByRole('button', { name: 'Begin Placement' }).click();
 
-    // Wait for the "Cancel Placement" button
+    // Wait for the "Cancel Placement" button to confirm state change
     await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
 
     // Also wait for ghost vertices
     await expect(page.locator('[data-testid="ghost-vertex"]').first()).toBeVisible();
-
-    await page.waitForTimeout(500);
 
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'setup-draft.png') });
   });
