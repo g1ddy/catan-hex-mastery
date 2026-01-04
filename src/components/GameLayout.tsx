@@ -70,6 +70,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
         onClick={() => setIsAnalystOpen(!isAnalystOpen)}
         aria-label="Toggle Analyst Dashboard"
+        aria-expanded={isAnalystOpen}
+        aria-controls="analyst-dashboard"
     >
         <BarChart2 size={24} />
     </button>
