@@ -2,6 +2,7 @@ import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 import { BUILD_COSTS } from '../config';
+import { isValidHexId } from '../../utils/validation';
 
 // Helper to find neighboring vertices (distance rule)
 const getVertexNeighbors = (vertexId: string): string[] => {
@@ -22,6 +23,11 @@ const getVertexNeighbors = (vertexId: string): string[] => {
 };
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
+    // 0. Security Validation
+    if (!isValidHexId(edgeId)) {
+        throw new Error("Invalid edge ID format");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.road;
 
@@ -31,6 +37,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     }
 
     // 2. Validation: Occupancy
+    // eslint-disable-next-line security/detect-object-injection
     if (G.board.edges[edgeId]) {
         throw new Error("This edge is already occupied");
     }
@@ -39,6 +46,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     const endpoints = getVerticesForEdge(edgeId);
 
     const hasConnection = (vId: string): boolean => {
+        // eslint-disable-next-line security/detect-object-injection
         const building = G.board.vertices[vId];
         // Connected to own settlement/city
         if (building && building.owner === ctx.currentPlayer) {
@@ -52,6 +60,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
         const adjEdges = getEdgesForVertex(vId);
         return adjEdges.some(adjEdgeId => {
             if (adjEdgeId === edgeId) return false;
+            // eslint-disable-next-line security/detect-object-injection
             const edge = G.board.edges[adjEdgeId];
             return edge && edge.owner === ctx.currentPlayer;
         });
@@ -60,6 +69,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     if (!endpoints.some(hasConnection)) throw new Error("Road must connect to your existing road or settlement");
 
     // Execution
+    // eslint-disable-next-line security/detect-object-injection
     G.board.edges[edgeId] = { owner: ctx.currentPlayer };
     player.roads.push(edgeId);
     player.resources.wood -= cost.wood;
@@ -67,6 +77,11 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
 };
 
 export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+    // 0. Security Validation
+    if (!isValidHexId(vertexId)) {
+        throw new Error("Invalid vertex ID format");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.settlement;
 
@@ -79,6 +94,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     }
 
     // 2. Validation: Occupancy
+    // eslint-disable-next-line security/detect-object-injection
     if (G.board.vertices[vertexId]) {
         throw new Error("This vertex is already occupied");
     }
@@ -86,6 +102,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     // 3. Validation: Distance Rule
     const neighbors = getVertexNeighbors(vertexId);
     for (const nId of neighbors) {
+        // eslint-disable-next-line security/detect-object-injection
         if (G.board.vertices[nId]) {
             throw new Error("Settlement is too close to another building (Distance Rule)");
         }
@@ -94,6 +111,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     // 4. Validation: Connection to own road
     const adjEdges = getEdgesForVertex(vertexId);
     const hasOwnRoad = adjEdges.some(eId => {
+        // eslint-disable-next-line security/detect-object-injection
         const edge = G.board.edges[eId];
         return edge && edge.owner === ctx.currentPlayer;
     });
@@ -101,6 +119,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     if (!hasOwnRoad) throw new Error("Settlement must connect to your own road");
 
     // Execution
+    // eslint-disable-next-line security/detect-object-injection
     G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
     player.settlements.push(vertexId);
     player.victoryPoints += 1;
@@ -111,6 +130,11 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
 };
 
 export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+    // 0. Security Validation
+    if (!isValidHexId(vertexId)) {
+        throw new Error("Invalid vertex ID format");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.city;
 
@@ -120,6 +144,7 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     }
 
     // 2. Validation: Must be own settlement
+    // eslint-disable-next-line security/detect-object-injection
     const vertex = G.board.vertices[vertexId];
     if (!vertex || vertex.owner !== ctx.currentPlayer || vertex.type !== 'settlement') {
         throw new Error("You can only upgrade your own settlements to cities");

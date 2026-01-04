@@ -2,9 +2,16 @@ import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getVerticesForHex, getEdgeId } from '../hexUtils';
+import { isValidHexId } from '../../utils/validation';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
+  // 0. Security Validation
+  if (!isValidHexId(vertexId)) {
+    throw new Error("Invalid vertex ID format");
+  }
+
   // 1. Validation: Occupancy
+  // eslint-disable-next-line security/detect-object-injection
   if (G.board.vertices[vertexId]) {
     throw new Error("This vertex is already occupied");
   }
@@ -13,12 +20,14 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   // Implementation of Occupancy check:
   const neighbors = getVertexNeighbors(vertexId);
   for (const nId of neighbors) {
+    // eslint-disable-next-line security/detect-object-injection
     if (G.board.vertices[nId]) {
       throw new Error("Settlement is too close to another building");
     }
   }
 
   // Execution
+  // eslint-disable-next-line security/detect-object-injection
   G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
@@ -29,6 +38,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     // Grant resources
     const touchingHexes = getHexesForVertex(vertexId);
     touchingHexes.forEach(hId => {
+      // eslint-disable-next-line security/detect-object-injection
       const hex = G.board.hexes[hId];
       if (hex && hex.terrain !== TerrainType.Desert && hex.terrain !== TerrainType.Sea) {
           const resourceMap: Record<TerrainType, string> = {
@@ -61,7 +71,13 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
+  // 0. Security Validation
+  if (!isValidHexId(edgeId)) {
+    throw new Error("Invalid edge ID format");
+  }
+
   // 1. Validation: Occupancy
+  // eslint-disable-next-line security/detect-object-injection
   if (G.board.edges[edgeId]) {
     throw new Error("This edge is already occupied");
   }
@@ -80,6 +96,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   }
 
   // Execution
+  // eslint-disable-next-line security/detect-object-injection
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
   G.players[ctx.currentPlayer].roads.push(edgeId);
 

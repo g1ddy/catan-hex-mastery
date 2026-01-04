@@ -1,0 +1,21 @@
+
+/**
+ * Validates that a string is a safe hex coordinate ID.
+ * Format expected: "q,r,s" or "q,r,s::q,r,s" or "q,r,s::q,r,s::q,r,s"
+ * Rejects any prototype pollution attempts or other malicious strings.
+ */
+export const isValidHexId = (id: string): boolean => {
+    if (typeof id !== 'string') return false;
+
+    // Reject suspicious keys immediately
+    if (id === '__proto__' || id === 'constructor' || id === 'prototype') return false;
+
+    // Must match pattern: integers separated by commas, groups separated by ::
+    // Example: "1,-1,0" or "1,-1,0::0,1,-1"
+    const coordPattern = /^-?\d+,-?\d+,-?\d+$/;
+
+    const parts = id.split('::');
+    if (parts.length === 0 || parts.length > 3) return false;
+
+    return parts.every(part => coordPattern.test(part));
+};
