@@ -29,7 +29,26 @@ export function SetupPage() {
       </div>
 
       <div className="setup-menu w-full max-w-lg text-center">
-        <p className="text-xl mb-6">Select Number of Players:</p>
+        <p className="text-xl mb-6">Select Game Mode:</p>
+
+        <div className="mb-6 w-full">
+             <button
+                onClick={() => navigate('/game', { state: { numPlayers: 4, mode: 'singleplayer' } })}
+                aria-label="Start 1 Player game vs AI"
+                className={`
+                  w-full py-4 px-6 mb-4
+                  bg-amber-600/80 backdrop-blur-sm border border-amber-500
+                  hover:bg-amber-500 hover:border-amber-400
+                  text-white text-lg font-bold rounded-xl shadow-lg
+                  transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+                `}
+             >
+                1 Player (vs AI)
+             </button>
+        </div>
+
+        <p className="text-lg mb-4 text-slate-300">Or Pass-and-Play:</p>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
           {SUPPORTED_PLAYER_COUNTS.map((num) => {
             const isDisabled = isLocalMode && num > 2;
