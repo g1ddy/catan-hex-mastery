@@ -7,6 +7,8 @@ type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unkno
 
 describe('Unit Test: Resource Costs', () => {
     const mockContext: Ctx = { currentPlayer: '0' } as Ctx;
+    const validEdgeId = "0,0,0::1,-1,0"; // Valid edge ID
+    const validVertexId = "0,0,0::1,-1,0::1,0,-1"; // Valid vertex ID
 
     const baseG: GameState = {
         players: {
@@ -36,21 +38,21 @@ describe('Unit Test: Resource Costs', () => {
 
     describe('buildRoad', () => {
         it('should fail with zero resources', () => {
-            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1');
+            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, validEdgeId);
             expect(call).toThrow("Not enough resources to build a road (requires Wood, Brick)");
         });
 
         it('should fail with partial resources', () => {
             G.players['0'].resources = { wood: 1, brick: 0, wheat: 10, sheep: 10, ore: 10 };
-            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1');
+            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, validEdgeId);
             expect(call).toThrow("Not enough resources to build a road (requires Wood, Brick)");
         });
 
         it('should not deduct resources on an invalid placement', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 0, ore: 0 };
             // Occupy edge to force INVALID_MOVE from Occupancy check (which comes AFTER cost check)
-            G.board.edges['edge1'] = { owner: '1' };
-            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, 'edge1');
+            G.board.edges[validEdgeId] = { owner: '1' };
+            const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, validEdgeId);
             expect(call).toThrow("This edge is already occupied");
 
             // Resources should NOT be deducted
@@ -62,13 +64,13 @@ describe('Unit Test: Resource Costs', () => {
     describe('buildSettlement', () => {
         it('should fail if missing sheep', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 1, sheep: 0, ore: 0 };
-            const call = () => (buildSettlement as MoveFn)({ G, ctx: mockContext }, 'v1');
+            const call = () => (buildSettlement as MoveFn)({ G, ctx: mockContext }, validVertexId);
             expect(call).toThrow("Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)");
         });
 
         it('should fail if missing wheat', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 1, ore: 0 };
-            const call = () => (buildSettlement as MoveFn)({ G, ctx: mockContext }, 'v1');
+            const call = () => (buildSettlement as MoveFn)({ G, ctx: mockContext }, validVertexId);
             expect(call).toThrow("Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)");
         });
     });
@@ -76,13 +78,13 @@ describe('Unit Test: Resource Costs', () => {
     describe('buildCity', () => {
         it('should fail if missing wheat', () => {
             G.players['0'].resources = { wood: 10, brick: 10, wheat: 1, ore: 3, sheep: 0 };
-            const call = () => (buildCity as MoveFn)({ G, ctx: mockContext }, 'v1');
+            const call = () => (buildCity as MoveFn)({ G, ctx: mockContext }, validVertexId);
             expect(call).toThrow("Not enough resources to build a city (requires 3 Ore, 2 Wheat)");
         });
 
         it('should fail if missing ore', () => {
             G.players['0'].resources = { wheat: 2, ore: 2, wood: 0, brick: 0, sheep: 0 };
-            const call = () => (buildCity as MoveFn)({ G, ctx: mockContext }, 'v1');
+            const call = () => (buildCity as MoveFn)({ G, ctx: mockContext }, validVertexId);
             expect(call).toThrow("Not enough resources to build a city (requires 3 Ore, 2 Wheat)");
         });
     });
