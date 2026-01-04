@@ -32,19 +32,29 @@ test.describe('Documentation Screenshots', () => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
-    // Open Analyst Panel
-    await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
+    // Enter Placement Mode (Required for Coach Heatmap to render)
+    await page.getByRole('button', { name: 'Begin Placement' }).click();
+    await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
+
+    // Open Analyst Panel (if closed)
+    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
+    if (await toggleBtn.isVisible()) {
+      await toggleBtn.click();
+    }
 
     // Enable Coach Mode
-    const coachToggle = page.getByRole('checkbox', { name: /coach mode/i });
-    await coachToggle.check();
+    // Use the label for clicking because the visual toggle div intercepts the click on the hidden input
+    const coachToggleInput = page.getByRole('checkbox', { name: /coach mode/i });
+    const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
+    await coachToggleLabel.click();
 
     // Wait for Heatmap to be visible (Gold rings indicate top moves)
     await expect(page.locator('[stroke="#FFD700"]').first()).toBeVisible();
 
     // Wait for opacity transition on non-optimal hexes (confirming heatmap logic applied)
     // We expect some elements to have opacity classes if Coach Mode is active
-    await expect(page.locator('.opacity-40').first()).toBeVisible();
+    // In Full Mode, everything should be opacity-100
+    await expect(page.locator('.coach-highlight.opacity-100').first()).toBeVisible();
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-heatmap.png') });
@@ -55,10 +65,18 @@ test.describe('Documentation Screenshots', () => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
+    // Enter Placement Mode (Required for Coach Heatmap to render)
+    await page.getByRole('button', { name: 'Begin Placement' }).click();
+    await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
+
     // Open Analyst Panel & Enable Coach Mode
-    await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
-    const coachToggle = page.getByRole('checkbox', { name: /coach mode/i });
-    await coachToggle.check();
+    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
+    if (await toggleBtn.isVisible()) {
+      await toggleBtn.click();
+    }
+    const coachToggleInput = page.getByRole('checkbox', { name: /coach mode/i });
+    const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
+    await coachToggleLabel.click();
 
     // Find a best move (Gold Ring) and hover
     const goldRing = page.locator('[stroke="#FFD700"]').first();
@@ -68,7 +86,7 @@ test.describe('Documentation Screenshots', () => {
     await goldRing.hover({ force: true });
 
     // Wait for tooltip to appear
-    const tooltip = page.locator('.react-tooltip-core');
+    const tooltip = page.locator('.react-tooltip');
     await expect(tooltip).toBeVisible();
 
     // Take screenshot
@@ -98,8 +116,11 @@ test.describe('Documentation Screenshots', () => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
-    // Open Analyst Panel
-    await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
+    // Open Analyst Panel (if closed)
+    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
+    if (await toggleBtn.isVisible()) {
+      await toggleBtn.click();
+    }
 
     // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
