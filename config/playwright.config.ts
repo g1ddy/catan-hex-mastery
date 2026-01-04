@@ -3,8 +3,12 @@ import { defineConfig, devices } from '@playwright/test';
 const BASE_URL = 'http://localhost:4173/catan-hex-mastery/';
 
 export default defineConfig({
-  testDir: '../tests',
+  // Set testDir to root (..) to allow running scripts in docs/scripts/ as well as tests/
+  testDir: '..',
+  // Match spec files in tests/ and docs/scripts/
   testMatch: /.*\.spec\.ts/,
+  // Ignore node_modules explicitly just in case
+  testIgnore: '**/node_modules/**',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
