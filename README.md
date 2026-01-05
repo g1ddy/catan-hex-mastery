@@ -1,61 +1,57 @@
-# Hex-Mastery: Catan Strategy Engine & Trainer
+# Hex-Mastery
 
-Hex-Mastery is a modular resource-trading game engine designed to train players in high-level strategy. Unlike typical clones, this project prioritizes statistical analysis and placement heuristics to function as a coaching tool.
+### The Ultimate Catan Strategy Engine & Coach
 
-## 🎯 Project Goals
+**Hex-Mastery** is a modern, web-based implementation of the classic trading game, built specifically to help you master the math, probability, and strategy behind the board.
 
-*   **The "Physics" Core**: A mathematically rigorous board implementation using Cube Coordinates.
-*   **The Trainer**: A specialized "Setup Phase" simulator to practice the crucial "Snake Draft" of initial settlements.
-*   **The Analyst**: Real-time evaluation of board fairness, resource scarcity, and pip distribution.
-*   **The Game**: A fully playable multiplayer implementation (Phase 6).
+![Desktop Game View](docs/images/hero-board-desktop.png)
 
-## 🛠 Tech Stack
+## 🏆 Why Hex-Mastery?
 
-*   **Frontend**: React + TypeScript + Vite
-*   **State Management**: boardgame.io (Game Engine & Multiplayer Networking)
-*   **Visualization**: react-hexgrid (SVG-based board rendering)
-*   **Styling**: Tailwind CSS
+Most Catan clones are just games. **Hex-Mastery is a trainer.**
 
-## 🗺️ Development Roadmap
+We realized that to truly improve, players need immediate, data-driven feedback on their decisions. Hex-Mastery integrates a real-time **Coach** that analyzes the board state using advanced heuristics—evaluating scarcity, pip distribution, and production synergy—to grade your moves as you make them.
 
-### Phase 1: The Geometry Core ✅
-*   [x] Implementation of Cube Coordinate system (q, r, s).
-*   [x] Valid 19-hex board generation.
-*   [x] "Fairness" algorithms (preventing adjacent 6s/8s).
+## ✨ Key Features
 
-### Phase 2: The Setup Engine (Trainer) ✅
-*   [x] Implement "Snake Draft" turn order (1-2-3-4-4-3-2-1).
-*   [x] Enforce the "Distance Rule" validation.
-*   [x] Implement starting resource logic (based on 2nd settlement).
+### 🧠 The Coach Mode
+Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap. It factors in:
+*   **Production Probability (Pips)**
+*   **Resource Scarcity** (Is Ore rare this game?)
+*   **Synergy** (Do you have the Brick to match your Wood?)
 
-### Phase 3: The Analyst Module ✅
-*   [x] Real-time "Pip" counting.
-*   [x] Resource scarcity calculation.
-*   [x] Board balance visualization.
+![Coach Mode Heatmap](docs/images/coach-heatmap.png)
 
-### Phase 4: Coaching Layer ✅
-*   [x] Heuristic engine to grade player placements (Pips + Synergy + Scarcity).
-*   [x] "Coach Recommendations" visualizer (Gold Rings).
-*   [x] Goal: Smart assistant for board evaluation.
+### 📊 The Analyst Dashboard
+A real-time sidebar that acts as your HUD.
+*   **Fairness Meter**: See if the random board generation favored one player.
+*   **Pip Counter**: Track your total production potential vs. actual cards received.
+*   **Resource Heatmaps**: Instantly spot the "Ore Droughts" or "Wheat Gluts."
 
-### Phase 5: UI/UX Polish (Current Focus)
-*   [x] Iconography: Integrate lucide-react icons.
-*   [x] Mobile Layout refinements.
-*   [ ] Visual Overhaul: Final polish on NumberToken components.
+![Analyst Panel](docs/images/analyst-panel.png)
 
-### Phase 6: Full Game Loop & Rules
-*   [ ] Turn Phases (Trade vs. Build).
-*   [ ] Robber mechanic.
-*   [ ] Victory Point tracking.
-*   [ ] Win conditions and end-game state.
+### 🐍 The Setup Trainer
+Practice the most critical phase of the game: The Snake Draft.
+*   Play against our **Smart Bots** to test your initial placement strategies.
+*   Experiment with being Player 1 (Best Spot) vs. Player 4 (The Wheel).
+
+![Setup Phase / Snake Draft](docs/images/setup-draft.png)
+
+## 📚 Documentation
+
+Whether you are a player looking to improve your win rate or a developer looking to contribute, we have you covered.
+
+*   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)**
+    *Learn the math behind the game. Understanding Pips, the Bell Curve, and how the Coach calculates the "Perfect Move."*
+
+*   **[Development Guide](./docs/DEVELOPMENT.md)**
+    *For developers. Installation instructions, tech stack (React + boardgame.io), and contribution guidelines.*
 
 ## 🚀 Getting Started
 
-*   **Install dependencies:**
-    ```bash
-    npm install
-    ```
-*   **Run the development server:**
-    ```bash
-    npm run dev
-    ```
+1.  **Select a Mode**: Choose "Single Player (vs AI)" to practice or "Pass & Play" for local games.
+2.  **Toggle Coach Mode**: Switch on the Analyst Dashboard to see the math behind the board.
+3.  **Master the Setup**: Use the recommendations to learn *why* certain spots are better than others.
+
+---
+*Built with React, TypeScript, and boardgame.io. Open Source and designed for the community.*
