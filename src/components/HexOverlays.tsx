@@ -62,6 +62,35 @@ interface HexOverlaysProps {
     coachData: CoachData;
 }
 
+function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
+    if (prev.buildMode !== next.buildMode) return false;
+    if (prev.uiMode !== next.uiMode) return false;
+    if (prev.showCoachMode !== next.showCoachMode) return false;
+    if (prev.coachData !== next.coachData) return false;
+
+    // Context checks
+    if (prev.ctx.phase !== next.ctx.phase) return false;
+    if (prev.ctx.currentPlayer !== next.ctx.currentPlayer) return false;
+    if (prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) return false;
+
+    // Optimization: If board hasn't changed, we can likely skip.
+    // But we need to check players if we are in Setup Road mode.
+    const isSetup = next.ctx.phase === PHASES.SETUP;
+    const isPlaceRoad = next.ctx.activePlayers?.[next.ctx.currentPlayer] === STAGES.PLACE_ROAD;
+
+    if (prev.G.board === next.G.board) {
+         if (isSetup && isPlaceRoad) {
+             const p = next.ctx.currentPlayer;
+             // Check if settlement list reference changed (indicating a new settlement placed, which affects road logic)
+             if (prev.G.players[p]?.settlements !== next.G.players[p]?.settlements) return false;
+         }
+         return true;
+    }
+
+    // If board changed, we must re-render.
+    return false;
+}
+
 export const HexOverlays = React.memo(({
     hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
 }: HexOverlaysProps) => {
@@ -350,4 +379,4 @@ export const HexOverlays = React.memo(({
             })}
         </Hexagon>
     );
-});
+}, arePropsEqual);
