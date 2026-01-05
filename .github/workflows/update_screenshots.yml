@@ -1,13 +1,8 @@
 name: Documentation Screenshots
 
 on:
-  push:
-    paths:
-      - 'docs/**'
-      - '!docs/images/**'  # Prevent infinite loop by excluding the output directory
-    branches:
-      - main
   pull_request:
+    branches: [ main ]
     paths:
       - 'docs/**'
       - '!docs/images/**'
