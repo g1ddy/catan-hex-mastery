@@ -27,7 +27,10 @@ test.describe('Layout Troubleshooting', () => {
     // Open Drawer
     // Use force: true as previous runs indicated interception by grid
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click({ force: true });
-    await page.waitForTimeout(500); // Wait for transition
+
+    // Wait for the drawer content to be visible instead of using fixed timeout
+    // Using text selector as class selector .analyst-panel is not present
+    await page.getByText('Player Production Potential').waitFor({ state: 'visible' });
 
     // Screenshot 4: Mobile Drawer Open
     await page.screenshot({ path: 'troubleshoot_mobile_open.png', fullPage: true });
