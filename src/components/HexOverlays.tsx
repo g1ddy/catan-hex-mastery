@@ -74,16 +74,9 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
     if (prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) return false;
 
     // Optimization: If board hasn't changed, we can likely skip.
-    // But we need to check players if we are in Setup Road mode.
-    const isSetup = next.ctx.phase === PHASES.SETUP;
-    const isPlaceRoad = next.ctx.activePlayers?.[next.ctx.currentPlayer] === STAGES.PLACE_ROAD;
-
+    // Settlements are part of the board state (G.board.vertices), so any new settlement
+    // will change the G.board reference, making explicit settlement checks redundant.
     if (prev.G.board === next.G.board) {
-         if (isSetup && isPlaceRoad) {
-             const p = next.ctx.currentPlayer;
-             // Check if settlement list reference changed (indicating a new settlement placed, which affects road logic)
-             if (prev.G.players[p]?.settlements !== next.G.players[p]?.settlements) return false;
-         }
          return true;
     }
 
