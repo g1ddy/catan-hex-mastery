@@ -95,8 +95,8 @@ test.describe('Documentation Screenshots', () => {
     // Brief wait for a fade-in animation to complete.
     await page.waitForTimeout(500);
 
-    // Take screenshot
-    await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
+    // Take screenshot of only the tooltip to highlight it
+    await tooltip.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
   });
 
   test('generate mobile-production.png', async ({ page }) => {
@@ -132,8 +132,17 @@ test.describe('Documentation Screenshots', () => {
     await expect(page.getByText('Fairness')).toBeVisible();
     await expect(page.getByText('Player Production Potential')).toBeVisible();
 
-    // Take screenshot
-    await page.screenshot({ path: path.join(OUTPUT_DIR, 'analyst-panel.png') });
+    // After multiple locator failures, the most robust method is to clip the screenshot
+    // to the known dimensions of the panel. The panel is a 320px-wide sidebar.
+    await page.screenshot({
+      path: path.join(OUTPUT_DIR, 'analyst-panel.png'),
+      clip: {
+        x: 0,
+        y: 0,
+        width: 320, // Corresponds to Tailwind 'w-80' class
+        height: 800,
+      },
+    });
   });
 
   test('generate setup-draft.png', async ({ page }) => {
