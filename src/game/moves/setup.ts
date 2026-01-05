@@ -2,8 +2,13 @@ import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getVerticesForHex, getEdgeId } from '../hexUtils';
+import { isValidHexId } from '../../utils/validation';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
+  if (!isValidHexId(vertexId)) {
+    throw new Error("Invalid vertex ID");
+  }
+
   // 1. Validation: Occupancy
   if (G.board.vertices[vertexId]) {
     throw new Error("This vertex is already occupied");
@@ -61,6 +66,10 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
+  if (!isValidHexId(edgeId)) {
+    throw new Error("Invalid edge ID");
+  }
+
   // 1. Validation: Occupancy
   if (G.board.edges[edgeId]) {
     throw new Error("This edge is already occupied");

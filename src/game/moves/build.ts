@@ -2,6 +2,7 @@ import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 import { BUILD_COSTS } from '../config';
+import { isValidHexId } from '../../utils/validation';
 
 // Helper to find neighboring vertices (distance rule)
 const getVertexNeighbors = (vertexId: string): string[] => {
@@ -22,6 +23,10 @@ const getVertexNeighbors = (vertexId: string): string[] => {
 };
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
+    if (!isValidHexId(edgeId)) {
+        throw new Error("Invalid edge ID");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.road;
 
@@ -67,6 +72,10 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
 };
 
 export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+    if (!isValidHexId(vertexId)) {
+        throw new Error("Invalid vertex ID");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.settlement;
 
@@ -111,6 +120,10 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
 };
 
 export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+    if (!isValidHexId(vertexId)) {
+        throw new Error("Invalid vertex ID");
+    }
+
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.city;
 
