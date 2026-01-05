@@ -55,6 +55,9 @@ test.describe('Documentation Screenshots', () => {
     // beyond just the top 3 recommendations.
     await expect(page.locator('g.coach-highlight circle[stroke-width="0.5"]').first()).toBeVisible();
 
+    // Brief wait for animations
+    await page.waitForTimeout(500);
+
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-heatmap.png') });
   });
@@ -127,6 +130,7 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
+    await expect(page.getByText('Player Production Potential')).toBeVisible();
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'analyst-panel.png') });

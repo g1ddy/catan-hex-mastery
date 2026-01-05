@@ -25,10 +25,11 @@ Don't just guess—know. The Coach analyzes every valid settlement spot on the b
 ### 📊 The Analyst Dashboard
 A real-time sidebar that acts as your HUD.
 *   **Fairness Meter**: See if the random board generation favored one player.
+*   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
 *   **Pip Counter**: Track your total production potential vs. actual cards received.
 *   **Resource Heatmaps**: Instantly spot the "Ore Droughts" or "Wheat Gluts."
 
-![Analyst Panel](docs/images/analyst-panel.png)
+![The Analyst Panel, showing production potential](docs/images/analyst-panel.png)
 
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
