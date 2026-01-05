@@ -17,5 +17,12 @@ export const isValidHexId = (id: string): boolean => {
     const parts = id.split('::');
     if (parts.length === 0 || parts.length > 3) return false;
 
-    return parts.every(part => coordPattern.test(part));
+    return parts.every(part => {
+        if (!coordPattern.test(part)) {
+            return false;
+        }
+        const [q, r, s] = part.split(',').map(Number);
+        // For a valid cube coordinate, the sum of its components must be 0.
+        return q + r + s === 0;
+    });
 };

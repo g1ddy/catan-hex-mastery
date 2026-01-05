@@ -44,6 +44,7 @@ describe('Security Validation: Input Sanitization', () => {
         '1,2,3,4', // too many coords
         '1,2', // too few
         '1,2,a', // non-numeric
+        '1,1,1', // geometric violation (sum != 0)
     ];
 
     describe('Build Moves', () => {
