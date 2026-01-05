@@ -71,15 +71,11 @@ When implementing logic, remember the "Why".
 
 ## Verification
 ### Mobile Layout Verification
-To verify the mobile layout rendering (and ensure the SVG board is visible and properly sized), use the Playwright script `tests/mobile_layout_test.py`.
+To verify the mobile layout rendering (and ensure the SVG board is visible and properly sized), use the Playwright script `tests/mobile_layout.spec.ts`.
 
 ```bash
-# Ensure playwright is installed
-pip install playwright
-playwright install chromium
-
-# Run the test (ensure dev server is running on :5173)
-python3 tests/mobile_layout_test.py
+# Run the test
+npx playwright test tests/mobile_layout.spec.ts --config config/playwright.config.ts --project="Mobile Safari"
 ```
 
 This test checks:
