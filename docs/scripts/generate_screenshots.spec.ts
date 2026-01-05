@@ -51,10 +51,12 @@ test.describe('Documentation Screenshots', () => {
     // Wait for Heatmap to be visible (Gold rings indicate top moves)
     await expect(page.locator('[stroke="#FFD700"]').first()).toBeVisible();
 
-    // Wait for opacity transition on non-optimal hexes (confirming heatmap logic applied)
-    // We expect some elements to have opacity classes if Coach Mode is active
-    // In Full Mode, everything should be opacity-100
-    await expect(page.locator('.coach-highlight.opacity-100').first()).toBeVisible();
+    // Wait for a non-golden ring to appear, which confirms the full heatmap has rendered
+    // beyond just the top 3 recommendations.
+    await expect(page.locator('g.coach-highlight circle[stroke-width="0.5"]').first()).toBeVisible();
+
+    // Brief wait for animations
+    await page.waitForTimeout(500);
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-heatmap.png') });
@@ -85,12 +87,16 @@ test.describe('Documentation Screenshots', () => {
     // Force hover to trigger tooltip
     await goldRing.hover({ force: true });
 
-    // Wait for tooltip to appear
+    // Wait for tooltip to appear and contain the score, confirming dynamic content has rendered
     const tooltip = page.locator('.react-tooltip');
     await expect(tooltip).toBeVisible();
+    await expect(tooltip.getByText(/score:/i)).toBeVisible();
 
-    // Take screenshot
-    await page.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
+    // Brief wait for a fade-in animation to complete.
+    await page.waitForTimeout(500);
+
+    // Take screenshot of only the tooltip to highlight it
+    await tooltip.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
   });
 
   test('generate mobile-production.png', async ({ page }) => {
@@ -124,9 +130,19 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
+    await expect(page.getByText('Player Production Potential')).toBeVisible();
 
-    // Take screenshot
-    await page.screenshot({ path: path.join(OUTPUT_DIR, 'analyst-panel.png') });
+    // After multiple locator failures, the most robust method is to clip the screenshot
+    // to the known dimensions of the panel. The panel is a 320px-wide sidebar.
+    await page.screenshot({
+      path: path.join(OUTPUT_DIR, 'analyst-panel.png'),
+      clip: {
+        x: 0,
+        y: 0,
+        width: 320, // Corresponds to Tailwind 'w-80' class
+        height: 800,
+      },
+    });
   });
 
   test('generate setup-draft.png', async ({ page }) => {

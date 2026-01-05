@@ -25,10 +25,10 @@ Don't just guess—know. The Coach analyzes every valid settlement spot on the b
 ### 📊 The Analyst Dashboard
 A real-time sidebar that acts as your HUD.
 *   **Fairness Meter**: See if the random board generation favored one player.
-*   **Pip Counter**: Track your total production potential vs. actual cards received.
+*   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
 *   **Resource Heatmaps**: Instantly spot the "Ore Droughts" or "Wheat Gluts."
 
-![Analyst Panel](docs/images/analyst-panel.png)
+![The Analyst Panel, showing production potential](docs/images/analyst-panel.png)
 
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
@@ -36,6 +36,11 @@ Practice the most critical phase of the game: The Snake Draft.
 *   Experiment with being Player 1 (Best Spot) vs. Player 4 (The Wheel).
 
 ![Setup Phase / Snake Draft](docs/images/setup-draft.png)
+
+### 📱 Mobile First Design
+Play and train anywhere. The interface is fully responsive, ensuring a seamless experience on your phone or tablet. The Analyst Panel tucks away into a clean, accessible bottom drawer on mobile devices.
+
+![Mobile view with Analyst Panel open](docs/images/mobile-production.png)
 
 ## 📚 Documentation
 
