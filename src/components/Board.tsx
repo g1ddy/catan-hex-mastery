@@ -62,6 +62,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
 
     // Calculate Coach Data at Board Level (O(Vertices)) instead of per-hex
+    const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
     const coachData: CoachData = React.useMemo(() => {
         const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
 
@@ -102,7 +103,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             maxScore: Math.max(...vals),
             top3Set: new Set(top3Ids)
         };
-    }, [G, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
+    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
 
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">

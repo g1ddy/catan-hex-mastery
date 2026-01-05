@@ -62,6 +62,28 @@ interface HexOverlaysProps {
     coachData: CoachData;
 }
 
+function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
+    if (prev.buildMode !== next.buildMode) return false;
+    if (prev.uiMode !== next.uiMode) return false;
+    if (prev.showCoachMode !== next.showCoachMode) return false;
+    if (prev.coachData !== next.coachData) return false;
+
+    // Context checks
+    if (prev.ctx.phase !== next.ctx.phase) return false;
+    if (prev.ctx.currentPlayer !== next.ctx.currentPlayer) return false;
+    if (prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) return false;
+
+    // Optimization: If board hasn't changed, we can likely skip.
+    // Settlements are part of the board state (G.board.vertices), so any new settlement
+    // will change the G.board reference, making explicit settlement checks redundant.
+    if (prev.G.board === next.G.board) {
+         return true;
+    }
+
+    // If board changed, we must re-render.
+    return false;
+}
+
 export const HexOverlays = React.memo(({
     hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
 }: HexOverlaysProps) => {
@@ -350,4 +372,4 @@ export const HexOverlays = React.memo(({
             })}
         </Hexagon>
     );
-});
+}, arePropsEqual);
