@@ -2,6 +2,8 @@ import React from 'react';
 import { BoardStats, GameState } from '../game/types';
 import { calculatePlayerPotentialPips } from '../game/analyst';
 import { ResourceIconRow } from './ResourceIconRow';
+import { RefreshCw } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface AnalystPanelProps {
   stats: BoardStats;
@@ -19,6 +21,13 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canReg
     return 'text-red-400';
   };
 
+  const handleRegenerate = () => {
+    if (onRegenerate) {
+      onRegenerate();
+      toast.success("Board regenerated!");
+    }
+  };
+
   const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
 
   return (
@@ -27,27 +36,28 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canReg
 
         {/* Coach Mode Toggle */}
         {setShowCoachMode && (
-          <div className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700">
-             <span className="font-semibold text-sm">Coach Mode</span>
-             <label className="relative inline-flex items-center cursor-pointer">
+          <label className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 cursor-pointer hover:bg-slate-750 hover:border-slate-600 transition-colors group">
+             <span className="font-semibold text-sm group-hover:text-amber-400 transition-colors">Coach Mode</span>
+             <div className="relative inline-flex items-center">
                 <input
                     type="checkbox"
                     className="sr-only peer"
                     checked={showCoachMode}
                     onChange={(e) => setShowCoachMode(e.target.checked)}
-                    aria-label="Coach Mode"
+                    aria-label="Toggle Coach Mode"
                 />
-                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-             </label>
-          </div>
+                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+             </div>
+          </label>
         )}
 
         {onRegenerate && (
           <button
             disabled={!canRegenerate}
-            className="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors"
-            onClick={onRegenerate}
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors w-full btn-focus-ring"
+            onClick={handleRegenerate}
           >
+            <RefreshCw size={18} className={canRegenerate ? "" : "opacity-50"} />
             Regenerate Board
           </button>
         )}
