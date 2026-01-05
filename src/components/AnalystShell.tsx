@@ -16,6 +16,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
   if (!isMobile) {
     return (
       <aside
+        id="analyst-dashboard"
         className={`
           flex-shrink-0 min-w-0
           bg-slate-900/90 backdrop-blur-md border-r border-slate-700
@@ -59,6 +60,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
 
       {/* Drawer Panel */}
       <div
+        id="analyst-dashboard"
         className={`
           fixed top-0 left-0 right-0
           bg-slate-900/95 backdrop-blur-md border-b border-slate-700
