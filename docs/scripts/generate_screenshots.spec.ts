@@ -99,6 +99,34 @@ test.describe('Documentation Screenshots', () => {
     await tooltip.screenshot({ path: path.join(OUTPUT_DIR, 'coach-tooltip.png') });
   });
 
+  test('generate mobile-coach-tooltip.png', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+
+    // Enter Placement Mode to see coach recommendations
+    await page.getByRole('button', { name: 'Begin Placement' }).click();
+    await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
+
+    // Find a best move (Gold Ring) and hover
+    const goldRing = page.locator('[stroke="#FFD700"]').first();
+    await expect(goldRing).toBeVisible();
+
+    // Force hover to trigger tooltip
+    await goldRing.hover({ force: true });
+
+    // Wait for tooltip to appear and contain the score
+    const tooltip = page.locator('.react-tooltip');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip.getByText(/score:/i)).toBeVisible();
+
+    // Brief wait for a fade-in animation to complete.
+    await page.waitForTimeout(500);
+
+    // Take screenshot
+    await page.screenshot({ path: path.join(OUTPUT_DIR, 'mobile-coach-tooltip.png') });
+  });
+
   test('generate mobile-production.png', async ({ page }) => {
     // Mobile Viewport
     await page.setViewportSize({ width: 375, height: 667 });
@@ -113,6 +141,9 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for drawer to slide up (check for visibility of content inside)
     await expect(page.getByText('Fairness')).toBeVisible();
+
+    // Wait for animation to finish
+    await page.waitForTimeout(500);
 
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'mobile-production.png') });
   });

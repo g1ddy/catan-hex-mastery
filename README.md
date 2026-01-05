@@ -38,7 +38,11 @@ Practice the most critical phase of the game: The Snake Draft.
 ![Setup Phase / Snake Draft](docs/images/setup-draft.png)
 
 ### 📱 Mobile First Design
-Play and train anywhere. The interface is fully responsive, ensuring a seamless experience on your phone or tablet. The Analyst Panel tucks away into a clean, accessible bottom drawer on mobile devices.
+Play and train anywhere. The interface is fully responsive, and the advanced Coach features are available on any device. Even on mobile, you get the same "golden ring" suggestions for top-tier moves. On devices with a stylus or mouse, you can even access the "Why?" tooltips to understand the Coach's reasoning.
+
+![Mobile Coach Tooltip showing a recommendation](docs/images/mobile-coach-tooltip.png)
+
+The Analyst Panel is also fully accessible, tucking away into a clean bottom drawer to maximize board visibility.
 
 ![Mobile view with Analyst Panel open](docs/images/mobile-production.png)
 
