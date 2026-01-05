@@ -1,8 +1,8 @@
+# Hex-Mastery
+
 **Live App:** [**https://g1ddy.github.io/catan-hex-mastery/**](https://g1ddy.github.io/catan-hex-mastery/)
 
 ---
-
-# Hex-Mastery
 
 ### The Ultimate Catan Strategy Engine & Coach
 
