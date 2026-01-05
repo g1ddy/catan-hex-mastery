@@ -23,8 +23,8 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canReg
 
   const handleRegenerate = () => {
     if (onRegenerate) {
-        onRegenerate();
-        toast.success("Board regenerated!");
+      onRegenerate();
+      toast.success("Board regenerated!");
     }
   };
 
