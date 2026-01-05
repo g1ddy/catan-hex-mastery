@@ -16,11 +16,6 @@ export const isValidHexId = (id: string): boolean => {
   // Allow safe buffer but reject overly long strings.
   if (id.length > 50) return false;
 
-  // Block prototype pollution keywords
-  if (id.includes('__proto__') || id.includes('constructor') || id.includes('prototype')) {
-    return false;
-  }
-
   // Strict regex for comma-separated integers, optionally joined by ::
   // ^(-?\d+,-?\d+,-?\d+)(::(-?\d+,-?\d+,-?\d+))*$
   const hexPattern = /^(-?\d+,-?\d+,-?\d+)(::(-?\d+,-?\d+,-?\d+))*$/;

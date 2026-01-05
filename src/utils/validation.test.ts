@@ -25,7 +25,7 @@ describe('isValidHexId', () => {
         expect(isValidHexId({} as any)).toBe(false);
     });
 
-    test('should block prototype pollution attempts', () => {
+    test('should block prototype pollution attempts (via regex)', () => {
         expect(isValidHexId('__proto__')).toBe(false);
         expect(isValidHexId('constructor')).toBe(false);
         expect(isValidHexId('prototype')).toBe(false);
