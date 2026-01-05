@@ -12,7 +12,7 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // Screenshot 1: Desktop Sidebar Open (Default)
-    await page.screenshot({ path: 'latest_desktop.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/latest_desktop.png', fullPage: true });
   });
 
   test('Capture Mobile Screenshots', async ({ page }) => {
@@ -22,7 +22,7 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // Screenshot 3: Mobile Drawer Closed (Default)
-    await page.screenshot({ path: 'troubleshoot_mobile_closed.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/troubleshoot_mobile_closed.png', fullPage: true });
 
     // Open Drawer
     // Use force: true as previous runs indicated interception by grid
@@ -33,7 +33,7 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByText('Player Production Potential').waitFor({ state: 'visible' });
 
     // Screenshot 4: Mobile Drawer Open
-    await page.screenshot({ path: 'troubleshoot_mobile_open.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/troubleshoot_mobile_open.png', fullPage: true });
   });
 
 });
