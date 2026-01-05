@@ -1,9 +1,10 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'security'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:security/recommended-legacy',
   ],
   rules: {
     // Custom rules or overrides can go here
