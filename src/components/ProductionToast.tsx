@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { GameState, Resources } from '../game/types';
 import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
-import { NO_YIELD_EMOJIS } from '../constants/emojis';
+import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 interface ProductionToastProps {
     G: GameState;
@@ -28,8 +28,8 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
 
     const randomEmoji = useMemo(() => {
         if (hasAnyResources) return null;
-        return NO_YIELD_EMOJIS[Math.floor(Math.random() * NO_YIELD_EMOJIS.length)];
-    }, [hasAnyResources, visible, sum]); // Regenerate if visible toggles or sum changes
+        return getRandomEmoji(NO_YIELD_EMOJIS);
+    }, [hasAnyResources, visible, G.lastRoll]); // Use G.lastRoll as suggested for robustness
 
     return (
         <div

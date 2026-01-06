@@ -4,7 +4,7 @@ import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
 import { PHASES, STAGES } from '../game/constants';
-import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS } from '../constants/emojis';
+import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 export interface CustomMessage {
     text: string;
@@ -59,20 +59,18 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
 
     // Memoize Game Over Emoji
     // We want this to be stable once the game is over.
-    // However, if the component re-mounts or something, it might change.
-    // For now, simple useMemo dependent on gameover state is enough.
     const gameOverEmoji = useMemo(() => {
         if (!ctx.gameover) return null;
 
         if (ctx.gameover.draw) {
-            return NO_YIELD_EMOJIS[Math.floor(Math.random() * NO_YIELD_EMOJIS.length)];
+            return getRandomEmoji(NO_YIELD_EMOJIS);
         }
 
         if (ctx.gameover.winner) {
             if (ctx.gameover.winner === playerID) {
-                return WIN_EMOJIS[Math.floor(Math.random() * WIN_EMOJIS.length)];
+                return getRandomEmoji(WIN_EMOJIS);
             } else {
-                return LOSE_EMOJIS[Math.floor(Math.random() * LOSE_EMOJIS.length)];
+                return getRandomEmoji(LOSE_EMOJIS);
             }
         }
 
