@@ -10,6 +10,12 @@ export const isValidHexId = (id: string): boolean => {
     // Reject suspicious keys immediately
     if (id === '__proto__' || id === 'constructor' || id === 'prototype') return false;
 
+    // Reject extremely long strings to prevent potential DoS/ReDoS
+    // Typical hex ID is small (e.g., "1,-1,0" is 6 chars).
+    // A vertex (3 hexes) might be around 25 chars.
+    // A max length of 64 is generous but prevents abuse.
+    if (id.length > 64) return false;
+
     // Must match pattern: integers separated by commas, groups separated by ::
     // Example: "1,-1,0" or "1,-1,0::0,1,-1"
     const coordPattern = /^-?\d+,-?\d+,-?\d+$/;
