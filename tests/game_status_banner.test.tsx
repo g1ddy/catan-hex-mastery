@@ -107,4 +107,42 @@ describe('GameStatusBanner', () => {
         render(<GameStatusBanner {...gameOverProps} />);
         expect(screen.getByText('Draw!')).toBeInTheDocument();
     });
+
+    test('calls onCustomMessageClear after timeout', () => {
+        jest.useFakeTimers();
+        const onCustomMessageClear = jest.fn();
+        const customProps = {
+            ...props,
+            customMessage: { text: 'Test Message', type: 'success' } as const,
+            onCustomMessageClear,
+            customMessageDuration: 1000
+        };
+
+        render(<GameStatusBanner {...customProps} />);
+
+        // Should show message immediately
+        expect(screen.getByText('Test Message')).toBeInTheDocument();
+
+        // Should not have called clear yet
+        expect(onCustomMessageClear).not.toHaveBeenCalled();
+
+        // Advance timer
+        act(() => {
+            jest.advanceTimersByTime(1000);
+        });
+
+        expect(onCustomMessageClear).toHaveBeenCalledTimes(1);
+        jest.useRealTimers();
+    });
+
+    test('renders custom message with error styling', () => {
+        const customProps = {
+            ...props,
+            customMessage: { text: 'Error Occurred', type: 'error' } as const,
+        };
+        render(<GameStatusBanner {...customProps} />);
+        const message = screen.getByText('Error Occurred');
+        expect(message).toBeInTheDocument();
+        expect(message).toHaveClass('text-red-400');
+    });
 });

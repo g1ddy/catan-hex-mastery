@@ -5,16 +5,43 @@ import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
 import { PHASES, STAGES } from '../game/constants';
 
+export interface CustomMessage {
+    text: string;
+    type: 'success' | 'info' | 'error';
+}
+
 interface GameStatusBannerProps {
     G: GameState;
     ctx: Ctx;
     playerID: string | null;
     uiMode: UiMode;
     buildMode: BuildMode;
+    customMessage?: CustomMessage | null;
+    onCustomMessageClear?: () => void;
+    customMessageDuration?: number;
 }
 
-export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, playerID, uiMode, buildMode }) => {
+export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
+    G,
+    ctx,
+    playerID,
+    uiMode,
+    buildMode,
+    customMessage,
+    onCustomMessageClear,
+    customMessageDuration = 3000
+}) => {
     const [showRollResult, setShowRollResult] = useState(false);
+
+    // Auto-clear custom message
+    useEffect(() => {
+        if (customMessage && onCustomMessageClear) {
+            const timer = setTimeout(() => {
+                onCustomMessageClear();
+            }, customMessageDuration);
+            return () => clearTimeout(timer);
+        }
+    }, [customMessage, onCustomMessageClear, customMessageDuration]);
 
     // Calculate roll sum once
     const [d1, d2] = G.lastRoll;
@@ -37,8 +64,21 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
     let message = "";
     let colorClass = "text-amber-400"; // Default color
 
-    // Game Over Logic
-    if (ctx.gameover) {
+    if (customMessage) {
+        message = customMessage.text;
+        switch (customMessage.type) {
+            case 'success':
+                colorClass = "text-green-400";
+                break;
+            case 'error':
+                colorClass = "text-red-400";
+                break;
+            case 'info':
+            default:
+                colorClass = "text-amber-400";
+                break;
+        }
+    } else if (ctx.gameover) {
         message = "Game Over";
         colorClass = "text-slate-200";
 

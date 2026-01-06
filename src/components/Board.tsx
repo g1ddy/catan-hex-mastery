@@ -12,11 +12,12 @@ import { CoachRecommendation, Coach } from '../game/analysis/coach';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
-import { GameStatusBanner } from './GameStatusBanner';
+import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { PHASES, STAGE_MOVES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
 
 const NO_OP = () => {};
+const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
@@ -41,6 +42,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
+  const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -206,6 +208,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             playerID={playerID}
             uiMode={uiMode}
             buildMode={buildMode}
+            customMessage={customBannerMessage}
+            onCustomMessageClear={() => setCustomBannerMessage(null)}
         />
       }
       gameControls={
@@ -223,7 +227,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <AnalystPanel
           stats={G.boardStats}
           G={G}
-          onRegenerate={() => moves.regenerateBoard()}
+          onRegenerate={() => {
+              moves.regenerateBoard();
+              setCustomBannerMessage({ text: MESSAGE_BOARD_REGENERATED, type: 'success' });
+          }}
           canRegenerate={(() => {
             const stage = ctx.activePlayers?.[ctx.currentPlayer];
             if (!stage) return false;
