@@ -95,29 +95,41 @@ export const HexOverlays = React.memo(({
         return neighbors.some(n => G.board.vertices[n]);
     };
 
-    const size = 8;
-    // Use the centralized geometry
-    const corners = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i, size));
+    // Memoize geometry calculations (O(1) after first run)
+    // This prevents recalculating geometry and splitting strings on every re-render (e.g. when G.board updates)
+    const { vertices, edges, corners, currentHexIdStr } = React.useMemo(() => {
+        const size = 8;
+        // Use the centralized geometry
+        const c = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i, size));
 
-    const vertices = getVerticesForHex(hex.coords);
-    const edges = getEdgesForHex(hex.coords);
+        // Pre-split IDs for faster lookup in getPrimaryHexOwner
+        const vRaw = getVerticesForHex(hex.coords);
+        const eRaw = getEdgesForHex(hex.coords);
 
-    const getPrimaryHexOwner = (id: string): string => {
-        const potentialOwners = id.split('::');
+        const v = vRaw.map(id => ({ id, parts: id.split('::') }));
+        const e = eRaw.map(id => ({ id, parts: id.split('::') }));
+
+        const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
+
+        return { vertices: v, edges: e, corners: c, currentHexIdStr: idStr };
+    }, [hex.coords.q, hex.coords.r, hex.coords.s]);
+
+    const getPrimaryHexOwner = (parts: string[]): string => {
         // Fix: Find the first hex ID in the key that actually exists on the board.
         // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
         // which would cause the element to not render at all.
-        return potentialOwners.find(ownerId => G.board.hexes[ownerId]) || potentialOwners[0];
+        // Since parts are memoized, we avoid splitting strings here.
+        return parts.find(ownerId => G.board.hexes[ownerId]) || parts[0];
     };
 
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
             {corners.map((corner, i) => {
-                const vId = vertices[i];
-                const primaryHex = getPrimaryHexOwner(vId);
+                const { id: vId, parts } = vertices[i];
+                const primaryHex = getPrimaryHexOwner(parts);
 
-                if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
+                if (primaryHex !== currentHexIdStr) return null;
 
                 const vertex = G.board.vertices[vId];
                 const isOccupied = !!vertex;
@@ -270,10 +282,10 @@ export const HexOverlays = React.memo(({
 
             {/* EDGES */}
             {corners.map((corner, i) => {
-                const eId = edges[i];
-                const primaryHex = getPrimaryHexOwner(eId);
+                const { id: eId, parts } = edges[i];
+                const primaryHex = getPrimaryHexOwner(parts);
 
-                if (primaryHex !== `${hex.coords.q},${hex.coords.r},${hex.coords.s}`) return null;
+                if (primaryHex !== currentHexIdStr) return null;
 
                 const nextCorner = corners[(i + 1) % 6];
                 const midX = (corner.x + nextCorner.x) / 2;
