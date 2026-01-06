@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { GameState, Resources } from '../game/types';
 import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
 
@@ -16,8 +16,25 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     sheep: <Cloud size={14} className="text-blue-300" />
 };
 
+const NO_YIELD_EMOJIS = [
+    '🏜️', '💨', '🕸️', '🦗', '🥀', '🌵', // Nature/Empty
+    '😒', '🫠', '🙃', '😤', '🤦‍♂️', '🤷‍♀️', // Reactions
+    '🥔', '🪨', '🕳️', '🥀', '🦴' // Objects
+];
+
 export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visible }) => {
     const rewards = G.lastRollRewards;
+
+    const hasAnyResources = useMemo(() => {
+        return Object.values(rewards).some(res =>
+            Object.values(res).some(amount => amount > 0)
+        );
+    }, [rewards]);
+
+    const randomEmoji = useMemo(() => {
+        if (hasAnyResources) return null;
+        return NO_YIELD_EMOJIS[Math.floor(Math.random() * NO_YIELD_EMOJIS.length)];
+    }, [hasAnyResources, visible, sum]); // Regenerate if visible toggles or sum changes
 
     return (
         <div
@@ -34,37 +51,43 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
                 {/* Vertical Separator */}
                 <div className="h-6 w-px bg-slate-600/50" />
 
-                {/* Players & Resources */}
+                {/* Players & Resources or Emoji */}
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    {Object.entries(rewards).map(([pid, res]) => {
-                        const playerColor = G.players[pid].color;
-                        const hasResources = Object.values(res).some(v => v > 0);
+                    {!hasAnyResources ? (
+                        <div className="text-2xl animate-pulse" role="img" aria-label="No resources">
+                            {randomEmoji}
+                        </div>
+                    ) : (
+                        Object.entries(rewards).map(([pid, res]) => {
+                            const playerColor = G.players[pid].color;
+                            const hasResources = Object.values(res).some(v => v > 0);
 
-                        if (!hasResources) return null;
+                            if (!hasResources) return null;
 
-                        return (
-                            <div key={pid} className="flex items-center gap-2 bg-slate-700/50 rounded-full px-2 py-0.5">
-                                {/* Player Dot */}
-                                <div
-                                    className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
-                                    style={{ backgroundColor: playerColor }}
-                                />
-                                <span className="text-xs font-bold text-slate-300">P{Number(pid) + 1}</span>
+                            return (
+                                <div key={pid} className="flex items-center gap-2 bg-slate-700/50 rounded-full px-2 py-0.5">
+                                    {/* Player Dot */}
+                                    <div
+                                        className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
+                                        style={{ backgroundColor: playerColor }}
+                                    />
+                                    <span className="text-xs font-bold text-slate-300">P{Number(pid) + 1}</span>
 
-                                {/* Resources */}
-                                <div className="flex items-center gap-1.5 ml-1">
-                                    {Object.entries(res).map(([type, amount]) => {
-                                        if (!amount) return null;
-                                        return (
-                                            <span key={type} className="flex items-center gap-0.5 text-xs font-medium">
-                                                +{amount} {RESOURCE_ICONS[type as keyof Resources]}
-                                            </span>
-                                        );
-                                    })}
+                                    {/* Resources */}
+                                    <div className="flex items-center gap-1.5 ml-1">
+                                        {Object.entries(res).map(([type, amount]) => {
+                                            if (!amount) return null;
+                                            return (
+                                                <span key={type} className="flex items-center gap-0.5 text-xs font-medium">
+                                                    +{amount} {RESOURCE_ICONS[type as keyof Resources]}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </div>
