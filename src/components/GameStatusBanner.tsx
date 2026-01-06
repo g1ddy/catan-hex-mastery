@@ -12,10 +12,31 @@ interface GameStatusBannerProps {
     uiMode: UiMode;
     buildMode: BuildMode;
     customMessage?: string | null;
+    onCustomMessageClear?: () => void;
+    customMessageDuration?: number;
 }
 
-export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, playerID, uiMode, buildMode, customMessage }) => {
+export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
+    G,
+    ctx,
+    playerID,
+    uiMode,
+    buildMode,
+    customMessage,
+    onCustomMessageClear,
+    customMessageDuration = 3000
+}) => {
     const [showRollResult, setShowRollResult] = useState(false);
+
+    // Auto-clear custom message
+    useEffect(() => {
+        if (customMessage && onCustomMessageClear) {
+            const timer = setTimeout(() => {
+                onCustomMessageClear();
+            }, customMessageDuration);
+            return () => clearTimeout(timer);
+        }
+    }, [customMessage, onCustomMessageClear, customMessageDuration]);
 
     // Calculate roll sum once
     const [d1, d2] = G.lastRoll;

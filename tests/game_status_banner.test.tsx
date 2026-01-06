@@ -107,4 +107,31 @@ describe('GameStatusBanner', () => {
         render(<GameStatusBanner {...gameOverProps} />);
         expect(screen.getByText('Draw!')).toBeInTheDocument();
     });
+
+    test('calls onCustomMessageClear after timeout', () => {
+        jest.useFakeTimers();
+        const onCustomMessageClear = jest.fn();
+        const customProps = {
+            ...props,
+            customMessage: 'Test Message',
+            onCustomMessageClear,
+            customMessageDuration: 1000
+        };
+
+        render(<GameStatusBanner {...customProps} />);
+
+        // Should show message immediately
+        expect(screen.getByText('Test Message')).toBeInTheDocument();
+
+        // Should not have called clear yet
+        expect(onCustomMessageClear).not.toHaveBeenCalled();
+
+        // Advance timer
+        act(() => {
+            jest.advanceTimersByTime(1000);
+        });
+
+        expect(onCustomMessageClear).toHaveBeenCalledTimes(1);
+        jest.useRealTimers();
+    });
 });

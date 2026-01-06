@@ -18,7 +18,6 @@ import { HexOverlays } from './HexOverlays';
 
 const NO_OP = () => {};
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
-const MESSAGE_TIMEOUT_MS = 3000;
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
@@ -44,16 +43,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
   const [customBannerMessage, setCustomBannerMessage] = useState<string | null>(null);
-
-  // Clear custom message after timeout
-  React.useEffect(() => {
-    if (customBannerMessage) {
-      const timer = setTimeout(() => {
-        setCustomBannerMessage(null);
-      }, MESSAGE_TIMEOUT_MS);
-      return () => clearTimeout(timer);
-    }
-  }, [customBannerMessage]);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -229,6 +218,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             uiMode={uiMode}
             buildMode={buildMode}
             customMessage={customBannerMessage}
+            onCustomMessageClear={() => setCustomBannerMessage(null)}
         />
       }
       gameControls={
