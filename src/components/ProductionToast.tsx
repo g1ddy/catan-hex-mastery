@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { GameState, Resources } from '../game/types';
 import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
+import { NO_YIELD_EMOJIS } from '../constants/emojis';
 
 interface ProductionToastProps {
     G: GameState;
@@ -15,12 +16,6 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     ore: <Mountain size={14} className="text-slate-400" />,
     sheep: <Cloud size={14} className="text-blue-300" />
 };
-
-const NO_YIELD_EMOJIS = [
-    '🏜️', '💨', '🕸️', '🦗', '🥀', '🌵', // Nature/Empty
-    '😒', '🫠', '🙃', '😤', '🤦‍♂️', '🤷‍♀️', // Reactions
-    '🥔', '🪨', '🕳️', '🥀', '🦴' // Objects
-];
 
 export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visible }) => {
     const rewards = G.lastRollRewards;
