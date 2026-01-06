@@ -5,8 +5,9 @@ set -e
 npm install
 
 # Install Playwright browsers (Chromium and others if needed)
-npx playwright install chromium
+# Installing WebKit is required for Mobile Safari tests
+npx playwright install chromium webkit
 
-# Note: Full browser support (WebKit, Firefox) requires system dependencies
-# that may not be available in all environments.
-# To run all tests, install system deps via: npx playwright install-deps
+# Install system dependencies required for browsers
+# This handles libraries like libgtk, libgstreamer, etc.
+npx playwright install-deps
