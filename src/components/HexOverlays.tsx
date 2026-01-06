@@ -228,7 +228,7 @@ export const HexOverlays = React.memo(({
                                     isTop3 || showCoachMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                                 }`}
                                 data-tooltip-id="coach-tooltip"
-                                data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                                data-tooltip-content={recommendationData ? vId : ""}
                              >
                                 {/* Base Heatmap Circle */}
                                 <circle
