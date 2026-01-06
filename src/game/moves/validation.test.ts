@@ -45,6 +45,7 @@ describe('Security Validation: Input Sanitization', () => {
         '1,2', // too few
         '1,2,a', // non-numeric
         '1,1,1', // geometric violation (sum != 0)
+        '1,2,-3::4,5,-9::'.repeat(100), // excessively long string
     ];
 
     describe('Build Moves', () => {
