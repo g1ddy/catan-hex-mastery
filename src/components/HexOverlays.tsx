@@ -98,20 +98,19 @@ export const HexOverlays = React.memo(({
     // Memoize geometry calculations (O(1) after first run)
     // This prevents recalculating geometry and splitting strings on every re-render (e.g. when G.board updates)
     const { vertices, edges, corners, currentHexIdStr } = React.useMemo(() => {
-        const size = 8;
-        // Use the centralized geometry
-        const c = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i, size));
+        // Use the centralized geometry, relying on the default size in hexCornerOffset
+        const cornerCoords = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i));
 
         // Pre-split IDs for faster lookup in getPrimaryHexOwner
-        const vRaw = getVerticesForHex(hex.coords);
-        const eRaw = getEdgesForHex(hex.coords);
+        const rawVertexIds = getVerticesForHex(hex.coords);
+        const rawEdgeIds = getEdgesForHex(hex.coords);
 
-        const v = vRaw.map(id => ({ id, parts: id.split('::') }));
-        const e = eRaw.map(id => ({ id, parts: id.split('::') }));
+        const verticesWithParts = rawVertexIds.map(id => ({ id, parts: id.split('::') }));
+        const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: id.split('::') }));
 
         const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
 
-        return { vertices: v, edges: e, corners: c, currentHexIdStr: idStr };
+        return { vertices: verticesWithParts, edges: edgesWithParts, corners: cornerCoords, currentHexIdStr: idStr };
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
 
     const getPrimaryHexOwner = (parts: string[]): string => {
