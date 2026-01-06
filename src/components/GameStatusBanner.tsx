@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
 import { PHASES, STAGES } from '../game/constants';
+import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 export interface CustomMessage {
     text: string;
@@ -56,6 +57,26 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         }
     }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
 
+    // Memoize Game Over Emoji
+    // We want this to be stable once the game is over.
+    const gameOverEmoji = useMemo(() => {
+        if (!ctx.gameover) return null;
+
+        if (ctx.gameover.draw) {
+            return getRandomEmoji(NO_YIELD_EMOJIS);
+        }
+
+        if (ctx.gameover.winner) {
+            if (ctx.gameover.winner === playerID) {
+                return getRandomEmoji(WIN_EMOJIS);
+            } else {
+                return getRandomEmoji(LOSE_EMOJIS);
+            }
+        }
+
+        return null;
+    }, [ctx.gameover, playerID]);
+
     // If showing roll result, render ProductionToast (reused)
     if (showRollResult) {
         return <ProductionToast G={G} sum={sum} visible={true} />;
@@ -83,14 +104,14 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         colorClass = "text-slate-200";
 
         if (ctx.gameover.draw) {
-            message = "Draw!";
+            message = `Draw! ${gameOverEmoji}`;
             colorClass = "text-slate-200";
         } else if (ctx.gameover.winner) {
             if (ctx.gameover.winner === playerID) {
-                message = "You Win!!!";
+                message = `You Win!!! ${gameOverEmoji}`;
                 colorClass = "text-amber-400 animate-pulse";
             } else {
-                message = "You Lose";
+                message = `You Lose ${gameOverEmoji}`;
                 colorClass = "text-red-400";
             }
         }
