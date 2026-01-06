@@ -113,7 +113,7 @@ describe('GameStatusBanner', () => {
         const onCustomMessageClear = jest.fn();
         const customProps = {
             ...props,
-            customMessage: 'Test Message',
+            customMessage: { text: 'Test Message', type: 'success' } as const,
             onCustomMessageClear,
             customMessageDuration: 1000
         };
@@ -133,5 +133,16 @@ describe('GameStatusBanner', () => {
 
         expect(onCustomMessageClear).toHaveBeenCalledTimes(1);
         jest.useRealTimers();
+    });
+
+    test('renders custom message with error styling', () => {
+        const customProps = {
+            ...props,
+            customMessage: { text: 'Error Occurred', type: 'error' } as const,
+        };
+        render(<GameStatusBanner {...customProps} />);
+        const message = screen.getByText('Error Occurred');
+        expect(message).toBeInTheDocument();
+        expect(message).toHaveClass('text-red-400');
     });
 });

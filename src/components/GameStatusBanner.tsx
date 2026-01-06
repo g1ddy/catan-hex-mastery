@@ -5,13 +5,18 @@ import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
 import { PHASES, STAGES } from '../game/constants';
 
+export interface CustomMessage {
+    text: string;
+    type: 'success' | 'info' | 'error';
+}
+
 interface GameStatusBannerProps {
     G: GameState;
     ctx: Ctx;
     playerID: string | null;
     uiMode: UiMode;
     buildMode: BuildMode;
-    customMessage?: string | null;
+    customMessage?: CustomMessage | null;
     onCustomMessageClear?: () => void;
     customMessageDuration?: number;
 }
@@ -60,8 +65,19 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     let colorClass = "text-amber-400"; // Default color
 
     if (customMessage) {
-        message = customMessage;
-        colorClass = "text-green-400";
+        message = customMessage.text;
+        switch (customMessage.type) {
+            case 'success':
+                colorClass = "text-green-400";
+                break;
+            case 'error':
+                colorClass = "text-red-400";
+                break;
+            case 'info':
+            default:
+                colorClass = "text-amber-400";
+                break;
+        }
     } else if (ctx.gameover) {
         message = "Game Over";
         colorClass = "text-slate-200";

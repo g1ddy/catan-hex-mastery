@@ -12,7 +12,7 @@ import { CoachRecommendation, Coach } from '../game/analysis/coach';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
-import { GameStatusBanner } from './GameStatusBanner';
+import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { PHASES, STAGE_MOVES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
 
@@ -42,7 +42,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
-  const [customBannerMessage, setCustomBannerMessage] = useState<string | null>(null);
+  const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -238,7 +238,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           G={G}
           onRegenerate={() => {
               moves.regenerateBoard();
-              setCustomBannerMessage(MESSAGE_BOARD_REGENERATED);
+              setCustomBannerMessage({ text: MESSAGE_BOARD_REGENERATED, type: 'success' });
           }}
           canRegenerate={(() => {
             const stage = ctx.activePlayers?.[ctx.currentPlayer];
