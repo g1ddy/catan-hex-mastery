@@ -91,21 +91,24 @@ describe('GameStatusBanner', () => {
         const gameOverCtx = { ...mockCtx, gameover: { winner: '0' } };
         const gameOverProps = { ...props, ctx: gameOverCtx };
         render(<GameStatusBanner {...gameOverProps} />);
-        expect(screen.getByText('You Win!!!')).toBeInTheDocument();
+        // Use regex to match text + emoji
+        expect(screen.getByText(/You Win!!!/)).toBeInTheDocument();
     });
 
     test('renders Lose message', () => {
         const gameOverCtx = { ...mockCtx, gameover: { winner: '1' } };
         const gameOverProps = { ...props, ctx: gameOverCtx };
         render(<GameStatusBanner {...gameOverProps} />);
-        expect(screen.getByText('You Lose')).toBeInTheDocument();
+        // Use regex to match text + emoji
+        expect(screen.getByText(/You Lose/)).toBeInTheDocument();
     });
 
     test('renders Draw message', () => {
         const gameOverCtx = { ...mockCtx, gameover: { draw: true } };
         const gameOverProps = { ...props, ctx: gameOverCtx };
         render(<GameStatusBanner {...gameOverProps} />);
-        expect(screen.getByText('Draw!')).toBeInTheDocument();
+        // Use regex to match text + emoji
+        expect(screen.getByText(/Draw!/)).toBeInTheDocument();
     });
 
     test('calls onCustomMessageClear after timeout', () => {
