@@ -29,7 +29,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
     const randomEmoji = useMemo(() => {
         if (hasAnyResources) return null;
         return getRandomEmoji(NO_YIELD_EMOJIS);
-    }, [hasAnyResources, visible, G.lastRoll]); // Use G.lastRoll as suggested for robustness
+    }, [hasAnyResources, G.lastRoll]); // Use G.lastRoll as suggested for robustness
 
     return (
         <div
