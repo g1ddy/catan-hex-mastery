@@ -10,7 +10,11 @@ export function SetupPage() {
   const navigate = useNavigate();
 
   const handlePlayerSelection = (numPlayers: number) => {
-    navigate('/game', { state: { numPlayers } });
+    navigate('/game', { state: { numPlayers, mode: 'local' } });
+  };
+
+  const handleDebugSelection = () => {
+    navigate('/game', { state: { numPlayers: 2, mode: 'singleplayer' } });
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
@@ -29,7 +33,28 @@ export function SetupPage() {
       </div>
 
       <div className="setup-menu w-full max-w-lg text-center">
-        <p className="text-xl mb-6">Select Number of Players:</p>
+        <div className="mb-8">
+            <button
+                onClick={handleDebugSelection}
+                data-tooltip-id="setup-tooltip"
+                data-tooltip-content="Single Player Debug Mode: Enables advanced AI controls and boardgame.io Debug Panel"
+                className="
+                    w-full max-w-xs py-3 px-6
+                    bg-indigo-600/90 backdrop-blur-sm border border-indigo-500
+                    hover:bg-indigo-500 hover:border-indigo-400
+                    text-white font-bold rounded-lg shadow-md
+                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+                    mb-2
+                "
+            >
+                Start Debug Session (1 Player)
+            </button>
+            <p className="text-xs text-slate-400">
+                Recommended for AI development and regression testing
+            </p>
+        </div>
+
+        <p className="text-xl mb-6">Local Multiplayer:</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
           {SUPPORTED_PLAYER_COUNTS.map((num) => {
             const isDisabled = isLocalMode && num > 2;
