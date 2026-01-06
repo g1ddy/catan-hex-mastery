@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameState, Player } from '../game/types';
-import { Trees } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import { ResourceIconRow } from './ResourceIconRow';
 
 interface PlayerPanelProps {
@@ -30,6 +30,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
       ">
         {playerList.map((player: Player) => {
           const isActive = player.id === currentPlayerId;
+          const totalResources = Object.values(player.resources).reduce((a, b) => a + b, 0);
+
           // Styles for active state differences
           const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
           const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
@@ -79,8 +81,12 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ players, currentPlayer
                 </div>
 
                  {/* Mobile Inactive Summary (VP + Count) */}
-                 <div className={`md:hidden text-[10px] text-slate-400 flex items-center gap-1 ${!isActive ? 'block' : 'hidden'}`}>
-                    VP:{player.victoryPoints} | <Trees size={10} className="inline"/> {Object.values(player.resources).reduce((a, b) => a + b, 0)}
+                 <div
+                    className={`md:hidden text-[10px] text-slate-400 flex items-center gap-1 ${!isActive ? 'block' : 'hidden'}`}
+                    aria-label={`Victory Points: ${player.victoryPoints}, Total Resources: ${totalResources}`}
+                    role="group"
+                 >
+                    VP:{player.victoryPoints} | <Layers size={10} className="inline" aria-hidden="true" /> {totalResources}
                  </div>
               </div>
             </div>
