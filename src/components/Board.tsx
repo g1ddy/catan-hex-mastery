@@ -17,6 +17,8 @@ import { PHASES, STAGE_MOVES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
 
 const NO_OP = () => {};
+const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
+const MESSAGE_TIMEOUT_MS = 3000;
 
 export interface CatanBoardProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
@@ -42,6 +44,16 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
   const [customBannerMessage, setCustomBannerMessage] = useState<string | null>(null);
+
+  // Clear custom message after timeout
+  React.useEffect(() => {
+    if (customBannerMessage) {
+      const timer = setTimeout(() => {
+        setCustomBannerMessage(null);
+      }, MESSAGE_TIMEOUT_MS);
+      return () => clearTimeout(timer);
+    }
+  }, [customBannerMessage]);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -236,8 +248,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           G={G}
           onRegenerate={() => {
               moves.regenerateBoard();
-              setCustomBannerMessage("Board Regenerated!");
-              setTimeout(() => setCustomBannerMessage(null), 3000);
+              setCustomBannerMessage(MESSAGE_BOARD_REGENERATED);
           }}
           canRegenerate={(() => {
             const stage = ctx.activePlayers?.[ctx.currentPlayer];
