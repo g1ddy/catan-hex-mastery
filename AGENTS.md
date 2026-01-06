@@ -50,6 +50,7 @@ We are currently finalizing **Phase 5: UI/UX Polish** and preparing for **Phase 
     *   **Coverage**: Every phase must have comprehensive unit tests.
     *   **Verification**: You must verify your code by running tests before marking a task as complete.
     *   **UI/Visual Verification**: When working on UI/UX, you **must** use Playwright scripts to generate visual confirmation (screenshots and DOM dumps). Never assume a layout works based on code analysis alone.
+    *   **No Fixed Timeouts**: Do NOT use `waitForTimeout` in Playwright tests. This causes flakiness. Always wait for a specific condition (e.g., `waitForSelector`, `expect(...).toBeVisible()`).
 
 ### 2. Strategic Context
 When implementing logic, remember the "Why".
@@ -105,3 +106,37 @@ Dependencies and tools in `setup.sh` are intended to be part of the environment 
       Tooltip: () => null,
     }));
     ```
+
+## Feature Map & Architecture
+
+### Engine & State (`src/game`)
+*   **Logic:** `Game.ts` (Game Definition), `types.ts` (State Interfaces), `turnOrder.ts` (Turn Order).
+*   **Moves (`src/game/moves`):** `build.ts` (Construction), `setup.ts` (Drafting), `roll.ts` (Dice/Production).
+*   **Generators:** `boardGen.ts` (Map Generation & Validation).
+
+### Coach & Analysis (`src/game/analysis`)
+*   **Logic:** `coach.ts` (Heuristics, Recommendations), `analyst.ts` (Board Stats).
+*   **Integration:** `CoachPlugin.ts` (boardgame.io Plugin).
+
+### UI/Visualization (`src/components`)
+*   **Board:** `Board.tsx` (Main View), `GameHex.tsx` (Hex Rendering), `HexOverlays.tsx` (Interaction Layer).
+*   **Controls:** `GameControls.tsx` (Action Bar), `GameStatusBanner.tsx` (Turn Info).
+*   **Dashboards:** `AnalystPanel.tsx` (Stats Sidebar).
+
+## Code Standards
+
+### Core Standards
+*   **Functional Only:** React Functional Components + Hooks. No Class Components.
+*   **Strict Typing:** TypeScript Strict Mode. No `any`. Explicit interfaces in `types.ts`.
+*   **State Management:** `boardgame.io` (G/ctx). No local state for game data.
+
+### Design Patterns
+*   **Plugin Pattern:** Logic extension via `boardgame.io` plugins (e.g., Coach).
+*   **Separation of Concerns:** `src/game` (Pure Logic/Math) vs `src/components` (Pure UI).
+*   **Hexagonal Architecture:** Use Cube Coordinates (`q,r,s`) for all logic.
+
+### Testing & Security
+*   **TDD:** Jest for logic (`npm run test`).
+*   **E2E:** Playwright for UI verification (`npm run test:e2e`).
+*   **Security:** `eslint-plugin-security` active. Validate all inputs (e.g., `isValidHexId`).
+*   **Mocking:** Explicit mocks for UI libs (`lucide-react`) in unit tests.

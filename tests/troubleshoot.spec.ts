@@ -12,7 +12,7 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // Screenshot 1: Desktop Sidebar Open (Default)
-    await page.screenshot({ path: 'latest_desktop.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/latest_desktop.png', fullPage: true });
   });
 
   test('Capture Mobile Screenshots', async ({ page }) => {
@@ -22,15 +22,18 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // Screenshot 3: Mobile Drawer Closed (Default)
-    await page.screenshot({ path: 'troubleshoot_mobile_closed.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/troubleshoot_mobile_closed.png', fullPage: true });
 
     // Open Drawer
     // Use force: true as previous runs indicated interception by grid
     await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click({ force: true });
-    await page.waitForTimeout(500); // Wait for transition
+
+    // Wait for the drawer content to be visible instead of using fixed timeout
+    // Using text selector as class selector .analyst-panel is not present
+    await page.getByText('Player Production Potential').waitFor({ state: 'visible' });
 
     // Screenshot 4: Mobile Drawer Open
-    await page.screenshot({ path: 'troubleshoot_mobile_open.png', fullPage: true });
+    await page.screenshot({ path: 'tests/screenshots/troubleshoot_mobile_open.png', fullPage: true });
   });
 
 });
