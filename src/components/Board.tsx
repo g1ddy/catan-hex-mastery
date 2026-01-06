@@ -41,6 +41,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
+  const [customBannerMessage, setCustomBannerMessage] = useState<string | null>(null);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -215,6 +216,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             playerID={playerID}
             uiMode={uiMode}
             buildMode={buildMode}
+            customMessage={customBannerMessage}
         />
       }
       gameControls={
@@ -232,7 +234,11 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         <AnalystPanel
           stats={G.boardStats}
           G={G}
-          onRegenerate={() => moves.regenerateBoard()}
+          onRegenerate={() => {
+              moves.regenerateBoard();
+              setCustomBannerMessage("Board Regenerated!");
+              setTimeout(() => setCustomBannerMessage(null), 3000);
+          }}
           canRegenerate={(() => {
             const stage = ctx.activePlayers?.[ctx.currentPlayer];
             if (!stage) return false;

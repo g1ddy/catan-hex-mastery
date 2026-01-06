@@ -11,9 +11,10 @@ interface GameStatusBannerProps {
     playerID: string | null;
     uiMode: UiMode;
     buildMode: BuildMode;
+    customMessage?: string | null;
 }
 
-export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, playerID, uiMode, buildMode }) => {
+export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, playerID, uiMode, buildMode, customMessage }) => {
     const [showRollResult, setShowRollResult] = useState(false);
 
     // Calculate roll sum once
@@ -37,8 +38,10 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({ G, ctx, play
     let message = "";
     let colorClass = "text-amber-400"; // Default color
 
-    // Game Over Logic
-    if (ctx.gameover) {
+    if (customMessage) {
+        message = customMessage;
+        colorClass = "text-green-400";
+    } else if (ctx.gameover) {
         message = "Game Over";
         colorClass = "text-slate-200";
 

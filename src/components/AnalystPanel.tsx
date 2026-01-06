@@ -3,7 +3,6 @@ import { BoardStats, GameState } from '../game/types';
 import { calculatePlayerPotentialPips } from '../game/analyst';
 import { ResourceIconRow } from './ResourceIconRow';
 import { RefreshCw } from 'lucide-react';
-import toast from 'react-hot-toast';
 
 interface AnalystPanelProps {
   stats: BoardStats;
@@ -24,7 +23,6 @@ const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canReg
   const handleRegenerate = () => {
     if (onRegenerate) {
       onRegenerate();
-      toast.success("Board regenerated!");
     }
   };
 
