@@ -4,6 +4,10 @@ import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
 import { DebugBot } from './bots/DebugBot';
+import { GameState } from './game/types';
+import { STAGES } from './game/constants';
+import { Coach } from './game/analysis/coach';
+import { BotCoach, BotMove } from './bots/BotCoach';
 
 interface GameClientProps {
   numPlayers: number;
@@ -22,37 +26,45 @@ const LocalClient = Client({
 }) as unknown as React.ComponentType<GameClientProps>;
 
 // 2. Single Player / Debug Client
-// No multiplayer backend. This ENABLES the full Debug Panel capabilities.
-// We wire the bot here so the AI tab has something to control.
-// In Single Player mode, 'game.ai' is used if defined, or we can look for other configs.
-// However, boardgame.io's debug panel often looks for bots defined in the client config
-// if we are NOT using a backend.
-// Wait, if we pass 'bots' to Client() directly, does it work?
-// The types for Client() options include 'ai'.
-// Let's try passing 'game' which already has AI?
-// CatanGame probably doesn't have 'ai' property set up for MCTS.
-// But we can try passing the DebugBot class to the `game` object override?
-// Or we can try to use the `ai` option in Client (if it exists).
-// Actually, in the latest boardgame.io, the AI visualization works best when the Game object has an 'ai' section.
-
 const SinglePlayerClient = Client({
   game: {
     ...CatanGame,
-    // We attach the bot to the game definition so the Debug Panel can find it.
-    // The 'ai' property is where boardgame.io looks for bot configuration.
+    // Provide AI configuration to enable the Debug Panel's AI tab.
+    // We implement 'enumerate' to bridge boardgame.io's AI interface with our BotCoach logic.
     ai: {
-      bot: DebugBot,
-      enumerate: (G: any, ctx: any) => {
-         // This is a dummy enumerate just to satisfy types if needed,
-         // but the Bot class itself has enumerate.
-         // boardgame.io AI looks for 'bot' class.
-         return [];
+      enumerate: (G: GameState, ctx: any, playerID: string) => {
+        const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
+        // Ensure coach exists (it should be in G or ctx, depending on implementation).
+        // DebugBot checks ctx.coach.
+        const coach = ctx.coach as Coach;
+        if (!coach) return [];
+
+        const botCoach = new BotCoach(G, coach);
+        let recommendation: BotMove | null = null;
+
+        switch (stage) {
+            case STAGES.PLACE_SETTLEMENT:
+                recommendation = botCoach.recommendSettlementPlacement(playerID);
+                break;
+            case STAGES.PLACE_ROAD:
+                recommendation = botCoach.recommendRoadPlacement(playerID);
+                break;
+            case STAGES.ROLLING:
+                return [{ move: 'rollDice', args: [] }];
+            case STAGES.ACTING:
+                recommendation = botCoach.recommendNextMove(playerID);
+                break;
+        }
+
+        if (recommendation) {
+            return [recommendation];
+        }
+        return [];
       }
     }
   },
   board: Board,
   debug: { collapseOnLoad: false },
-  // No multiplayer property -> Single Player Client
 }) as unknown as React.ComponentType<GameClientProps>;
 
 // 3. Game Client Factory / Wrapper
