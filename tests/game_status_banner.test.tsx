@@ -16,6 +16,13 @@ jest.mock('lucide-react', () => ({
     Wheat: () => <div data-testid="icon-wheat" />,
     Mountain: () => <div data-testid="icon-mountain" />,
     Cloud: () => <div data-testid="icon-cloud" />,
+    Dice1: () => <div data-testid="icon-dice-1" />,
+    Dice2: () => <div data-testid="icon-dice-2" />,
+    Dice3: () => <div data-testid="icon-dice-3" />,
+    Dice4: () => <div data-testid="icon-dice-4" />,
+    Dice5: () => <div data-testid="icon-dice-5" />,
+    Dice6: () => <div data-testid="icon-dice-6" />,
+    Dices: () => <div data-testid="icon-dices" />,
 }));
 
 describe('GameStatusBanner', () => {
@@ -70,20 +77,29 @@ describe('GameStatusBanner', () => {
         jest.useFakeTimers();
         // Initially no roll
         const { rerender } = render(<GameStatusBanner {...props} />);
-        expect(screen.queryByText(/Roll:/)).not.toBeInTheDocument();
+        expect(screen.queryByText(/= /)).not.toBeInTheDocument();
 
         // Simulate roll
         const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
         rerender(<GameStatusBanner {...props} G={rolledG} />);
 
-        expect(screen.getByText('Roll: 7')).toBeInTheDocument();
+        // Should initially show rolling state
+        expect(screen.getByText('Rolling...')).toBeInTheDocument();
 
-        // Fast-forward time to check it disappears
+        // Advance time to finish rolling animation (1s)
         act(() => {
-            jest.advanceTimersByTime(4000);
+            jest.advanceTimersByTime(1000);
         });
 
-        expect(screen.queryByText(/Roll:/)).not.toBeInTheDocument();
+        // Now shows result
+        expect(screen.getByText('= 7')).toBeInTheDocument();
+
+        // Fast-forward time to check it disappears (4s total duration)
+        act(() => {
+            jest.advanceTimersByTime(3000);
+        });
+
+        expect(screen.queryByText('= 7')).not.toBeInTheDocument();
         jest.useRealTimers();
     });
 
