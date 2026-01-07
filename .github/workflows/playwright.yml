@@ -28,6 +28,9 @@ jobs:
       - name: Run Playwright tests
         run: npm run test:e2e
 
+      - name: Run Playwright Debug Tests
+        run: npx playwright test --config config/playwright.debug.config.ts
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
