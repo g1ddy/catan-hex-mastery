@@ -7,12 +7,22 @@ interface PlayerCardProps {
   isActive: boolean;
 }
 
+// Regex to validate hex color codes (e.g., #E53935 or #E53)
+const HEX_COLOR_REGEX = /^#([0-9A-F]{3}){1,2}$/i;
+
 function PlayerCard({ player, isActive }: PlayerCardProps) {
   const totalResources = Object.values(player.resources).reduce((a, b) => a + b, 0);
 
   // Styles for active state differences
   const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
   const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+
+  // Securely handle player color
+  const isValidColor = HEX_COLOR_REGEX.test(player.color);
+  const playerColorStyle = isValidColor ? { backgroundColor: player.color } : { backgroundColor: '#666' }; // Fallback gray
+
+  // Calculate player number once
+  const playerNumber = parseInt(player.id, 10) + 1;
 
   return (
     <div className={`
@@ -24,14 +34,14 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
     `}>
       {/* Header: Identity */}
       <div className="flex items-center gap-1 font-bold text-sm md:text-base md:mb-1">
-        <div className="w-2 h-2 md:w-3 md:h-3 rounded-full shadow-sm" style={{ backgroundColor: player.color }}></div>
+        <div className="w-2 h-2 md:w-3 md:h-3 rounded-full shadow-sm" style={playerColorStyle}></div>
 
         {/* Text: P1 vs Player 1 */}
         <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
-            P{Number(player.id) + 1}
+            P{playerNumber}
         </span>
         <span className="hidden md:inline text-slate-100 whitespace-nowrap">
-            Player {Number(player.id) + 1}
+            Player {playerNumber}
         </span>
       </div>
 
