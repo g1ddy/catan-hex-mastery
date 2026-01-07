@@ -42,7 +42,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [visible, sum]); // Restart animation if visible or sum changes (new roll)
+    }, [visible, G.lastRoll]); // Restart animation on new roll
 
     const hasAnyResources = useMemo(() => {
         return Object.values(rewards).some(res =>
