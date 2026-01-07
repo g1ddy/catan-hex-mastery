@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Use the Dev Server port and base URL
-const BASE_URL = 'http://localhost:5173/catan-hex-mastery/';
+// Use the Dev Server port and base URL, allow override via env var
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5173/catan-hex-mastery/';
 
 export default defineConfig({
   testDir: '../debug-tests',

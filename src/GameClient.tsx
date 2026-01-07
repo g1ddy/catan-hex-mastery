@@ -8,6 +8,7 @@ import { GameState } from './game/types';
 import { STAGES } from './game/constants';
 import { Coach } from './game/analysis/coach';
 import { BotCoach, BotMove } from './bots/BotCoach';
+import { Ctx } from 'boardgame.io';
 
 interface GameClientProps {
   numPlayers: number;
@@ -32,12 +33,11 @@ const SinglePlayerClient = Client({
     // Provide AI configuration to enable the Debug Panel's AI tab.
     // We implement 'enumerate' to bridge boardgame.io's AI interface with our BotCoach logic.
     ai: {
-      enumerate: (G: GameState, ctx: any, playerID: string) => {
+      enumerate: (G: GameState, ctx: Ctx & { coach?: Coach }, playerID: string) => {
         const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
-        // Ensure coach exists (it should be in G or ctx, depending on implementation).
-        // DebugBot checks ctx.coach.
-        const coach = ctx.coach as Coach;
-        if (!coach) return [];
+
+        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
+        const coach = ctx.coach || new Coach(G);
 
         const botCoach = new BotCoach(G, coach);
         let recommendation: BotMove | null = null;
