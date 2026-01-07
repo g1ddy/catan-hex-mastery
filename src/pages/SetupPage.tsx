@@ -5,6 +5,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 
 const LOCAL_MODE_WARNING = "3-4 Player modes are unavailable in Local Pass-and-Play.";
 const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
+const DEBUG_PLAYER_COUNT = 2;
 
 export function SetupPage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export function SetupPage() {
   };
 
   const handleDebugSelection = () => {
-    navigate('/game', { state: { numPlayers: 2, mode: 'singleplayer' } });
+    navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer' } });
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
