@@ -1,7 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import { ProductionToast } from './ProductionToast';
 import { GameState } from '../game/types';
