@@ -1,6 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
-import { Trees, BrickWall, Wheat, Mountain, Cloud } from 'lucide-react';
+import {
+    Trees, BrickWall, Wheat, Mountain, Cloud,
+    Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Dices, LucideIcon
+} from 'lucide-react';
 import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 interface ProductionToastProps {
@@ -17,8 +20,29 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     sheep: <Cloud size={14} className="text-blue-300" />
 };
 
+const DICE_ICONS: Record<number, LucideIcon> = {
+    1: Dice1,
+    2: Dice2,
+    3: Dice3,
+    4: Dice4,
+    5: Dice5,
+    6: Dice6
+};
+
 export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visible }) => {
+    const [isRolling, setIsRolling] = useState(true);
     const rewards = G.lastRollRewards;
+    const [d1Val, d2Val] = G.lastRoll;
+
+    useEffect(() => {
+        if (visible) {
+            setIsRolling(true);
+            const timer = setTimeout(() => {
+                setIsRolling(false);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [visible, G.lastRoll]); // Restart animation on new roll
 
     const hasAnyResources = useMemo(() => {
         return Object.values(rewards).some(res =>
@@ -29,7 +53,10 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
     const randomEmoji = useMemo(() => {
         if (hasAnyResources) return null;
         return getRandomEmoji(NO_YIELD_EMOJIS);
-    }, [hasAnyResources, G.lastRoll]); // Use G.lastRoll as suggested for robustness
+    }, [hasAnyResources, G.lastRoll]);
+
+    const Die1Icon = DICE_ICONS[d1Val] || Dices;
+    const Die2Icon = DICE_ICONS[d2Val] || Dices;
 
     return (
         <div
@@ -38,16 +65,31 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
             className={`${visible ? 'animate-enter' : 'animate-leave'} w-fit max-w-[90vw] bg-slate-800/90 backdrop-blur shadow-lg rounded-full pointer-events-auto ring-1 ring-white/10 px-4 py-2`}
         >
             <div className="flex items-center gap-4 text-slate-100">
-                {/* Roll Number */}
-                <div className="font-bold text-lg whitespace-nowrap text-amber-400">
-                    Roll: {sum}
+                {/* Roll Dice Section */}
+                <div className="flex items-center gap-2">
+                    {isRolling ? (
+                        <>
+                            <Dices size={24} className="text-amber-400 animate-spin" />
+                            <span className="font-bold text-lg text-amber-400">Rolling...</span>
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex gap-1">
+                                <Die1Icon size={20} className="text-amber-400" />
+                                <Die2Icon size={20} className="text-amber-400" />
+                            </div>
+                            <span className="font-bold text-lg text-amber-400 ml-1">
+                                = {sum}
+                            </span>
+                        </>
+                    )}
                 </div>
 
                 {/* Vertical Separator */}
                 <div className="h-6 w-px bg-slate-600/50" />
 
-                {/* Players & Resources or Emoji */}
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {/* Players & Resources or Emoji - Only show after rolling */}
+                <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${isRolling ? 'opacity-0' : 'opacity-100'}`}>
                     {!hasAnyResources ? (
                         <div className="text-2xl animate-pulse" role="img" aria-label="No resources">
                             {randomEmoji}
