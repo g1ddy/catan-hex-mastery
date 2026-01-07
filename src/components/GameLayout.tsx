@@ -140,7 +140,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           <div
             className={`
               flex-shrink-0
-              p-2 pb-6 md:p-4
+              p-2 pb-6 md:p-4 md:pb-6
               flex justify-center
             `}
             style={{ zIndex: Z_INDEX_GAME_CONTROLS_CONTAINER }}
