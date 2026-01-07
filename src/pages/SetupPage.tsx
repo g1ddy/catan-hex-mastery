@@ -47,7 +47,7 @@ export function SetupPage() {
                     mb-2
                 "
             >
-                Start Debug Session (1 Player)
+                1 Player (Debug)
             </button>
             <p className="text-xs text-slate-400">
                 Recommended for AI development and regression testing
