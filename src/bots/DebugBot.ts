@@ -14,7 +14,7 @@ import { BotCoach, BotMove } from './BotCoach';
  * @param baseEnumerate Optional fallback function (e.g. RandomBot's enumerate) if no heuristic move is found
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const enumerateMoves = (G: GameState, ctx: any, playerID: string, baseEnumerate?: (...args: any[]) => any) => {
+export const enumerateMoves = (G: GameState, ctx: import('boardgame.io').Ctx & { coach?: Coach }, playerID: string, baseEnumerate?: (...args: any[]) => any) => {
     // Validate playerID to prevent prototype pollution
     if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
         console.warn('Invalid playerID:', playerID);
