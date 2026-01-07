@@ -24,7 +24,7 @@ export const enumerateMoves = (G: GameState, ctx: import('boardgame.io').Ctx & {
     const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
 
     // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-    let coach = ctx.coach as Coach;
+    let coach = ctx.coach;
     if (!coach) {
         console.warn('ctx.coach is undefined. Creating a transient Coach instance. This may be inefficient.');
         coach = new Coach(G);
