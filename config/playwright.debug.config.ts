@@ -4,9 +4,9 @@ import { defineConfig, devices } from '@playwright/test';
 const BASE_URL = 'http://localhost:5173/catan-hex-mastery/';
 
 export default defineConfig({
-  testDir: '../tests',
-  // Only run the debug mode test
-  testMatch: /debug_mode\.spec\.ts/,
+  testDir: '../debug-tests',
+  // Match all specs in the debug-tests folder
+  testMatch: /.*\.spec\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
