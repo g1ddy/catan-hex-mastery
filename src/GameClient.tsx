@@ -14,8 +14,6 @@ interface GameClientProps {
 }
 
 // 1. Local Multiplayer Client (Original behavior)
-// Uses 'Local' multiplayer backend. Good for pass-and-play or local bot simulation.
-// Note: Built-in Debug Panel 'AI' tab is DISABLED in multiplayer modes.
 const LocalClient = Client({
   game: CatanGame,
   board: Board,
@@ -24,23 +22,44 @@ const LocalClient = Client({
 }) as unknown as React.ComponentType<GameClientProps>;
 
 // 2. Single Player / Debug Client
-// No multiplayer backend. This ENABLES the full Debug Panel capabilities,
-// including the 'AI' tab for driving bots via Game.ai.enumerate.
+// No multiplayer backend. This ENABLES the full Debug Panel capabilities.
+// We wire the bot here so the AI tab has something to control.
+// In Single Player mode, 'game.ai' is used if defined, or we can look for other configs.
+// However, boardgame.io's debug panel often looks for bots defined in the client config
+// if we are NOT using a backend.
+// Wait, if we pass 'bots' to Client() directly, does it work?
+// The types for Client() options include 'ai'.
+// Let's try passing 'game' which already has AI?
+// CatanGame probably doesn't have 'ai' property set up for MCTS.
+// But we can try passing the DebugBot class to the `game` object override?
+// Or we can try to use the `ai` option in Client (if it exists).
+// Actually, in the latest boardgame.io, the AI visualization works best when the Game object has an 'ai' section.
+
 const SinglePlayerClient = Client({
-  game: CatanGame,
+  game: {
+    ...CatanGame,
+    // We attach the bot to the game definition so the Debug Panel can find it.
+    // The 'ai' property is where boardgame.io looks for bot configuration.
+    ai: {
+      bot: DebugBot,
+      enumerate: (G: any, ctx: any) => {
+         // This is a dummy enumerate just to satisfy types if needed,
+         // but the Bot class itself has enumerate.
+         // boardgame.io AI looks for 'bot' class.
+         return [];
+      }
+    }
+  },
   board: Board,
-  debug: { collapseOnLoad: false }, // Always show debug panel in this mode
-  // multiplayer: undefined, // Explicitly undefined to enable single-player mode
+  debug: { collapseOnLoad: false },
+  // No multiplayer property -> Single Player Client
 }) as unknown as React.ComponentType<GameClientProps>;
 
 // 3. Game Client Factory / Wrapper
-// Decides which client to render based on the 'mode' prop.
 export const GameClient: React.FC<GameClientProps> = (props) => {
   const { mode = 'local', ...clientProps } = props;
 
   if (mode === 'singleplayer') {
-    // In singleplayer, we typically play as player "0".
-    // We override playerID to ensure it's set, though the Client handles '0' by default often.
     return <SinglePlayerClient {...clientProps} playerID="0" />;
   }
 
