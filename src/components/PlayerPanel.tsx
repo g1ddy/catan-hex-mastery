@@ -1,4 +1,3 @@
-import React from 'react';
 import { GameState, Player } from '../game/types';
 import { Layers } from 'lucide-react';
 import { ResourceIconRow } from './ResourceIconRow';
