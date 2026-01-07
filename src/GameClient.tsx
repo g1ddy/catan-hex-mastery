@@ -3,11 +3,9 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
-import { DebugBot } from './bots/DebugBot';
+import { DebugBot, enumerateMoves } from './bots/DebugBot';
 import { GameState } from './game/types';
-import { STAGES } from './game/constants';
 import { Coach } from './game/analysis/coach';
-import { BotCoach, BotMove } from './bots/BotCoach';
 import { Ctx } from 'boardgame.io';
 
 interface GameClientProps {
@@ -34,32 +32,7 @@ const SinglePlayerClient = Client({
     // We implement 'enumerate' to bridge boardgame.io's AI interface with our BotCoach logic.
     ai: {
       enumerate: (G: GameState, ctx: Ctx & { coach?: Coach }, playerID: string) => {
-        const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
-
-        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-        const coach = ctx.coach || new Coach(G);
-
-        const botCoach = new BotCoach(G, coach);
-        let recommendation: BotMove | null = null;
-
-        switch (stage) {
-            case STAGES.PLACE_SETTLEMENT:
-                recommendation = botCoach.recommendSettlementPlacement(playerID);
-                break;
-            case STAGES.PLACE_ROAD:
-                recommendation = botCoach.recommendRoadPlacement(playerID);
-                break;
-            case STAGES.ROLLING:
-                return [{ move: 'rollDice', args: [] }];
-            case STAGES.ACTING:
-                recommendation = botCoach.recommendNextMove(playerID);
-                break;
-        }
-
-        if (recommendation) {
-            return [recommendation];
-        }
-        return [];
+        return enumerateMoves(G, ctx, playerID);
       }
     }
   },
