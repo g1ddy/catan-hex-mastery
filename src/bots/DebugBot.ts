@@ -15,6 +15,12 @@ import { BotCoach, BotMove } from './BotCoach';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const enumerateMoves = (G: GameState, ctx: any, playerID: string, baseEnumerate?: (...args: any[]) => any) => {
+    // Validate playerID to prevent prototype pollution
+    if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
+        console.warn('Invalid playerID:', playerID);
+        return [];
+    }
+
     const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
 
     // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
