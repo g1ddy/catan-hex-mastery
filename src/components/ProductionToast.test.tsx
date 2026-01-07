@@ -30,18 +30,6 @@ const GWithRewards = {
 jest.useFakeTimers();
 
 describe('ProductionToast', () => {
-    test('renders roll number after animation', () => {
-        render(<ProductionToast G={mockG} sum={2} visible={true} />);
-
-        // Advance timer to skip animation
-        act(() => {
-            jest.advanceTimersByTime(1000);
-        });
-
-        // The text changed from "Roll: 2" to "= 2"
-        expect(screen.getByText('= 2')).toBeInTheDocument();
-    });
-
     test('renders resources when present after animation', () => {
         render(<ProductionToast G={GWithRewards} sum={2} visible={true} />);
 

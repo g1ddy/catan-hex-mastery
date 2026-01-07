@@ -13,6 +13,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { Resources } from '../game/types';
 import { RESOURCE_META } from './uiConfig';
 import { AnalystShell } from './AnalystShell';
+import { DiceIcons } from './DiceIcons';
 
 interface GameLayoutProps {
   board: React.ReactNode;
@@ -49,6 +50,18 @@ const renderCostTooltip = ({ content }: { content: string | null }) => {
     console.error('Failed to parse tooltip content:', error);
     return null;
   }
+};
+
+const renderDiceTooltip = ({ content }: { content: string | null }) => {
+    if (!content) return null;
+
+    try {
+        const { d1, d2 } = JSON.parse(content) as { d1: number, d2: number };
+        return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
+    } catch (error) {
+        console.error('Failed to parse dice tooltip content:', error);
+        return null;
+    }
 };
 
 export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls, gameStatus }) => {
@@ -89,6 +102,12 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           place="top"
           style={{ zIndex: Z_INDEX_TOOLTIP }}
           render={renderCostTooltip}
+      />
+      <Tooltip
+          id="dice-tooltip"
+          place="top"
+          style={{ zIndex: Z_INDEX_TOOLTIP }}
+          render={renderDiceTooltip}
       />
 
       {/* 2. Analyst Panel (Sidebar on Desktop, Drawer on Mobile) */}

@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { GameState, Resources } from '../game/types';
 import {
-    Trees, BrickWall, Wheat, Mountain, Cloud,
-    Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Dices, LucideIcon
+    Trees, BrickWall, Wheat, Mountain, Cloud, Dices
 } from 'lucide-react';
 import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
+import { DiceIcons } from './DiceIcons';
 
 interface ProductionToastProps {
     G: GameState;
@@ -20,16 +20,7 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     sheep: <Cloud size={14} className="text-blue-300" />
 };
 
-const DICE_ICONS: Record<number, LucideIcon> = {
-    1: Dice1,
-    2: Dice2,
-    3: Dice3,
-    4: Dice4,
-    5: Dice5,
-    6: Dice6
-};
-
-export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visible }) => {
+export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible }) => {
     const [isRolling, setIsRolling] = useState(true);
     const rewards = G.lastRollRewards;
     const [d1Val, d2Val] = G.lastRoll;
@@ -55,9 +46,6 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
         return getRandomEmoji(NO_YIELD_EMOJIS);
     }, [hasAnyResources, G.lastRoll]);
 
-    const Die1Icon = DICE_ICONS[d1Val] || Dices;
-    const Die2Icon = DICE_ICONS[d2Val] || Dices;
-
     return (
         <div
             role="status"
@@ -73,15 +61,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
                             <span className="font-bold text-lg text-amber-400">Rolling...</span>
                         </>
                     ) : (
-                        <>
-                            <div className="flex gap-1">
-                                <Die1Icon size={20} className="text-amber-400" />
-                                <Die2Icon size={20} className="text-amber-400" />
-                            </div>
-                            <span className="font-bold text-lg text-amber-400 ml-1">
-                                = {sum}
-                            </span>
-                        </>
+                        <DiceIcons d1={d1Val} d2={d2Val} size={20} className="text-amber-400" />
                     )}
                 </div>
 
@@ -116,7 +96,9 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
                                             if (!amount) return null;
                                             return (
                                                 <span key={type} className="flex items-center gap-0.5 text-xs font-medium">
-                                                    +{amount} {RESOURCE_ICONS[type as keyof Resources]}
+                                                    +{amount} {
+                                                        RESOURCE_ICONS[type as keyof Resources]
+                                                    }
                                                 </span>
                                             );
                                         })}
