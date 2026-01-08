@@ -31,7 +31,7 @@ jest.useFakeTimers();
 
 describe('ProductionToast', () => {
     test('renders resources when present after animation', () => {
-        render(<ProductionToast G={GWithRewards} sum={2} visible={true} />);
+        render(<ProductionToast G={GWithRewards} visible={true} />);
 
         act(() => {
             jest.advanceTimersByTime(1000);
@@ -43,7 +43,7 @@ describe('ProductionToast', () => {
     });
 
     test('renders emoji when no rewards', () => {
-        render(<ProductionToast G={mockG} sum={2} visible={true} />);
+        render(<ProductionToast G={mockG} visible={true} />);
 
         act(() => {
             jest.advanceTimersByTime(1000);

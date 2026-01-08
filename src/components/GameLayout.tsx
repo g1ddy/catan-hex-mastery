@@ -56,8 +56,11 @@ const renderDiceTooltip = ({ content }: { content: string | null }) => {
     if (!content) return null;
 
     try {
-        const { d1, d2 } = JSON.parse(content) as { d1: number, d2: number };
-        return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
+        const parsed = JSON.parse(content);
+        if (parsed && typeof parsed.d1 === 'number' && typeof parsed.d2 === 'number') {
+            return <DiceIcons d1={parsed.d1} d2={parsed.d2} size={24} className="text-white" />;
+        }
+        return null;
     } catch (error) {
         console.error('Failed to parse dice tooltip content:', error);
         return null;

@@ -8,7 +8,6 @@ import { DiceIcons } from './DiceIcons';
 
 interface ProductionToastProps {
     G: GameState;
-    sum: number;
     visible: boolean;
 }
 
