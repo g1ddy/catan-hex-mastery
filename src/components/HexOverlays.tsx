@@ -229,7 +229,7 @@ export const HexOverlays = React.memo(({
 
                          {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
-                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse" />
+                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse motion-reduce:animate-none" />
                         )}
 
                         {/* Heatmap Overlay */}
@@ -259,7 +259,7 @@ export const HexOverlays = React.memo(({
                                         fill="none"
                                         stroke="#FFD700"
                                         strokeWidth={2}
-                                        className="animate-pulse"
+                                        className="animate-pulse motion-reduce:animate-none"
                                     />
                                 )}
 

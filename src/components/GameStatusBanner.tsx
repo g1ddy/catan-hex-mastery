@@ -109,7 +109,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         } else if (ctx.gameover.winner) {
             if (ctx.gameover.winner === playerID) {
                 message = `You Win!!! ${gameOverEmoji}`;
-                colorClass = "text-amber-400 animate-pulse";
+                colorClass = "text-amber-400 animate-pulse motion-reduce:animate-none";
             } else {
                 message = `You Lose ${gameOverEmoji}`;
                 colorClass = "text-red-400";

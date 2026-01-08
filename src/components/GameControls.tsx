@@ -71,7 +71,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 <div className={`flex-grow flex pointer-events-auto ${className}`}>
                     <BeginPlacementButton
                         onClick={handleClick}
-                        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse"
+        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse motion-reduce:animate-none"
                     />
                 </div>
              );
@@ -135,11 +135,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         const endTurnLabel = isEndingTurn ? "Ending..." : "End";
         const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
-        const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />;
+        const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
         // Roll Logic
         const rollLabel = isRolling ? "Rolling..." : "Roll";
-        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin" /> : <Dice size={16} />;
+        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
         const handleRoll = () => {
             if (!isMoveAllowed('rollDice')) return;
