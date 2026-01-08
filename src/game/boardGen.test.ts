@@ -1,5 +1,5 @@
-import { generateBoard } from '../src/game/boardGen';
-import { TerrainType } from '../src/game/types';
+import { generateBoard } from './boardGen';
+import { TerrainType } from './types';
 
 describe('boardGen', () => {
   test('generates 19 hexes', () => {

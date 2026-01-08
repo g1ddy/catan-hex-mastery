@@ -2,9 +2,9 @@
 /** @jest-environment jsdom */
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { GameStatusBanner } from '../src/components/GameStatusBanner';
-import { GameState } from '../src/game/types';
-import { PHASES, STAGES } from '../src/game/constants';
+import { GameStatusBanner } from './GameStatusBanner';
+import { GameState } from '../game/types';
+import { PHASES, STAGES } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 
