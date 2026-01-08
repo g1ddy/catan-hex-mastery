@@ -69,7 +69,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
                 <div className="flex items-center gap-2">
                     {isRolling ? (
                         <>
-                            <Dices size={24} className="text-amber-400 animate-spin" />
+                            <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
                             <span className="font-bold text-lg text-amber-400">Rolling...</span>
                         </>
                     ) : (
@@ -91,7 +91,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, sum, visibl
                 {/* Players & Resources or Emoji - Only show after rolling */}
                 <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${isRolling ? 'opacity-0' : 'opacity-100'}`}>
                     {!hasAnyResources ? (
-                        <div className="text-2xl animate-pulse" role="img" aria-label="No resources">
+                        <div className="text-2xl animate-pulse motion-reduce:animate-none" role="img" aria-label="No resources">
                             {randomEmoji}
                         </div>
                     ) : (

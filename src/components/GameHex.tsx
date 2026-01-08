@@ -36,7 +36,7 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing })
   const pips = getPipsCount(hex.tokenValue || 0);
 
   return (
-    <g className={isProducing ? 'animate-pulse' : ''}>
+    <g className={isProducing ? 'animate-pulse motion-reduce:animate-none' : ''}>
         <Hexagon
         q={hex.coords.q}
         r={hex.coords.r}

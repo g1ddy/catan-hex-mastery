@@ -30,6 +30,14 @@ svg g, svg circle, svg rect, svg polygon {
 .animate-enter { animation: enter 0.3s ease-out forwards; }
 .animate-leave { animation: leave 0.3s ease-in forwards; }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter, .animate-leave {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* Coach Tooltip Styling */
 .coach-tooltip {
   background-color: rgba(30, 41, 59, 0.95) !important; /* Slate-800 with opacity */
