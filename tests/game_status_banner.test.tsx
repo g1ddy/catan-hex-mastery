@@ -77,7 +77,7 @@ describe('GameStatusBanner', () => {
         jest.useFakeTimers();
         // Initially no roll
         const { rerender } = render(<GameStatusBanner {...props} />);
-        expect(screen.queryByText(/= /)).not.toBeInTheDocument();
+        expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
 
         // Simulate roll
         const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
@@ -91,15 +91,17 @@ describe('GameStatusBanner', () => {
             jest.advanceTimersByTime(1000);
         });
 
-        // Now shows result
-        expect(screen.getByText('= 7')).toBeInTheDocument();
+        // Now shows result (dice icons)
+        // We mocked 3 and 4
+        expect(screen.getByTestId('icon-dice-3')).toBeInTheDocument();
+        expect(screen.getByTestId('icon-dice-4')).toBeInTheDocument();
 
         // Fast-forward time to check it disappears (4s total duration)
         act(() => {
             jest.advanceTimersByTime(3000);
         });
 
-        expect(screen.queryByText('= 7')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
         jest.useRealTimers();
     });
 

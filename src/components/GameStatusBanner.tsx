@@ -79,7 +79,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
 
     // If showing roll result, render ProductionToast (reused)
     if (showRollResult) {
-        return <ProductionToast G={G} sum={sum} visible={true} />;
+        return <ProductionToast G={G} visible={true} />;
     }
 
     let message = "";

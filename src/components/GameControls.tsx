@@ -223,7 +223,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                 )}
 
                 {showLastRoll && (
-                     <div className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50">
+                     <div
+                        className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50 cursor-help"
+                        data-tooltip-id="dice-tooltip"
+                        data-tooltip-content={JSON.stringify({ d1: G.lastRoll[0], d2: G.lastRoll[1] })}
+                     >
                          <Dice className="text-blue-400" size={20} />
                          <span className="text-xl font-bold text-white">{lastRollSum}</span>
                      </div>
