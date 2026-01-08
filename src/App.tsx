@@ -1,7 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { SetupPage } from './pages/SetupPage';
 import { GamePage } from './pages/GamePage';
-import './App.css';
+import './styles/App.css';
 
 function App() {
   return (
