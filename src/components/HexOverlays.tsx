@@ -2,17 +2,15 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
-import { getVerticesForHex, getEdgesForHex, getEdgesForVertex, getVerticesForEdge, getVertexNeighbors } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { PHASES, STAGES } from '../game/constants';
-import { Home, Castle } from 'lucide-react';
-
-const SETTLEMENT_ICON_SIZE = 5;
-const CITY_ICON_SIZE = 6;
+import { isValidSettlementLocation, isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSetupRoadPlacement } from '../game/rules/placement';
+import { BuildingIcon } from './board/BuildingIcon';
 
 export interface CoachData {
     recommendations: Record<string, CoachRecommendation>;
@@ -20,34 +18,6 @@ export interface CoachData {
     maxScore: number;
     top3Set: Set<string>;
 }
-
-interface BuildingIconProps {
-    vertex: { type: 'settlement' | 'city'; owner: string };
-    corner: { x: number; y: number };
-    ownerColor: string | null | undefined;
-}
-
-export const BuildingIcon: React.FC<BuildingIconProps> = ({ vertex, corner, ownerColor }) => {
-    const isSettlement = vertex.type === 'settlement';
-    const Icon = isSettlement ? Home : Castle;
-    const size = isSettlement ? SETTLEMENT_ICON_SIZE : CITY_ICON_SIZE;
-    const typeName = isSettlement ? 'settlement' : 'city';
-
-    return (
-        <Icon
-            x={corner.x - size / 2}
-            y={corner.y - size / 2}
-            width={size}
-            height={size}
-            fill={ownerColor || 'none'}
-            stroke="black"
-            strokeWidth={1}
-            data-testid={`${typeName}-icon`}
-            aria-label={`${typeName.charAt(0).toUpperCase() + typeName.slice(1)} owned by Player ${Number(vertex.owner) + 1}`}
-            role="img"
-        />
-    );
-};
 
 interface HexOverlaysProps {
     hex: Hex;
@@ -68,40 +38,24 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
     if (prev.showCoachMode !== next.showCoachMode) return false;
     if (prev.coachData !== next.coachData) return false;
 
-    // Context checks
     if (prev.ctx.phase !== next.ctx.phase) return false;
     if (prev.ctx.currentPlayer !== next.ctx.currentPlayer) return false;
     if (prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) return false;
 
-    // Optimization: If board hasn't changed, we can likely skip.
-    // Settlements are part of the board state (G.board.vertices), so any new settlement
-    // will change the G.board reference, making explicit settlement checks redundant.
     if (prev.G.board === next.G.board) {
          return true;
     }
-
-    // If board changed, we must re-render.
     return false;
 }
 
 export const HexOverlays = React.memo(({
     hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
 }: HexOverlaysProps) => {
-    // Unpack pre-calculated coach data from parent
     const { recommendations, minScore, maxScore, top3Set } = coachData;
 
-    const isTooClose = (vertexId: string) => {
-        const neighbors = getVertexNeighbors(vertexId);
-        return neighbors.some(n => G.board.vertices[n]);
-    };
-
-    // Memoize geometry calculations (O(1) after first run)
-    // This prevents recalculating geometry and splitting strings on every re-render (e.g. when G.board updates)
+    // Use memoized geometry
     const { vertices, edges, corners, currentHexIdStr } = React.useMemo(() => {
-        // Use the centralized geometry, relying on the default size in hexCornerOffset
         const cornerCoords = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i));
-
-        // Pre-split IDs for faster lookup in getPrimaryHexOwner
         const rawVertexIds = getVerticesForHex(hex.coords);
         const rawEdgeIds = getEdgesForHex(hex.coords);
 
@@ -114,10 +68,7 @@ export const HexOverlays = React.memo(({
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
 
     const getPrimaryHexOwner = (parts: string[]): string => {
-        // Fix: Find the first hex ID in the key that actually exists on the board.
-        // This prevents "off-board" hexes (which don't exist in G.board.hexes) from being assigned ownership,
-        // which would cause the element to not render at all.
-        // Since parts are memoized, we avoid splitting strings here.
+        // eslint-disable-next-line security/detect-object-injection
         return parts.find(ownerId => G.board.hexes[ownerId]) || parts[0];
     };
 
@@ -125,22 +76,20 @@ export const HexOverlays = React.memo(({
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
             {corners.map((corner, i) => {
+                // eslint-disable-next-line security/detect-object-injection
                 const { id: vId, parts } = vertices[i];
                 const primaryHex = getPrimaryHexOwner(parts);
 
                 if (primaryHex !== currentHexIdStr) return null;
 
+                // eslint-disable-next-line security/detect-object-injection
                 const vertex = G.board.vertices[vId];
                 const isOccupied = !!vertex;
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
 
-                // Interaction Logic
                 const isSetup = ctx.phase === PHASES.SETUP;
-                // Interaction logic mostly for action phase, but checking phase generically
-                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-
-                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
+                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
                 let isClickable = false;
                 let isGhost = false;
@@ -151,7 +100,7 @@ export const HexOverlays = React.memo(({
                 let clickAction = () => {};
 
                 const applyCoachRecommendation = () => {
-                    const rec = recommendations[vId];
+                    const rec = recommendations[vId]; // eslint-disable-line security/detect-object-injection
                     if (rec) {
                         isRecommended = true;
                         recommendationData = rec;
@@ -163,9 +112,9 @@ export const HexOverlays = React.memo(({
                 };
 
                 if (isSetup) {
-                    if (currentStage === STAGES.PLACE_SETTLEMENT && !isOccupied && !isTooClose(vId)) {
-                        // Only activate ghost if uiMode is placing
-                        if (uiMode === 'placing') {
+                    if (currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing') {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidSettlementLocation(G, vId)) {
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
@@ -175,29 +124,26 @@ export const HexOverlays = React.memo(({
                         }
                     }
                 } else if (isActingStage) {
-                    if (buildMode === 'settlement' && !isOccupied && !isTooClose(vId)) {
-                        // Strict connectivity check for settlements
-                        const adjEdges = getEdgesForVertex(vId);
-                        const hasOwnRoad = adjEdges.some(eId => {
-                            const edge = G.board.edges[eId];
-                            return edge && edge.owner === ctx.currentPlayer;
-                        });
-
-                        if (hasOwnRoad) {
-                            isClickable = true;
-                            isGhost = true;
-                            clickAction = () => {
-                                safeMove(() => moves.buildSettlement(vId));
-                                setBuildMode(null);
-                            }
-                            applyCoachRecommendation();
+                    if (buildMode === 'settlement') {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidSettlementPlacement(G, vId, ctx.currentPlayer)) {
+                             isClickable = true;
+                             isGhost = true;
+                             clickAction = () => {
+                                 safeMove(() => moves.buildSettlement(vId));
+                                 setBuildMode(null);
+                             }
+                             applyCoachRecommendation();
                         }
-                    } else if (buildMode === 'city' && isOccupied && vertex.owner === ctx.currentPlayer && vertex.type === 'settlement') {
-                        isClickable = true;
-                        isGhost = false; // It's upgrading an existing one
-                        clickAction = () => {
-                             safeMove(() => moves.buildCity(vId));
-                             setBuildMode(null);
+                    } else if (buildMode === 'city') {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidCityPlacement(G, vId, ctx.currentPlayer)) {
+                             isClickable = true;
+                             isGhost = false;
+                             clickAction = () => {
+                                  safeMove(() => moves.buildCity(vId));
+                                  setBuildMode(null);
+                             }
                         }
                     }
                 }
@@ -222,17 +168,14 @@ export const HexOverlays = React.memo(({
                             />
                         )}
 
-                        {/* Ghost Vertex (White Dot for Click Target) */}
                         {isGhost && (
                             <circle cx={corner.x} cy={corner.y} r={BOARD_CONFIG.GHOST_VERTEX_RADIUS} fill="white" opacity={0.5} className="ghost-vertex" />
                         )}
 
-                         {/* Highlight upgrade target */}
                         {isClickable && buildMode === 'city' && (
                              <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse motion-reduce:animate-none" />
                         )}
 
-                        {/* Heatmap Overlay */}
                         {isRecommended && (
                              <g
                                 className={`coach-highlight transition-opacity duration-200 ${
@@ -241,7 +184,6 @@ export const HexOverlays = React.memo(({
                                 data-tooltip-id="coach-tooltip"
                                 data-tooltip-content={recommendationData ? vId : ""}
                              >
-                                {/* Base Heatmap Circle */}
                                 <circle
                                     cx={corner.x} cy={corner.y}
                                     r={4}
@@ -249,22 +191,16 @@ export const HexOverlays = React.memo(({
                                     opacity={0.6}
                                     stroke="none"
                                 />
-
-                                {/* Top 3 Highlight (Gold Ring) */}
-                                {isTop3 && (
+                                {isTop3 ? (
                                     <circle
-                                        cx={corner.x}
-                                        cy={corner.y}
+                                        cx={corner.x} cy={corner.y}
                                         r={5}
                                         fill="none"
                                         stroke="#FFD700"
                                         strokeWidth={2}
                                         className="animate-pulse motion-reduce:animate-none"
                                     />
-                                )}
-
-                                {/* Subtle ring for all recommendations */}
-                                {!isTop3 && (
+                                ) : (
                                     <circle
                                         cx={corner.x} cy={corner.y}
                                         r={4}
@@ -281,6 +217,7 @@ export const HexOverlays = React.memo(({
 
             {/* EDGES */}
             {corners.map((corner, i) => {
+                // eslint-disable-next-line security/detect-object-injection
                 const { id: eId, parts } = edges[i];
                 const primaryHex = getPrimaryHexOwner(parts);
 
@@ -290,64 +227,38 @@ export const HexOverlays = React.memo(({
                 const midX = (corner.x + nextCorner.x) / 2;
                 const midY = (corner.y + nextCorner.y) / 2;
 
-                const edge = G.board.edges[eId];
+                const edge = G.board.edges[eId]; // eslint-disable-line security/detect-object-injection
                 const isOccupied = !!edge;
                 const ownerColor = isOccupied ? G.players[edge.owner]?.color : null;
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
 
-                // Interaction Logic
                 const isSetup = ctx.phase === PHASES.SETUP;
-                const isGameplay = ctx.phase === PHASES.GAMEPLAY;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-
-                const isActingStage = isGameplay && currentStage === STAGES.ACTING;
-
+                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
                 let isClickable = false;
                 let isGhost = false;
                 let clickAction = () => {};
 
                 if (isSetup) {
-                     if (currentStage === STAGES.PLACE_ROAD && !isOccupied) {
-                         // Only activate ghost if uiMode is placing
-                        if (uiMode === 'placing') {
-                            // Valid connection logic: must connect to the player's last placed settlement
-                            const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
-                            const isConnected = lastSettlementId && getEdgesForVertex(lastSettlementId).includes(eId);
-
-                            if (isConnected) {
-                                isClickable = true;
-                                isGhost = true;
-                                clickAction = () => {
-                                    safeMove(() => moves.placeRoad(eId));
-                                    setUiMode('viewing');
-                                };
-                            }
-                        }
-                     }
-                } else if (isActingStage) {
-                    if (buildMode === 'road' && !isOccupied) {
-                         const endpoints = getVerticesForEdge(eId);
-
-                         const hasConnection = (vId: string): boolean => {
-                            const building = G.board.vertices[vId];
-                            // Connected to own settlement/city
-                            if (building && building.owner === ctx.currentPlayer) return true;
-                            // Blocked by opponent's settlement/city
-                            if (building && building.owner !== ctx.currentPlayer) return false;
-                            // Connected to own road
-                            const adjEdges = getEdgesForVertex(vId);
-                            return adjEdges.some(adjEdgeId => {
-                                if (adjEdgeId === eId) return false;
-                                const edge = G.board.edges[adjEdgeId];
-                                return edge && edge.owner === ctx.currentPlayer;
-                            });
-                        };
-
-                        if (endpoints.some(hasConnection)) {
+                     if (currentStage === STAGES.PLACE_ROAD && !isOccupied && uiMode === 'placing') {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidSetupRoadPlacement(G, eId, ctx.currentPlayer)) {
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
+                                safeMove(() => moves.placeRoad(eId));
+                                setUiMode('viewing');
+                            };
+                        }
+                     }
+                } else if (isActingStage) {
+                    if (buildMode === 'road') {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidRoadPlacement(G, eId, ctx.currentPlayer)) {
+                             isClickable = true;
+                             isGhost = true;
+                             clickAction = () => {
                                 safeMove(() => moves.buildRoad(eId));
                                 setBuildMode(null);
                             }
