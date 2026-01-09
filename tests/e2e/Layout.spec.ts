@@ -18,7 +18,6 @@ test.describe('Game Layout and Navigation', () => {
     const collapseBtn = page.getByRole('button', { name: 'Collapse Sidebar' });
     await expect(collapseBtn).toBeVisible();
     await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
-    await page.screenshot({ path: 'desktop_sidebar_open.png' });
 
     // 3. Collapse Sidebar
     await collapseBtn.click();
@@ -27,7 +26,6 @@ test.describe('Game Layout and Navigation', () => {
     await expect(collapseBtn).not.toBeVisible();
     const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
     await expect(toggleBtn).toBeVisible();
-    await page.screenshot({ path: 'desktop_sidebar_closed.png' });
 
     // 5. Expand Sidebar
     // Click should wait for stability
@@ -52,7 +50,6 @@ test.describe('Game Layout and Navigation', () => {
     // "Close Analyst Panel" button inside drawer should not be visible yet
     const closeBtn = page.getByRole('button', { name: 'Close Analyst Panel' });
     await expect(closeBtn).not.toBeVisible();
-    await page.screenshot({ path: 'mobile_drawer_closed.png' });
 
     // 3. Open Drawer
     // Click should wait for stability
@@ -61,7 +58,6 @@ test.describe('Game Layout and Navigation', () => {
     // 4. Verify Drawer Open
     await expect(closeBtn).toBeVisible();
     await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
-    await page.screenshot({ path: 'mobile_drawer_open.png' });
 
     // 5. Close Drawer
     // Click should wait for stability
