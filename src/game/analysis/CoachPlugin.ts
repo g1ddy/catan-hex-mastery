@@ -4,7 +4,7 @@ import { Coach } from './coach';
 
 export const CoachPlugin = {
     name: 'coach',
-    api: ({ G, ctx }: { G: GameState, ctx: Ctx }) => {
-        return new Coach(G, ctx);
+    api: ({ G }: { G: GameState, ctx: Ctx }) => {
+        return new Coach(G);
     }
 };

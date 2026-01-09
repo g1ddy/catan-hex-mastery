@@ -1,7 +1,7 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { getEdgesForVertex, getVerticesForEdge, getVerticesForHex } from '../game/hexUtils';
+import { getEdgesForVertex, getVerticesForHex } from '../game/hexUtils';
 import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSettlementLocation } from '../game/rules/placement';
 
 export interface BotMove {

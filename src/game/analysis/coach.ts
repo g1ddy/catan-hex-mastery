@@ -82,7 +82,6 @@ export class Coach {
     public getAllSettlementScores(playerID: string): CoachRecommendation[] {
         const recommendations: CoachRecommendation[] = [];
         const hexes = this.G.board.hexes;
-        const player = this.G.players[playerID];
 
         // 1. Calculate Scarcity Map
         const scarcityMap = this.calculateScarcityMap();
