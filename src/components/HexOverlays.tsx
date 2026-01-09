@@ -2,7 +2,7 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
-import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
