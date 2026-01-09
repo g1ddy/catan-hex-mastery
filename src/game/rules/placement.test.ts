@@ -1,4 +1,4 @@
-import { isValidSettlementLocation, isValidCityPlacement, isValidRoadPlacement } from './placement';
+import { isValidSettlementLocation, isValidCityPlacement, isValidRoadPlacement, isValidSetupRoadPlacement } from './placement';
 import { GameState } from '../types';
 
 describe('placement rules', () => {
@@ -8,7 +8,10 @@ describe('placement rules', () => {
             edges,
             hexes: {}
         },
-        players: {},
+        players: {
+            '0': { settlements: [], roads: [] },
+            '1': { settlements: [], roads: [] }
+        },
         setupPhase: { activeRound: 1 },
         setupOrder: [],
         lastRoll: [0, 0],
@@ -24,10 +27,25 @@ describe('placement rules', () => {
         });
 
         it('returns false if too close (distance rule)', () => {
-            // Logic for distance rule involves getVertexNeighbors.
-            // Since we are mocking G, we'd need valid coordinates to trigger neighbor finding in real hexUtils,
-            // or mock hexUtils. For now, testing the logic flow that simply checks "if any neighbor is occupied"
-            // is sufficient if we assume hexUtils is correct (which has its own tests).
+            // Test Distance Rule
+            // Center: 0,0,0 (center of map)
+            // Vertex: 0,0,0::1,-1,0::1,0,-1
+            // One real neighbor based on hex geometry:
+            // Hexes (0,0,0) and (1,-1,0) share edge. Common neighbors are (1,0,-1) [current] and (0,-1,1) [neighbor].
+            // Sorted ID for neighbor: (0,-1,1), (0,0,0), (1,-1,0) -> "0,-1,1::0,0,0::1,-1,0"
+
+            const targetVertex = '0,0,0::1,-1,0::1,0,-1';
+            const neighborVertex = '0,-1,1::0,0,0::1,-1,0';
+
+            const G = mockG({ [neighborVertex]: { owner: '1', type: 'settlement' } });
+
+            expect(isValidSettlementLocation(G, targetVertex)).toBe(false);
+        });
+
+        it('returns true if valid location', () => {
+            const G = mockG();
+            const targetVertex = '0,0,0::1,-1,0::1,0,-1';
+            expect(isValidSettlementLocation(G, targetVertex)).toBe(true);
         });
     });
 
@@ -51,9 +69,40 @@ describe('placement rules', () => {
             const G = mockG({}, { 'e1': { owner: 'p1' } });
             expect(isValidRoadPlacement(G, 'e1', 'p1')).toBe(false);
         });
+    });
 
-        // Connectivity tests require valid geometry to find endpoints.
-        // We will defer deep geometry testing to the existing hexUtils tests,
-        // or a dedicated verification step.
+    describe('isValidSetupRoadPlacement', () => {
+        it('returns true if connected to last placed settlement', () => {
+            // Mock G with player having a last settlement
+            // Settlement vertex: 0,0,0::1,-1,0::1,0,-1
+            // One connected edge: 0,0,0::1,-1,0
+            const settlementId = '0,0,0::1,-1,0::1,0,-1';
+            const connectedEdge = '0,0,0::1,-1,0';
+
+            const G = mockG();
+            G.players['0'].settlements = [settlementId];
+
+            expect(isValidSetupRoadPlacement(G, connectedEdge, '0')).toBe(true);
+        });
+
+        it('returns false if NOT connected to last placed settlement', () => {
+            const settlementId = '0,0,0::1,-1,0::1,0,-1';
+            const disconnectedEdge = '9,9,9::8,8,8'; // Far away
+
+            const G = mockG();
+            G.players['0'].settlements = [settlementId];
+
+            expect(isValidSetupRoadPlacement(G, disconnectedEdge, '0')).toBe(false);
+        });
+
+        it('returns false if edge is occupied', () => {
+             const settlementId = '0,0,0::1,-1,0::1,0,-1';
+             const connectedEdge = '0,0,0::1,-1,0';
+
+             const G = mockG({}, { [connectedEdge]: { owner: '1'} });
+             G.players['0'].settlements = [settlementId];
+
+             expect(isValidSetupRoadPlacement(G, connectedEdge, '0')).toBe(false);
+        });
     });
 });

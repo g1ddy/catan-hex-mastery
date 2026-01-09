@@ -1,7 +1,7 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { getEdgesForVertex, getVerticesForHex } from '../game/hexUtils';
+import { getEdgesForHex, getEdgesForVertex, getVerticesForHex } from '../game/hexUtils';
 import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSettlementLocation } from '../game/rules/placement';
 
 export interface BotMove {
@@ -72,14 +72,10 @@ export class BotCoach {
         return candidates;
     }
 
-    // Naive implementation: scan all vertices, get all edges.
-    // Ideally, we'd have a list of all edges in G.board or static config.
     private getAllBoardEdges(): Set<string> {
         const candidates = new Set<string>();
-         Object.values(this.G.board.hexes).forEach(hex => {
-            getVerticesForHex(hex.coords).forEach(v => {
-                getEdgesForVertex(v).forEach(e => candidates.add(e));
-            });
+        Object.values(this.G.board.hexes).forEach(hex => {
+            getEdgesForHex(hex.coords).forEach(e => candidates.add(e));
         });
         return candidates;
     }

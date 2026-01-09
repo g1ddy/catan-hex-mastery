@@ -104,3 +104,24 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
         });
     });
 };
+
+/**
+ * Checks if a road can be placed during the Setup Phase.
+ * Special Setup Rule: Must be attached to the player's last placed settlement.
+ *
+ * @param G The game state
+ * @param edgeId The edge ID
+ * @param playerID The player ID
+ * @returns True if the placement is valid for Setup phase
+ */
+export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+    if (G.board.edges[edgeId]) {
+        return false; // Occupied
+    }
+
+    const lastSettlementId = G.players[playerID].settlements.at(-1);
+    if (!lastSettlementId) return false;
+
+    // Must be connected to the last placed settlement
+    return getEdgesForVertex(lastSettlementId).includes(edgeId);
+};

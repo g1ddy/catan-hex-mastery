@@ -9,7 +9,7 @@ import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { PHASES, STAGES } from '../game/constants';
-import { isValidSettlementLocation, isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement } from '../game/rules/placement';
+import { isValidSettlementLocation, isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSetupRoadPlacement } from '../game/rules/placement';
 import { BuildingIcon } from './board/BuildingIcon';
 
 export interface CoachData {
@@ -238,16 +238,8 @@ export const HexOverlays = React.memo(({
 
                 if (isSetup) {
                      if (currentStage === STAGES.PLACE_ROAD && !isOccupied && uiMode === 'placing') {
-                        // SPECIAL SETUP RULE:
-                        // Placement logic for setup is slightly different (must be attached to last settlement).
-                        // isValidRoadPlacement is for general gameplay.
-                        // We duplicate the specific setup check here or add a specialized rule.
-                        // For hygiene, let's keep the explicit check or add `isValidSetupRoad(G, eId, playerID)` to rules.
-                        // But since I didn't add that to `placement.ts` yet, I will inline the check using `getEdgesForVertex`.
-                        const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
-                        const isConnected = lastSettlementId && getEdgesForVertex(lastSettlementId).includes(eId);
-
-                        if (isConnected) {
+                        // REFACTOR: Use Shared Rules
+                        if (isValidSetupRoadPlacement(G, eId, ctx.currentPlayer)) {
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
