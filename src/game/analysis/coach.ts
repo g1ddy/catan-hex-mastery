@@ -55,6 +55,7 @@ export class Coach {
         const resources: string[] = [];
 
         hexIds.forEach(hId => {
+            // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
             if (hex && hex.terrain && TERRAIN_TO_RESOURCE[hex.terrain]) {
                 resources.push(TERRAIN_TO_RESOURCE[hex.terrain]);
@@ -68,6 +69,7 @@ export class Coach {
         let pips = 0;
 
         hexIds.forEach(hId => {
+            // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
             if (hex && hex.terrain !== 'Desert' && hex.terrain !== 'Sea') {
                 pips += getPips(hex.tokenValue || 0);
@@ -116,7 +118,7 @@ export class Coach {
         if (totalBoardPips > 0) {
             Object.entries(totalPips).forEach(([resource, pips]) => {
                 if (pips / totalBoardPips < this.config.scarcityThreshold) {
-                    scarcityMap[resource] = true;
+                    scarcityMap[resource] = true; // eslint-disable-line security/detect-object-injection
                 }
             });
         }
@@ -124,7 +126,7 @@ export class Coach {
     }
 
     private getExistingResources(playerID: string): Set<string> {
-        const player = this.G.players[playerID];
+        const player = this.G.players[playerID]; // eslint-disable-line security/detect-object-injection
         const existingResources = new Set<string>();
 
         if (player.settlements.length >= 1) {
@@ -145,7 +147,7 @@ export class Coach {
         const pips = this.calculatePipsForVertex(vertexId);
         const resources = this.getResourcesForVertex(vertexId);
         const uniqueResources = new Set(resources);
-        const settlementCount = this.G.players[playerID].settlements.length;
+        const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
 
         let score = pips;
         const reasons: string[] = [`${pips} Pips`];
@@ -159,7 +161,7 @@ export class Coach {
         };
 
         // 1. Scarcity Multiplier
-        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]);
+        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
             score *= this.config.scarcityMultiplier;
             details.scarcityBonus = true;

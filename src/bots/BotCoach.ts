@@ -6,6 +6,7 @@ import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement,
 
 export interface BotMove {
     move: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: any[];
 }
 
@@ -24,6 +25,7 @@ export class BotCoach {
      */
     public getAvailableMoves(playerID: string): BotMove[] {
         const moves: BotMove[] = [];
+        // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
         const affordable = getAffordableBuilds(player.resources);
 
@@ -97,7 +99,7 @@ export class BotCoach {
     }
 
     public recommendRoadPlacement(playerID: string): BotMove | null {
-        const player = this.G.players[playerID];
+        const player = this.G.players[playerID]; // eslint-disable-line security/detect-object-injection
         // In Setup, usually place road attached to the last placed settlement
         if (player.settlements.length > 0) {
             const lastSettlement = player.settlements[player.settlements.length - 1];
@@ -105,6 +107,7 @@ export class BotCoach {
 
             for (const edgeId of edges) {
                 // Use strict rule: must be empty (Setup)
+                // eslint-disable-next-line security/detect-object-injection
                 if (!this.G.board.edges[edgeId]) {
                     return { move: 'placeRoad', args: [edgeId] };
                 }

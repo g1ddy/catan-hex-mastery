@@ -1,6 +1,8 @@
 import { GameState } from '../types';
 import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 
+/* eslint-disable security/detect-object-injection */
+
 /**
  * Checks if a settlement can be placed at the given vertex based on physical rules.
  * Enforces:

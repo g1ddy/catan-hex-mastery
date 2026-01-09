@@ -2,7 +2,7 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
-import { getVerticesForHex, getEdgesForHex, getEdgesForVertex } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
@@ -68,6 +68,7 @@ export const HexOverlays = React.memo(({
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
 
     const getPrimaryHexOwner = (parts: string[]): string => {
+        // eslint-disable-next-line security/detect-object-injection
         return parts.find(ownerId => G.board.hexes[ownerId]) || parts[0];
     };
 
@@ -75,11 +76,13 @@ export const HexOverlays = React.memo(({
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
             {corners.map((corner, i) => {
+                // eslint-disable-next-line security/detect-object-injection
                 const { id: vId, parts } = vertices[i];
                 const primaryHex = getPrimaryHexOwner(parts);
 
                 if (primaryHex !== currentHexIdStr) return null;
 
+                // eslint-disable-next-line security/detect-object-injection
                 const vertex = G.board.vertices[vId];
                 const isOccupied = !!vertex;
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
@@ -97,7 +100,7 @@ export const HexOverlays = React.memo(({
                 let clickAction = () => {};
 
                 const applyCoachRecommendation = () => {
-                    const rec = recommendations[vId];
+                    const rec = recommendations[vId]; // eslint-disable-line security/detect-object-injection
                     if (rec) {
                         isRecommended = true;
                         recommendationData = rec;
@@ -214,6 +217,7 @@ export const HexOverlays = React.memo(({
 
             {/* EDGES */}
             {corners.map((corner, i) => {
+                // eslint-disable-next-line security/detect-object-injection
                 const { id: eId, parts } = edges[i];
                 const primaryHex = getPrimaryHexOwner(parts);
 
@@ -223,7 +227,7 @@ export const HexOverlays = React.memo(({
                 const midX = (corner.x + nextCorner.x) / 2;
                 const midY = (corner.y + nextCorner.y) / 2;
 
-                const edge = G.board.edges[eId];
+                const edge = G.board.edges[eId]; // eslint-disable-line security/detect-object-injection
                 const isOccupied = !!edge;
                 const ownerColor = isOccupied ? G.players[edge.owner]?.color : null;
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;

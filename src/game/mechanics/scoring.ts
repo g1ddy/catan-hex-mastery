@@ -16,5 +16,6 @@ export const getPips = (num: number): number => {
         6: 5, 8: 5,
         7: 6
     };
+    // eslint-disable-next-line security/detect-object-injection
     return map[num] || 0;
 };

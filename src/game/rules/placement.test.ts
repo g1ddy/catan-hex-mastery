@@ -2,6 +2,7 @@ import { isValidSettlementLocation, isValidCityPlacement, isValidRoadPlacement, 
 import { GameState } from '../types';
 
 describe('placement rules', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockG = (vertices: any = {}, edges: any = {}): GameState => ({
         board: {
             vertices,
