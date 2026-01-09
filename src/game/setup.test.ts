@@ -1,6 +1,6 @@
-import { CatanGame } from '../src/game/Game';
+import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
-import { getSnakeDraftOrder } from '../src/game/turnOrder';
+import { getSnakeDraftOrder } from './turnOrder';
 
 describe('Setup Phase Logic', () => {
   let client: ReturnType<typeof Client>;

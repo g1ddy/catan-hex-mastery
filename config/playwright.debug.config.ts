@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5173/catan-hex-mastery/';
 
 export default defineConfig({
-  testDir: '../debug-tests',
+  testDir: '../tests/debug',
   // Match all specs in the debug-tests folder
   testMatch: /.*\.spec\.ts/,
   fullyParallel: true,

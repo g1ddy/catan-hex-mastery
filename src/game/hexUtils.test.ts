@@ -1,4 +1,4 @@
-import { getNeighbors, getDistance } from '../src/game/hexUtils';
+import { getNeighbors, getDistance } from './hexUtils';
 
 describe('hexUtils', () => {
   test('getNeighbors returns 6 neighbors', () => {

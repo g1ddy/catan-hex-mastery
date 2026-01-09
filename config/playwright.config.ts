@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 const BASE_URL = 'http://localhost:4173/catan-hex-mastery/';
 
 export default defineConfig({
-  testDir: '../tests',
+  testDir: '../tests/e2e',
   testMatch: /.*\.spec\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
