@@ -9,8 +9,8 @@ import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { PHASES, STAGES } from '../game/constants';
-import { isValidSettlementLocation, isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSetupRoadPlacement } from '../game/rules/placement';
 import { BuildingIcon } from './board/BuildingIcon';
+import { useBoardInteractions } from '../hooks/useBoardInteractions';
 
 export interface CoachData {
     recommendations: Record<string, CoachRecommendation>;
@@ -67,6 +67,9 @@ export const HexOverlays = React.memo(({
         return { vertices: verticesWithParts, edges: edgesWithParts, corners: cornerCoords, currentHexIdStr: idStr };
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
 
+    // Use shared rules hook
+    const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
+
     const getPrimaryHexOwner = (parts: string[]): string => {
         return parts.find(ownerId => G.board.hexes[ownerId]) || parts[0];
     };
@@ -110,8 +113,8 @@ export const HexOverlays = React.memo(({
 
                 if (isSetup) {
                     if (currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing') {
-                        // REFACTOR: Use Shared Rules
-                        if (isValidSettlementLocation(G, vId)) {
+                        // REFACTORED: Use Hook
+                        if (validSettlements.has(vId)) {
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
@@ -122,8 +125,8 @@ export const HexOverlays = React.memo(({
                     }
                 } else if (isActingStage) {
                     if (buildMode === 'settlement') {
-                        // REFACTOR: Use Shared Rules
-                        if (isValidSettlementPlacement(G, vId, ctx.currentPlayer)) {
+                        // REFACTOR: Use Hook
+                        if (validSettlements.has(vId)) {
                              isClickable = true;
                              isGhost = true;
                              clickAction = () => {
@@ -133,8 +136,8 @@ export const HexOverlays = React.memo(({
                              applyCoachRecommendation();
                         }
                     } else if (buildMode === 'city') {
-                        // REFACTOR: Use Shared Rules
-                        if (isValidCityPlacement(G, vId, ctx.currentPlayer)) {
+                        // REFACTOR: Use Hook
+                        if (validCities.has(vId)) {
                              isClickable = true;
                              isGhost = false;
                              clickAction = () => {
@@ -238,8 +241,8 @@ export const HexOverlays = React.memo(({
 
                 if (isSetup) {
                      if (currentStage === STAGES.PLACE_ROAD && !isOccupied && uiMode === 'placing') {
-                        // REFACTOR: Use Shared Rules
-                        if (isValidSetupRoadPlacement(G, eId, ctx.currentPlayer)) {
+                        // REFACTOR: Use Hook
+                        if (validRoads.has(eId)) {
                             isClickable = true;
                             isGhost = true;
                             clickAction = () => {
@@ -250,8 +253,8 @@ export const HexOverlays = React.memo(({
                      }
                 } else if (isActingStage) {
                     if (buildMode === 'road') {
-                        // REFACTOR: Use Shared Rules
-                        if (isValidRoadPlacement(G, eId, ctx.currentPlayer)) {
+                        // REFACTOR: Use Hook
+                        if (validRoads.has(eId)) {
                              isClickable = true;
                              isGhost = true;
                              clickAction = () => {

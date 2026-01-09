@@ -1,8 +1,10 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { getEdgesForHex, getEdgesForVertex, getVerticesForHex } from '../game/hexUtils';
-import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSettlementLocation } from '../game/rules/placement';
+import { getEdgesForVertex } from '../game/hexUtils';
+import { isValidSettlementLocation } from '../game/rules/placement';
+import { getValidSettlementSpots, getValidCitySpots, getValidRoadSpots } from '../game/rules/validator';
+import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 export interface BotMove {
     move: string;
@@ -12,10 +14,12 @@ export interface BotMove {
 export class BotCoach {
     private G: GameState;
     private coach: Coach;
+    private profile: BotProfile;
 
-    constructor(G: GameState, coach: Coach) {
+    constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.G = G;
         this.coach = coach;
+        this.profile = profile;
     }
 
     /**
@@ -29,30 +33,25 @@ export class BotCoach {
 
         // 1. Settlements
         if (affordable.settlement) {
-             const candidates = this.getAllBoardVertices();
-             candidates.forEach(vId => {
-                 if (isValidSettlementPlacement(this.G, vId, playerID)) {
-                     moves.push({ move: 'buildSettlement', args: [vId] });
-                 }
+             const validSpots = getValidSettlementSpots(this.G, playerID);
+             validSpots.forEach(vId => {
+                 moves.push({ move: 'buildSettlement', args: [vId] });
              });
         }
 
         // 2. Cities
         if (affordable.city) {
-            player.settlements.forEach(vId => {
-                if (isValidCityPlacement(this.G, vId, playerID)) {
-                    moves.push({ move: 'buildCity', args: [vId] });
-                }
+            const validSpots = getValidCitySpots(this.G, playerID);
+            validSpots.forEach(vId => {
+                moves.push({ move: 'buildCity', args: [vId] });
             });
         }
 
         // 3. Roads
         if (affordable.road) {
-            const candidates = this.getAllBoardEdges();
-            candidates.forEach(eId => {
-                if (isValidRoadPlacement(this.G, eId, playerID)) {
-                    moves.push({ move: 'buildRoad', args: [eId] });
-                }
+            const validSpots = getValidRoadSpots(this.G, playerID);
+            validSpots.forEach(eId => {
+                moves.push({ move: 'buildRoad', args: [eId] });
             });
         }
 
@@ -64,30 +63,11 @@ export class BotCoach {
         return moves;
     }
 
-    private getAllBoardVertices(): Set<string> {
-        const candidates = new Set<string>();
-        Object.values(this.G.board.hexes).forEach(hex => {
-            getVerticesForHex(hex.coords).forEach(v => candidates.add(v));
-        });
-        return candidates;
-    }
-
-    private getAllBoardEdges(): Set<string> {
-        const candidates = new Set<string>();
-        Object.values(this.G.board.hexes).forEach(hex => {
-            getEdgesForHex(hex.coords).forEach(e => candidates.add(e));
-        });
-        return candidates;
-    }
-
     public recommendSettlementPlacement(playerID: string): BotMove | null {
         // Setup Phase Logic (typically)
         const best = this.coach.getBestSettlementSpots(playerID);
-        // Filter for validity in current context (e.g. if we are in setup, we check basic location validity)
-        // If we are in game, we check connectivity.
-        // Assuming this is mostly used for Setup or "Best Spot" analysis.
 
-        // Let's iterate through best spots until we find one that is valid for *placement* (Setup rule: just empty & distance)
+        // Iterate through best spots until we find one that is valid for *placement* (Setup rule)
         for (const rec of best) {
              if (isValidSettlementLocation(this.G, rec.vertexId)) {
                  return { move: 'placeSettlement', args: [rec.vertexId] };
@@ -116,17 +96,30 @@ export class BotCoach {
     public recommendNextMove(playerID: string): BotMove | null {
          const moves = this.getAvailableMoves(playerID);
 
-         // Priority 1: City
-         const cityMove = moves.find(m => m.move === 'buildCity');
-         if (cityMove) return cityMove;
+         // Helper to score moves based on profile weights
+         const getMoveWeight = (move: BotMove): number => {
+            switch (move.move) {
+                case 'buildCity': return this.profile.weights.buildCity;
+                case 'buildSettlement': return this.profile.weights.buildSettlement;
+                case 'buildRoad': return this.profile.weights.buildRoad;
+                case 'endTurn': return 1; // Base weight for ending turn (usually lowest unless blocked)
+                default: return 0;
+            }
+         };
 
-         // Priority 2: Settlement
-         const settlementMove = moves.find(m => m.move === 'buildSettlement');
-         if (settlementMove) return settlementMove;
+         // Sort moves by weight
+         moves.sort((a, b) => getMoveWeight(b) - getMoveWeight(a));
 
-         // Priority 3: Road
-         const roadMove = moves.find(m => m.move === 'buildRoad');
-         if (roadMove) return roadMove;
+         if (moves.length > 0) {
+            // Simple logic: pick the highest weighted move.
+            // If the top move is endTurn, but we have other actions, we might still want to do them
+            // if we have resources. But getAvailableMoves checks resources.
+            // If buildCity and buildSettlement have same weight, stable sort or first one wins.
+
+            // To make it smarter, we would look at specific locations (e.g. which road is best?),
+            // but for now, we just pick the action type preferred by the profile.
+            return moves[0];
+         }
 
          return { move: 'endTurn', args: [] };
     }
