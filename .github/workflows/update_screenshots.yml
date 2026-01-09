@@ -35,7 +35,7 @@ jobs:
       - name: Generate Screenshots
         # We use the dedicated config which handles the server (port 4174) and test discovery
         run: |
-          npx playwright test -c config/playwright.screenshots.config.ts
+          npm run test:screenshots
         env:
           CI: true
 
