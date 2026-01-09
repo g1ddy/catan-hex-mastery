@@ -13,6 +13,18 @@ test.describe('Layout Troubleshooting', () => {
 
     // Screenshot 1: Desktop Sidebar Open (Default)
     await page.screenshot({ path: 'tests/screenshots/latest_desktop.png', fullPage: true });
+
+    // Collapse Sidebar
+    const collapseBtn = page.getByRole('button', { name: 'Collapse Sidebar' });
+    // Ensure button is visible before clicking
+    await collapseBtn.waitFor({ state: 'visible' });
+    await collapseBtn.click();
+
+    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
+    await toggleBtn.waitFor({ state: 'visible' });
+
+    // Screenshot 2: Desktop Sidebar Closed
+    await page.screenshot({ path: 'tests/screenshots/latest_desktop_closed.png', fullPage: true });
   });
 
   test('Capture Mobile Screenshots', async ({ page }) => {
