@@ -1,7 +1,8 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
-import { getEdgesForVertex, getVerticesForEdge, getVertexNeighbors } from '../game/hexUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { getEdgesForVertex, getVerticesForEdge, getVerticesForHex } from '../game/hexUtils';
+import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSettlementLocation } from '../game/rules/placement';
 
 export interface BotMove {
     move: string;
@@ -17,10 +18,84 @@ export class BotCoach {
         this.coach = coach;
     }
 
+    /**
+     * Enumerates all legally possible moves for the player in the current state.
+     * This is intended for AI engines (MCTS, RandomBot) to know the full action space.
+     */
+    public getAvailableMoves(playerID: string): BotMove[] {
+        const moves: BotMove[] = [];
+        const player = this.G.players[playerID];
+        const affordable = getAffordableBuilds(player.resources);
+
+        // 1. Settlements
+        if (affordable.settlement) {
+             const candidates = this.getAllBoardVertices();
+             candidates.forEach(vId => {
+                 if (isValidSettlementPlacement(this.G, vId, playerID)) {
+                     moves.push({ move: 'buildSettlement', args: [vId] });
+                 }
+             });
+        }
+
+        // 2. Cities
+        if (affordable.city) {
+            player.settlements.forEach(vId => {
+                if (isValidCityPlacement(this.G, vId, playerID)) {
+                    moves.push({ move: 'buildCity', args: [vId] });
+                }
+            });
+        }
+
+        // 3. Roads
+        if (affordable.road) {
+            const candidates = this.getAllBoardEdges();
+            candidates.forEach(eId => {
+                if (isValidRoadPlacement(this.G, eId, playerID)) {
+                    moves.push({ move: 'buildRoad', args: [eId] });
+                }
+            });
+        }
+
+        // Always allow ending turn if nothing else (or even if something else)
+        // Note: Logic for "can I end turn now?" depends on game phase.
+        // Assuming this is called during ACTING stage.
+        moves.push({ move: 'endTurn', args: [] });
+
+        return moves;
+    }
+
+    private getAllBoardVertices(): Set<string> {
+        const candidates = new Set<string>();
+        Object.values(this.G.board.hexes).forEach(hex => {
+            getVerticesForHex(hex.coords).forEach(v => candidates.add(v));
+        });
+        return candidates;
+    }
+
+    // Naive implementation: scan all vertices, get all edges.
+    // Ideally, we'd have a list of all edges in G.board or static config.
+    private getAllBoardEdges(): Set<string> {
+        const candidates = new Set<string>();
+         Object.values(this.G.board.hexes).forEach(hex => {
+            getVerticesForHex(hex.coords).forEach(v => {
+                getEdgesForVertex(v).forEach(e => candidates.add(e));
+            });
+        });
+        return candidates;
+    }
+
     public recommendSettlementPlacement(playerID: string): BotMove | null {
+        // Setup Phase Logic (typically)
         const best = this.coach.getBestSettlementSpots(playerID);
-        if (best.length > 0) {
-            return { move: 'placeSettlement', args: [best[0].vertexId] };
+        // Filter for validity in current context (e.g. if we are in setup, we check basic location validity)
+        // If we are in game, we check connectivity.
+        // Assuming this is mostly used for Setup or "Best Spot" analysis.
+
+        // Let's iterate through best spots until we find one that is valid for *placement* (Setup rule: just empty & distance)
+        for (const rec of best) {
+             if (isValidSettlementLocation(this.G, rec.vertexId)) {
+                 return { move: 'placeSettlement', args: [rec.vertexId] };
+             }
         }
         return null;
     }
@@ -30,86 +105,33 @@ export class BotCoach {
         // In Setup, usually place road attached to the last placed settlement
         if (player.settlements.length > 0) {
             const lastSettlement = player.settlements[player.settlements.length - 1];
-            // Get edges connected to this vertex
             const edges = getEdgesForVertex(lastSettlement);
-            // Return the first one that is not occupied
+
             for (const edgeId of edges) {
+                // Use strict rule: must be empty (Setup)
                 if (!this.G.board.edges[edgeId]) {
                     return { move: 'placeRoad', args: [edgeId] };
                 }
             }
         }
-        return null; // Fallback or no valid move
+        return null;
     }
 
     public recommendNextMove(playerID: string): BotMove | null {
-         const player = this.G.players[playerID];
-         const resources = player.resources;
-         const affordable = getAffordableBuilds(resources);
+         const moves = this.getAvailableMoves(playerID);
 
-         // Priority 1: City (Ore: 3, Wheat: 2)
-         if (affordable.city) {
-             // Find a settlement to upgrade
-             // Filter for actual settlements (not cities)
-             const upgradable = player.settlements.filter(vId => {
-                 const v = this.G.board.vertices[vId];
-                 return v && v.type === 'settlement';
-             });
+         // Priority 1: City
+         const cityMove = moves.find(m => m.move === 'buildCity');
+         if (cityMove) return cityMove;
 
-             if (upgradable.length > 0) {
-                 // Pick random settlement for now (or best pips)
-                 const target = upgradable[0];
-                 return { move: 'buildCity', args: [target] };
-             }
-         }
+         // Priority 2: Settlement
+         const settlementMove = moves.find(m => m.move === 'buildSettlement');
+         if (settlementMove) return settlementMove;
 
-         // Priority 2: Settlement (Brick: 1, Wood: 1, Sheep: 1, Wheat: 1)
-         if (affordable.settlement) {
-             // Find valid spot connected to roads
-             // This is complex, requires graph traversal from roads.
-             // For now, scan all roads, check adjacent vertices.
-             for (const roadId of player.roads) {
-                 const vertices = getVerticesForEdge(roadId);
-                 for (const vId of vertices) {
-                     if (!this.G.board.vertices[vId]) {
-                         // Check distance rule
-                         const neighbors = getVertexNeighbors(vId);
-                         if (!neighbors.some(n => this.G.board.vertices[n])) {
-                             return { move: 'buildSettlement', args: [vId] };
-                         }
-                     }
-                 }
-             }
-         }
+         // Priority 3: Road
+         const roadMove = moves.find(m => m.move === 'buildRoad');
+         if (roadMove) return roadMove;
 
-         // Priority 3: Road (Brick: 1, Wood: 1)
-         if (affordable.road) {
-             // Find valid edge connected to roads or settlements
-             // Scan settlements
-             for (const sId of player.settlements) {
-                 const edges = getEdgesForVertex(sId);
-                 for (const eId of edges) {
-                     if (!this.G.board.edges[eId]) {
-                          return { move: 'buildRoad', args: [eId] };
-                     }
-                 }
-             }
-             // Scan roads
-             for (const rId of player.roads) {
-                 // Edges adjacent to road rId share a vertex.
-                 const vertices = getVerticesForEdge(rId);
-                 for (const vId of vertices) {
-                      const edges = getEdgesForVertex(vId);
-                      for (const eId of edges) {
-                          if (eId !== rId && !this.G.board.edges[eId]) {
-                              return { move: 'buildRoad', args: [eId] };
-                          }
-                      }
-                 }
-             }
-         }
-
-         // Else End Turn
          return { move: 'endTurn', args: [] };
     }
 }
