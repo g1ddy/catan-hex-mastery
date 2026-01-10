@@ -28,6 +28,12 @@ export const isValidHexId = (id: string): boolean => {
             return false;
         }
         const [q, r, s] = part.split(',').map(Number);
+
+        // Security: Ensure coordinates are within safe integer range to prevent precision loss/overflow attacks
+        if (!Number.isSafeInteger(q) || !Number.isSafeInteger(r) || !Number.isSafeInteger(s)) {
+            return false;
+        }
+
         // For a valid cube coordinate, the sum of its components must be 0.
         return q + r + s === 0;
     });
