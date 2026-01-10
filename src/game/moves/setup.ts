@@ -7,6 +7,11 @@ import { isValidSetupRoadPlacement } from '../rules/placement';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
+  // 0. Security Validation
+  if (!isValidHexId(vertexId)) {
+    throw new Error("Invalid vertex ID format");
+  }
+
   // 1. Validation: Occupancy
   // eslint-disable-next-line security/detect-object-injection
   if (G.board.vertices[vertexId]) {
@@ -68,11 +73,6 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
-  // 0. Security Validation
-  if (!isValidHexId(edgeId)) {
-    throw new Error("Invalid edge ID format");
-  }
-
   // Use centralized validation logic.
   // This function checks for both occupancy and connectivity to the last placed settlement.
   const validation = isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer);
