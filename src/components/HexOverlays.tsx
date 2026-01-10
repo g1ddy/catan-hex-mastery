@@ -281,6 +281,7 @@ export const HexOverlays = React.memo(({
                                 width={6} height={2}
                                 fill={ownerColor || 'none'}
                                 transform={`rotate(${angle} ${midX} ${midY})`}
+                                data-testid="occupied-edge"
                             />
                         )}
                          {isGhost && (
