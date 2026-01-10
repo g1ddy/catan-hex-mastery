@@ -1,5 +1,6 @@
 import { GameState } from '../types';
 import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
+import { isValidHexId } from '../../utils/validation';
 
 /* eslint-disable security/detect-object-injection */
 
