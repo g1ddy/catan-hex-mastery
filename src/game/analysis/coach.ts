@@ -125,7 +125,7 @@ export class Coach {
         return existingResources;
     }
 
-    private calculateScarcityScore(_resources: string[], uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
+    private calculateScarcityScore(uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
         const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
             return {
@@ -200,6 +200,15 @@ export class Coach {
         scarcityMap: Record<string, boolean>,
         existingResources: Set<string>
     ): CoachRecommendation {
+        // Security check for playerID
+        if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
+             throw new Error("Invalid playerID");
+        }
+        // eslint-disable-next-line security/detect-object-injection
+        if (!this.G.players[playerID]) {
+             throw new Error(`Player ${playerID} not found`);
+        }
+
         const pips = this.calculatePipsForVertex(vertexId);
         const resources = this.getResourcesForVertex(vertexId);
         const uniqueResources = new Set(resources);
@@ -209,7 +218,7 @@ export class Coach {
         const reasons: string[] = [`${pips} Pips`];
 
         // 1. Scarcity
-        const scarcity = this.calculateScarcityScore(resources, uniqueResources, scarcityMap);
+        const scarcity = this.calculateScarcityScore(uniqueResources, scarcityMap);
         if (scarcity.bonus) {
             score *= scarcity.multiplier;
             reasons.push(scarcity.reason);
