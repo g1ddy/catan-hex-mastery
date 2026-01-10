@@ -20,8 +20,9 @@ We realized that to truly improve, players need immediate, data-driven feedback 
 
 ### 🧠 The Coach Mode
 Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap. It factors in:
+*   **Resource Heatmaps**: See "Winning Moves" directly on the board with a color-coded overlay.
+*   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
 *   **Production Probability (Pips)**
-*   **Resource Scarcity** (Is Ore rare this game?)
 *   **Synergy** (Do you have the Brick to match your Wood?)
 
 ![Coach Mode Heatmap](docs/images/coach-heatmap.png)
@@ -29,8 +30,8 @@ Don't just guess—know. The Coach analyzes every valid settlement spot on the b
 ### 📊 The Analyst Dashboard
 A real-time sidebar that acts as your HUD.
 *   **Fairness Meter**: See if the random board generation favored one player.
-*   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
-*   **Resource Heatmaps**: Instantly spot the "Ore Droughts" or "Wheat Gluts."
+*   **Pip Distribution**: Analyze the abundance of each resource type on the board.
+*   **Scarcity Warnings**: Instantly spot "Ore Droughts" or "Wheat Gluts" before they happen.
 
 ![The Analyst Panel, showing production potential](docs/images/analyst-panel.png)
 
@@ -46,9 +47,9 @@ Play and train anywhere. The interface is fully responsive, and the advanced Coa
 
 ![Mobile Coach Tooltip showing a recommendation](docs/images/mobile-coach-tooltip.png)
 
-The Analyst Panel is also fully accessible, tucking away into a clean bottom drawer to maximize board visibility.
+The Coach Panel is also fully accessible, tucking away into a clean bottom drawer to maximize board visibility.
 
-![Mobile view with Analyst Panel open](docs/images/mobile-production.png)
+![Mobile view with Coach Panel open](docs/images/mobile-production.png)
 
 ## 📚 Documentation
 
