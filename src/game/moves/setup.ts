@@ -1,8 +1,9 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
-import { getVerticesForHex, getEdgeId } from '../hexUtils';
+import { getVertexNeighbors, getHexesForVertex, getEdgesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
+import { isValidSetupRoadPlacement } from '../rules/placement';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
   // 0. Security Validation
@@ -76,23 +77,31 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
     throw new Error("Invalid edge ID format");
   }
 
-  // 1. Validation: Occupancy
-  // eslint-disable-next-line security/detect-object-injection
-  if (G.board.edges[edgeId]) {
-    throw new Error("This edge is already occupied");
-  }
+  // Use centralized validation logic
+  if (!isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer)) {
+      // If valid, it might be due to occupancy or connectivity.
+      // We reconstruct the error message for better feedback, or the UI handles it.
+      // For now, to keep test expectations satisfied, we check specifically:
 
-  // 2. Validation: Connection
-  // Must connect to the player's last placed settlement (immediate road placement rule)
-  const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
+      // Check Occupancy
+      // eslint-disable-next-line security/detect-object-injection
+      if (G.board.edges[edgeId]) {
+          throw new Error("This edge is already occupied");
+      }
 
-  if (!lastSettlementId) {
-      throw new Error("No active settlement found to connect to");
-  }
+      // Check Connectivity
+      const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
+      if (!lastSettlementId) {
+          throw new Error("No active settlement found to connect to");
+      }
 
-  const connectedEdges = getEdgesForVertex(lastSettlementId);
-  if (!connectedEdges.includes(edgeId)) {
-      throw new Error("Road must connect to your just-placed settlement");
+      const connectedEdges = getEdgesForVertex(lastSettlementId);
+      if (!connectedEdges.includes(edgeId)) {
+           throw new Error("Road must connect to your just-placed settlement");
+      }
+
+      // Fallback
+      throw new Error("Invalid road placement");
   }
 
   // Execution
@@ -105,47 +114,3 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
       events.endTurn();
   }
 };
-
-
-// --- Helpers ---
-
-function parseVertexId(id: string) {
-    return id.split('::').map(s => {
-        const [q, r, sCoords] = s.split(',').map(Number);
-        return { q, r, s: sCoords };
-    });
-}
-
-function getVertexNeighbors(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-    const neighbors: string[] = [];
-    const pairs = [
-        [hexes[0], hexes[1]],
-        [hexes[1], hexes[2]],
-        [hexes[2], hexes[0]]
-    ];
-
-    pairs.forEach(pair => {
-       const vA = getVerticesForHex(pair[0]);
-       const vB = getVerticesForHex(pair[1]);
-       const common = vA.filter(id => vB.includes(id));
-       const n = common.find(id => id !== vertexId);
-       if (n) neighbors.push(n);
-    });
-
-    return neighbors;
-}
-
-function getHexesForVertex(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-    return hexes.map(h => `${h.q},${h.r},${h.s}`);
-}
-
-function getEdgesForVertex(vertexId: string): string[] {
-    const hexes = parseVertexId(vertexId);
-    return [
-        getEdgeId(hexes[0], hexes[1]),
-        getEdgeId(hexes[1], hexes[2]),
-        getEdgeId(hexes[2], hexes[0])
-    ];
-}

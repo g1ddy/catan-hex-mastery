@@ -74,7 +74,8 @@ The visual logic layer. It renders interactive elements (vertices, edges) over t
 - **Current**: Uses `useBoardInteractions` hook.
 - **Refactor**:
     - **Strict Separation**: `HexOverlays` should **visualize**, not **decide**.
-    - **DRY**: The `validSettlements` set should come from the SAME logic source as the Bot. If the rule changes (e.g., "Distance Rule becomes 3 spots"), both Bot and UI update automatically. (Already started via `useBoardInteractions` -> `validator.ts`).
+    - **DRY**: The `validSettlements` set should come from the SAME logic source as the Bot.
+    - **Geometry**: Replace inline parsing (e.g. `id.split('::')`) with `hexUtils` calls.
 
 #### `BuildingIcon`
 - **Current**: Defined inside the file.
@@ -88,6 +89,30 @@ The visual logic layer. It renders interactive elements (vertices, edges) over t
 
 ---
 
+## 4. `src/game/moves/setup.ts`
+
+### **Current Purpose**
+Handles moves specific to the Setup Phase (placing the first two settlements/roads).
+
+### **Refactoring Plan**
+- **Remove Duplication**: This file currently contains local helper functions (`getVertexNeighbors`, `getEdgesForVertex`) that duplicate `hexUtils`.
+- **Logic Delegation**:
+    - Use `hexUtils.ts` for all graph topology / geometry.
+    - Use `placement.ts` (specifically `isValidSetupRoadPlacement`) for validation logic.
+    - Ensure the "Road must connect to last placed settlement" rule is preserved.
+
+---
+
+## 5. `src/game/mechanics/resources.ts`
+
+### **Current Purpose**
+Handles resource distribution (dice rolls).
+
+### **Refactoring Plan**
+- **Consistency**: Ensure it imports `getVerticesForHex` from `hexUtils` rather than implementing any local geometry logic.
+
+---
+
 ## Architecture & Dependencies
 
 ### **New/Refactored Files**
@@ -96,6 +121,7 @@ The visual logic layer. It renders interactive elements (vertices, edges) over t
 3.  **`src/game/mechanics/scoring.ts`**: Extracted math/scoring logic.
 4.  **`src/hooks/useBoardInteractions.ts`**: React hook consuming `validator.ts`.
 5.  **`src/bots/profiles/BotProfile.ts`**: Bot personality configuration.
+6.  **`src/game/hexUtils.ts`**: **Immutable** grid geometry and graph traversal primitives ONLY. No game logic.
 
 ### **Dependency Graph**
 
@@ -106,10 +132,16 @@ graph TD
         UBI[useBoardInteractions.ts]
     end
 
+    subgraph Moves Layer
+        Setup[moves/setup.ts]
+        Build[moves/build.ts]
+    end
+
     subgraph Logic Layer
-        V[validator.ts]
-        P[placement.ts]
-        S[scoring.ts]
+        V[rules/validator.ts]
+        P[rules/placement.ts]
+        S[mechanics/scoring.ts]
+        R[mechanics/resources.ts]
     end
 
     subgraph Bot Layer
@@ -118,9 +150,18 @@ graph TD
         BP[BotProfile.ts]
     end
 
+    subgraph Core Utils
+        HU[hexUtils.ts]
+    end
+
     HO --> UBI
     UBI --> V
     V --> P
+    P --> HU
+    R --> HU
+    Setup --> P
+    Setup --> HU
+    Build --> P
 
     BC --> C
     BC --> V
@@ -136,3 +177,4 @@ graph TD
 2.  **Refactor `BotCoach.recommendSettlementPlacement`** to remove redundant validity checks.
 3.  **Optimize `HexOverlays`** geometry calculations (static lookup).
 4.  **Extract `BuildingIcon`** from `HexOverlays`.
+5.  **Refactor `setup.ts`** to remove duplicate helpers and use `placement.ts` and `hexUtils.ts`.

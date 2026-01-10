@@ -1,5 +1,4 @@
 import { GameState } from '../types';
-import { getVerticesForHex } from '../hexUtils';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
 
