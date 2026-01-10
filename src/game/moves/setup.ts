@@ -1,7 +1,7 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
-import { getVertexNeighbors, getHexesForVertex } from '../hexUtils';
+import { getVertexNeighbors, getHexesForVertex, getEdgesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { isValidSetupRoadPlacement } from '../rules/placement';
 
@@ -77,20 +77,18 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
     throw new Error("Invalid edge ID format");
   }
 
-  // 1. Centralized Validation
-  const validation = isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer);
-  if (!validation.isValid) {
-      // Throw the specific reason from the validation function.
-      // The fallback message is a safeguard.
-      throw new Error(validation.reason || "Invalid road placement");
+  // Use centralized validation logic.
+  // This function checks for both occupancy and connectivity to the last placed settlement.
+  if (!isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer)) {
+    throw new Error("Invalid road placement: The edge may be occupied or not connected to your last settlement.");
   }
 
-  // 2. Execution
+  // Execution
   // eslint-disable-next-line security/detect-object-injection
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
   G.players[ctx.currentPlayer].roads.push(edgeId);
 
-  // 3. State Transition
+  // State Transition
   if (events && events.endTurn) {
       events.endTurn();
   }
