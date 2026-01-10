@@ -33,7 +33,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({ G, showCoachMode, setSho
             </div>
 
             {/* 2. Player Production Potential (Middle) */}
-            {playerPotentials && G && (
+            {playerPotentials && (
                 <div>
                     <h3 className="text-lg font-semibold mb-2">Player Production Potential</h3>
                     <div className="flex flex-col gap-2">
