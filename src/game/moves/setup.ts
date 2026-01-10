@@ -77,39 +77,20 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
     throw new Error("Invalid edge ID format");
   }
 
-  // Use centralized validation logic
-  if (!isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer)) {
-      // If valid, it might be due to occupancy or connectivity.
-      // We reconstruct the error message for better feedback, or the UI handles it.
-      // For now, to keep test expectations satisfied, we check specifically:
-
-      // Check Occupancy
-      // eslint-disable-next-line security/detect-object-injection
-      if (G.board.edges[edgeId]) {
-          throw new Error("This edge is already occupied");
-      }
-
-      // Check Connectivity
-      const lastSettlementId = G.players[ctx.currentPlayer].settlements.at(-1);
-      if (!lastSettlementId) {
-          throw new Error("No active settlement found to connect to");
-      }
-
-      const connectedEdges = getEdgesForVertex(lastSettlementId);
-      if (!connectedEdges.includes(edgeId)) {
-           throw new Error("Road must connect to your just-placed settlement");
-      }
-
-      // Fallback
-      throw new Error("Invalid road placement");
+  // 1. Centralized Validation
+  const validation = isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer);
+  if (!validation.isValid) {
+      // Throw the specific reason from the validation function.
+      // The fallback message is a safeguard.
+      throw new Error(validation.reason || "Invalid road placement");
   }
 
-  // Execution
+  // 2. Execution
   // eslint-disable-next-line security/detect-object-injection
   G.board.edges[edgeId] = { owner: ctx.currentPlayer };
   G.players[ctx.currentPlayer].roads.push(edgeId);
 
-  // State Transition
+  // 3. State Transition
   if (events && events.endTurn) {
       events.endTurn();
   }

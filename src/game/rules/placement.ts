@@ -107,6 +107,15 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
     });
 };
 
+
+/**
+ * Represents the result of a validation check.
+ */
+export interface ValidationResult {
+    isValid: boolean;
+    reason?: string;
+}
+
 /**
  * Checks if a road can be placed during the Setup Phase.
  * Special Setup Rule: Must be attached to the player's last placed settlement.
@@ -114,16 +123,26 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
  * @param G The game state
  * @param edgeId The edge ID
  * @param playerID The player ID
- * @returns True if the placement is valid for Setup phase
+ * @returns A ValidationResult object.
  */
-export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
+    // Check Occupancy
+    // eslint-disable-next-line security/detect-object-injection
     if (G.board.edges[edgeId]) {
-        return false; // Occupied
+        return { isValid: false, reason: "This edge is already occupied" };
     }
 
+    // Check for active settlement
     const lastSettlementId = G.players[playerID].settlements.at(-1);
-    if (!lastSettlementId) return false;
+    if (!lastSettlementId) {
+        return { isValid: false, reason: "No active settlement found to connect to" };
+    }
 
-    // Must be connected to the last placed settlement
-    return getEdgesForVertex(lastSettlementId).includes(edgeId);
+    // Check Connectivity
+    const connectedEdges = getEdgesForVertex(lastSettlementId);
+    if (!connectedEdges.includes(edgeId)) {
+        return { isValid: false, reason: "Road must connect to your just-placed settlement" };
+    }
+
+    return { isValid: true };
 };
