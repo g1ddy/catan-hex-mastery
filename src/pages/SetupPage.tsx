@@ -6,6 +6,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 const LOCAL_MODE_WARNING = "3-4 Player modes are unavailable in Local Pass-and-Play.";
 const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
 const DEBUG_PLAYER_COUNT = 2;
+const APP_VERSION_FALLBACK = 'DEV-LOCAL';
 
 export function SetupPage() {
   const navigate = useNavigate();
@@ -92,6 +93,10 @@ export function SetupPage() {
                  * {LOCAL_MODE_WARNING}
              </p>
         )}
+      </div>
+
+      <div className="absolute bottom-4 text-xs text-slate-500 font-mono">
+        v{import.meta.env.VITE_APP_VERSION || APP_VERSION_FALLBACK}
       </div>
     </div>
   );
