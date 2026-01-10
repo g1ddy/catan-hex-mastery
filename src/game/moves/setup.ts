@@ -1,9 +1,10 @@
 import { Move } from 'boardgame.io';
-import { GameState, TerrainType } from '../types';
+import { GameState } from '../types';
 import { STAGES } from '../constants';
 import { getVertexNeighbors, getHexesForVertex, getEdgesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { isValidSetupRoadPlacement } from '../rules/placement';
+import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
   // 0. Security Validation
@@ -41,17 +42,8 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     touchingHexes.forEach(hId => {
       // eslint-disable-next-line security/detect-object-injection
       const hex = G.board.hexes[hId];
-      if (hex && hex.terrain !== TerrainType.Desert && hex.terrain !== TerrainType.Sea) {
-          const resourceMap: Record<TerrainType, string> = {
-            [TerrainType.Forest]: 'wood',
-            [TerrainType.Hills]: 'brick',
-            [TerrainType.Pasture]: 'sheep',
-            [TerrainType.Fields]: 'wheat',
-            [TerrainType.Mountains]: 'ore',
-            [TerrainType.Desert]: '',
-            [TerrainType.Sea]: ''
-          };
-          const res = resourceMap[hex.terrain];
+      if (hex) {
+          const res = TERRAIN_TO_RESOURCE[hex.terrain];
           if (res) {
             G.players[ctx.currentPlayer].resources[res as keyof typeof G.players[string]['resources']]++;
           }
