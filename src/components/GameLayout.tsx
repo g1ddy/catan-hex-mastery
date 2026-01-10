@@ -76,12 +76,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
   // Default to 'analyst' on desktop, null on mobile
   const [activePanel, setActivePanel] = useState<'analyst' | 'coach' | null>(!isMobile ? 'analyst' : null);
 
-  const toggleAnalyst = () => {
-    setActivePanel(prev => prev === 'analyst' ? null : 'analyst');
-  };
-
-  const toggleCoach = () => {
-    setActivePanel(prev => prev === 'coach' ? null : 'coach');
+  const togglePanel = (panel: 'analyst' | 'coach') => {
+    setActivePanel(prev => (prev === panel ? null : panel));
   };
 
   // Toggle buttons visibility (Only visible when their respective panel is closed on Desktop)
@@ -98,7 +94,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
             border border-slate-700 shadow-lg
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
-        onClick={toggleAnalyst}
+        onClick={() => togglePanel('analyst')}
         aria-label="Toggle Analyst Dashboard"
         aria-expanded={activePanel === 'analyst'}
         aria-controls="analyst-dashboard"
@@ -116,7 +112,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
             border border-slate-700 shadow-lg
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
-        onClick={toggleCoach}
+        onClick={() => togglePanel('coach')}
         aria-label="Toggle Coach Bot"
         aria-expanded={activePanel === 'coach'}
         aria-controls="coach-bot-panel"
@@ -146,7 +142,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
       />
 
       {/* 2. Analyst Panel (Left Sidebar on Desktop, Top Drawer on Mobile) */}
-      <AnalystShell isOpen={activePanel === 'analyst'} onToggle={toggleAnalyst}>
+      <AnalystShell isOpen={activePanel === 'analyst'} onToggle={() => togglePanel('analyst')}>
           {dashboard}
       </AnalystShell>
 
@@ -206,7 +202,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
       </main>
 
       {/* 4. Coach Panel (Right Sidebar on Desktop, Top Drawer on Mobile) */}
-      <CoachShell isOpen={activePanel === 'coach'} onToggle={toggleCoach}>
+      <CoachShell isOpen={activePanel === 'coach'} onToggle={() => togglePanel('coach')}>
           <CoachPanel />
       </CoachShell>
 
