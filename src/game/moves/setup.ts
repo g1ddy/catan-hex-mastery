@@ -1,7 +1,7 @@
 import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
-import { getVertexNeighbors, getHexesForVertex, getEdgesForVertex } from '../hexUtils';
+import { getVertexNeighbors, getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { isValidSetupRoadPlacement } from '../rules/placement';
 
