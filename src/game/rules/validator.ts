@@ -102,7 +102,7 @@ export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<stri
             if (checked.has(eId)) return;
             checked.add(eId);
 
-            if (isValidSetupRoadPlacement(G, eId, playerID)) {
+            if (isValidSetupRoadPlacement(G, eId, playerID).isValid) {
                 validSpots.add(eId);
             }
         });
