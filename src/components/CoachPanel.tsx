@@ -37,7 +37,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({ G, showCoachMode, setSho
                 <div>
                     <h3 className="text-lg font-semibold mb-2">Player Production Potential</h3>
                     <div className="flex flex-col gap-2">
-                        {Object.values(G.players).map(player => (
+                        {Object.values(G!.players).map(player => (
                             <div key={player.id} className="bg-slate-800 p-2 rounded border border-slate-700">
                                 <div className="flex items-center gap-2 font-bold text-sm mb-1">
                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
