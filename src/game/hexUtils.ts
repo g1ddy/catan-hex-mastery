@@ -81,6 +81,13 @@ export function parseVertexId(id: string) {
     });
 }
 
+export function parseEdgeId(id: string) {
+    return id.split('::').map(s => {
+        const [q, r, sCoords] = s.split(',').map(Number);
+        return { q, r, s: sCoords };
+    });
+}
+
 export const getVerticesForEdge = (edgeId: string): string[] => {
     // Edge between H1, H2. Vertices are (H1, H2, N1) and (H1, H2, N2) where N1, N2 are common neighbors.
     // Easier: Just find common neighbors of H1 and H2.
@@ -115,8 +122,11 @@ export const getEdgesForVertex = (vertexId: string): string[] => {
 };
 
 export const getHexesForVertex = (vertexId: string): string[] => {
-    const hexes = parseVertexId(vertexId);
-    return hexes.map(h => `${h.q},${h.r},${h.s}`);
+    return vertexId.split('::');
+}
+
+export const getHexesForEdge = (edgeId: string): string[] => {
+    return edgeId.split('::');
 }
 
 /**
