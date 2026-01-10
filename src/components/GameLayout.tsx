@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
@@ -14,7 +14,6 @@ import { Resources } from '../game/types';
 import { RESOURCE_META } from './uiConfig';
 import { AnalystShell } from './AnalystShell';
 import { CoachShell } from './CoachShell';
-import { CoachPanel } from './CoachPanel';
 import { DiceIcons } from './DiceIcons';
 
 interface GameLayoutProps {
@@ -23,6 +22,9 @@ interface GameLayoutProps {
   playerPanel: React.ReactNode;
   gameControls: React.ReactNode;
   gameStatus?: React.ReactNode;
+  coachPanel: React.ReactNode;
+  activePanel: 'analyst' | 'coach' | null;
+  onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
 }
 
 const renderCostTooltip = ({ content }: { content: string | null }) => {
@@ -69,15 +71,20 @@ const renderDiceTooltip = ({ content }: { content: string | null }) => {
     }
 };
 
-export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls, gameStatus }) => {
+export const GameLayout: React.FC<GameLayoutProps> = ({
+  board,
+  dashboard,
+  playerPanel,
+  gameControls,
+  gameStatus,
+  coachPanel,
+  activePanel,
+  onPanelChange
+}) => {
   const isMobile = useIsMobile();
 
-  // 'analyst' | 'coach' | null
-  // Default to 'analyst' on desktop, null on mobile
-  const [activePanel, setActivePanel] = useState<'analyst' | 'coach' | null>(!isMobile ? 'analyst' : null);
-
   const togglePanel = (panel: 'analyst' | 'coach') => {
-    setActivePanel(prev => (prev === panel ? null : panel));
+    onPanelChange(activePanel === panel ? null : panel);
   };
 
   // Toggle buttons visibility (Only visible when their respective panel is closed on Desktop)
@@ -203,7 +210,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
 
       {/* 4. Coach Panel (Right Sidebar on Desktop, Top Drawer on Mobile) */}
       <CoachShell isOpen={activePanel === 'coach'} onToggle={() => togglePanel('coach')}>
-          <CoachPanel />
+          {coachPanel}
       </CoachShell>
 
       {/* 1. Toggle Buttons (Rendered last to ensure z-index priority) */}

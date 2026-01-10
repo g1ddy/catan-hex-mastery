@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState } from '../game/types';
 import { GameHex } from './GameHex';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
+import { CoachPanel } from './CoachPanel';
 import { GameLayout } from './GameLayout';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
@@ -15,6 +16,7 @@ import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { PHASES, STAGE_MOVES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const NO_OP = () => {};
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
@@ -32,6 +34,7 @@ interface CoachData {
 
 export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
   const hexes = Object.values(G.board.hexes);
+  const isMobile = useIsMobile();
 
   // Auto-switch Identity in Hotseat Mode
   React.useEffect(() => {
@@ -43,6 +46,17 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
+
+  // Active Panel State (Lifted from GameLayout)
+  // Default to Analyst on desktop, unless handled by effect
+  const [activePanel, setActivePanel] = useState<'analyst' | 'coach' | null>(!isMobile ? 'analyst' : null);
+
+  // Auto-expand Coach Panel on entering Gameplay Phase (Desktop only)
+  useEffect(() => {
+      if (!isMobile && ctx.phase === PHASES.GAMEPLAY) {
+          setActivePanel('coach');
+      }
+  }, [ctx.phase, isMobile]);
 
   // Visualize Roll & Rewards
   React.useEffect(() => {
@@ -237,10 +251,17 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             const allowedMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
             return (allowedMoves as readonly string[])?.includes('regenerateBoard') ?? false;
           })()}
-          showCoachMode={showCoachMode}
-          setShowCoachMode={setShowCoachMode}
         />
       }
+      coachPanel={
+          <CoachPanel
+              G={G}
+              showCoachMode={showCoachMode}
+              setShowCoachMode={setShowCoachMode}
+          />
+      }
+      activePanel={activePanel}
+      onPanelChange={setActivePanel}
     />
   );
 };

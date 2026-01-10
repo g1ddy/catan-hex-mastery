@@ -12,18 +12,23 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   await page.getByRole('button', { name: 'Begin Placement' }).click();
 
   // 3. Verify Default State (Coach Mode OFF / Minimal View)
-  // On Mobile, the Analyst Panel (dashboard) is hidden in a bottom sheet.
-  // We need to open it to access the toggle.
-  const openStatsBtn = page.getByLabel('Toggle Analyst Dashboard');
+  // We need to access the toggle in the Coach Panel.
+  const openCoachBtn = page.getByLabel('Toggle Coach Bot');
 
   // Locate the input for verification, but use the label for clicking
   const coachToggleInput = page.locator('input[type="checkbox"]').first();
   // Find the label wrapping the input
   const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
 
-  if (await openStatsBtn.isVisible()) {
-    await openStatsBtn.click();
+  if (await openCoachBtn.isVisible()) {
+    // If the toggle button is visible, the panel is closed. Open it.
+    await openCoachBtn.click();
     // Wait for the toggle to appear in the DOM/become visible
+    await expect(coachToggleLabel).toBeVisible();
+  } else {
+    // If the button isn't visible, check if the panel itself is visible
+    // This happens if it's already open (though in Setup phase, default is usually Analyst or Closed)
+    // Just wait for label to be visible
     await expect(coachToggleLabel).toBeVisible();
   }
 
