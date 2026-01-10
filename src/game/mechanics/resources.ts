@@ -1,5 +1,17 @@
-import { GameState, TERRAIN_CONFIG, Resources } from '../types';
+import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
+
+/**
+ * Mapping of TerrainType to Resource string.
+ * Excludes non-resource terrains (Desert, Sea).
+ */
+export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, string>> = {
+    [TerrainType.Forest]: 'wood',
+    [TerrainType.Hills]: 'brick',
+    [TerrainType.Pasture]: 'sheep',
+    [TerrainType.Fields]: 'wheat',
+    [TerrainType.Mountains]: 'ore'
+};
 
 /**
  * Distributes resources based on the current dice roll.
