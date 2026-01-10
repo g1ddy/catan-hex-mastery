@@ -1,6 +1,5 @@
 import { GameState } from '../types';
-import { getVerticesForHex } from '../hexUtils';
-import { isValidSettlementLocation } from '../rules/placement';
+import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
 
 export interface CoachRecommendation {
@@ -83,7 +82,6 @@ export class Coach {
      */
     public getAllSettlementScores(playerID: string): CoachRecommendation[] {
         const recommendations: CoachRecommendation[] = [];
-        const hexes = this.G.board.hexes;
 
         // 1. Calculate Scarcity Map
         const scarcityMap = this.calculateScarcityMap();
@@ -91,18 +89,11 @@ export class Coach {
         // 2. Identify Existing Resources
         const existingResources = this.getExistingResources(playerID);
 
-        // 3. Identify all candidates (all vertices on board)
-        const candidates = new Set<string>();
-        Object.values(hexes).forEach(hex => {
-            const vs = getVerticesForHex(hex.coords);
-            vs.forEach(v => candidates.add(v));
-        });
+        // 3. Identify all candidates (physically valid spots)
+        const candidates = getValidSetupSettlementSpots(this.G);
 
         // 4. Score candidates
         candidates.forEach(vId => {
-            // Use centralized validation rule
-            if (!isValidSettlementLocation(this.G, vId)) return;
-
             const score = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
             recommendations.push(score);
         });

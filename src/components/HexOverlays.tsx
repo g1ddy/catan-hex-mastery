@@ -2,7 +2,7 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
-import { getVerticesForHex, getEdgesForHex } from '../game/hexUtils';
+import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge } from '../game/hexUtils';
 import { hexCornerOffset } from '../game/geometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
@@ -59,8 +59,8 @@ export const HexOverlays = React.memo(({
         const rawVertexIds = getVerticesForHex(hex.coords);
         const rawEdgeIds = getEdgesForHex(hex.coords);
 
-        const verticesWithParts = rawVertexIds.map(id => ({ id, parts: id.split('::') }));
-        const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: id.split('::') }));
+        const verticesWithParts = rawVertexIds.map(id => ({ id, parts: getHexesForVertex(id) }));
+        const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: getHexesForEdge(id) }));
 
         const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
 
@@ -281,6 +281,7 @@ export const HexOverlays = React.memo(({
                                 width={6} height={2}
                                 fill={ownerColor || 'none'}
                                 transform={`rotate(${angle} ${midX} ${midY})`}
+                                data-testid="occupied-edge"
                             />
                         )}
                          {isGhost && (
