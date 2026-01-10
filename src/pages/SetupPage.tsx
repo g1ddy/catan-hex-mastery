@@ -93,6 +93,10 @@ export function SetupPage() {
              </p>
         )}
       </div>
+
+      <div className="absolute bottom-4 text-xs text-slate-500 font-mono">
+        v{import.meta.env.VITE_APP_VERSION || 'DEV-LOCAL'}
+      </div>
     </div>
   );
 }

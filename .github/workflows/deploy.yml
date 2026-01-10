@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -23,21 +23,63 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Version
+        id: version
+        run: |
+          DATE_STR=$(date +'%Y.%m.%d')
+          # List tags matching today's pattern vYYYY.MM.DD.*
+          # Sort version numbers, taking the last one
+          LATEST_TAG=$(git tag -l "v$DATE_STR.*" | sort -V | tail -n1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            NEW_R=0
+          else
+            # Extract the R part (everything after the last dot)
+            LAST_R=${LATEST_TAG##*.}
+            NEW_R=$((LAST_R + 1))
+          fi
+
+          NEW_VERSION="$DATE_STR.$NEW_R"
+          NEW_TAG="v$NEW_VERSION"
+
+          echo "Calculated new version: $NEW_VERSION"
+          echo "New tag: $NEW_TAG"
+
+          echo "VITE_APP_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
+
       - name: Build
         run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ env.VITE_APP_VERSION }}
+
+      - name: Create Release Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ env.NEW_TAG }}
+          git push origin ${{ env.NEW_TAG }}
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
