@@ -36,10 +36,10 @@ test.describe('Documentation Screenshots', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).click();
     await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
 
-    // Open Analyst Panel (if closed)
-    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
-    if (await toggleBtn.isVisible()) {
-      await toggleBtn.click();
+    // Open Coach Panel (Required to see Coach Mode Toggle now)
+    const coachBtn = page.getByRole('button', { name: 'Toggle Coach Bot' });
+    if (await coachBtn.isVisible()) {
+      await coachBtn.click();
     }
 
     // Enable Coach Mode
@@ -71,10 +71,10 @@ test.describe('Documentation Screenshots', () => {
     await page.getByRole('button', { name: 'Begin Placement' }).click();
     await expect(page.getByRole('button', { name: 'Cancel Placement' })).toBeVisible();
 
-    // Open Analyst Panel & Enable Coach Mode
-    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
-    if (await toggleBtn.isVisible()) {
-      await toggleBtn.click();
+    // Open Coach Panel & Enable Coach Mode
+    const coachBtn = page.getByRole('button', { name: 'Toggle Coach Bot' });
+    if (await coachBtn.isVisible()) {
+      await coachBtn.click();
     }
     const coachToggleInput = page.getByRole('checkbox', { name: /coach mode/i });
     const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
@@ -136,11 +136,12 @@ test.describe('Documentation Screenshots', () => {
     // Wait for layout
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
 
-    // Open the Analyst/Stats Drawer
-    await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click();
+    // Note: Production Potential is now in the Coach Panel (Right/Bottom)
+    // Open the Coach Drawer
+    await page.getByRole('button', { name: 'Toggle Coach Bot' }).click();
 
     // Wait for drawer to slide up (check for visibility of content inside)
-    await expect(page.getByText('Fairness')).toBeVisible();
+    await expect(page.getByText('Player Production Potential')).toBeVisible();
 
     // Wait for animation to finish
     await page.waitForTimeout(500);
@@ -161,7 +162,7 @@ test.describe('Documentation Screenshots', () => {
 
     // Wait for panel contents
     await expect(page.getByText('Fairness')).toBeVisible();
-    await expect(page.getByText('Player Production Potential')).toBeVisible();
+    // Player Production Potential is no longer here, so we remove that expectation.
 
     // After multiple locator failures, the most robust method is to clip the screenshot
     // to the known dimensions of the panel. The panel is a 320px-wide sidebar.
