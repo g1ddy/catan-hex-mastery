@@ -125,7 +125,7 @@ export class Coach {
         return existingResources;
     }
 
-    private calculateScarcityScore(resources: string[], uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
+    private calculateScarcityScore(_resources: string[], uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
         const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
             return {

@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io';
-import { GameState, TerrainType } from '../types';
+import { GameState } from '../types';
 import { STAGES } from '../constants';
 import { getVertexNeighbors, getHexesForVertex, getEdgesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
