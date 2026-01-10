@@ -73,37 +73,46 @@ describe('placement rules', () => {
     });
 
     describe('isValidSetupRoadPlacement', () => {
-        it('returns true if connected to last placed settlement', () => {
-            // Mock G with player having a last settlement
-            // Settlement vertex: 0,0,0::1,-1,0::1,0,-1
-            // One connected edge: 0,0,0::1,-1,0
+        it('returns a valid result if connected to the last placed settlement', () => {
             const settlementId = '0,0,0::1,-1,0::1,0,-1';
             const connectedEdge = '0,0,0::1,-1,0';
-
             const G = mockG();
-            G.players['0'].settlements = [settlementId];
+            G.players['0'].settlements = ['some_other_settlement', settlementId];
 
-            expect(isValidSetupRoadPlacement(G, connectedEdge, '0')).toBe(true);
+            const result = isValidSetupRoadPlacement(G, connectedEdge, '0');
+            expect(result.isValid).toBe(true);
+            expect(result.reason).toBeUndefined();
         });
 
-        it('returns false if NOT connected to last placed settlement', () => {
+        it('returns an invalid result if not connected to the last settlement', () => {
             const settlementId = '0,0,0::1,-1,0::1,0,-1';
-            const disconnectedEdge = '9,9,9::8,8,8'; // Far away
-
+            const disconnectedEdge = '9,9,9::8,8,8';
             const G = mockG();
             G.players['0'].settlements = [settlementId];
 
-            expect(isValidSetupRoadPlacement(G, disconnectedEdge, '0')).toBe(false);
+            const result = isValidSetupRoadPlacement(G, disconnectedEdge, '0');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("Road must connect to your just-placed settlement");
         });
 
-        it('returns false if edge is occupied', () => {
-             const settlementId = '0,0,0::1,-1,0::1,0,-1';
-             const connectedEdge = '0,0,0::1,-1,0';
+        it('returns an invalid result if the edge is occupied', () => {
+            const settlementId = '0,0,0::1,-1,0::1,0,-1';
+            const connectedEdge = '0,0,0::1,-1,0';
+            const G = mockG({}, { [connectedEdge]: { owner: '1' } });
+            G.players['0'].settlements = [settlementId];
 
-             const G = mockG({}, { [connectedEdge]: { owner: '1'} });
-             G.players['0'].settlements = [settlementId];
+            const result = isValidSetupRoadPlacement(G, connectedEdge, '0');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("This edge is already occupied");
+        });
 
-             expect(isValidSetupRoadPlacement(G, connectedEdge, '0')).toBe(false);
+        it('returns an invalid result if the player has no settlements', () => {
+            const G = mockG();
+            G.players['0'].settlements = [];
+
+            const result = isValidSetupRoadPlacement(G, '0,0,0::1,-1,0', '0');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("No active settlement found to connect to");
         });
     });
 });
