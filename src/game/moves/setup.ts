@@ -2,6 +2,8 @@ import { Move } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getVertexNeighbors, getHexesForVertex } from '../hexUtils';
+import { isValidHexId } from '../../utils/validation';
+import { isValidSetupRoadPlacement } from '../rules/placement';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
@@ -73,8 +75,9 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
 
   // Use centralized validation logic.
   // This function checks for both occupancy and connectivity to the last placed settlement.
-  if (!isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer)) {
-    throw new Error("Invalid road placement: The edge may be occupied or not connected to your last settlement.");
+  const validation = isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer);
+  if (!validation.isValid) {
+    throw new Error(validation.reason || "Invalid road placement: The edge may be occupied or not connected to your last settlement.");
   }
 
   // Execution
