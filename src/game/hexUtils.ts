@@ -77,6 +77,12 @@ export const getEdgesForHex = (coords: CubeCoordinates): string[] => {
 export function parseVertexId(id: string) {
     return id.split('::').map(s => {
         const [q, r, sCoords] = s.split(',').map(Number);
+
+        // Security check for safe integers to avoid precision loss vulnerabilities
+        if (!Number.isSafeInteger(q) || !Number.isSafeInteger(r) || !Number.isSafeInteger(sCoords)) {
+           throw new Error(`Invalid coordinate in vertex ID: ${s} (unsafe integer)`);
+        }
+
         return { q, r, s: sCoords };
     });
 }
@@ -86,6 +92,12 @@ export const getVerticesForEdge = (edgeId: string): string[] => {
     // Easier: Just find common neighbors of H1 and H2.
     const [h1, h2] = edgeId.split('::').map(s => {
          const [q, r, sCoords] = s.split(',').map(Number);
+
+         // Security check for safe integers
+         if (!Number.isSafeInteger(q) || !Number.isSafeInteger(r) || !Number.isSafeInteger(sCoords)) {
+            throw new Error(`Invalid coordinate in edge ID: ${s} (unsafe integer)`);
+         }
+
          return { q, r, s: sCoords };
     });
 

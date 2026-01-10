@@ -48,4 +48,14 @@ describe('isValidHexId', () => {
     const unsafe = "9007199254740993,-9007199254740993,0";
     expect(isValidHexId(unsafe)).toBe(false);
   });
+
+  test('rejects more unsafe integers', () => {
+      // 2^53 is unsafe. Sum is 2^53 - (2^53 - 1) - 1 = 0.
+      const unsafeAtBoundary = '9007199254740992,-9007199254740991,-1';
+      expect(isValidHexId(unsafeAtBoundary)).toBe(false);
+
+      // Unsafe negative number
+      const unsafeMin = '-9007199254740992,9007199254740991,1';
+      expect(isValidHexId(unsafeMin)).toBe(false);
+  });
 });
