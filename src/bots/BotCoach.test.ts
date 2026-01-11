@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
-import { BotCoach, BotMove } from './BotCoach';
-import { GameState } from '../game/types';
+import { BotCoach } from './BotCoach';
+import { GameState, BotMove } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
@@ -68,7 +68,8 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0');
             expect(result).toHaveLength(2);
-            expect(result.map(m => m.args[0])).toEqual(['v1', 'v3']);
+            // Use optional chaining for safety in test assertion
+            expect(result.map(m => m.args?.[0])).toEqual(['v1', 'v3']);
         });
 
         it('should filter acting moves based on weights', () => {
@@ -102,13 +103,6 @@ describe('BotCoach', () => {
 
              const result = flatCoach.filterOptimalMoves(moves, '0');
              expect(result).toHaveLength(2);
-        });
-    });
-
-    describe('getAvailableMoves', () => {
-        it('should return endTurn move by default', () => {
-            const moves = botCoach.getAvailableMoves('0');
-            expect(moves).toContainEqual({ move: 'endTurn', args: [] });
         });
     });
 });

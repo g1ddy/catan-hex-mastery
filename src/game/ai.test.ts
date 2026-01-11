@@ -2,7 +2,6 @@
 import { enumerate } from './ai';
 import { GameState } from './types';
 import { STAGES } from './constants';
-import { getValidSettlementSpots } from './rules/validator';
 
 // Mock validator functions
 jest.mock('./rules/validator', () => ({
