@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { getVerticesForHex, getEdgesForHex } from '../hexUtils';
-import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, isValidSettlementLocation, isValidSetupRoadPlacement } from './placement';
+import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, validateSettlementLocation, isValidSetupRoadPlacement } from './placement';
 
 /**
  * Returns a set of all vertex IDs where the player can legally build a settlement.
@@ -79,7 +79,7 @@ export const getValidSetupSettlementSpots = (G: GameState): Set<string> => {
             if (checked.has(vId)) return;
             checked.add(vId);
 
-            if (isValidSettlementLocation(G, vId)) {
+            if (validateSettlementLocation(G, vId).isValid) {
                 validSpots.add(vId);
             }
         });

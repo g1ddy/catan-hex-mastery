@@ -14,21 +14,29 @@ import { isValidHexId } from '../../utils/validation';
  *
  * @param G The game state.
  * @param vertexId The ID of the vertex to check.
- * @returns True if the location is physically valid for a settlement.
+ * @returns A ValidationResult object.
  */
-export const isValidSettlementLocation = (G: GameState, vertexId: string): boolean => {
+export const validateSettlementLocation = (G: GameState, vertexId: string): ValidationResult => {
     // 1. Check if occupied
     if (G.board.vertices[vertexId]) {
-        return false;
+        return { isValid: false, reason: "This vertex is already occupied" };
     }
 
     // 2. Check Distance Rule
     const neighbors = getVertexNeighbors(vertexId);
     if (neighbors.some(n => G.board.vertices[n])) {
-        return false;
+        return { isValid: false, reason: "Settlement is too close to another building" };
     }
 
-    return true;
+    return { isValid: true };
+};
+
+/**
+ * Backwards compatibility wrapper for boolean checks.
+ * @deprecated Use validateSettlementLocation for detailed errors.
+ */
+export const isValidSettlementLocation = (G: GameState, vertexId: string): boolean => {
+    return validateSettlementLocation(G, vertexId).isValid;
 };
 
 /**
@@ -133,7 +141,6 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
     }
 
     // Check Occupancy
-    // eslint-disable-next-line security/detect-object-injection
     if (G.board.edges[edgeId]) {
         return { isValid: false, reason: "This edge is already occupied" };
     }

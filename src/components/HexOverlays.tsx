@@ -54,8 +54,7 @@ export const HexOverlays = React.memo(({
     const { recommendations, minScore, maxScore, top3Set } = coachData;
 
     // Use memoized geometry
-    const { vertices, edges, corners, currentHexIdStr } = React.useMemo(() => {
-        const cornerCoords = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i));
+    const { vertices, edges, currentHexIdStr } = React.useMemo(() => {
         const rawVertexIds = getVerticesForHex(hex.coords);
         const rawEdgeIds = getEdgesForHex(hex.coords);
 
@@ -64,8 +63,11 @@ export const HexOverlays = React.memo(({
 
         const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
 
-        return { vertices: verticesWithParts, edges: edgesWithParts, corners: cornerCoords, currentHexIdStr: idStr };
+        return { vertices: verticesWithParts, edges: edgesWithParts, currentHexIdStr: idStr };
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
+
+    // Static corner offsets
+    const corners = React.useMemo(() => Array.from({ length: 6 }, (_, i) => hexCornerOffset(i)), []);
 
     // Use shared rules hook
     const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);

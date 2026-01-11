@@ -1,9 +1,7 @@
 import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { getEdgesForVertex } from '../game/hexUtils';
-import { isValidSettlementLocation } from '../game/rules/placement';
-import { getValidSettlementSpots, getValidCitySpots, getValidRoadSpots } from '../game/rules/validator';
+import { getValidSettlementSpots, getValidCitySpots, getValidRoadSpots, getValidSetupRoadSpots } from '../game/rules/validator';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 export interface BotMove {
@@ -69,29 +67,22 @@ export class BotCoach {
         // Setup Phase Logic (typically)
         const best = this.coach.getBestSettlementSpots(playerID);
 
-        // Iterate through best spots until we find one that is valid for *placement* (Setup rule)
-        for (const rec of best) {
-             if (isValidSettlementLocation(this.G, rec.vertexId)) {
-                 return { move: 'placeSettlement', args: [rec.vertexId] };
-             }
+        // The Coach uses getValidSetupSettlementSpots internally, so validity is guaranteed.
+        // We simply pick the top recommendation.
+        if (best.length > 0) {
+            return { move: 'placeSettlement', args: [best[0].vertexId] };
         }
         return null;
     }
 
     public recommendRoadPlacement(playerID: string): BotMove | null {
-        const player = this.G.players[playerID]; // eslint-disable-line security/detect-object-injection
-        // In Setup, usually place road attached to the last placed settlement
-        if (player.settlements.length > 0) {
-            const lastSettlement = player.settlements[player.settlements.length - 1];
-            const edges = getEdgesForVertex(lastSettlement);
-
-            for (const edgeId of edges) {
-                // Use strict rule: must be empty (Setup)
-                // eslint-disable-next-line security/detect-object-injection
-                if (!this.G.board.edges[edgeId]) {
-                    return { move: 'placeRoad', args: [edgeId] };
-                }
-            }
+        const validRoads = getValidSetupRoadSpots(this.G, playerID);
+        // During setup, any valid road attached to the last settlement is acceptable.
+        // There is rarely a strategic difference unless one direction is blocked (which the validator checks)
+        // or leads to better future expansion (which is too advanced for this scope).
+        if (validRoads.size > 0) {
+            const firstValid = validRoads.values().next().value;
+            return { move: 'placeRoad', args: [firstValid] };
         }
         return null;
     }
