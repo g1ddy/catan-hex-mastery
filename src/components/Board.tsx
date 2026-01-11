@@ -257,7 +257,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           <CoachPanel
               G={G}
               ctx={ctx}
-              playerID={ctx.currentPlayer}
               showCoachMode={showCoachMode}
               setShowCoachMode={setShowCoachMode}
           />

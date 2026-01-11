@@ -8,21 +8,21 @@ import { Coach } from '../game/analysis/coach';
 interface CoachPanelProps {
     G?: GameState;
     ctx: Ctx;
-    playerID: string;
     showCoachMode: boolean;
     setShowCoachMode: (show: boolean) => void;
 }
 
-export const CoachPanel: React.FC<CoachPanelProps> = ({ G, ctx, playerID, showCoachMode, setShowCoachMode }) => {
+export const CoachPanel: React.FC<CoachPanelProps> = ({ G, ctx, showCoachMode, setShowCoachMode }) => {
     const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
 
     const strategicAdvice = useMemo(() => {
         if (!G) return "Waiting for game state...";
         const coach = new Coach(G);
+        const playerID = ctx.currentPlayer;
         // Determine the stage for the specific player or general active stage
         const currentStage = ctx.activePlayers?.[playerID];
         return coach.getStrategicAdvice(playerID, currentStage);
-    }, [G, ctx.activePlayers, playerID]);
+    }, [G, ctx.activePlayers, ctx.currentPlayer]);
 
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">
