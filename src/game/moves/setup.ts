@@ -1,8 +1,8 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { STAGES } from '../constants';
-import { getVertexNeighbors, getHexesForVertex } from '../hexUtils';
-import { isValidSetupRoadPlacement } from '../rules/placement';
+import { getHexesForVertex } from '../hexUtils';
+import { isValidSetupRoadPlacement, validateSettlementLocation } from '../rules/placement';
 import { isValidHexId } from '../../utils/validation';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 
@@ -13,20 +13,10 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     throw new Error("Invalid vertex ID format");
   }
 
-  // 1. Validation: Occupancy
-  // eslint-disable-next-line security/detect-object-injection
-  if (G.board.vertices[vertexId]) {
-    throw new Error("This vertex is already occupied");
-  }
-
-  // 2. Validation: Distance Rule
-  // Implementation of Occupancy check:
-  const neighbors = getVertexNeighbors(vertexId);
-  for (const nId of neighbors) {
-    // eslint-disable-next-line security/detect-object-injection
-    if (G.board.vertices[nId]) {
-      throw new Error("Settlement is too close to another building");
-    }
+  // 1. Validation: Occupancy & Distance Rule
+  const validation = validateSettlementLocation(G, vertexId);
+  if (!validation.isValid) {
+    throw new Error(validation.reason || "Invalid settlement placement");
   }
 
   // Execution
