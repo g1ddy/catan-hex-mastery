@@ -1,4 +1,4 @@
-import { GameState } from './types';
+import { GameState, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import {
@@ -9,12 +9,6 @@ import {
     getValidRoadSpots
 } from './rules/validator';
 import { getAffordableBuilds } from './mechanics/costs';
-
-export interface BotMove {
-    move: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args?: any[];
-}
 
 /**
  * Enumerates all legally possible moves for the player in the current state.

@@ -1,4 +1,4 @@
-import { GameState } from '../game/types';
+import { GameState, BotMove } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { getValidSettlementSpots, getValidCitySpots, getValidRoadSpots, getValidSetupRoadSpots } from '../game/rules/validator';
@@ -6,11 +6,7 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
-export interface BotMove {
-    move: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args: any[];
-}
+export type { BotMove };
 
 export class BotCoach {
     private G: GameState;
@@ -23,6 +19,10 @@ export class BotCoach {
         this.profile = profile;
     }
 
+    private isValidPlayerID(playerID: string): boolean {
+        return !(playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype');
+    }
+
     /**
      * Enumerates all legally possible moves for the player in the current state.
      * This is intended for AI engines (MCTS, RandomBot) to know the full action space.
@@ -30,9 +30,16 @@ export class BotCoach {
      * @deprecated Use src/game/ai.ts enumerate() instead.
      */
     public getAvailableMoves(playerID: string): BotMove[] {
+        if (!this.isValidPlayerID(playerID)) {
+             console.warn('Invalid playerID:', playerID);
+             return [];
+        }
+
         const moves: BotMove[] = [];
         // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
+        if (!player) return [];
+
         const affordable = getAffordableBuilds(player.resources);
 
         // 1. Settlements
@@ -74,6 +81,11 @@ export class BotCoach {
      * @returns A sorted list of optimal moves (best first)
      */
     public filterOptimalMoves(allMoves: BotMove[], playerID: string): BotMove[] {
+        if (!this.isValidPlayerID(playerID)) {
+            console.warn('Invalid playerID:', playerID);
+            return [];
+        }
+
         if (!allMoves || allMoves.length === 0) return [];
 
         // Detect current stage based on move types
@@ -138,6 +150,8 @@ export class BotCoach {
     }
 
     public recommendSettlementPlacement(playerID: string): BotMove | null {
+        if (!this.isValidPlayerID(playerID)) return null;
+
         // Setup Phase Logic (typically)
         const best = this.coach.getBestSettlementSpots(playerID);
 
@@ -150,6 +164,8 @@ export class BotCoach {
     }
 
     public recommendRoadPlacement(playerID: string): BotMove | null {
+        if (!this.isValidPlayerID(playerID)) return null;
+
         const validRoads = getValidSetupRoadSpots(this.G, playerID);
         // During setup, any valid road attached to the last settlement is acceptable.
         // There is rarely a strategic difference unless one direction is blocked (which the validator checks)
@@ -162,6 +178,8 @@ export class BotCoach {
     }
 
     public recommendNextMove(playerID: string): BotMove | null {
+         if (!this.isValidPlayerID(playerID)) return null;
+
          const moves = this.getAvailableMoves(playerID);
          const ranked = this.filterOptimalMoves(moves, playerID);
          return ranked.length > 0 ? ranked[0] : null;

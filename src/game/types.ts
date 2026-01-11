@@ -74,3 +74,9 @@ export interface GameState {
   boardStats: BoardStats;
   hasRolled: boolean;
 }
+
+export interface BotMove {
+  move: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args?: any[];
+}

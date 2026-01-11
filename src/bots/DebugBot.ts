@@ -1,7 +1,7 @@
 import { RandomBot } from 'boardgame.io/ai';
-import { GameState } from '../game/types';
+import { GameState, BotMove } from '../game/types';
 import { Coach } from '../game/analysis/coach';
-import { BotCoach, BotMove } from './BotCoach';
+import { BotCoach } from './BotCoach';
 
 export class DebugBot extends RandomBot {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
