@@ -127,6 +127,11 @@ export interface ValidationResult {
  * @returns A ValidationResult object.
  */
 export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
+    // 0. Security Validation
+    if (!isValidHexId(edgeId)) {
+        return { isValid: false, reason: "Invalid edge ID format" };
+    }
+
     // Check Occupancy
     // eslint-disable-next-line security/detect-object-injection
     if (G.board.edges[edgeId]) {

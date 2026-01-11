@@ -86,7 +86,8 @@ describe('placement rules', () => {
 
         it('returns an invalid result if not connected to the last settlement', () => {
             const settlementId = '0,0,0::1,-1,0::1,0,-1';
-            const disconnectedEdge = '9,9,9::8,8,8';
+            // Use a valid hex ID format, but one that is far away or disconnected
+            const disconnectedEdge = '10,0,-10::9,0,-9';
             const G = mockG();
             G.players['0'].settlements = [settlementId];
 
