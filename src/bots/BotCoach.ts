@@ -7,12 +7,10 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 export type { BotMove };
 
 export class BotCoach {
-    private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
 
-    constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
-        this.G = G;
+    constructor(_G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.coach = coach;
         this.profile = profile;
     }
@@ -49,14 +47,22 @@ export class BotCoach {
             // Use Coach analysis to find the best spots
             const bestSpots = this.coach.getBestSettlementSpots(playerID);
 
+            // Optimization: Map moves by vertexId for O(1) lookup
+            const movesByVertex = new Map<string, BotMove>();
+            allMoves.forEach(m => {
+                if (m.move === 'placeSettlement' && m.args?.[0]) {
+                    movesByVertex.set(m.args[0], m);
+                }
+            });
+
             // Map the best spots to the available moves
             // bestSpots is ordered best to worst
             const rankedMoves: BotMove[] = [];
 
             bestSpots.forEach(spot => {
-                const matchingMove = allMoves.find(m => m.move === 'placeSettlement' && m.args?.[0] === spot.vertexId);
-                if (matchingMove) {
-                    rankedMoves.push(matchingMove);
+                const move = movesByVertex.get(spot.vertexId);
+                if (move) {
+                    rankedMoves.push(move);
                 }
             });
 
