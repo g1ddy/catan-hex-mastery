@@ -17,6 +17,8 @@ import { isValidHexId } from '../../utils/validation';
  * @returns True if the location is physically valid for a settlement.
  */
 export const isValidSettlementLocation = (G: GameState, vertexId: string): boolean => {
+    if (!isValidHexId(vertexId)) return false;
+
     // 1. Check if occupied
     if (G.board.vertices[vertexId]) {
         return false;
@@ -62,6 +64,8 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
  * @returns True if valid.
  */
 export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
+    if (!isValidHexId(vertexId)) return false;
+
     const vertex = G.board.vertices[vertexId];
     if (!vertex) return false;
     return vertex.type === 'settlement' && vertex.owner === playerID;
@@ -80,6 +84,8 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
  * @returns True if valid.
  */
 export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+    if (!isValidHexId(edgeId)) return false;
+
     // 1. Check if occupied
     if (G.board.edges[edgeId]) {
         return false;

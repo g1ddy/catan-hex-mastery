@@ -22,6 +22,11 @@ describe('placement rules', () => {
     } as unknown as GameState);
 
     describe('isValidSettlementLocation', () => {
+        it('returns false if invalid ID format', () => {
+            const G = mockG();
+            expect(isValidSettlementLocation(G, '__proto__')).toBe(false);
+        });
+
         it('returns false if occupied', () => {
             const G = mockG({ '0,0,0::1,0,-1::0,1,-1': { owner: '0', type: 'settlement' } });
             expect(isValidSettlementLocation(G, '0,0,0::1,0,-1::0,1,-1')).toBe(false);
@@ -51,24 +56,40 @@ describe('placement rules', () => {
     });
 
     describe('isValidCityPlacement', () => {
+        it('returns false if invalid ID format', () => {
+            const G = mockG();
+            expect(isValidCityPlacement(G, '__proto__', 'p1')).toBe(false);
+        });
+
         it('returns true for own settlement', () => {
-            const G = mockG({ 'v1': { owner: 'p1', type: 'settlement' } });
-            expect(isValidCityPlacement(G, 'v1', 'p1')).toBe(true);
+            // "v1" might fail validation if we strictly enforce coordinates.
+            // Let's use a valid hex ID for this test now that we enforce it.
+            const vId = '0,0,0::1,-1,0::1,0,-1';
+            const G = mockG({ [vId]: { owner: 'p1', type: 'settlement' } });
+            expect(isValidCityPlacement(G, vId, 'p1')).toBe(true);
         });
         it('returns false for other player settlement', () => {
-            const G = mockG({ 'v1': { owner: 'p2', type: 'settlement' } });
-            expect(isValidCityPlacement(G, 'v1', 'p1')).toBe(false);
+            const vId = '0,0,0::1,-1,0::1,0,-1';
+            const G = mockG({ [vId]: { owner: 'p2', type: 'settlement' } });
+            expect(isValidCityPlacement(G, vId, 'p1')).toBe(false);
         });
         it('returns false for city (already upgraded)', () => {
-            const G = mockG({ 'v1': { owner: 'p1', type: 'city' } });
-            expect(isValidCityPlacement(G, 'v1', 'p1')).toBe(false);
+            const vId = '0,0,0::1,-1,0::1,0,-1';
+            const G = mockG({ [vId]: { owner: 'p1', type: 'city' } });
+            expect(isValidCityPlacement(G, vId, 'p1')).toBe(false);
         });
     });
 
     describe('isValidRoadPlacement', () => {
+        it('returns false if invalid ID format', () => {
+            const G = mockG();
+            expect(isValidRoadPlacement(G, '__proto__', 'p1')).toBe(false);
+        });
+
         it('returns false if occupied', () => {
-            const G = mockG({}, { 'e1': { owner: 'p1' } });
-            expect(isValidRoadPlacement(G, 'e1', 'p1')).toBe(false);
+            const eId = '0,0,0::1,-1,0';
+            const G = mockG({}, { [eId]: { owner: 'p1' } });
+            expect(isValidRoadPlacement(G, eId, 'p1')).toBe(false);
         });
     });
 
