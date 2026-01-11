@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
     Z_INDEX_GAME_CONTROLS_CONTAINER,
     Z_INDEX_FLOATING_UI
 } from '../styles/z-indices';
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, Bot } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -13,6 +13,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { Resources } from '../game/types';
 import { RESOURCE_META } from './uiConfig';
 import { AnalystShell } from './AnalystShell';
+import { CoachShell } from './CoachShell';
 import { DiceIcons } from './DiceIcons';
 
 interface GameLayoutProps {
@@ -21,6 +22,9 @@ interface GameLayoutProps {
   playerPanel: React.ReactNode;
   gameControls: React.ReactNode;
   gameStatus?: React.ReactNode;
+  coachPanel: React.ReactNode;
+  activePanel: 'analyst' | 'coach' | null;
+  onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
 }
 
 const renderCostTooltip = ({ content }: { content: string | null }) => {
@@ -67,15 +71,28 @@ const renderDiceTooltip = ({ content }: { content: string | null }) => {
     }
 };
 
-export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, playerPanel, gameControls, gameStatus }) => {
+export const GameLayout: React.FC<GameLayoutProps> = ({
+  board,
+  dashboard,
+  playerPanel,
+  gameControls,
+  gameStatus,
+  coachPanel,
+  activePanel,
+  onPanelChange
+}) => {
   const isMobile = useIsMobile();
-  const [isAnalystOpen, setIsAnalystOpen] = useState(!isMobile); // Default open on desktop
 
-  // Toggle button component (Only visible when panel is closed on Desktop)
-  // On Mobile, the panel is a drawer, so the button acts as the main trigger always.
-  const showToggle = isMobile || !isAnalystOpen;
+  const togglePanel = (panel: 'analyst' | 'coach') => {
+    onPanelChange(activePanel === panel ? null : panel);
+  };
 
-  const AnalystToggle = showToggle ? (
+  // Toggle buttons visibility (Only visible when their respective panel is closed on Desktop)
+  // On Mobile, panels are drawers, so buttons act as main triggers always.
+  const showAnalystToggle = isMobile || activePanel !== 'analyst';
+  const showCoachToggle = isMobile || activePanel !== 'coach';
+
+  const AnalystToggle = showAnalystToggle ? (
     <button
         className={`
             fixed top-4 left-4
@@ -84,12 +101,30 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
             border border-slate-700 shadow-lg
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
-        onClick={() => setIsAnalystOpen(!isAnalystOpen)}
+        onClick={() => togglePanel('analyst')}
         aria-label="Toggle Analyst Dashboard"
-        aria-expanded={isAnalystOpen}
+        aria-expanded={activePanel === 'analyst'}
         aria-controls="analyst-dashboard"
     >
         <BarChart2 size={24} />
+    </button>
+  ) : null;
+
+  const CoachToggle = showCoachToggle ? (
+    <button
+        className={`
+            fixed top-4 right-4
+            p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300
+            hover:text-white hover:bg-slate-700 transition-all active:scale-95
+            border border-slate-700 shadow-lg
+        `}
+        style={{ zIndex: Z_INDEX_FLOATING_UI }}
+        onClick={() => togglePanel('coach')}
+        aria-label="Toggle Coach Bot"
+        aria-expanded={activePanel === 'coach'}
+        aria-controls="coach-bot-panel"
+    >
+        <Bot size={24} />
     </button>
   ) : null;
 
@@ -113,8 +148,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           render={renderDiceTooltip}
       />
 
-      {/* 2. Analyst Panel (Sidebar on Desktop, Drawer on Mobile) */}
-      <AnalystShell isOpen={isAnalystOpen} onToggle={() => setIsAnalystOpen(!isAnalystOpen)}>
+      {/* 2. Analyst Panel (Left Sidebar on Desktop, Top Drawer on Mobile) */}
+      <AnalystShell isOpen={activePanel === 'analyst'} onToggle={() => togglePanel('analyst')}>
           {dashboard}
       </AnalystShell>
 
@@ -173,8 +208,14 @@ export const GameLayout: React.FC<GameLayoutProps> = ({ board, dashboard, player
           </div>
       </main>
 
-      {/* 1. Toggle Button (Rendered last to ensure z-index priority) */}
+      {/* 4. Coach Panel (Right Sidebar on Desktop, Top Drawer on Mobile) */}
+      <CoachShell isOpen={activePanel === 'coach'} onToggle={() => togglePanel('coach')}>
+          {coachPanel}
+      </CoachShell>
+
+      {/* 1. Toggle Buttons (Rendered last to ensure z-index priority) */}
       {AnalystToggle}
+      {CoachToggle}
 
     </div>
   );

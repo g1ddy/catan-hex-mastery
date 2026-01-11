@@ -1,5 +1,17 @@
-import { GameState, TERRAIN_CONFIG, Resources } from '../types';
+import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
+
+/**
+ * Mapping of TerrainType to Resource string.
+ * Excludes non-resource terrains (Desert, Sea).
+ * Derived from TERRAIN_CONFIG to ensure single source of truth.
+ */
+export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, string>> = Object.entries(TERRAIN_CONFIG).reduce((acc, [terrain, resource]) => {
+    if (resource) {
+        acc[terrain as TerrainType] = resource;
+    }
+    return acc;
+}, {} as Partial<Record<TerrainType, string>>);
 
 /**
  * Distributes resources based on the current dice roll.

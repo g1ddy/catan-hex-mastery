@@ -11,17 +11,17 @@ test.describe('Layout Troubleshooting', () => {
     await page.getByRole('button', { name: '2 Players' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
-    // Screenshot 1: Desktop Sidebar Open (Default)
+    // Screenshot 1: Desktop Sidebar Open (Default - Analyst)
     await page.screenshot({ path: 'tests/screenshots/latest_desktop.png', fullPage: true });
 
-    // Collapse Sidebar
+    // Collapse Sidebar (Analyst Panel)
     const collapseBtn = page.getByRole('button', { name: 'Collapse Sidebar' });
     // Ensure button is visible before clicking
     await collapseBtn.waitFor({ state: 'visible' });
     await collapseBtn.click();
 
-    const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
-    await toggleBtn.waitFor({ state: 'visible' });
+    const toggleAnalystBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
+    await toggleAnalystBtn.waitFor({ state: 'visible' });
 
     // Screenshot 2: Desktop Sidebar Closed
     await page.screenshot({ path: 'tests/screenshots/latest_desktop_closed.png', fullPage: true });
@@ -36,9 +36,10 @@ test.describe('Layout Troubleshooting', () => {
     // Screenshot 3: Mobile Drawer Closed (Default)
     await page.screenshot({ path: 'tests/screenshots/troubleshoot_mobile_closed.png', fullPage: true });
 
-    // Open Drawer
+    // Open Drawer (Coach Panel now contains Potentials)
     // Use force: true as previous runs indicated interception by grid
-    await page.getByRole('button', { name: 'Toggle Analyst Dashboard' }).click({ force: true });
+    // We want to check Player Production Potential, so we open the Coach Panel
+    await page.getByRole('button', { name: 'Toggle Coach Bot' }).click({ force: true });
 
     // Wait for the drawer content to be visible instead of using fixed timeout
     // Using text selector as class selector .analyst-panel is not present

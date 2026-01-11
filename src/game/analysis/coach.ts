@@ -1,6 +1,7 @@
-import { GameState } from '../types';
+import { GameState, TerrainType } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
+import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -32,14 +33,6 @@ const DEFAULT_CONFIG: CoachConfig = {
     needBonus: 5,
 };
 
-const TERRAIN_TO_RESOURCE: Record<string, string> = {
-    'Forest': 'wood',
-    'Hills': 'brick',
-    'Pasture': 'sheep',
-    'Fields': 'wheat',
-    'Mountains': 'ore'
-};
-
 export class Coach {
     private G: GameState;
     private config: CoachConfig;
@@ -56,8 +49,11 @@ export class Coach {
         hexIds.forEach(hId => {
             // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
-            if (hex && hex.terrain && TERRAIN_TO_RESOURCE[hex.terrain]) {
-                resources.push(TERRAIN_TO_RESOURCE[hex.terrain]);
+            if (hex && hex.terrain) {
+                const res = TERRAIN_TO_RESOURCE[hex.terrain];
+                if (res) {
+                    resources.push(res);
+                }
             }
         });
         return resources;
@@ -70,7 +66,7 @@ export class Coach {
         hexIds.forEach(hId => {
             // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
-            if (hex && hex.terrain !== 'Desert' && hex.terrain !== 'Sea') {
+            if (hex && hex.terrain !== TerrainType.Desert && hex.terrain !== TerrainType.Sea) {
                 pips += getPips(hex.tokenValue || 0);
             }
         });
@@ -129,45 +125,41 @@ export class Coach {
         return existingResources;
     }
 
-    private scoreVertex(
-        vertexId: string,
-        playerID: string,
-        scarcityMap: Record<string, boolean>,
-        existingResources: Set<string>
-    ): CoachRecommendation {
-        const pips = this.calculatePipsForVertex(vertexId);
-        const resources = this.getResourcesForVertex(vertexId);
-        const uniqueResources = new Set(resources);
-        const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
-
-        let score = pips;
-        const reasons: string[] = [`${pips} Pips`];
-        const details = {
-            pips: pips,
-            scarcityBonus: false,
-            scarceResources: [] as string[],
-            diversityBonus: false,
-            synergyBonus: false,
-            neededResources: [] as string[]
-        };
-
-        // 1. Scarcity Multiplier
+    private calculateScarcityScore(uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
         const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
-            score *= this.config.scarcityMultiplier;
-            details.scarcityBonus = true;
-            details.scarceResources = scarceResources;
-            reasons.push('Scarcity Bonus');
+            return {
+                multiplier: this.config.scarcityMultiplier,
+                bonus: true,
+                resources: scarceResources,
+                reason: 'Scarcity Bonus'
+            };
         }
+        return { multiplier: 1, bonus: false, resources: [], reason: '' };
+    }
 
-        // 2. Diversity Multiplier
+    private calculateDiversityScore(resources: string[], uniqueResources: Set<string>) {
         if (uniqueResources.size === 3 && resources.length === 3) {
-            score *= this.config.diversityMultiplier;
-            details.diversityBonus = true;
-            reasons.push('Diversity Bonus');
+            return {
+                multiplier: this.config.diversityMultiplier,
+                bonus: true,
+                reason: 'Diversity Bonus'
+            };
         }
+        return { multiplier: 1, bonus: false, reason: '' };
+    }
 
-        // 3. Synergy / Needs
+    private calculateSynergyScore(
+        resources: string[],
+        uniqueResources: Set<string>,
+        settlementCount: number,
+        existingResources: Set<string>
+    ) {
+        let score = 0;
+        let synergyBonus = false;
+        let neededResources: string[] = [];
+        const reasons: string[] = [];
+
         if (settlementCount === 0) {
             const hasWood = resources.includes('wood');
             const hasBrick = resources.includes('brick');
@@ -176,7 +168,7 @@ export class Coach {
 
             if ((hasWood && hasBrick) || (hasOre && hasWheat)) {
                 score += this.config.synergyBonus;
-                details.synergyBonus = true;
+                synergyBonus = true;
                 reasons.push('Synergy');
             }
         } else if (settlementCount >= 1) {
@@ -189,16 +181,77 @@ export class Coach {
             });
 
             if (newResources.length > 0) {
-                details.neededResources = newResources.sort();
+                neededResources = newResources.sort();
                 reasons.push(`Balances Economy (Added ${newResources.join(', ')})`);
             }
+        }
+
+        return {
+            score,
+            synergyBonus,
+            neededResources,
+            reasons
+        };
+    }
+
+    private scoreVertex(
+        vertexId: string,
+        playerID: string,
+        scarcityMap: Record<string, boolean>,
+        existingResources: Set<string>
+    ): CoachRecommendation {
+        // Security check for playerID
+        if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
+             throw new Error("Invalid playerID");
+        }
+        // eslint-disable-next-line security/detect-object-injection
+        if (!this.G.players[playerID]) {
+             throw new Error(`Player ${playerID} not found`);
+        }
+
+        const pips = this.calculatePipsForVertex(vertexId);
+        const resources = this.getResourcesForVertex(vertexId);
+        const uniqueResources = new Set(resources);
+        const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
+
+        let score = pips;
+        const reasons: string[] = [`${pips} Pips`];
+
+        // 1. Scarcity
+        const scarcity = this.calculateScarcityScore(uniqueResources, scarcityMap);
+        if (scarcity.bonus) {
+            score *= scarcity.multiplier;
+            reasons.push(scarcity.reason);
+        }
+
+        // 2. Diversity
+        const diversity = this.calculateDiversityScore(resources, uniqueResources);
+        if (diversity.bonus) {
+            score *= diversity.multiplier;
+            reasons.push(diversity.reason);
+        }
+
+        // 3. Synergy / Needs
+        const synergy = this.calculateSynergyScore(resources, uniqueResources, settlementCount, existingResources);
+        if (synergy.score > 0) {
+            score += synergy.score;
+        }
+        if (synergy.reasons.length > 0) {
+            reasons.push(...synergy.reasons);
         }
 
         return {
             vertexId: vertexId,
             score: Math.round(score * 10) / 10,
             reason: reasons.join(', '),
-            details: details
+            details: {
+                pips: pips,
+                scarcityBonus: scarcity.bonus,
+                scarceResources: scarcity.resources,
+                diversityBonus: diversity.bonus,
+                synergyBonus: synergy.synergyBonus,
+                neededResources: synergy.neededResources
+            }
         };
     }
 
