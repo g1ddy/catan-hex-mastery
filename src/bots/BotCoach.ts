@@ -19,13 +19,24 @@ export class BotCoach {
         return !(playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private getMoveName(action: any): string | undefined {
+        return action.payload?.type || action.move;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private getMoveArgs(action: any): any[] {
+        return action.payload?.args || action.args || [];
+    }
+
     /**
      * Filters and sorts a list of available moves to find the "optimal" ones.
      * @param allMoves The full list of legal moves (e.g. from ai.enumerate)
      * @param playerID The player ID
      * @returns A sorted list of optimal moves (best first)
      */
-    public filterOptimalMoves(allMoves: BotMove[], playerID: string): BotMove[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public filterOptimalMoves(allMoves: any[], playerID: string): any[] {
         if (!this.isValidPlayerID(playerID)) {
             console.warn('Invalid playerID:', playerID);
             return [];
@@ -34,9 +45,9 @@ export class BotCoach {
         if (!allMoves || allMoves.length === 0) return [];
 
         // Detect current stage based on move types
-        const isSetupSettlement = allMoves.some(m => m.move === 'placeSettlement');
-        // const isSetupRoad = allMoves.some(m => m.move === 'placeRoad'); // Unused for now
-        const isRolling = allMoves.some(m => m.move === 'rollDice');
+        const isSetupSettlement = allMoves.some(m => this.getMoveName(m) === 'placeSettlement');
+        // const isSetupRoad = allMoves.some(m => this.getMoveName(m) === 'placeRoad'); // Unused for now
+        const isRolling = allMoves.some(m => this.getMoveName(m) === 'rollDice');
 
         if (isRolling) {
             // Only one option usually
@@ -48,16 +59,21 @@ export class BotCoach {
             const bestSpots = this.coach.getBestSettlementSpots(playerID);
 
             // Optimization: Map moves by vertexId for O(1) lookup
-            const movesByVertex = new Map<string, BotMove>();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const movesByVertex = new Map<string, any>();
             allMoves.forEach(m => {
-                if (m.move === 'placeSettlement' && m.args?.[0]) {
-                    movesByVertex.set(m.args[0], m);
+                if (this.getMoveName(m) === 'placeSettlement') {
+                    const args = this.getMoveArgs(m);
+                    if (args[0]) {
+                        movesByVertex.set(args[0], m);
+                    }
                 }
             });
 
             // Map the best spots to the available moves
             // bestSpots is ordered best to worst
-            const rankedMoves: BotMove[] = [];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const rankedMoves: any[] = [];
 
             bestSpots.forEach(spot => {
                 const move = movesByVertex.get(spot.vertexId);
@@ -73,8 +89,10 @@ export class BotCoach {
 
         // For setup roads and normal gameplay, use profile weights
         // ACTING PHASE + SETUP ROAD
-        const getMoveWeight = (move: BotMove): number => {
-            switch (move.move) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const getMoveWeight = (move: any): number => {
+            const name = this.getMoveName(move);
+            switch (name) {
                 case 'buildCity': return this.profile.weights.buildCity;
                 case 'buildSettlement': return this.profile.weights.buildSettlement;
                 case 'buildRoad': return this.profile.weights.buildRoad;

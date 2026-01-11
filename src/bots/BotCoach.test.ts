@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import { BotCoach } from './BotCoach';
-import { GameState, BotMove } from '../game/types';
+import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
@@ -21,6 +21,12 @@ jest.mock('../game/mechanics/costs', () => ({
         devCard: true
     }))
 }));
+
+// Helper to create mock Redux actions (simplified)
+const mockAction = (type: string, args: any[] = []) => ({
+    type: 'MAKE_MOVE',
+    payload: { type, args }
+});
 
 describe('BotCoach', () => {
     let G: GameState;
@@ -46,19 +52,19 @@ describe('BotCoach', () => {
 
     describe('filterOptimalMoves', () => {
         it('should return all moves for setup roads', () => {
-            const moves: BotMove[] = [
-                { move: 'placeRoad', args: ['e1'] },
-                { move: 'placeRoad', args: ['e2'] }
+            const moves = [
+                mockAction('placeRoad', ['e1']),
+                mockAction('placeRoad', ['e2'])
             ];
             const result = botCoach.filterOptimalMoves(moves, '0');
             expect(result).toHaveLength(2);
         });
 
         it('should filter setup settlements based on coach recommendation', () => {
-            const moves: BotMove[] = [
-                { move: 'placeSettlement', args: ['v1'] }, // Good
-                { move: 'placeSettlement', args: ['v2'] }, // Bad
-                { move: 'placeSettlement', args: ['v3'] }  // Good
+            const moves = [
+                mockAction('placeSettlement', ['v1']), // Good
+                mockAction('placeSettlement', ['v2']), // Bad
+                mockAction('placeSettlement', ['v3'])  // Good
             ];
 
             // Mock coach to recommend v1 and v3
@@ -68,22 +74,22 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0');
             expect(result).toHaveLength(2);
-            // Use optional chaining for safety in test assertion
-            expect(result.map(m => m.args?.[0])).toEqual(['v1', 'v3']);
+            // Verify args extraction
+            expect(result.map(m => m.payload.args[0])).toEqual(['v1', 'v3']);
         });
 
         it('should filter acting moves based on weights', () => {
              // Default profile: City > Settlement > Road > EndTurn
-             const moves: BotMove[] = [
-                 { move: 'endTurn', args: [] },
-                 { move: 'buildSettlement', args: ['v1'] },
-                 { move: 'buildCity', args: ['v2'] }, // Highest weight
-                 { move: 'buildCity', args: ['v3'] }  // Highest weight
+             const moves = [
+                 mockAction('endTurn'),
+                 mockAction('buildSettlement', ['v1']),
+                 mockAction('buildCity', ['v2']), // Highest weight
+                 mockAction('buildCity', ['v3'])  // Highest weight
              ];
 
              const result = botCoach.filterOptimalMoves(moves, '0');
              expect(result).toHaveLength(2);
-             expect(result.every(m => m.move === 'buildCity')).toBe(true);
+             expect(result.every(m => m.payload.type === 'buildCity')).toBe(true);
         });
 
         it('should return all moves if weights are equal', () => {
@@ -96,9 +102,9 @@ describe('BotCoach', () => {
              };
              const flatCoach = new BotCoach(G, coach, flatProfile);
 
-             const moves: BotMove[] = [
-                 { move: 'endTurn', args: [] }, // Weight 1 (base)
-                 { move: 'buildSettlement', args: ['v1'] }, // Weight 1
+             const moves = [
+                 mockAction('endTurn'), // Weight 1 (base)
+                 mockAction('buildSettlement', ['v1']), // Weight 1
              ];
 
              const result = flatCoach.filterOptimalMoves(moves, '0');

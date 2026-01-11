@@ -1,4 +1,4 @@
-import { GameState, BotMove } from './types';
+import { GameState } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import {
@@ -10,12 +10,23 @@ import {
 } from './rules/validator';
 import { getAffordableBuilds } from './mechanics/costs';
 
+// Helper to construct boardgame.io action objects manually.
+// We omit playerID from the payload to let the framework handle credential association,
+// mimicking standard ActionCreators behavior in some contexts or avoiding mismatches.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const makeMove = (moveName: string, args: any[], _playerID: string) => ({
+    type: 'MAKE_MOVE',
+    payload: { type: moveName, args }
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BotAction = any; // We use 'any' to avoid deep type dependencies on boardgame.io internal types for now
+
 /**
  * Enumerates all legally possible moves for the player in the current state.
  * Used by boardgame.io AI framework and Bot implementations.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotMove[] => {
+export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotAction[] => {
     // Validate playerID to prevent prototype pollution
     if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
         console.warn('Invalid playerID:', playerID);
@@ -23,30 +34,33 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotMove[] =
     }
 
     const stage = ctx.activePlayers?.[playerID];
-    const moves: BotMove[] = [];
+    const moves: BotAction[] = [];
 
     // If no specific stage is active for this player, check if it's their turn generally?
     // In boardgame.io, ctx.activePlayers is authoritative for stages.
-    if (!stage) return [];
+    if (!stage) {
+        return [];
+    }
 
     switch (stage) {
         case STAGES.PLACE_SETTLEMENT: {
             const validSpots = getValidSetupSettlementSpots(G);
             validSpots.forEach(vId => {
-                moves.push({ move: 'placeSettlement', args: [vId] });
+                // Return full MakeMove actions
+                moves.push(makeMove('placeSettlement', [vId], playerID));
             });
             break;
         }
         case STAGES.PLACE_ROAD: {
             const validSpots = getValidSetupRoadSpots(G, playerID);
             validSpots.forEach(eId => {
-                moves.push({ move: 'placeRoad', args: [eId] });
+                moves.push(makeMove('placeRoad', [eId], playerID));
             });
             break;
         }
         case STAGES.ROLLING: {
             // Rolling is mandatory if in this stage
-            moves.push({ move: 'rollDice', args: [] });
+            moves.push(makeMove('rollDice', [], playerID));
             break;
         }
         case STAGES.ACTING: {
@@ -60,7 +74,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotMove[] =
             if (affordable.settlement) {
                 const validSpots = getValidSettlementSpots(G, playerID);
                 validSpots.forEach(vId => {
-                    moves.push({ move: 'buildSettlement', args: [vId] });
+                    moves.push(makeMove('buildSettlement', [vId], playerID));
                 });
             }
 
@@ -68,7 +82,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotMove[] =
             if (affordable.city) {
                 const validSpots = getValidCitySpots(G, playerID);
                 validSpots.forEach(vId => {
-                    moves.push({ move: 'buildCity', args: [vId] });
+                    moves.push(makeMove('buildCity', [vId], playerID));
                 });
             }
 
@@ -76,12 +90,12 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotMove[] =
             if (affordable.road) {
                 const validSpots = getValidRoadSpots(G, playerID);
                 validSpots.forEach(eId => {
-                    moves.push({ move: 'buildRoad', args: [eId] });
+                    moves.push(makeMove('buildRoad', [eId], playerID));
                 });
             }
 
             // Always allow ending turn in ACTING stage
-            moves.push({ move: 'endTurn', args: [] });
+            moves.push(makeMove('endTurn', [], playerID));
             break;
         }
     }
