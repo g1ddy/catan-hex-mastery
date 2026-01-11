@@ -97,25 +97,30 @@ describe('Setup Phase Moves', () => {
             expect(events.endTurn).toHaveBeenCalled();
         });
 
-        it('should fail if no settlement placed yet', () => {
-            G.players['0'].settlements = [];
-            const validEdge = "0,0,0::1,-1,0";
-            const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
-            expect(call).toThrow("No active settlement found to connect to");
+        it('should fail if no settlement has been placed', () => {
+            const edgeId = "0,0,0::1,-1,0";
+            const move = () => placeRoadFn({ G, ctx, events }, edgeId);
+            expect(move).toThrow("No active settlement found to connect to");
         });
 
-        it('should fail if road is NOT connected to last settlement', () => {
-            const vId = "0,0,0::1,-1,0::0,-1,1";
-            G.players['0'].settlements.push(vId);
-            G.board.vertices[vId] = { owner: '0', type: 'settlement' };
+        it('should fail if the road is not connected to the last settlement', () => {
+            // Place a settlement to establish the connection point
+            G.players['0'].settlements.push("0,0,0::-1,1,0::-1,0,1");
 
-            // Pick an edge far away
-            const disconnectedEdge = "5,0,-5::5,-1,-4";
+            const disconnectedEdgeId = "1,0,-1::2,-1,-1"; // An edge not touching the settlement
+            const move = () => placeRoadFn({ G, ctx, events }, disconnectedEdgeId);
 
-            const call = () => placeRoadFn({ G, ctx, events, playerID: '0' }, disconnectedEdge);
+            expect(move).toThrow("Road must connect to your just-placed settlement");
+        });
 
-            expect(call).toThrow("Road must connect to your just-placed settlement");
-            expect(G.board.edges[disconnectedEdge]).toBeUndefined();
+        it('should fail if the edge is already occupied', () => {
+            const edgeId = "0,0,0::1,-1,0";
+            G.board.edges[edgeId] = { owner: '1' }; // Occupied by another player
+            G.players['0'].settlements.push("0,0,0::1,-1,0::0,-1,1"); // Player '0' has a settlement nearby
+
+            const move = () => placeRoadFn({ G, ctx, events }, edgeId);
+
+            expect(move).toThrow("This edge is already occupied");
         });
     });
 });

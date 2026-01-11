@@ -5,6 +5,7 @@ export class GamePage {
   readonly setupButton: Locator;
   readonly gameLayout: Locator;
   readonly rollDiceButton: Locator;
+  readonly beginPlacementButton: Locator;
   readonly ghostVertex: Locator;
   readonly ghostEdge: Locator;
 
@@ -17,12 +18,11 @@ export class GamePage {
     this.gameLayout = page.getByTestId('game-layout');
 
     // Game controls
-    // Updated to 'Roll' to match new UI
     this.rollDiceButton = page.getByRole('button', { name: 'Roll', exact: true });
+    this.beginPlacementButton = page.getByRole('button', { name: 'Begin Placement' });
 
-    // Ghost elements for board interaction (Exception allowed for CSS selectors on SVG visual elements)
+    // Ghost elements for board interaction
     this.ghostVertex = page.getByTestId('ghost-vertex');
-    // Using robust data-testid instead of brittle CSS/attributes
     this.ghostEdge = page.getByTestId('ghost-edge');
   }
 
@@ -38,14 +38,12 @@ export class GamePage {
 
   async placeSettlement() {
     // Click "Begin Placement" to toggle mode
-    // We use getByRole for better accessibility testing, or text if specific role is ambiguous
-    await this.page.getByRole('button', { name: 'Begin Placement' }).click();
+    await this.beginPlacementButton.click();
 
-    // Wait for ghost vertices
-    // Wait for ghost vertices and click the first one.
-    // Use force: true because the Coach Mode heatmap overlay (r=4) might cover the hit target (r=3),
-    // but the click event bubbles to the parent group anyway.
-    await this.ghostVertex.first().click({ timeout: 5000, force: true });
+    // Explicitly wait for the ghost vertex to be visible before clicking.
+    // This is more robust than relying on the click's auto-wait.
+    await this.ghostVertex.first().waitFor({ state: 'visible', timeout: 5000 });
+    await this.ghostVertex.first().click({ force: true });
   }
 
   async placeRoad() {
