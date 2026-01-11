@@ -262,14 +262,13 @@ export class Coach {
     }
 
     public getStrategicAdvice(playerID: string, currentStage?: string): string {
-        // Security check
-        if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
+        // Security check: Positively validate that the playerID exists
+        if (!Object.prototype.hasOwnProperty.call(this.G.players, playerID)) {
             return "Invalid player ID.";
         }
 
         // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
-        if (!player) return "Analyzing...";
 
         // 1. Setup Phase
         if (currentStage === STAGES.PLACE_SETTLEMENT) {
