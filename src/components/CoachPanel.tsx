@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Ctx } from 'boardgame.io';
 import { GameState } from '../game/types';
 import { calculatePlayerPotentialPips } from '../game/analyst';
 import { ResourceIconRow } from './ResourceIconRow';
+import { Coach } from '../game/analysis/coach';
 
 interface CoachPanelProps {
     G?: GameState;
+    ctx: Ctx;
     showCoachMode: boolean;
     setShowCoachMode: (show: boolean) => void;
 }
 
-export const CoachPanel: React.FC<CoachPanelProps> = ({ G, showCoachMode, setShowCoachMode }) => {
+export const CoachPanel: React.FC<CoachPanelProps> = ({ G, ctx, showCoachMode, setShowCoachMode }) => {
     const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
+
+    const strategicAdvice = useMemo(() => {
+        if (!G) return "Waiting for game state...";
+        const coach = new Coach(G);
+        const playerID = ctx.currentPlayer;
+        // Determine the stage for the specific player or general active stage
+        const currentStage = ctx.activePlayers?.[playerID];
+        return coach.getStrategicAdvice(playerID, currentStage);
+    }, [G, ctx.activePlayers, ctx.currentPlayer]);
 
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">
@@ -53,12 +65,9 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({ G, showCoachMode, setSho
             {/* 3. Strategic Advice (Bottom) */}
             <div>
                 <h3 className="text-lg font-semibold mb-4 text-amber-400">Strategic Advice</h3>
-                <p className="text-slate-300 mb-4">
-                    The Coach Bot is analyzing the board...
-                </p>
-                <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <p className="text-sm italic text-slate-400">
-                        "Focus on securing ore resources early to build cities faster."
+                <div className="bg-slate-800 p-4 rounded border border-slate-700 shadow-sm">
+                    <p className="text-sm italic text-slate-300">
+                        "{strategicAdvice}"
                     </p>
                 </div>
             </div>

@@ -2,6 +2,7 @@ import { GameState, TerrainType } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
+import { STAGES } from '../constants';
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -258,6 +259,44 @@ export class Coach {
     public getBestSettlementSpots(playerID: string): CoachRecommendation[] {
         const allScores = this.getAllSettlementScores(playerID);
         return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+
+    public getStrategicAdvice(playerID: string, currentStage?: string): string {
+        // Security check: Positively validate that the playerID exists
+        if (!Object.prototype.hasOwnProperty.call(this.G.players, playerID)) {
+            return "Invalid player ID.";
+        }
+
+        // eslint-disable-next-line security/detect-object-injection
+        const player = this.G.players[playerID];
+
+        // 1. Setup Phase
+        if (currentStage === STAGES.PLACE_SETTLEMENT) {
+            return "Focus on high-pip spots with diverse resources (Wood/Brick for roads, Ore/Wheat for cities).";
+        }
+        if (currentStage === STAGES.PLACE_ROAD) {
+            return "Point your road toward future expansion spots or the coast.";
+        }
+
+        // 2. Gameplay Phase (Acting)
+        if (currentStage === STAGES.ACTING || currentStage === STAGES.ROLLING) {
+            const vp = player.victoryPoints;
+
+            // Early Game (< 5 VP)
+            if (vp < 5) {
+                return "Early Game: Focus on expansion. Prioritize Wood and Brick to build new settlements and roads.";
+            }
+            // Mid Game (5-7 VP)
+            else if (vp <= 7) {
+                return "Mid Game: Consolidate power. Upgrade settlements to cities (Ore/Wheat) and block opponents.";
+            }
+            // Late Game (> 7 VP)
+            else {
+                return "Late Game: Push for victory! Buy Development Cards for VPs/Knights or connect roads for Longest Road.";
+            }
+        }
+
+        return "Observe the board and plan your next move.";
     }
 }
 
