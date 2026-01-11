@@ -3,6 +3,7 @@ import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getVertexNeighbors, getHexesForVertex } from '../hexUtils';
 import { isValidSetupRoadPlacement } from '../rules/placement';
+import { isValidHexId } from '../../utils/validation';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
