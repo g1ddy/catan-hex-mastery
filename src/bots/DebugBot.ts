@@ -1,63 +1,7 @@
 import { RandomBot } from 'boardgame.io/ai';
 import { GameState } from '../game/types';
-import { STAGES } from '../game/constants';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach, BotMove } from './BotCoach';
-
-/**
- * Shared logic for enumerating moves using the BotCoach.
- * This is used by both the DebugBot (for local multiplayer fallback) and the GameClient (for SinglePlayer/Debug Panel).
- *
- * @param G The game state
- * @param ctx The game context (expected to contain the coach plugin, but handles missing case)
- * @param playerID The ID of the player to enumerate moves for
- * @param baseEnumerate Optional fallback function (e.g. RandomBot's enumerate) if no heuristic move is found
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const enumerateMoves = (G: GameState, ctx: import('boardgame.io').Ctx & { coach?: Coach }, playerID: string, baseEnumerate?: (...args: any[]) => any) => {
-    // Validate playerID to prevent prototype pollution
-    if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
-        console.warn('Invalid playerID:', playerID);
-        return [];
-    }
-
-    const stage = ctx.activePlayers?.[playerID] || STAGES.ROLLING;
-
-    // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-    let coach = ctx.coach;
-    if (!coach) {
-        console.warn('ctx.coach is undefined. Creating a transient Coach instance. This may be inefficient.');
-        coach = new Coach(G);
-    }
-
-    const botCoach = new BotCoach(G, coach);
-    let recommendation: BotMove | null = null;
-
-    switch (stage) {
-        case STAGES.PLACE_SETTLEMENT:
-            recommendation = botCoach.recommendSettlementPlacement(playerID);
-            break;
-        case STAGES.PLACE_ROAD:
-            recommendation = botCoach.recommendRoadPlacement(playerID);
-            break;
-        case STAGES.ROLLING:
-            return [{ move: 'rollDice', args: [] }];
-        case STAGES.ACTING:
-            recommendation = botCoach.recommendNextMove(playerID);
-            break;
-    }
-
-    if (recommendation) {
-        return [recommendation];
-    }
-
-    // Fallback to provided base behavior (e.g. RandomBot)
-    if (baseEnumerate) {
-        return baseEnumerate(G, ctx, playerID);
-    }
-
-    return [];
-};
 
 export class DebugBot extends RandomBot {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,7 +16,32 @@ export class DebugBot extends RandomBot {
         delete (this as any).enumerate;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     enumerate(G: GameState, ctx: any, playerID: string) {
-        return enumerateMoves(G, ctx, playerID, this._enumerate);
+        // 1. Get ALL valid moves from the base enumerator (injected from Game.ai.enumerate)
+        let allMoves: BotMove[] = [];
+        if (this._enumerate) {
+             allMoves = this._enumerate(G, ctx, playerID);
+        }
+
+        if (!allMoves || allMoves.length === 0) {
+            return [];
+        }
+
+        // 2. Use BotCoach to filter/rank these moves
+        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
+        let coach = ctx.coach;
+        if (!coach) {
+            // console.warn('ctx.coach is undefined. Creating a transient Coach instance.');
+            coach = new Coach(G);
+        }
+
+        const botCoach = new BotCoach(G, coach);
+        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID);
+
+        // 3. Return the best moves (or all if filtering failed)
+        // Ensure result is compatible with boardgame.io types (BotAction[])
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (bestMoves.length > 0 ? bestMoves : allMoves) as any[];
     }
 }

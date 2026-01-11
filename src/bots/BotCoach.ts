@@ -4,6 +4,8 @@ import { getAffordableBuilds } from '../game/mechanics/costs';
 import { getValidSettlementSpots, getValidCitySpots, getValidRoadSpots, getValidSetupRoadSpots } from '../game/rules/validator';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
+// Re-export BotMove to match boardgame.io's ActionShape if needed,
+// but local definition is fine as long as we cast it when interacting with framework types.
 export interface BotMove {
     move: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,6 +26,8 @@ export class BotCoach {
     /**
      * Enumerates all legally possible moves for the player in the current state.
      * This is intended for AI engines (MCTS, RandomBot) to know the full action space.
+     *
+     * @deprecated Use src/game/ai.ts enumerate() instead.
      */
     public getAvailableMoves(playerID: string): BotMove[] {
         const moves: BotMove[] = [];
@@ -63,6 +67,75 @@ export class BotCoach {
         return moves;
     }
 
+    /**
+     * Filters and sorts a list of available moves to find the "optimal" ones.
+     * @param allMoves The full list of legal moves (e.g. from ai.enumerate)
+     * @param playerID The player ID
+     * @returns A sorted list of optimal moves (best first)
+     */
+    public filterOptimalMoves(allMoves: BotMove[], playerID: string): BotMove[] {
+        if (!allMoves || allMoves.length === 0) return [];
+
+        // Detect current stage based on move types
+        const isSetupSettlement = allMoves.some(m => m.move === 'placeSettlement');
+        const isSetupRoad = allMoves.some(m => m.move === 'placeRoad');
+        const isRolling = allMoves.some(m => m.move === 'rollDice');
+
+        if (isRolling) {
+            // Only one option usually
+            return allMoves;
+        }
+
+        if (isSetupSettlement) {
+            // Use Coach analysis to find the best spots
+            const bestSpots = this.coach.getBestSettlementSpots(playerID);
+
+            // Map the best spots to the available moves
+            // bestSpots is ordered best to worst
+            const rankedMoves: BotMove[] = [];
+
+            bestSpots.forEach(spot => {
+                const matchingMove = allMoves.find(m => m.move === 'placeSettlement' && m.args[0] === spot.vertexId);
+                if (matchingMove) {
+                    rankedMoves.push(matchingMove);
+                }
+            });
+
+            // If we found matches, return them.
+            // If for some reason analysis fails but moves exist, fallback to random (return all)
+            return rankedMoves.length > 0 ? rankedMoves : allMoves;
+        }
+
+        if (isSetupRoad) {
+            // For now, return all valid road placements as they are mostly equivalent in simple setup
+            // TODO: Add heuristics for road direction
+            return allMoves;
+        }
+
+        // ACTING PHASE
+        // Use profile weights to rank moves
+        const getMoveWeight = (move: BotMove): number => {
+            switch (move.move) {
+                case 'buildCity': return this.profile.weights.buildCity;
+                case 'buildSettlement': return this.profile.weights.buildSettlement;
+                case 'buildRoad': return this.profile.weights.buildRoad;
+                case 'endTurn': return 1; // Base weight
+                default: return 0;
+            }
+        };
+
+        // Sort moves by weight
+        const sortedMoves = [...allMoves].sort((a, b) => getMoveWeight(b) - getMoveWeight(a));
+
+        // Filter to keep only the best moves (sharing the highest weight)
+        if (sortedMoves.length > 0) {
+            const maxWeight = getMoveWeight(sortedMoves[0]);
+            return sortedMoves.filter(m => getMoveWeight(m) === maxWeight);
+        }
+
+        return sortedMoves;
+    }
+
     public recommendSettlementPlacement(playerID: string): BotMove | null {
         // Setup Phase Logic (typically)
         const best = this.coach.getBestSettlementSpots(playerID);
@@ -89,32 +162,7 @@ export class BotCoach {
 
     public recommendNextMove(playerID: string): BotMove | null {
          const moves = this.getAvailableMoves(playerID);
-
-         // Helper to score moves based on profile weights
-         const getMoveWeight = (move: BotMove): number => {
-            switch (move.move) {
-                case 'buildCity': return this.profile.weights.buildCity;
-                case 'buildSettlement': return this.profile.weights.buildSettlement;
-                case 'buildRoad': return this.profile.weights.buildRoad;
-                case 'endTurn': return 1; // Base weight for ending turn (usually lowest unless blocked)
-                default: return 0;
-            }
-         };
-
-         // Sort moves by weight
-         moves.sort((a, b) => getMoveWeight(b) - getMoveWeight(a));
-
-         if (moves.length > 0) {
-            // Simple logic: pick the highest weighted move.
-            // If the top move is endTurn, but we have other actions, we might still want to do them
-            // if we have resources. But getAvailableMoves checks resources.
-            // If buildCity and buildSettlement have same weight, stable sort or first one wins.
-
-            // To make it smarter, we would look at specific locations (e.g. which road is best?),
-            // but for now, we just pick the action type preferred by the profile.
-            return moves[0];
-         }
-
-         return { move: 'endTurn', args: [] };
+         const ranked = this.filterOptimalMoves(moves, playerID);
+         return ranked.length > 0 ? ranked[0] : null;
     }
 }

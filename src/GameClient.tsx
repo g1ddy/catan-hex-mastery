@@ -3,10 +3,7 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
-import { DebugBot, enumerateMoves } from './bots/DebugBot';
-import { GameState } from './game/types';
-import { Coach } from './game/analysis/coach';
-import { Ctx } from 'boardgame.io';
+import { DebugBot } from './bots/DebugBot';
 
 interface GameClientProps {
   numPlayers: number;
@@ -26,16 +23,7 @@ const LocalClient = Client({
 
 // 2. Single Player / Debug Client
 const SinglePlayerClient = Client({
-  game: {
-    ...CatanGame,
-    // Provide AI configuration to enable the Debug Panel's AI tab.
-    // We implement 'enumerate' to bridge boardgame.io's AI interface with our BotCoach logic.
-    ai: {
-      enumerate: (G: GameState, ctx: Ctx & { coach?: Coach }, playerID: string) => {
-        return enumerateMoves(G, ctx, playerID);
-      }
-    }
-  },
+  game: CatanGame,
   board: Board,
   debug: { collapseOnLoad: false },
 }) as unknown as React.ComponentType<GameClientProps>;
