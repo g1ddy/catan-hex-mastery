@@ -119,6 +119,7 @@ export class BotCoach {
                 case 'buildCity': return this.profile.weights.buildCity;
                 case 'buildSettlement': return this.profile.weights.buildSettlement;
                 case 'buildRoad': return this.profile.weights.buildRoad;
+                case 'buyDevCard': return this.profile.weights.buyDevCard;
                 case 'endTurn': return 1; // Base weight
                 default: return 0;
             }
