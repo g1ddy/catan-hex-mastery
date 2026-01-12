@@ -2,6 +2,7 @@ import { Client } from 'boardgame.io/client';
 import { CatanGame } from './Game';
 import { DebugBot } from '../bots/DebugBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
+import { enumerate } from './ai';
 
 describe('Game Simulation with DebugBot', () => {
   it('should run a 2-player game without crashing', async () => {
@@ -12,15 +13,13 @@ describe('Game Simulation with DebugBot', () => {
 
     client.start();
 
-    // Define a dummy enumerate function to satisfy strict typing.
-    // In a future task, this will list all valid moves (e.g., placements).
-    // Currently, returning an empty array results in passive behavior.
-    const dummyEnumerate = () => [];
+    // Use the centralized enumerate function from ai.ts
+    // This allows the bot to actually find valid moves during the simulation.
 
     // Create bot instances for each player
     const bots = {
-      '0': new DebugBot({ enumerate: dummyEnumerate }),
-      '1': new DebugBot({ enumerate: dummyEnumerate }),
+      '0': new DebugBot({ enumerate }),
+      '1': new DebugBot({ enumerate }),
     };
 
     const MAX_STEPS = 200; // Reduced for unit test speed
