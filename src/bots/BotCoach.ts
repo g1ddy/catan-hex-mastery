@@ -24,14 +24,18 @@ export class BotCoach {
         return Object.prototype.hasOwnProperty.call(this.G.players, playerID);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private getMoveName(action: any): string | undefined {
-        return action.payload?.type || action.move;
+    private getMoveName(action: GameAction): string {
+        if ('payload' in action) {
+            return action.payload.type;
+        }
+        return action.move;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private getMoveArgs(action: any): any[] {
-        return action.payload?.args || action.args || [];
+    private getMoveArgs(action: GameAction): any[] {
+        if ('payload' in action) {
+            return action.payload.args;
+        }
+        return action.args || [];
     }
 
     /**
