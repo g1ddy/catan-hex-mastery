@@ -7,16 +7,19 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 export type { BotMove };
 
 export class BotCoach {
+    private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
 
-    constructor(_G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
+    constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
+        this.G = G;
         this.coach = coach;
         this.profile = profile;
     }
 
     private isValidPlayerID(playerID: string): boolean {
-        return !(playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype');
+        // Validate playerID using strict object check to prevent prototype pollution or inherited property access
+        return Object.prototype.hasOwnProperty.call(this.G.players, playerID);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

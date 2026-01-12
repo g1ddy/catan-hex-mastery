@@ -1,5 +1,5 @@
 import { RandomBot } from 'boardgame.io/ai';
-import { GameState, BotMove } from '../game/types';
+import { GameState } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 
