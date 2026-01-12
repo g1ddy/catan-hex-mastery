@@ -17,6 +17,11 @@ import { isValidHexId } from '../../utils/validation';
  * @returns A ValidationResult object.
  */
 export const validateSettlementLocation = (G: GameState, vertexId: string): ValidationResult => {
+    // 0. Security Validation
+    if (!isValidHexId(vertexId)) {
+        return { isValid: false, reason: "Invalid vertex ID format" };
+    }
+
     // 1. Check if occupied
     if (G.board.vertices[vertexId]) {
         return { isValid: false, reason: "This vertex is already occupied" };
@@ -70,6 +75,10 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
  * @returns True if valid.
  */
 export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
+    // 0. Security Validation
+    if (!isValidHexId(vertexId)) {
+        return false;
+    }
     const vertex = G.board.vertices[vertexId];
     if (!vertex) return false;
     return vertex.type === 'settlement' && vertex.owner === playerID;
@@ -88,6 +97,11 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
  * @returns True if valid.
  */
 export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+    // 0. Security Validation
+    if (!isValidHexId(edgeId)) {
+        return false;
+    }
+
     // 1. Check if occupied
     if (G.board.edges[edgeId]) {
         return false;
@@ -99,7 +113,7 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
     return endpoints.some(vId => {
         const vertex = G.board.vertices[vId];
 
-        // A. Direct connection to own building
+        // A. Direct connection to own.
         if (vertex && vertex.owner === playerID) return true;
 
         // B. Connection to own road (IF not blocked by opponent building)
