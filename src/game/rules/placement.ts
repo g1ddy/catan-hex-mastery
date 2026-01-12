@@ -17,6 +17,11 @@ import { isValidHexId } from '../../utils/validation';
  * @returns A ValidationResult object.
  */
 export const validateSettlementLocation = (G: GameState, vertexId: string): ValidationResult => {
+    // 0. Security Validation
+    if (!isValidHexId(vertexId)) {
+        return { isValid: false, reason: "Invalid vertex ID format" };
+    }
+
     // 1. Check if occupied
     if (G.board.vertices[vertexId]) {
         return { isValid: false, reason: "This vertex is already occupied" };
@@ -70,6 +75,9 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
  * @returns True if valid.
  */
 export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
+    if (!isValidHexId(vertexId)) {
+        return false;
+    }
     const vertex = G.board.vertices[vertexId];
     if (!vertex) return false;
     return vertex.type === 'settlement' && vertex.owner === playerID;
