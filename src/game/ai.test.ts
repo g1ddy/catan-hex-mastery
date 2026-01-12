@@ -25,9 +25,9 @@ jest.mock('./mechanics/costs', () => ({
 }));
 
 // Helper to create expected action objects
-const expectedAction = (type: string, args: any[] = []) => ({
+const expectedAction = (type: string, args: any[] = [], playerID: string = '0') => ({
     type: 'MAKE_MOVE',
-    payload: { type, args }
+    payload: { type, args, playerID }
 });
 
 describe('ai.enumerate', () => {

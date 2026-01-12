@@ -1,9 +1,11 @@
-import { GameState, BotMove } from '../game/types';
+import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { BotMove } from '../game/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
 export class BotCoach {
@@ -38,8 +40,7 @@ export class BotCoach {
      * @param playerID The player ID
      * @returns A sorted list of optimal moves (best first)
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public filterOptimalMoves(allMoves: any[], playerID: string): any[] {
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string): GameAction[] {
         if (!this.isValidPlayerID(playerID)) {
             console.warn('Invalid playerID:', playerID);
             return [];
@@ -62,8 +63,7 @@ export class BotCoach {
             const bestSpots = this.coach.getBestSettlementSpots(playerID);
 
             // Optimization: Map moves by vertexId for O(1) lookup
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const movesByVertex = new Map<string, any>();
+            const movesByVertex = new Map<string, GameAction>();
             allMoves.forEach(m => {
                 if (this.getMoveName(m) === 'placeSettlement') {
                     const args = this.getMoveArgs(m);
@@ -75,8 +75,7 @@ export class BotCoach {
 
             // Map the best spots to the available moves
             // bestSpots is ordered best to worst
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const rankedMoves: any[] = [];
+            const rankedMoves: GameAction[] = [];
 
             bestSpots.forEach(spot => {
                 const move = movesByVertex.get(spot.vertexId);
@@ -92,8 +91,7 @@ export class BotCoach {
 
         // For setup roads and normal gameplay, use profile weights
         // ACTING PHASE + SETUP ROAD
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const getMoveWeight = (move: any): number => {
+        const getMoveWeight = (move: GameAction): number => {
             const name = this.getMoveName(move);
             switch (name) {
                 case 'buildCity': return this.profile.weights.buildCity;

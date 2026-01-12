@@ -1,4 +1,4 @@
-import { GameState } from './types';
+import { GameState, GameAction } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import {
@@ -14,19 +14,16 @@ import { getAffordableBuilds } from './mechanics/costs';
 // We omit playerID from the payload to let the framework handle credential association,
 // mimicking standard ActionCreators behavior in some contexts or avoiding mismatches.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const makeMove = (moveName: string, args: any[], _playerID: string) => ({
+const makeMove = (moveName: string, args: any[], playerID: string): GameAction => ({
     type: 'MAKE_MOVE',
-    payload: { type: moveName, args }
+    payload: { type: moveName, args, playerID }
 });
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BotAction = any; // We use 'any' to avoid deep type dependencies on boardgame.io internal types for now
 
 /**
  * Enumerates all legally possible moves for the player in the current state.
  * Used by boardgame.io AI framework and Bot implementations.
  */
-export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotAction[] => {
+export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[] => {
     // Validate playerID using strict object check to prevent prototype pollution or inherited property access
     if (!Object.prototype.hasOwnProperty.call(G.players, playerID)) {
         console.warn('Invalid playerID:', playerID);
@@ -34,7 +31,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotAction[]
     }
 
     const stage = ctx.activePlayers?.[playerID];
-    const moves: BotAction[] = [];
+    const moves: GameAction[] = [];
 
     // If no specific stage is active for this player, check if it's their turn generally?
     // In boardgame.io, ctx.activePlayers is authoritative for stages.

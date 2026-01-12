@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import { BotCoach } from './BotCoach';
-import { GameState } from '../game/types';
+import { GameState, GameAction, MakeMoveAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
@@ -23,9 +23,9 @@ jest.mock('../game/mechanics/costs', () => ({
 }));
 
 // Helper to create mock Redux actions (simplified)
-const mockAction = (type: string, args: any[] = []) => ({
+const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
     type: 'MAKE_MOVE',
-    payload: { type, args }
+    payload: { type: moveType, args }
 });
 
 describe('BotCoach', () => {
@@ -74,8 +74,10 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0');
             expect(result).toHaveLength(2);
-            // Verify args extraction
-            expect(result.map(m => m.payload.args[0])).toEqual(['v1', 'v3']);
+
+            // Verify args extraction - Cast to MakeMoveAction since we know the input
+            const actions = result as MakeMoveAction[];
+            expect(actions.map(m => m.payload.args[0])).toEqual(['v1', 'v3']);
         });
 
         it('should filter acting moves based on weights', () => {
@@ -89,7 +91,9 @@ describe('BotCoach', () => {
 
              const result = botCoach.filterOptimalMoves(moves, '0');
              expect(result).toHaveLength(2);
-             expect(result.every(m => m.payload.type === 'buildCity')).toBe(true);
+
+             const actions = result as MakeMoveAction[];
+             expect(actions.every(m => m.payload.type === 'buildCity')).toBe(true);
         });
 
         it('should return all moves if weights are equal', () => {

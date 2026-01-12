@@ -75,8 +75,24 @@ export interface GameState {
   hasRolled: boolean;
 }
 
+// Legacy format: { move: 'name', args: [] }
 export interface BotMove {
   move: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[];
 }
+
+// Redux-style action format: { type: 'MAKE_MOVE', payload: { type: 'name', args: [] } }
+export interface MakeMoveAction {
+  type: 'MAKE_MOVE';
+  payload: {
+    type: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    args: any[];
+    playerID: string;
+    credentials?: string;
+  };
+}
+
+// Union type to handle both formats
+export type GameAction = BotMove | MakeMoveAction;
