@@ -19,10 +19,8 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({ G, ctx, showCoachMode, s
         if (!G) return "Waiting for game state...";
         const coach = new Coach(G);
         const playerID = ctx.currentPlayer;
-        // Determine the stage for the specific player or general active stage
-        const currentStage = ctx.activePlayers?.[playerID];
-        return coach.getStrategicAdvice(playerID, currentStage);
-    }, [G, ctx.activePlayers, ctx.currentPlayer]);
+        return coach.getStrategicAdvice(playerID, ctx);
+    }, [G, ctx]);
 
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">

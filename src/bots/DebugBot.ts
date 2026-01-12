@@ -38,7 +38,7 @@ export class DebugBot extends RandomBot {
         }
 
         const botCoach = new BotCoach(G, coach);
-        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID);
+        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
 
         // 3. Return the best moves.
         // Since ai.enumerate now returns standard { move, args } objects,

@@ -96,10 +96,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
         let allScores: CoachRecommendation[] = [];
         if (coach && typeof coach.getAllSettlementScores === 'function') {
-            allScores = coach.getAllSettlementScores(ctx.currentPlayer);
+            allScores = coach.getAllSettlementScores(ctx.currentPlayer, ctx);
         } else {
              // Fallback if plugin not loaded or visible
-             allScores = new Coach(G).getAllSettlementScores(ctx.currentPlayer);
+             allScores = new Coach(G).getAllSettlementScores(ctx.currentPlayer, ctx);
         }
 
         if (allScores.length === 0) {

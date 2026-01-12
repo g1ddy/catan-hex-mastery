@@ -1,3 +1,4 @@
+import { Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getHexesForVertex } from '../game/hexUtils';
@@ -49,9 +50,15 @@ export class BotCoach {
      * Filters and sorts a list of available moves to find the "optimal" ones.
      * @param allMoves The full list of legal moves (e.g. from ai.enumerate)
      * @param playerID The player ID
+     * @param ctx The boardgame.io context object
      * @returns A sorted list of optimal moves (best first)
      */
-    public filterOptimalMoves(allMoves: GameAction[], playerID: string): GameAction[] {
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        if (playerID !== ctx.currentPlayer) {
+            console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
+            return [];
+        }
+
         if (!this.isValidPlayerID(playerID)) {
             console.warn('Invalid playerID:', playerID);
             return [];
@@ -71,7 +78,7 @@ export class BotCoach {
 
         if (isSetupSettlement) {
             // Use Coach analysis to find the best spots
-            const bestSpots = this.coach.getBestSettlementSpots(playerID);
+            const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
 
             // Optimization: Map moves by vertexId for O(1) lookup
             const movesByVertex = new Map<string, GameAction>();
