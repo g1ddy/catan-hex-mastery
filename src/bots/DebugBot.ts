@@ -40,17 +40,11 @@ export class DebugBot extends RandomBot {
         const botCoach = new BotCoach(G, coach);
         const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
 
-        // 3. Return the best moves, converted to the format boardgame.io expects ({ move, args }).
-        // The enumerate function returns Redux actions ({ type: 'MAKE_MOVE', payload: ... }),
-        // but RandomBot execution logic expects simplified objects.
+        // 3. Return the best moves.
+        // Since ai.enumerate now returns standard { move, args } objects,
+        // we can simply return them without conversion.
         const movesToConsider = bestMoves.length > 0 ? bestMoves : allMoves;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return movesToConsider.map((action: any) => {
-            if ('payload' in action && action.payload) {
-                return { move: action.payload.type, args: action.payload.args };
-            }
-            return action; // Already in { move, args } format or unexpected format
-        });
+        return movesToConsider;
     }
 }
