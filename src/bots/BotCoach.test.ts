@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
 import { GameState, MakeMoveAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
@@ -32,6 +33,7 @@ describe('BotCoach', () => {
     let G: GameState;
     let coach: Coach;
     let botCoach: BotCoach;
+    let mockCtx: Ctx;
 
     beforeEach(() => {
         G = {
@@ -48,6 +50,7 @@ describe('BotCoach', () => {
         } as unknown as GameState;
         coach = new Coach(G);
         botCoach = new BotCoach(G, coach);
+        mockCtx = { currentPlayer: '0' } as Ctx;
     });
 
     describe('filterOptimalMoves', () => {
@@ -56,7 +59,7 @@ describe('BotCoach', () => {
                 mockAction('placeRoad', ['e1']),
                 mockAction('placeRoad', ['e2'])
             ];
-            const result = botCoach.filterOptimalMoves(moves, '0');
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
             expect(result).toHaveLength(2);
         });
 
@@ -72,7 +75,7 @@ describe('BotCoach', () => {
                 { vertexId: 'v1' }, { vertexId: 'v3' }, { vertexId: 'v4' }
             ]);
 
-            const result = botCoach.filterOptimalMoves(moves, '0');
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
             expect(result).toHaveLength(2);
 
             // Verify args extraction - Cast to MakeMoveAction since we know the input
@@ -89,7 +92,7 @@ describe('BotCoach', () => {
                  mockAction('buildCity', ['v3'])  // Highest weight
              ];
 
-             const result = botCoach.filterOptimalMoves(moves, '0');
+             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
              expect(result).toHaveLength(2);
 
              const actions = result as MakeMoveAction[];
@@ -111,8 +114,14 @@ describe('BotCoach', () => {
                  mockAction('buildSettlement', ['v1']), // Weight 1
              ];
 
-             const result = flatCoach.filterOptimalMoves(moves, '0');
+             const result = flatCoach.filterOptimalMoves(moves, '0', mockCtx);
              expect(result).toHaveLength(2);
+        });
+
+        it('should return no moves if playerID is not currentPlayer', () => {
+            const moves = [mockAction('placeRoad', ['e1'])];
+            const result = botCoach.filterOptimalMoves(moves, '1', mockCtx); // '1' is not current
+            expect(result).toHaveLength(0);
         });
     });
 });

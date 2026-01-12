@@ -1,3 +1,4 @@
+import { Ctx } from 'boardgame.io';
 import { getBestSettlementSpots } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
 
@@ -22,6 +23,15 @@ jest.mock('../hexUtils', () => ({
 }));
 
 describe('getBestSettlementSpots', () => {
+    const mockCtx: Ctx = {
+        numPlayers: 1,
+        turn: 1,
+        currentPlayer: '0',
+        playOrder: ['0'],
+        playOrderPos: 0,
+        activePlayers: null,
+        phase: ''
+    };
 
     const HEX_A_ID = '0,0,0';
     const HEX_B_ID = '1,-1,0';
@@ -117,7 +127,7 @@ describe('getBestSettlementSpots', () => {
             // Total = 13. Unique=3 => Diversity=1.2x. Synergy(Wood+Brick)=+2.
             // Expected: (13 * 1.2) + 2 = 15.6 + 2 = 17.6
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(17.6);
             expect(target?.details.pips).toBe(13);
@@ -132,7 +142,7 @@ describe('getBestSettlementSpots', () => {
             // Total = 4. Diversity=1.2. Synergy=+2.
             // Expected: (4 * 1.2) + 2 = 4.8 + 2 = 6.8
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(6.8);
             expect(target?.details.pips).toBe(4);
@@ -152,7 +162,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 0, [], stats);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(20.7);
@@ -170,7 +180,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 0, [], stats);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(17.6);
@@ -187,7 +197,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.details.diversityBonus).toBe(true);
@@ -201,7 +211,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.details.diversityBonus).toBe(false);
@@ -218,7 +228,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
@@ -231,7 +241,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
@@ -244,7 +254,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(false);
             expect(target?.score).toBeCloseTo(15.6);
@@ -263,7 +273,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 1, ['wood', 'brick']);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             // Base 13 * 1.2 = 15.6. Bonus +15. Total 30.6.
@@ -281,7 +291,7 @@ describe('getBestSettlementSpots', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 1, ['wood']);
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             // Base 13 * 1.2 = 15.6. Bonus +10. Total 25.6.
@@ -303,7 +313,7 @@ describe('getBestSettlementSpots', () => {
             // Occupy the target
             G.board.vertices[TARGET_VERTEX_ID] = { owner: '1', type: 'settlement' };
 
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target).toBeUndefined();
         });
@@ -318,9 +328,16 @@ describe('getBestSettlementSpots', () => {
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
             G.board.vertices[neighborID] = { owner: '1', type: 'settlement' };
 
-            const results = getBestSettlementSpots(G, '0');
+            const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target).toBeUndefined();
+        });
+
+        test('Should return no results if playerID is not currentPlayer', () => {
+            const hexes = [{ id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 }];
+            const G = createMockState(hexes);
+            const results = getBestSettlementSpots(G, '1', mockCtx); // '1' is not current
+            expect(results).toHaveLength(0);
         });
     });
 });

@@ -1,3 +1,4 @@
+import { Ctx } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
@@ -77,7 +78,12 @@ export class Coach {
     /**
      * Calculates scores for all valid settlement spots on the board.
      */
-    public getAllSettlementScores(playerID: string): CoachRecommendation[] {
+    public getAllSettlementScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        // Security: Only return recommendations for the current player.
+        if (playerID !== ctx.currentPlayer) {
+            return [];
+        }
+
         const recommendations: CoachRecommendation[] = [];
 
         // 1. Calculate Scarcity Map
@@ -256,30 +262,31 @@ export class Coach {
         };
     }
 
-    public getBestSettlementSpots(playerID: string): CoachRecommendation[] {
-        const allScores = this.getAllSettlementScores(playerID);
+    public getBestSettlementSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        const allScores = this.getAllSettlementScores(playerID, ctx);
         return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
     }
 
-    public getStrategicAdvice(playerID: string, currentStage?: string): string {
-        // Security check: Positively validate that the playerID exists
-        if (!Object.prototype.hasOwnProperty.call(this.G.players, playerID)) {
+    public getStrategicAdvice(playerID: string, ctx: Ctx): string {
+        // Security check: Only provide advice to the current player.
+        if (playerID !== ctx.currentPlayer) {
             return "Invalid player ID.";
         }
 
         // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
+        const stage = ctx.activePlayers?.[playerID] ?? ctx.phase;
 
         // 1. Setup Phase
-        if (currentStage === STAGES.PLACE_SETTLEMENT) {
+        if (stage === STAGES.PLACE_SETTLEMENT) {
             return "Focus on high-pip spots with diverse resources (Wood/Brick for roads, Ore/Wheat for cities).";
         }
-        if (currentStage === STAGES.PLACE_ROAD) {
+        if (stage === STAGES.PLACE_ROAD) {
             return "Point your road toward future expansion spots or the coast.";
         }
 
         // 2. Gameplay Phase (Acting)
-        if (currentStage === STAGES.ACTING || currentStage === STAGES.ROLLING) {
+        if (stage === STAGES.ACTING || stage === STAGES.ROLLING) {
             const vp = player.victoryPoints;
 
             // Early Game (< 5 VP)
@@ -302,14 +309,14 @@ export class Coach {
 
 // --- Backward Compatibility Wrappers ---
 
-export function getAllSettlementScores(G: GameState, playerID: string): CoachRecommendation[] {
+export function getAllSettlementScores(G: GameState, playerID: string, ctx: Ctx): CoachRecommendation[] {
     const coach = new Coach(G);
-    return coach.getAllSettlementScores(playerID);
+    return coach.getAllSettlementScores(playerID, ctx);
 }
 
-export function getBestSettlementSpots(G: GameState, playerID: string): CoachRecommendation[] {
+export function getBestSettlementSpots(G: GameState, playerID: string, ctx: Ctx): CoachRecommendation[] {
     const coach = new Coach(G);
-    return coach.getBestSettlementSpots(playerID);
+    return coach.getBestSettlementSpots(playerID, ctx);
 }
 
 export function getHeatmapColor(score: number, min: number, max: number): string {

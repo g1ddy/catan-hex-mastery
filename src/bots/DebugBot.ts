@@ -38,7 +38,7 @@ export class DebugBot extends RandomBot {
         }
 
         const botCoach = new BotCoach(G, coach);
-        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID);
+        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
 
         // 3. Return the best moves, converted to the format boardgame.io expects ({ move, args }).
         // The enumerate function returns Redux actions ({ type: 'MAKE_MOVE', payload: ... }),
