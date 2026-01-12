@@ -25,7 +25,7 @@ jest.mock('../game/mechanics/costs', () => ({
 // Helper to create mock Redux actions (simplified)
 const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
     type: 'MAKE_MOVE',
-    payload: { type: moveType, args }
+    payload: { type: moveType, args, playerID: '0' }
 });
 
 describe('BotCoach', () => {
