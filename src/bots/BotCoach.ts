@@ -1,5 +1,6 @@
 import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
+import { getHexesForVertex } from '../game/hexUtils';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
@@ -36,6 +37,11 @@ export class BotCoach {
             return action.payload.args;
         }
         return action.args || [];
+    }
+
+    private getPips(num: number): number {
+        const map: Record<number, number> = { 2: 1, 12: 1, 3: 2, 11: 2, 4: 3, 10: 3, 5: 4, 9: 4, 6: 5, 8: 5 };
+        return map[num] || 0;
     }
 
     /**
@@ -111,12 +117,33 @@ export class BotCoach {
         // Sort moves by weight
         const sortedMoves = [...allMoves].sort((a, b) => getMoveWeight(b) - getMoveWeight(a));
 
-        // Filter to keep only the best moves (sharing the highest weight)
-        if (sortedMoves.length > 0) {
-            const maxWeight = getMoveWeight(sortedMoves[0]);
-            return sortedMoves.filter(m => getMoveWeight(m) === maxWeight);
+        if (sortedMoves.length === 0) {
+            return [];
         }
 
-        return sortedMoves;
+        const maxWeight = getMoveWeight(sortedMoves[0]);
+        const topMoves = sortedMoves.filter(m => getMoveWeight(m) === maxWeight);
+
+        // If the best move is to build a city, and there's more than one option,
+        // use pip analysis to find the best one.
+        if (this.getMoveName(topMoves[0]) === 'buildCity' && topMoves.length > 1) {
+            const scoredSettlements = topMoves
+                .map(move => {
+                    const vId = this.getMoveArgs(move)[0];
+                    const hexIds = getHexesForVertex(vId);
+                    const pips = hexIds.reduce((sum, hexId) => {
+                        // eslint-disable-next-line security/detect-object-injection
+                        const hex = this.G.board.hexes[hexId];
+                        return sum + (hex ? this.getPips(hex.tokenValue || 0) : 0);
+                    }, 0);
+                    return { move, pips };
+                })
+                .sort((a, b) => b.pips - a.pips);
+
+            // Return just the single best city move
+            return [scoredSettlements[0].move];
+        }
+
+        return topMoves;
     }
 }

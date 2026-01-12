@@ -89,11 +89,18 @@ describe('BotCoach', () => {
                  mockAction('buildCity', ['v3'])  // Highest weight
              ];
 
+             // Mock board and hexes to prevent crash in pip calculation logic
+             G.board = { hexes: {}, vertices: {}, edges: {} } as any;
+             jest.mock('../game/hexUtils', () => ({
+                getHexesForVertex: jest.fn(() => []),
+             }));
+
              const result = botCoach.filterOptimalMoves(moves, '0');
-             expect(result).toHaveLength(2);
+             // With the new logic, it should pick the single best city, not both.
+             expect(result).toHaveLength(1);
 
              const actions = result as MakeMoveAction[];
-             expect(actions.every(m => m.payload.type === 'buildCity')).toBe(true);
+             expect(actions[0].payload.type).toBe('buildCity');
         });
 
         it('should return all moves if weights are equal', () => {
@@ -113,6 +120,44 @@ describe('BotCoach', () => {
 
              const result = flatCoach.filterOptimalMoves(moves, '0');
              expect(result).toHaveLength(2);
+        });
+
+        it('should choose the city with the highest pips when upgrading', () => {
+            // High-pip settlement at vertex v1, low-pip at v2
+            G.board = {
+                hexes: {
+                    'h1': { tokenValue: 8 }, // 5 pips
+                    'h2': { tokenValue: 5 }, // 4 pips
+                    'h3': { tokenValue: 9 }, // 4 pips
+                    'h4': { tokenValue: 2 }, // 1 pip
+                    'h5': { tokenValue: 12 },// 1 pip
+                    'h6': { tokenValue: 3 }  // 2 pips
+                },
+                vertices: {},
+                edges: {},
+            } as any;
+
+            // Mock getHexesForVertex to link vertices to hexes
+            jest.mock('../game/hexUtils', () => ({
+                getHexesForVertex: jest.fn(vId => {
+                    if (vId === 'v1') return ['h1', 'h2', 'h3']; // 5 + 4 + 4 = 13 pips
+                    if (vId === 'v2') return ['h4', 'h5', 'h6']; // 1 + 1 + 2 = 4 pips
+                    return [];
+                }),
+            }));
+
+            // Both moves have the same high weight
+            const moves = [
+                mockAction('buildCity', ['v1']), // Correct choice
+                mockAction('buildCity', ['v2'])
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0');
+
+            expect(result).toHaveLength(1);
+            const action = result[0] as MakeMoveAction;
+            expect(action.payload.type).toBe('buildCity');
+            expect(action.payload.args[0]).toBe('v1');
         });
     });
 });
