@@ -20,7 +20,18 @@ test('Debug Mode (Single Player) Setup and AI Controls Verification', async ({ p
   }
 
   // 5. Verify AI Controls are present
-  await expect(page.getByText('simulate')).toBeVisible();
+  // Select 'Random' bot from the dropdown (default is MCTS)
+  const botSelect = page.locator('.debug-panel select').first(); // Heuristic: first select in AI panel
+  // Or look for label "Bot" and the select next to it.
+  // boardgame.io debug panel usually has a label "Bot" and a select.
+  // We can try to select by label if accessible, or just find the select that has "MCTS" and change it to "Random".
+
+  // Using a more robust locator strategy:
+  const aiPanel = page.locator('.debug-panel');
+  await expect(aiPanel.getByText('Bot')).toBeVisible();
+  // Find the select element associated with bots. It likely contains 'MCTS'.
+  const select = aiPanel.locator('select').filter({ hasText: 'MCTS' });
+  await select.selectOption({ label: 'Random' });
 
   // 6. Start the Game Setup (since we are in Setup phase)
   const beginButton = page.getByRole('button', { name: 'Begin Placement' });
@@ -39,5 +50,6 @@ test('Debug Mode (Single Player) Setup and AI Controls Verification', async ({ p
   await page.keyboard.press('2');
 
   // 8. Verify State Change
-  await expect(page.locator('body')).toContainText(/Sett: [1-9]|Roads: [1-9]/, { timeout: 30000 });
+  // With Random bot, it should be much faster, so we can reduce timeout back to standard.
+  await expect(page.locator('body')).toContainText(/Sett: [1-9]|Roads: [1-9]/, { timeout: 10000 });
 });

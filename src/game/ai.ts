@@ -37,7 +37,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     // In boardgame.io, ctx.activePlayers is authoritative for stages.
     if (!stage) {
         // Fallback: Check if it is generally the player's turn (e.g. no stages used, or stage is null)
-        // But in this game, stages are always used.
+        // But in this game, stages are always used, so this indicates a potential issue.
+        console.error(`Player ${playerID} has no active stage, but one was expected.`);
         return [];
     }
 
