@@ -63,7 +63,6 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         case STAGES.ACTING: {
             // eslint-disable-next-line security/detect-object-injection
             const player = G.players[playerID];
-            if (!player) return [];
 
             const affordable = getAffordableBuilds(player.resources);
 
