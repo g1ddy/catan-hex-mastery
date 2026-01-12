@@ -3,7 +3,7 @@
  */
 
 import { Ctx } from 'boardgame.io';
-import { GameState, Player, BotMove } from '../game/types';
+import { GameState, BotMove } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
