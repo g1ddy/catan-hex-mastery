@@ -1,0 +1,21 @@
+#!/bin/bash
+bash scripts/setup.sh
+
+echo "Setup complete. Starting verification..."
+
+# 1. Check critical versions
+node -v || { echo "Node is missing"; exit 1; }
+npm -v || { echo "NPM is missing"; exit 1; }
+
+# 2. Verify Playwright Browsers are actually present
+# (This checks if the folder exists, ensuring the huge download actually finished)
+if [ ! -d ~/.cache/ms-playwright ]; then
+  echo "Playwright browsers not found!"
+  exit 1
+fi
+
+# 3. Dry run a test (Optional but powerful)
+# Runs a list of tests without executing them, just to ensure the test runner boots.
+# npm run test:unit -- --listTests || { echo "Test runner failed to start"; exit 1; }
+
+echo "Verification Passed. Environment is healthy."

@@ -14,13 +14,26 @@ Run this script to bootstrap or repair your development environment:
 ./scripts/setup.sh
 ```
 
+## `verify_env.sh`
+
+Run this script to verify that the environment is correctly configured and all dependencies are present.
+
+```bash
+./scripts/verify_env.sh
+```
+
 ### Configuring a Jules Environment Snapshot
 
 Jules uses **Environment Snapshots** to speed up tasks. A snapshot is a saved state of the VM after running your setup script. This snapshot is reused for future tasks, avoiding repetitive installation steps.
 
 **How to Configure:**
 
-1.  **Define the Script:** Ensure `setup.sh` contains all necessary installation steps (e.g., `npm install`, `npx playwright install`).
+1.  **Define the Script:** Ensure `setup.sh` contains all necessary installation steps. For example:
+    ```bash
+    npm install
+    npx playwright install chromium webkit
+    npx playwright install-deps
+    ```
 2.  **Jules UI Setup:**
     *   Go to the **Jules Dashboard**.
     *   Select this repository under "Codebases".
@@ -60,6 +73,7 @@ If you need `jq` (and it wasn't pre-installed):
 1.  Update `setup.sh`:
     ```bash
     # ... inside setup.sh
+    sudo apt-get update
     sudo apt-get install -y jq
     ```
 2.  Go to the Jules UI -> Configuration -> **Run and Snapshot**.
