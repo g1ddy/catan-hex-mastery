@@ -13,7 +13,7 @@ jest.mock('../game/analysis/coach');
 
 const MockCoach = Coach as jest.MockedClass<typeof Coach>;
 
-describe('BotCoach Regression Test', () => {
+describe('BotCoach Settlement Test', () => {
     let G: GameState;
     let ctx: Ctx;
     let botCoach: BotCoach;
@@ -31,24 +31,17 @@ describe('BotCoach Regression Test', () => {
             players: {
                 '0': {
                     id: '0',
-                    name: 'Player 0',
                     color: 'red',
                     resources: { wood: 4, brick: 4, sheep: 4, wheat: 4, ore: 4 }, // Sufficient resources
-                    devCards: [],
                     victoryPoints: 2,
-                    longestRoad: false,
-                    largestArmy: false,
                     settlements: [],
                     roads: [],
-                } as Player,
+                },
             },
-            longestRoadOwner: null,
-            largestArmyOwner: null,
-            diceValue: 7,
-            robberHex: '0,0,0',
-            turn: 1,
-            publicVictoryPoints: { '0': 2 },
-            lastRoll: null,
+            setupPhase: { activeRound: 1 },
+            setupOrder: ['0'],
+            lastRoll: [1, 1], // Corrected to be a valid tuple
+            lastRollRewards: {},
             hasRolled: false,
             boardStats: {
                 totalPips: { wood: 10, brick: 10, sheep: 10, wheat: 10, ore: 10 },
