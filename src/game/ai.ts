@@ -11,9 +11,8 @@ import {
 import { getAffordableBuilds } from './mechanics/costs';
 
 // Helper to construct boardgame.io action objects manually.
-// We omit playerID from the payload to let the framework handle credential association,
-// mimicking standard ActionCreators behavior in some contexts or avoiding mismatches.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// We explicitly include `playerID` in the payload. In AI contexts, this ensures
+// the move is correctly attributed when generated and played by a bot.
 const makeMove = (moveName: string, args: any[], playerID: string): GameAction => ({
     type: 'MAKE_MOVE',
     payload: { type: moveName, args, playerID }
