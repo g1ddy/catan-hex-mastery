@@ -6,7 +6,6 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BotMove } from '../game/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
@@ -32,14 +31,14 @@ export class BotCoach {
         if ('payload' in action) {
             return action.payload.type;
         }
-        return action.move;
+        return (action as BotMove).move;
     }
 
     private getMoveArgs(action: GameAction): any[] {
         if ('payload' in action) {
             return action.payload.args;
         }
-        return action.args || [];
+        return (action as BotMove).args || [];
     }
 
     private getPips(num: number): number {
@@ -156,6 +155,33 @@ export class BotCoach {
             // Return just the single best city move
             return [scoredSettlements[0].move];
         }
+
+        // If building a settlement is a top-weighted move and there are multiple settlement options,
+        // use the Coach to find the best one.
+        const settlementMoves = topMoves.filter(m => this.getMoveName(m) === 'buildSettlement');
+
+        if (settlementMoves.length > 1) {
+            const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
+            const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+
+            const scoredSettlements = settlementMoves
+                .map(move => {
+                    const vId = this.getMoveArgs(move)[0];
+                    if (!vId || typeof vId !== 'string') {
+                        return { move, score: -1 }; // Malformed move
+                    }
+                    const score = recommendationMap.get(vId) ?? 0;
+                    return { move, score };
+                })
+                .sort((a, b) => b.score - a.score);
+
+            const bestSettlement = scoredSettlements[0].move;
+            const otherTopMoves = topMoves.filter(m => this.getMoveName(m) !== 'buildSettlement');
+
+            // Return the best settlement along with other equally-weighted top moves
+            return [bestSettlement, ...otherTopMoves];
+        }
+
 
         return topMoves;
     }
