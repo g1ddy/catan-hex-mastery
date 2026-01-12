@@ -24,6 +24,12 @@ jest.mock('./mechanics/costs', () => ({
     }))
 }));
 
+// Helper to create expected action objects
+const expectedAction = (type: string, args: any[] = []) => ({
+    type: 'MAKE_MOVE',
+    payload: { type, args }
+});
+
 describe('ai.enumerate', () => {
     let G: GameState;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,26 +62,26 @@ describe('ai.enumerate', () => {
     it('should enumerate setup settlements', () => {
         ctx.activePlayers['0'] = STAGES.PLACE_SETTLEMENT;
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toContainEqual({ move: 'placeSettlement', args: ['1_1_1'] });
+        expect(moves).toContainEqual(expectedAction('placeSettlement', ['1_1_1']));
     });
 
     it('should enumerate setup roads', () => {
         ctx.activePlayers['0'] = STAGES.PLACE_ROAD;
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toContainEqual({ move: 'placeRoad', args: ['edge_1'] });
+        expect(moves).toContainEqual(expectedAction('placeRoad', ['edge_1']));
     });
 
     it('should enumerate acting moves', () => {
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toContainEqual({ move: 'buildSettlement', args: ['2_2_2'] });
-        expect(moves).toContainEqual({ move: 'buildCity', args: ['3_3_3'] });
-        expect(moves).toContainEqual({ move: 'buildRoad', args: ['edge_2'] });
-        expect(moves).toContainEqual({ move: 'endTurn', args: [] });
+        expect(moves).toContainEqual(expectedAction('buildSettlement', ['2_2_2']));
+        expect(moves).toContainEqual(expectedAction('buildCity', ['3_3_3']));
+        expect(moves).toContainEqual(expectedAction('buildRoad', ['edge_2']));
+        expect(moves).toContainEqual(expectedAction('endTurn', []));
     });
 
     it('should enumerate rolling', () => {
         ctx.activePlayers['0'] = STAGES.ROLLING;
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toEqual([{ move: 'rollDice', args: [] }]);
+        expect(moves).toEqual([expectedAction('rollDice', [])]);
     });
 });

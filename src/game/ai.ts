@@ -27,8 +27,8 @@ type BotAction = any; // We use 'any' to avoid deep type dependencies on boardga
  * Used by boardgame.io AI framework and Bot implementations.
  */
 export const enumerate = (G: GameState, ctx: Ctx, playerID: string): BotAction[] => {
-    // Validate playerID to prevent prototype pollution
-    if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
+    // Validate playerID using strict object check to prevent prototype pollution or inherited property access
+    if (!Object.prototype.hasOwnProperty.call(G.players, playerID)) {
         console.warn('Invalid playerID:', playerID);
         return [];
     }

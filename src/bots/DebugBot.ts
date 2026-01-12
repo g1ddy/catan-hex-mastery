@@ -17,9 +17,10 @@ export class DebugBot extends RandomBot {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    enumerate(G: GameState, ctx: any, playerID: string) {
+    enumerate(G: GameState, ctx: any, playerID: string): any[] {
         // 1. Get ALL valid moves from the base enumerator (injected from Game.ai.enumerate)
-        let allMoves: BotMove[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let allMoves: any[] = [];
         if (this._enumerate) {
              allMoves = this._enumerate(G, ctx, playerID);
         }
