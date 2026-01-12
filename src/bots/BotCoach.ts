@@ -157,6 +157,48 @@ export class BotCoach {
             return [scoredSettlements[0].move];
         }
 
+        // If the best move is to build a settlement, and there's more than one option,
+        // use Coach analysis to find the best one.
+        if (this.getMoveName(topMoves[0]) === 'buildSettlement' && topMoves.length > 1) {
+            const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
+            const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+
+            const scoredSettlements = topMoves
+                .map(move => {
+                    const vId = this.getMoveArgs(move)[0];
+                    if (!vId || typeof vId !== 'string') {
+                        return { move, score: -1 }; // Malformed move
+                    }
+                    const score = recommendationMap.get(vId) ?? 0;
+                    return { move, score };
+                })
+                .sort((a, b) => b.score - a.score);
+
+            // Return just the single best settlement move
+            return [scoredSettlements[0].move];
+        }
+
+        // If the best move is to build a settlement, and there's more than one option,
+        // use Coach analysis to find the best one.
+        if (this.getMoveName(topMoves[0]) === 'buildSettlement' && topMoves.length > 1) {
+            const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
+            const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+
+            const scoredSettlements = topMoves
+                .map(move => {
+                    const vId = this.getMoveArgs(move)[0];
+                    if (!vId || typeof vId !== 'string') {
+                        return { move, score: -1 }; // Malformed move
+                    }
+                    const score = recommendationMap.get(vId) ?? 0;
+                    return { move, score };
+                })
+                .sort((a, b) => b.score - a.score);
+
+            // Return just the single best settlement move
+            return [scoredSettlements[0].move];
+        }
+
         return topMoves;
     }
 }
