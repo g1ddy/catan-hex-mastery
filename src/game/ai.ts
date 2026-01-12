@@ -1,4 +1,4 @@
-import { GameState, GameAction } from './types';
+import { GameState, GameAction, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import {
@@ -10,12 +10,13 @@ import {
 } from './rules/validator';
 import { getAffordableBuilds } from './mechanics/costs';
 
-// Helper to construct boardgame.io action objects manually.
-// We explicitly include `playerID` in the payload. In AI contexts, this ensures
-// the move is correctly attributed when generated and played by a bot.
-const makeMove = (moveName: string, args: any[], playerID: string): GameAction => ({
-    type: 'MAKE_MOVE',
-    payload: { type: moveName, args, playerID }
+// Helper to construct boardgame.io action objects.
+// Previously returned Redux-style actions, now returns simpler BotMove objects ({ move, args }).
+// This ensures compatibility with boardgame.io's built-in bots (RandomBot, MCTSBot)
+// while still being usable by our custom bots.
+const makeMove = (moveName: string, args: any[]): BotMove => ({
+    move: moveName,
+    args
 });
 
 /**
@@ -35,6 +36,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     // If no specific stage is active for this player, check if it's their turn generally?
     // In boardgame.io, ctx.activePlayers is authoritative for stages.
     if (!stage) {
+        // Fallback: Check if it is generally the player's turn (e.g. no stages used, or stage is null)
+        // But in this game, stages are always used.
         return [];
     }
 
@@ -42,21 +45,20 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         case STAGES.PLACE_SETTLEMENT: {
             const validSpots = getValidSetupSettlementSpots(G);
             validSpots.forEach(vId => {
-                // Return full MakeMove actions
-                moves.push(makeMove('placeSettlement', [vId], playerID));
+                moves.push(makeMove('placeSettlement', [vId]));
             });
             break;
         }
         case STAGES.PLACE_ROAD: {
             const validSpots = getValidSetupRoadSpots(G, playerID);
             validSpots.forEach(eId => {
-                moves.push(makeMove('placeRoad', [eId], playerID));
+                moves.push(makeMove('placeRoad', [eId]));
             });
             break;
         }
         case STAGES.ROLLING: {
             // Rolling is mandatory if in this stage
-            moves.push(makeMove('rollDice', [], playerID));
+            moves.push(makeMove('rollDice', []));
             break;
         }
         case STAGES.ACTING: {
@@ -69,7 +71,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             if (affordable.settlement) {
                 const validSpots = getValidSettlementSpots(G, playerID);
                 validSpots.forEach(vId => {
-                    moves.push(makeMove('buildSettlement', [vId], playerID));
+                    moves.push(makeMove('buildSettlement', [vId]));
                 });
             }
 
@@ -77,7 +79,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             if (affordable.city) {
                 const validSpots = getValidCitySpots(G, playerID);
                 validSpots.forEach(vId => {
-                    moves.push(makeMove('buildCity', [vId], playerID));
+                    moves.push(makeMove('buildCity', [vId]));
                 });
             }
 
@@ -85,12 +87,12 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             if (affordable.road) {
                 const validSpots = getValidRoadSpots(G, playerID);
                 validSpots.forEach(eId => {
-                    moves.push(makeMove('buildRoad', [eId], playerID));
+                    moves.push(makeMove('buildRoad', [eId]));
                 });
             }
 
             // Always allow ending turn in ACTING stage
-            moves.push(makeMove('endTurn', [], playerID));
+            moves.push(makeMove('endTurn', []));
             break;
         }
     }

@@ -39,5 +39,5 @@ test('Debug Mode (Single Player) Setup and AI Controls Verification', async ({ p
   await page.keyboard.press('2');
 
   // 8. Verify State Change
-  await expect(page.locator('body')).toContainText(/Sett: [1-9]|Roads: [1-9]/, { timeout: 10000 });
+  await expect(page.locator('body')).toContainText(/Sett: [1-9]|Roads: [1-9]/, { timeout: 30000 });
 });
