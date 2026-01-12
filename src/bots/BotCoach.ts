@@ -14,6 +14,8 @@ export class BotCoach {
     private coach: Coach;
     private profile: BotProfile;
 
+    private static readonly PIPS_MAP: Record<number, number> = { 2: 1, 12: 1, 3: 2, 11: 2, 4: 3, 10: 3, 5: 4, 9: 4, 6: 5, 8: 5 };
+
     constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.G = G;
         this.coach = coach;
@@ -40,8 +42,7 @@ export class BotCoach {
     }
 
     private getPips(num: number): number {
-        const map: Record<number, number> = { 2: 1, 12: 1, 3: 2, 11: 2, 4: 3, 10: 3, 5: 4, 9: 4, 6: 5, 8: 5 };
-        return map[num] || 0;
+        return BotCoach.PIPS_MAP[num] || 0;
     }
 
     /**
@@ -130,11 +131,16 @@ export class BotCoach {
             const scoredSettlements = topMoves
                 .map(move => {
                     const vId = this.getMoveArgs(move)[0];
+                    if (!vId || typeof vId !== 'string') {
+                        return { move, pips: -1 }; // Malformed move, score it low
+                    }
                     const hexIds = getHexesForVertex(vId);
                     const pips = hexIds.reduce((sum, hexId) => {
-                        // eslint-disable-next-line security/detect-object-injection
-                        const hex = this.G.board.hexes[hexId];
-                        return sum + (hex ? this.getPips(hex.tokenValue || 0) : 0);
+                        if (Object.prototype.hasOwnProperty.call(this.G.board.hexes, hexId)) {
+                            const hex = this.G.board.hexes[hexId];
+                            return sum + (hex ? this.getPips(hex.tokenValue || 0) : 0);
+                        }
+                        return sum;
                     }, 0);
                     return { move, pips };
                 })
