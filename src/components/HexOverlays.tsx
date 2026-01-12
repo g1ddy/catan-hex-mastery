@@ -3,7 +3,7 @@ import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge } from '../game/hexUtils';
-import { hexCornerOffset } from '../game/geometry';
+import { HEX_CORNERS } from '../game/staticGeometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
@@ -66,9 +66,6 @@ export const HexOverlays = React.memo(({
         return { vertices: verticesWithParts, edges: edgesWithParts, currentHexIdStr: idStr };
     }, [hex.coords.q, hex.coords.r, hex.coords.s]);
 
-    // Static corner offsets
-    const corners = React.useMemo(() => Array.from({ length: 6 }, (_, i) => hexCornerOffset(i)), []);
-
     // Use shared rules hook
     const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
 
@@ -80,7 +77,7 @@ export const HexOverlays = React.memo(({
     return (
         <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             {/* VERTICES */}
-            {corners.map((corner, i) => {
+            {HEX_CORNERS.map((corner, i) => {
                 // eslint-disable-next-line security/detect-object-injection
                 const { id: vId, parts } = vertices[i];
                 const primaryHex = getPrimaryHexOwner(parts);
@@ -221,14 +218,14 @@ export const HexOverlays = React.memo(({
             })}
 
             {/* EDGES */}
-            {corners.map((corner, i) => {
+            {HEX_CORNERS.map((corner, i) => {
                 // eslint-disable-next-line security/detect-object-injection
                 const { id: eId, parts } = edges[i];
                 const primaryHex = getPrimaryHexOwner(parts);
 
                 if (primaryHex !== currentHexIdStr) return null;
 
-                const nextCorner = corners[(i + 1) % 6];
+                const nextCorner = HEX_CORNERS[(i + 1) % 6];
                 const midX = (corner.x + nextCorner.x) / 2;
                 const midY = (corner.y + nextCorner.y) / 2;
 

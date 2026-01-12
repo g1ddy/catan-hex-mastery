@@ -2,6 +2,7 @@ import { Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { getHexesForVertex } from '../game/hexUtils';
+import { getPips } from '../game/mechanics/scoring';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
@@ -13,8 +14,6 @@ export class BotCoach {
     private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
-
-    private static readonly PIPS_MAP: Record<number, number> = { 2: 1, 12: 1, 3: 2, 11: 2, 4: 3, 10: 3, 5: 4, 9: 4, 6: 5, 8: 5 };
 
     constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.G = G;
@@ -39,10 +38,6 @@ export class BotCoach {
             return action.payload.args;
         }
         return (action as BotMove).args || [];
-    }
-
-    private getPips(num: number): number {
-        return BotCoach.PIPS_MAP[num] || 0;
     }
 
     /**
@@ -144,7 +139,7 @@ export class BotCoach {
                     const pips = hexIds.reduce((sum, hexId) => {
                         if (Object.prototype.hasOwnProperty.call(this.G.board.hexes, hexId)) {
                             const hex = this.G.board.hexes[hexId];
-                            return sum + (hex ? this.getPips(hex.tokenValue || 0) : 0);
+                            return sum + (hex ? getPips(hex.tokenValue || 0) : 0);
                         }
                         return sum;
                     }, 0);
