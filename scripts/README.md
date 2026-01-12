@@ -26,7 +26,7 @@ Run this script to verify that the environment is correctly configured and all d
 
 Jules uses **Environment Snapshots** to speed up tasks. A snapshot is a saved state of the VM after running your setup script. This snapshot is reused for future tasks, avoiding repetitive installation steps.
 
-**How to Configure:**
+#### How to Configure:
 
 1.  **Define the Script:** Ensure `setup.sh` contains all necessary installation steps. For example:
     ```bash
@@ -46,7 +46,7 @@ Jules uses **Environment Snapshots** to speed up tasks. A snapshot is a saved st
     *   Click **"Run and Snapshot"**.
     *   Jules will execute the script. Upon success, it saves the environment state as a snapshot.
 
-**Validation Tips:**
+#### Validation Tips:
 *   You can add version checks (e.g., `node -v`) to `setup.sh` to verify installations in the output logs.
 *   Use the "Run to Validate" feature in the UI to catch errors early without creating a snapshot.
 
@@ -66,13 +66,14 @@ Jules VMs run Ubuntu Linux and come with many popular tools pre-installed, so yo
     *   **Immediately** add the installation command to `setup.sh`.
     *   Update the snapshot via the Jules UI.
 
-**Example: Adding a new system tool**
+#### Example: Adding a new system tool
 
 If you need `jq` (and it wasn't pre-installed):
 
 1.  Update `setup.sh`:
     ```bash
     # ... inside setup.sh
+    sudo apt-get update
     sudo apt-get update
     sudo apt-get install -y jq
     ```
