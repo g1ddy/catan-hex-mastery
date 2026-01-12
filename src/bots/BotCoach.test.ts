@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import { BotCoach } from './BotCoach';
-import { GameState, GameAction, MakeMoveAction } from '../game/types';
+import { GameState, MakeMoveAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
