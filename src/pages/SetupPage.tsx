@@ -8,22 +8,41 @@ const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
 const DEBUG_PLAYER_COUNT = 2;
 const APP_VERSION_FALLBACK = 'DEV-LOCAL';
 
+// CSS Constants
+const BASE_BTN_CLASS = `
+    w-full max-w-xs py-3 px-6
+    backdrop-blur-sm text-white font-bold rounded-lg shadow-md
+    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+`;
+const INDIGO_BTN_CLASS = `${BASE_BTN_CLASS} bg-indigo-600/90 border border-indigo-500 hover:bg-indigo-500 hover:border-indigo-400`;
+const TEAL_BTN_CLASS = `${BASE_BTN_CLASS} bg-teal-600/90 border border-teal-500 hover:bg-teal-500 hover:border-teal-400`;
+const PURPLE_BTN_CLASS = `${BASE_BTN_CLASS} bg-purple-600/90 border border-purple-500 hover:bg-purple-500 hover:border-purple-400`;
+
+// New constants for configuring bots
+const AUTO_PLAY_BOT_CONFIG = {
+    '0': true, '1': true, '2': true, '3': true
+};
+const VS_BOTS_CONFIG = {
+    '1': true, '2': true
+};
+
 export function SetupPage() {
   const navigate = useNavigate();
 
-  const startGame = (numPlayers: number, mode: string, matchIdPrefix?: string) => {
-    const prefix = matchIdPrefix || mode;
+  // Unified start handler
+  const startGame = (numPlayers: number, mode: string, matchIdPrefix: string, botConfig?: Record<string, boolean>) => {
     navigate('/game', {
         state: {
             numPlayers,
             mode,
-            matchID: `${prefix}-${Date.now()}`
+            matchID: `${matchIdPrefix}-${Date.now()}`,
+            botConfig
         }
     });
   };
 
   const handlePlayerSelection = (numPlayers: number) => {
-    startGame(numPlayers, 'local');
+    startGame(numPlayers, 'local', 'local');
   };
 
   const handleDebugSelection = () => {
@@ -31,11 +50,13 @@ export function SetupPage() {
   };
 
   const handleAutoPlaySelection = () => {
-    startGame(4, 'autoplay');
+    // 0 Human Players (spectator), 4 Bots
+    startGame(4, 'local', 'autoplay', AUTO_PLAY_BOT_CONFIG);
   };
 
   const handleVsBotSelection = () => {
-    startGame(3, 'vs-bots');
+    // 1 Human Player (0), 2 Bots (1, 2)
+    startGame(3, 'local', 'vs-bots', VS_BOTS_CONFIG);
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
@@ -60,13 +81,7 @@ export function SetupPage() {
                   onClick={handleDebugSelection}
                   data-tooltip-id="setup-tooltip"
                   data-tooltip-content="Single Player Debug Mode: Enables advanced AI controls and boardgame.io Debug Panel"
-                  className="
-                      w-full max-w-xs py-3 px-6
-                      bg-indigo-600/90 backdrop-blur-sm border border-indigo-500
-                      hover:bg-indigo-500 hover:border-indigo-400
-                      text-white font-bold rounded-lg shadow-md
-                      transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                  "
+                  className={INDIGO_BTN_CLASS}
               >
                   1 Player (Debug)
               </button>
@@ -81,13 +96,7 @@ export function SetupPage() {
                 onClick={handleVsBotSelection}
                 data-tooltip-id="setup-tooltip"
                 data-tooltip-content="1 Player (vs Bots): Play against 2 Debug Bots"
-                className="
-                    w-full max-w-xs py-3 px-6
-                    bg-teal-600/90 backdrop-blur-sm border border-teal-500
-                    hover:bg-teal-500 hover:border-teal-400
-                    text-white font-bold rounded-lg shadow-md
-                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                "
+                className={TEAL_BTN_CLASS}
             >
                 1 Player (vs Bots)
             </button>
@@ -98,13 +107,7 @@ export function SetupPage() {
                 onClick={handleAutoPlaySelection}
                 data-tooltip-id="setup-tooltip"
                 data-tooltip-content="0 Players (Auto Play): Watch 4 Debug Bots play against each other"
-                className="
-                    w-full max-w-xs py-3 px-6
-                    bg-purple-600/90 backdrop-blur-sm border border-purple-500
-                    hover:bg-purple-500 hover:border-purple-400
-                    text-white font-bold rounded-lg shadow-md
-                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                "
+                className={PURPLE_BTN_CLASS}
             >
                 0 Players (Auto Play)
             </button>
