@@ -261,6 +261,26 @@ export class Coach {
         return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
     }
 
+    /**
+     * Evaluates a list of candidate vertex IDs and returns the one with the highest pip count.
+     * Used for optimizing City placement.
+     */
+    public getBestCityPlacement(candidateVertexIds: string[]): string | null {
+        if (!candidateVertexIds || candidateVertexIds.length === 0) return null;
+
+        const scored = candidateVertexIds.map(vId => {
+            const hexIds = vId.split('::');
+            const { pips } = this.getVertexData(hexIds);
+            return { vId, pips };
+        });
+
+        // Sort descending by pips
+        scored.sort((a, b) => b.pips - a.pips);
+
+        // Return the best one
+        return scored[0].vId;
+    }
+
     public getStrategicAdvice(playerID: string, ctx: Ctx): string {
         // Security check: Only provide advice to the current player.
         if (playerID !== ctx.currentPlayer) {
