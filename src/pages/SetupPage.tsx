@@ -19,6 +19,10 @@ export function SetupPage() {
     navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer' } });
   };
 
+  const handleAutoPlaySelection = () => {
+    navigate('/game', { state: { numPlayers: 4, mode: 'autoplay' } });
+  };
+
   const isLocalMode = GAME_CONFIG.mode === 'local';
 
   return (
@@ -36,7 +40,7 @@ export function SetupPage() {
 
       <div className="setup-menu w-full max-w-lg text-center">
         {import.meta.env.DEV && (
-          <div className="mb-8">
+          <div className="mb-4 flex flex-col items-center">
               <button
                   onClick={handleDebugSelection}
                   data-tooltip-id="setup-tooltip"
@@ -47,16 +51,32 @@ export function SetupPage() {
                       hover:bg-indigo-500 hover:border-indigo-400
                       text-white font-bold rounded-lg shadow-md
                       transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                      mb-2
                   "
               >
                   1 Player (Debug)
               </button>
-              <p className="text-xs text-slate-400">
-                  Recommended for AI development and regression testing
+              <p className="text-xs text-slate-400 mt-1">
+                  DEV ONLY: Recommended for AI development
               </p>
           </div>
         )}
+
+        <div className="mb-8 flex flex-col items-center">
+            <button
+                onClick={handleAutoPlaySelection}
+                data-tooltip-id="setup-tooltip"
+                data-tooltip-content="0 Players (Auto Play): Watch 4 Debug Bots play against each other"
+                className="
+                    w-full max-w-xs py-3 px-6
+                    bg-purple-600/90 backdrop-blur-sm border border-purple-500
+                    hover:bg-purple-500 hover:border-purple-400
+                    text-white font-bold rounded-lg shadow-md
+                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+                "
+            >
+                0 Players (Auto Play)
+            </button>
+        </div>
 
         <p className="text-xl mb-6">Local Multiplayer:</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
