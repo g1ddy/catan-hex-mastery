@@ -71,12 +71,12 @@ The Coach analyzes the board layout. If a resource has low total pip availabilit
 *   **Combo Bonus**: Specific pairs (Brick + Wood) or (Ore + Wheat) enable critical actions (Road building / City building).
     *   *Bonus*: Flat score addition for securing a complete combo.
 
-### 3.4 The Heatmap Visualizer
+### 3.4 The Resource Heatmap
 The resulting scores are normalized and projected onto the board as a "Heatmap Overlay."
 *   **Gold Rings**: Indicate the Top 3 statistically best moves.
 *   **Color Gradient**: Green (Good) to Red (Poor).
 
-![Coach Mode Heatmap](./images/coach-heatmap.png)
+![Resource Heatmap](./images/coach-heatmap.png)
 ![Coach Logic Tooltip](./images/coach-tooltip.png)
 
 ---

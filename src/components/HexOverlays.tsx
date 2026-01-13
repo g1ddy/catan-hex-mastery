@@ -27,14 +27,14 @@ interface HexOverlaysProps {
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
-    showCoachMode: boolean;
+    showResourceHeatmap: boolean;
     coachData: CoachData;
 }
 
 function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
     if (prev.buildMode !== next.buildMode) return false;
     if (prev.uiMode !== next.uiMode) return false;
-    if (prev.showCoachMode !== next.showCoachMode) return false;
+    if (prev.showResourceHeatmap !== next.showResourceHeatmap) return false;
     if (prev.coachData !== next.coachData) return false;
 
     if (prev.ctx.phase !== next.ctx.phase) return false;
@@ -48,7 +48,7 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
 }
 
 export const HexOverlays = React.memo(({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showCoachMode, coachData
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData
 }: HexOverlaysProps) => {
     const { recommendations, minScore, maxScore, top3Set } = coachData;
 
@@ -171,7 +171,7 @@ export const HexOverlays = React.memo(({
                         {isRecommended && (
                              <g
                                 className={`coach-highlight transition-opacity duration-200 ${
-                                    isTop3 || showCoachMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                    isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                                 }`}
                                 data-tooltip-id="coach-tooltip"
                                 data-tooltip-content={recommendationData ? vId : ""}

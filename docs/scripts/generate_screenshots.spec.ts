@@ -42,11 +42,11 @@ test.describe('Documentation Screenshots', () => {
       await coachBtn.click();
     }
 
-    // Enable Coach Mode
+    // Enable Resource Heatmap
     // Use the label for clicking because the visual toggle div intercepts the click on the hidden input
-    const coachToggleInput = page.getByRole('checkbox', { name: /coach mode/i });
-    const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
-    await coachToggleLabel.click();
+    const heatmapToggleInput = page.getByRole('checkbox', { name: /resource heatmap/i });
+    const heatmapToggleLabel = page.locator('label').filter({ has: heatmapToggleInput }).first();
+    await heatmapToggleLabel.click();
 
     // Wait for Heatmap to be visible (Gold rings indicate top moves)
     await expect(page.locator('[stroke="#FFD700"]').first()).toBeVisible();
@@ -76,9 +76,9 @@ test.describe('Documentation Screenshots', () => {
     if (await coachBtn.isVisible()) {
       await coachBtn.click();
     }
-    const coachToggleInput = page.getByRole('checkbox', { name: /coach mode/i });
-    const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
-    await coachToggleLabel.click();
+    const heatmapToggleInput = page.getByRole('checkbox', { name: /resource heatmap/i });
+    const heatmapToggleLabel = page.locator('label').filter({ has: heatmapToggleInput }).first();
+    await heatmapToggleLabel.click();
 
     // Find a best move (Gold Ring) and hover
     const goldRing = page.locator('[stroke="#FFD700"]').first();
