@@ -16,12 +16,19 @@ export interface CachedHexGeometry {
 }
 
 const geometryCache = new Map<string, CachedHexGeometry>();
+const MAX_CACHE_SIZE = 100;
 
 export const getHexGeometry = (hex: Hex): CachedHexGeometry => {
     const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
 
-    if (geometryCache.has(idStr)) {
-        return geometryCache.get(idStr)!;
+    const cached = geometryCache.get(idStr);
+    if (cached) {
+        return cached;
+    }
+
+    // Cache Eviction Policy: Simple clear if too big
+    if (geometryCache.size >= MAX_CACHE_SIZE) {
+        geometryCache.clear();
     }
 
     const rawVertexIds = getVerticesForHex(hex.coords);
@@ -30,7 +37,7 @@ export const getHexGeometry = (hex: Hex): CachedHexGeometry => {
     const verticesWithParts = rawVertexIds.map(id => ({ id, parts: getHexesForVertex(id) }));
     const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: getHexesForEdge(id) }));
 
-    const geometry = {
+    const geometry: CachedHexGeometry = {
         vertices: verticesWithParts,
         edges: edgesWithParts,
         currentHexIdStr: idStr
