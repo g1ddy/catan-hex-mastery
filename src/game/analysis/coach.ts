@@ -44,33 +44,25 @@ export class Coach {
         this.config = { ...DEFAULT_CONFIG, ...config };
     }
 
-    private getResourcesForHexes(hexIds: string[]): string[] {
-        const resources: string[] = [];
-
-        hexIds.forEach(hId => {
+    private getVertexData(hexIds: string[]): { resources: string[], pips: number } {
+        return hexIds.reduce((acc, hId) => {
             // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
-            if (hex && hex.terrain) {
+            if (!hex) return acc;
+
+            if (hex.terrain) {
                 const res = TERRAIN_TO_RESOURCE[hex.terrain];
                 if (res) {
-                    resources.push(res);
+                    acc.resources.push(res);
                 }
             }
-        });
-        return resources;
-    }
 
-    private calculatePipsForHexes(hexIds: string[]): number {
-        let pips = 0;
-
-        hexIds.forEach(hId => {
-            // eslint-disable-next-line security/detect-object-injection
-            const hex = this.G.board.hexes[hId];
-            if (hex && hex.terrain !== TerrainType.Desert && hex.terrain !== TerrainType.Sea) {
-                pips += getPips(hex.tokenValue || 0);
+            if (hex.terrain !== TerrainType.Desert && hex.terrain !== TerrainType.Sea) {
+                acc.pips += getPips(hex.tokenValue || 0);
             }
-        });
-        return pips;
+
+            return acc;
+        }, { resources: [] as string[], pips: 0 });
     }
 
     /**
@@ -124,8 +116,8 @@ export class Coach {
         if (player.settlements.length >= 1) {
             player.settlements.forEach(sVId => {
                 const hexIds = sVId.split('::');
-                const res = this.getResourcesForHexes(hexIds);
-                res.forEach(r => existingResources.add(r));
+                const { resources } = this.getVertexData(hexIds);
+                resources.forEach(r => existingResources.add(r));
             });
         }
         return existingResources;
@@ -219,8 +211,7 @@ export class Coach {
         // Previously: getResourcesForVertex and calculatePipsForVertex both split the string
         const hexIds = vertexId.split('::');
 
-        const pips = this.calculatePipsForHexes(hexIds);
-        const resources = this.getResourcesForHexes(hexIds);
+        const { resources, pips } = this.getVertexData(hexIds);
         const uniqueResources = new Set(resources);
         const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
 
