@@ -88,14 +88,18 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
   }, [numPlayers, clientConfig.debug, clientConfig.multiplayer]);
 
   // Use the override if specified, otherwise fall back to props
-  const finalPlayerID = clientConfig.playerIDOverride !== undefined
+  const rawPlayerID = clientConfig.playerIDOverride !== undefined
       ? clientConfig.playerIDOverride
       : clientProps.playerID;
 
+  // Coerce null to undefined for boardgame.io Client, which strictly expects string | undefined for playerID
+  // Spectators (playerID=null in our app state) correspond to playerID=undefined in boardgame.io
+  const finalPlayerID = rawPlayerID === null ? undefined : rawPlayerID;
+
   return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <ConfiguredClient
         {...clientProps}
-        numPlayers={numPlayers}
         playerID={finalPlayerID}
     />
   );
