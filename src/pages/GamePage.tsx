@@ -6,6 +6,7 @@ export function GamePage() {
   const location = useLocation();
   const numPlayers = location.state?.numPlayers;
   const mode = location.state?.mode || 'local';
+  const matchID = location.state?.matchID || 'default';
 
   // Default to player '0' for local/singleplayer, but null (spectator) for autoplay
   const [playerID, setPlayerID] = useState<string | null>(mode === 'autoplay' ? null : '0');
@@ -18,7 +19,7 @@ export function GamePage() {
     <div className="game-page">
       <GameClient
         numPlayers={numPlayers}
-        matchID="default"
+        matchID={matchID}
         playerID={playerID}
         onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}

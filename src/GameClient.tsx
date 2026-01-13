@@ -10,7 +10,7 @@ interface GameClientProps {
   playerID?: string | null;
   matchID?: string;
   onPlayerChange?: (playerID: string) => void;
-  mode?: 'local' | 'singleplayer' | 'autoplay';
+  mode?: 'local' | 'singleplayer' | 'autoplay' | 'vs-bots';
 }
 
 // 1. Local Multiplayer Client (Original behavior)
@@ -33,6 +33,7 @@ const SinglePlayerClient = Client({
 const AutoPlayClient = Client({
   game: CatanGame,
   board: Board,
+  numPlayers: 4,
   debug: { collapseOnLoad: true }, // Hide debug panel to focus on board
   multiplayer: Local({
     bots: {
@@ -44,7 +45,21 @@ const AutoPlayClient = Client({
   }),
 }) as unknown as React.ComponentType<GameClientProps>;
 
-// 4. Game Client Factory / Wrapper
+// 4. Vs Bots Client (1 Human vs 2 Bots)
+const VsBotClient = Client({
+  game: CatanGame,
+  board: Board,
+  numPlayers: 3,
+  debug: { collapseOnLoad: true },
+  multiplayer: Local({
+    bots: {
+      '1': DebugBot,
+      '2': DebugBot,
+    }
+  }),
+}) as unknown as React.ComponentType<GameClientProps>;
+
+// 5. Game Client Factory / Wrapper
 export const GameClient: React.FC<GameClientProps> = (props) => {
   const { mode = 'local', ...clientProps } = props;
 
@@ -55,6 +70,10 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
   if (mode === 'autoplay') {
     // For auto-play, we pass playerID=null (spectator) and let the bots configured in Local take over
     return <AutoPlayClient {...clientProps} playerID={null} />;
+  }
+
+  if (mode === 'vs-bots') {
+    return <VsBotClient {...clientProps} playerID="0" />;
   }
 
   return <LocalClient {...clientProps} />;

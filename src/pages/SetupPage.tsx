@@ -12,15 +12,19 @@ export function SetupPage() {
   const navigate = useNavigate();
 
   const handlePlayerSelection = (numPlayers: number) => {
-    navigate('/game', { state: { numPlayers, mode: 'local' } });
+    navigate('/game', { state: { numPlayers, mode: 'local', matchID: `local-${Date.now()}` } });
   };
 
   const handleDebugSelection = () => {
-    navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer' } });
+    navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer', matchID: `debug-${Date.now()}` } });
   };
 
   const handleAutoPlaySelection = () => {
-    navigate('/game', { state: { numPlayers: 4, mode: 'autoplay' } });
+    navigate('/game', { state: { numPlayers: 4, mode: 'autoplay', matchID: `autoplay-${Date.now()}` } });
+  };
+
+  const handleVsBotSelection = () => {
+    navigate('/game', { state: { numPlayers: 3, mode: 'vs-bots', matchID: `vs-bots-${Date.now()}` } });
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
@@ -60,6 +64,23 @@ export function SetupPage() {
               </p>
           </div>
         )}
+
+        <div className="mb-4 flex flex-col items-center">
+            <button
+                onClick={handleVsBotSelection}
+                data-tooltip-id="setup-tooltip"
+                data-tooltip-content="1 Player (vs Bots): Play against 2 Debug Bots"
+                className="
+                    w-full max-w-xs py-3 px-6
+                    bg-teal-600/90 backdrop-blur-sm border border-teal-500
+                    hover:bg-teal-500 hover:border-teal-400
+                    text-white font-bold rounded-lg shadow-md
+                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+                "
+            >
+                1 Player (vs Bots)
+            </button>
+        </div>
 
         <div className="mb-8 flex flex-col items-center">
             <button
