@@ -16,7 +16,7 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   const openCoachBtn = page.getByLabel('Toggle Coach Bot');
 
   // Use specific label to find the Heatmap toggle, avoiding the Coach Mode toggle
-  const heatmapToggleInput = page.getByLabel('Toggle Resource Heatmap');
+  const heatmapToggleInput = page.getByRole('checkbox', { name: /resource heatmap/i });
   const heatmapToggleLabel = page.locator('label').filter({ has: heatmapToggleInput }).first();
 
   if (await openCoachBtn.isVisible()) {
