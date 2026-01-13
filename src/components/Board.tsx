@@ -45,6 +45,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
   const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
+  const [isCoachEnabled, setIsCoachEnabled] = useState<boolean>(true);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
 
   // Active Panel State (Lifted from GameLayout)
@@ -81,6 +82,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
     const coachData: CoachData = React.useMemo(() => {
         const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+
+        if (!isCoachEnabled) {
+            return EMPTY_COACH_DATA;
+        }
 
         // Active when placing settlement in Setup OR Gameplay
         const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
@@ -119,7 +124,14 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             maxScore: Math.max(...vals),
             top3Set: new Set(top3Ids)
         };
-    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer]);
+    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer, isCoachEnabled]);
+
+  const handleSetCoachEnabled = (enabled: boolean) => {
+      setIsCoachEnabled(enabled);
+      if (!enabled) {
+          setShowCoachMode(false);
+      }
+  };
 
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
@@ -259,6 +271,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
               ctx={ctx}
               showCoachMode={showCoachMode}
               setShowCoachMode={setShowCoachMode}
+              isCoachEnabled={isCoachEnabled}
+              setIsCoachEnabled={handleSetCoachEnabled}
           />
       }
       activePanel={activePanel}
