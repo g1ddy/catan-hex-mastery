@@ -140,13 +140,11 @@ export class BotCoach {
             });
 
             if (cityCandidates.length > 0) {
-                 const bestCitySpots = this.coach.getBestCitySpots(playerID, ctx, cityCandidates);
-                 if (bestCitySpots.length > 0) {
-                     const bestMove = movesByVertex.get(bestCitySpots[0].vertexId);
-                     if (bestMove) {
-                         return [bestMove];
-                     }
-                 }
+                const bestCitySpots = this.coach.getBestCitySpots(playerID, ctx, cityCandidates);
+                const bestMove = movesByVertex.get(bestCitySpots[0]?.vertexId);
+                if (bestMove) {
+                    return [bestMove];
+                }
             }
             // Fallback: return first
             return [topMoves[0]];

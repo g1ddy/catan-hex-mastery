@@ -47,6 +47,10 @@ export class Coach {
 
     private getVertexData(hexIds: string[]): { resources: string[], pips: number } {
         return hexIds.reduce((acc, hId) => {
+            // Validate hex ID exists before accessing
+            if (!Object.prototype.hasOwnProperty.call(this.G.board.hexes, hId)) {
+                return acc;
+            }
             // eslint-disable-next-line security/detect-object-injection
             const hex = this.G.board.hexes[hId];
             if (!hex) return acc;
@@ -114,6 +118,11 @@ export class Coach {
 
         // 3. Score candidates
         candidates.forEach(vId => {
+            // Basic input sanitization for vertex ID
+            if (typeof vId !== 'string' || vId.includes('__proto__') || vId.includes('constructor')) {
+                return;
+            }
+
             try {
                 const score = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
                 recommendations.push(score);
@@ -142,6 +151,11 @@ export class Coach {
     }
 
     private getExistingResources(playerID: string): Set<string> {
+        // Security: Validate playerID exists to prevent prototype pollution
+        if (!Object.prototype.hasOwnProperty.call(this.G.players, playerID)) {
+            return new Set<string>();
+        }
+
         const player = this.G.players[playerID]; // eslint-disable-line security/detect-object-injection
         const existingResources = new Set<string>();
 
