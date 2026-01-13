@@ -18,14 +18,14 @@ We realized that to truly improve, players need immediate, data-driven feedback 
 
 ## ✨ Key Features
 
-### 🧠 The Coach Mode
+### 🧠 Coach Mode
 Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap. It factors in:
-*   **Resource Heatmaps**: See "Winning Moves" directly on the board with a color-coded overlay.
+*   **Resource Heatmap**: See "Winning Moves" directly on the board with a color-coded overlay.
 *   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
 *   **Production Probability (Pips)**
 *   **Synergy** (Do you have the Brick to match your Wood?)
 
-![Coach Mode Heatmap](docs/images/coach-heatmap.png)
+![Resource Heatmap in Coach Mode](docs/images/coach-heatmap.png)
 
 ### 📊 The Analyst Dashboard
 A real-time sidebar that acts as your HUD.
@@ -64,7 +64,7 @@ Whether you are a player looking to improve your win rate or a developer looking
 ## 🚀 Getting Started
 
 1.  **Select a Mode**: Choose "Single Player (vs AI)" to practice or "Pass & Play" for local games.
-2.  **Toggle Coach Mode**: Switch on the Analyst Dashboard to see the math behind the board.
+2.  **Enable Coach Mode**: Turn on the assistant and use the **Resource Heatmap** to visualize winning moves.
 3.  **Master the Setup**: Use the recommendations to learn *why* certain spots are better than others.
 
 ---

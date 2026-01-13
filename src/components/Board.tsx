@@ -44,8 +44,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   }, [ctx.currentPlayer, playerID, onPlayerChange]);
 
   const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
-  const [showCoachMode, setShowCoachMode] = useState<boolean>(false);
-  const [isCoachEnabled, setIsCoachEnabled] = useState<boolean>(true);
+  const [showResourceHeatmap, setShowResourceHeatmap] = useState<boolean>(false);
+  const [isCoachModeEnabled, setIsCoachModeEnabled] = useState<boolean>(true);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
 
   // Active Panel State (Lifted from GameLayout)
@@ -83,7 +83,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
     const coachData: CoachData = React.useMemo(() => {
         const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
 
-        if (!isCoachEnabled) {
+        if (!isCoachModeEnabled) {
             return EMPTY_COACH_DATA;
         }
 
@@ -124,12 +124,12 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             maxScore: Math.max(...vals),
             top3Set: new Set(top3Ids)
         };
-    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer, isCoachEnabled]);
+    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer, isCoachModeEnabled]);
 
-  const handleSetCoachEnabled = (enabled: boolean) => {
-      setIsCoachEnabled(enabled);
+  const handleSetCoachModeEnabled = (enabled: boolean) => {
+      setIsCoachModeEnabled(enabled);
       if (!enabled) {
-          setShowCoachMode(false);
+          setShowResourceHeatmap(false);
       }
   };
 
@@ -208,7 +208,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 setBuildMode={setBuildMode}
                 uiMode={uiMode}
                 setUiMode={setUiMode}
-                showCoachMode={showCoachMode}
+                showResourceHeatmap={showResourceHeatmap}
                 coachData={coachData}
               />
             ))}
@@ -269,10 +269,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           <CoachPanel
               G={G}
               ctx={ctx}
-              showCoachMode={showCoachMode}
-              setShowCoachMode={setShowCoachMode}
-              isCoachEnabled={isCoachEnabled}
-              setIsCoachEnabled={handleSetCoachEnabled}
+              showResourceHeatmap={showResourceHeatmap}
+              setShowResourceHeatmap={setShowResourceHeatmap}
+              isCoachModeEnabled={isCoachModeEnabled}
+              setIsCoachModeEnabled={handleSetCoachModeEnabled}
           />
       }
       activePanel={activePanel}
