@@ -8,19 +8,49 @@ const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
 const DEBUG_PLAYER_COUNT = 2;
 const APP_VERSION_FALLBACK = 'DEV-LOCAL';
 
+// CSS Constants
+const BASE_BTN_CLASS = `
+    w-full max-w-xs py-3 px-6
+    backdrop-blur-sm text-white font-bold rounded-lg shadow-md
+    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+`;
+const INDIGO_BTN_CLASS = `${BASE_BTN_CLASS} bg-indigo-600/90 border border-indigo-500 hover:bg-indigo-500 hover:border-indigo-400`;
+const TEAL_BTN_CLASS = `${BASE_BTN_CLASS} bg-teal-600/90 border border-teal-500 hover:bg-teal-500 hover:border-teal-400`;
+const PURPLE_BTN_CLASS = `${BASE_BTN_CLASS} bg-purple-600/90 border border-purple-500 hover:bg-purple-500 hover:border-purple-400`;
+
 export function SetupPage() {
   const navigate = useNavigate();
 
+  // Unified start handler
+  const startGame = (numPlayers: number, mode: string, numBots: number = 0) => {
+    navigate('/game', {
+        state: {
+            numPlayers,
+            mode,
+            numBots,
+            matchID: `${mode}-${Date.now()}`
+        }
+    });
+  };
+
   const handlePlayerSelection = (numPlayers: number) => {
-    navigate('/game', { state: { numPlayers, mode: 'local' } });
+    startGame(numPlayers, 'local');
   };
 
   const handleDebugSelection = () => {
-    navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer' } });
+    // Singleplayer mode (Debug) doesn't use the numBots logic the same way (implied 1 bot usually or empty)
+    // but we pass 0 here and let GameClient handle the specific singleplayer config.
+    startGame(DEBUG_PLAYER_COUNT, 'singleplayer');
   };
 
   const handleAutoPlaySelection = () => {
-    navigate('/game', { state: { numPlayers: 4, mode: 'autoplay' } });
+    // 4 Players, All 4 are bots
+    startGame(4, 'local', 4);
+  };
+
+  const handleVsBotSelection = () => {
+    // 3 Players (1 Human, 2 Bots)
+    startGame(3, 'local', 2);
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
@@ -45,13 +75,7 @@ export function SetupPage() {
                   onClick={handleDebugSelection}
                   data-tooltip-id="setup-tooltip"
                   data-tooltip-content="Single Player Debug Mode: Enables advanced AI controls and boardgame.io Debug Panel"
-                  className="
-                      w-full max-w-xs py-3 px-6
-                      bg-indigo-600/90 backdrop-blur-sm border border-indigo-500
-                      hover:bg-indigo-500 hover:border-indigo-400
-                      text-white font-bold rounded-lg shadow-md
-                      transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                  "
+                  className={INDIGO_BTN_CLASS}
               >
                   1 Player (Debug)
               </button>
@@ -61,18 +85,23 @@ export function SetupPage() {
           </div>
         )}
 
+        <div className="mb-4 flex flex-col items-center">
+            <button
+                onClick={handleVsBotSelection}
+                data-tooltip-id="setup-tooltip"
+                data-tooltip-content="1 Player (vs Bots): Play against 2 Debug Bots"
+                className={TEAL_BTN_CLASS}
+            >
+                1 Player (vs Bots)
+            </button>
+        </div>
+
         <div className="mb-8 flex flex-col items-center">
             <button
                 onClick={handleAutoPlaySelection}
                 data-tooltip-id="setup-tooltip"
                 data-tooltip-content="0 Players (Auto Play): Watch 4 Debug Bots play against each other"
-                className="
-                    w-full max-w-xs py-3 px-6
-                    bg-purple-600/90 backdrop-blur-sm border border-purple-500
-                    hover:bg-purple-500 hover:border-purple-400
-                    text-white font-bold rounded-lg shadow-md
-                    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                "
+                className={PURPLE_BTN_CLASS}
             >
                 0 Players (Auto Play)
             </button>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
@@ -10,52 +10,70 @@ interface GameClientProps {
   playerID?: string | null;
   matchID?: string;
   onPlayerChange?: (playerID: string) => void;
-  mode?: 'local' | 'singleplayer' | 'autoplay';
+  // 'singleplayer' enables the debug panel and specific dev features.
+  // 'local' is the standard multiplayer backend (used for Pass & Play, AutoBot, VsBot).
+  mode?: 'local' | 'singleplayer';
+
+  // Optional configuration for bots in 'local' mode
+  // If provided, these specific bots are assigned to seats.
+  bots?: Record<string, typeof DebugBot>;
 }
 
-// 1. Local Multiplayer Client (Original behavior)
-const LocalClient = Client({
-  game: CatanGame,
-  board: Board,
-  debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
-  multiplayer: Local({ bots: { 'random': DebugBot } }),
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 2. Single Player / Debug Client
-const SinglePlayerClient = Client({
-  game: CatanGame,
-  board: Board,
-  debug: { collapseOnLoad: false },
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 3. Auto Play Client (4 Bots)
-// Configure Local with explicit bot mapping for players 0-3
-const AutoPlayClient = Client({
-  game: CatanGame,
-  board: Board,
-  debug: { collapseOnLoad: true }, // Hide debug panel to focus on board
-  multiplayer: Local({
-    bots: {
-      '0': DebugBot,
-      '1': DebugBot,
-      '2': DebugBot,
-      '3': DebugBot,
-    }
-  }),
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 4. Game Client Factory / Wrapper
 export const GameClient: React.FC<GameClientProps> = (props) => {
-  const { mode = 'local', ...clientProps } = props;
+  const { mode = 'local', numPlayers, bots, ...clientProps } = props;
 
-  if (mode === 'singleplayer') {
-    return <SinglePlayerClient {...clientProps} playerID="0" />;
-  }
+  // Configuration Logic
+  const clientConfig = useMemo(() => {
+    // 1. Single Player (Debug Mode)
+    // Uses default local backend (no explicit bots required, usually human vs empty/debug)
+    // Enables the Debug Panel (collapseOnLoad: false)
+    if (mode === 'singleplayer') {
+      return {
+        debug: { collapseOnLoad: false },
+        multiplayer: undefined,
+        playerIDOverride: '0',
+      };
+    }
 
-  if (mode === 'autoplay') {
-    // For auto-play, we pass playerID=null (spectator) and let the bots configured in Local take over
-    return <AutoPlayClient {...clientProps} playerID={null} />;
-  }
+    // 2. Local Multiplayer (Standard / AutoPlay / VsBot)
+    // - If `bots` prop is provided (e.g., AutoPlay, VsBot), use it to configure fixed bots.
+    // - Otherwise, default to 'random' bot availability for Pass & Play.
+    const multiplayerConfig = bots
+        ? Local({ bots })
+        : Local({ bots: { 'random': DebugBot } });
 
-  return <LocalClient {...clientProps} />;
+    return {
+        debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
+        multiplayer: multiplayerConfig,
+        // In local mode, we respect the passed playerID (which might be null for spectator/autoplay)
+        playerIDOverride: undefined,
+    };
+  }, [mode, bots]);
+
+
+  // Dynamic Client Creation
+  const ConfiguredClient = useMemo(() => {
+     return Client({
+        game: CatanGame,
+        board: Board,
+        numPlayers: numPlayers,
+        debug: clientConfig.debug,
+        multiplayer: clientConfig.multiplayer,
+     });
+  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer]);
+
+  const rawPlayerID = clientConfig.playerIDOverride !== undefined
+      ? clientConfig.playerIDOverride
+      : clientProps.playerID;
+
+  // Coerce null to undefined for boardgame.io Client (spectator mode)
+  const finalPlayerID = rawPlayerID === null ? undefined : rawPlayerID;
+
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <ConfiguredClient
+        {...clientProps}
+        playerID={finalPlayerID}
+    />
+  );
 };

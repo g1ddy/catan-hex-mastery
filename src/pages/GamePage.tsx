@@ -1,14 +1,44 @@
 import { useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
+import { DebugBot } from '../bots/DebugBot';
+
+const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 
 export function GamePage() {
   const location = useLocation();
   const numPlayers = location.state?.numPlayers;
+  // 'mode' is strictly 'local' or 'singleplayer' now.
   const mode = location.state?.mode || 'local';
+  const rawMatchID = location.state?.matchID || 'default';
 
-  // Default to player '0' for local/singleplayer, but null (spectator) for autoplay
-  const [playerID, setPlayerID] = useState<string | null>(mode === 'autoplay' ? null : '0');
+  // numBots: total number of bots in the game
+  const numBots = Number(location.state?.numBots) || 0;
+
+  // Sanitize matchID to prevent XSS (only allow alphanumeric and hyphens)
+  const matchID = MATCH_ID_REGEX.test(rawMatchID) ? rawMatchID : 'default';
+
+  // Determine initial playerID
+  // If ALL players are bots, start as spectator (null).
+  // Otherwise default to '0'.
+  const isAutoPlay = numBots === numPlayers;
+  const initialPlayerID = isAutoPlay ? null : '0';
+
+  const [playerID, setPlayerID] = useState<string | null>(initialPlayerID);
+
+  // Construct explicit bots map for GameClient based on numBots
+  // Bots fill seats starting from the last player index backwards.
+  // Example: 3 Players, 2 Bots -> Bots are Player 1 and Player 2. (Indices 1, 2)
+  // Example: 4 Players, 4 Bots -> Bots are 0, 1, 2, 3.
+  let bots: Record<string, typeof DebugBot> | undefined;
+
+  if (numBots > 0) {
+      bots = {};
+      const startBotIndex = numPlayers - numBots;
+      for (let i = startBotIndex; i < numPlayers; i++) {
+          bots[i.toString()] = DebugBot;
+      }
+  }
 
   if (!numPlayers) {
     return <Navigate to="/" replace />;
@@ -18,10 +48,11 @@ export function GamePage() {
     <div className="game-page">
       <GameClient
         numPlayers={numPlayers}
-        matchID="default"
+        matchID={matchID}
         playerID={playerID}
         onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}
+        bots={bots}
       />
     </div>
   );
