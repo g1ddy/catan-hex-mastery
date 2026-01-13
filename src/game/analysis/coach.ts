@@ -4,6 +4,7 @@ import { getValidSetupSettlementSpots } from '../rules/validator';
 import { getPips } from '../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { STAGES } from '../constants';
+import { getHexesForVertex } from '../hexUtils';
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -94,6 +95,37 @@ export class Coach {
         return recommendations;
     }
 
+    /**
+     * Scores a list of specific vertices for City placement.
+     */
+    public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+        // Security: Only return recommendations for the current player.
+        if (playerID !== ctx.currentPlayer) {
+            return [];
+        }
+
+        const recommendations: CoachRecommendation[] = [];
+
+        // 1. Calculate Scarcity Map
+        const scarcityMap = this.calculateScarcityMap();
+
+        // 2. Identify Existing Resources
+        const existingResources = this.getExistingResources(playerID);
+
+        // 3. Score candidates
+        candidates.forEach(vId => {
+            try {
+                const score = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
+                recommendations.push(score);
+            } catch (error) {
+                console.error(`Error scoring vertex ${vId}:`, error);
+                // Skip invalid vertices
+            }
+        });
+
+        return recommendations.sort((a, b) => b.score - a.score);
+    }
+
     private calculateScarcityMap(): Record<string, boolean> {
         const totalPips = this.G.boardStats.totalPips;
         const totalBoardPips = Object.values(totalPips).reduce((a, b) => a + b, 0);
@@ -115,7 +147,7 @@ export class Coach {
 
         if (player.settlements.length >= 1) {
             player.settlements.forEach(sVId => {
-                const hexIds = sVId.split('::');
+                const hexIds = getHexesForVertex(sVId);
                 const { resources } = this.getVertexData(hexIds);
                 resources.forEach(r => existingResources.add(r));
             });
@@ -209,7 +241,7 @@ export class Coach {
 
         // OPTIMIZATION: Parse vertexId once and pass to helpers
         // Previously: getResourcesForVertex and calculatePipsForVertex both split the string
-        const hexIds = vertexId.split('::');
+        const hexIds = getHexesForVertex(vertexId);
 
         const { resources, pips } = this.getVertexData(hexIds);
         const uniqueResources = new Set(resources);

@@ -19,7 +19,9 @@ jest.mock('../hexUtils', () => ({
             return ['0,0,0::1,-1,0::some_other_hex'];
         }
         return [];
-    }
+    },
+    // Mock getHexesForVertex
+    getHexesForVertex: (vertexId: string) => vertexId.split('::')
 }));
 
 describe('getBestSettlementSpots', () => {

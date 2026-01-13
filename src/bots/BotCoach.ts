@@ -1,8 +1,6 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
-import { getHexesForVertex } from '../game/hexUtils';
-import { getPips } from '../game/mechanics/scoring';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
@@ -127,28 +125,31 @@ export class BotCoach {
         const topMoves = sortedMoves.filter(m => getMoveWeight(m) === maxWeight);
 
         // If the best move is to build a city, and there's more than one option,
-        // use pip analysis to find the best one.
+        // use Coach analysis to find the best one.
         if (this.getMoveName(topMoves[0]) === 'buildCity' && topMoves.length > 1) {
-            const scoredSettlements = topMoves
-                .map(move => {
-                    const vId = this.getMoveArgs(move)[0];
-                    if (!vId || typeof vId !== 'string') {
-                        return { move, pips: -1 }; // Malformed move, score it low
-                    }
-                    const hexIds = getHexesForVertex(vId);
-                    const pips = hexIds.reduce((sum, hexId) => {
-                        if (Object.prototype.hasOwnProperty.call(this.G.board.hexes, hexId)) {
-                            const hex = this.G.board.hexes[hexId];
-                            return sum + (hex ? getPips(hex.tokenValue || 0) : 0);
-                        }
-                        return sum;
-                    }, 0);
-                    return { move, pips };
-                })
-                .sort((a, b) => b.pips - a.pips);
+            const cityCandidates: string[] = [];
+            const movesByVertex = new Map<string, GameAction>();
 
-            // Return just the single best city move
-            return [scoredSettlements[0].move];
+            topMoves.forEach(m => {
+                const args = this.getMoveArgs(m);
+                const vId = args[0];
+                if (vId && typeof vId === 'string') {
+                    cityCandidates.push(vId);
+                    movesByVertex.set(vId, m);
+                }
+            });
+
+            if (cityCandidates.length > 0) {
+                 const bestCitySpots = this.coach.getBestCitySpots(playerID, ctx, cityCandidates);
+                 if (bestCitySpots.length > 0) {
+                     const bestMove = movesByVertex.get(bestCitySpots[0].vertexId);
+                     if (bestMove) {
+                         return [bestMove];
+                     }
+                 }
+            }
+            // Fallback: return first
+            return [topMoves[0]];
         }
 
         // If building a settlement is a top-weighted move and there are multiple settlement options,
