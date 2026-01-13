@@ -15,9 +15,8 @@ test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // We need to access the toggle in the Coach Panel.
   const openCoachBtn = page.getByLabel('Toggle Coach Bot');
 
-  // Locate the input for verification, but use the label for clicking
-  const coachToggleInput = page.locator('input[type="checkbox"]').first();
-  // Find the label wrapping the input
+  // Use specific label to find the Heatmap toggle, avoiding the Master Coach toggle
+  const coachToggleInput = page.getByLabel('Toggle Heatmap');
   const coachToggleLabel = page.locator('label').filter({ has: coachToggleInput }).first();
 
   if (await openCoachBtn.isVisible()) {
