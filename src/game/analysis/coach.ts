@@ -44,8 +44,7 @@ export class Coach {
         this.config = { ...DEFAULT_CONFIG, ...config };
     }
 
-    private getResourcesForVertex(vertexId: string): string[] {
-        const hexIds = vertexId.split('::');
+    private getResourcesForHexes(hexIds: string[]): string[] {
         const resources: string[] = [];
 
         hexIds.forEach(hId => {
@@ -61,8 +60,7 @@ export class Coach {
         return resources;
     }
 
-    private calculatePipsForVertex(vertexId: string): number {
-        const hexIds = vertexId.split('::');
+    private calculatePipsForHexes(hexIds: string[]): number {
         let pips = 0;
 
         hexIds.forEach(hId => {
@@ -125,7 +123,8 @@ export class Coach {
 
         if (player.settlements.length >= 1) {
             player.settlements.forEach(sVId => {
-                const res = this.getResourcesForVertex(sVId);
+                const hexIds = sVId.split('::');
+                const res = this.getResourcesForHexes(hexIds);
                 res.forEach(r => existingResources.add(r));
             });
         }
@@ -216,8 +215,12 @@ export class Coach {
              throw new Error(`Player ${playerID} not found`);
         }
 
-        const pips = this.calculatePipsForVertex(vertexId);
-        const resources = this.getResourcesForVertex(vertexId);
+        // OPTIMIZATION: Parse vertexId once and pass to helpers
+        // Previously: getResourcesForVertex and calculatePipsForVertex both split the string
+        const hexIds = vertexId.split('::');
+
+        const pips = this.calculatePipsForHexes(hexIds);
+        const resources = this.getResourcesForHexes(hexIds);
         const uniqueResources = new Set(resources);
         const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
 
