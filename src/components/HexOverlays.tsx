@@ -2,8 +2,7 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
-import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge } from '../game/hexUtils';
-import { HEX_CORNERS } from '../game/staticGeometry';
+import { HEX_CORNERS, getHexGeometry } from '../game/staticGeometry';
 import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
@@ -53,18 +52,8 @@ export const HexOverlays = React.memo(({
 }: HexOverlaysProps) => {
     const { recommendations, minScore, maxScore, top3Set } = coachData;
 
-    // Use memoized geometry
-    const { vertices, edges, currentHexIdStr } = React.useMemo(() => {
-        const rawVertexIds = getVerticesForHex(hex.coords);
-        const rawEdgeIds = getEdgesForHex(hex.coords);
-
-        const verticesWithParts = rawVertexIds.map(id => ({ id, parts: getHexesForVertex(id) }));
-        const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: getHexesForEdge(id) }));
-
-        const idStr = `${hex.coords.q},${hex.coords.r},${hex.coords.s}`;
-
-        return { vertices: verticesWithParts, edges: edgesWithParts, currentHexIdStr: idStr };
-    }, [hex.coords.q, hex.coords.r, hex.coords.s]);
+    // Use static/cached geometry
+    const { vertices, edges, currentHexIdStr } = getHexGeometry(hex);
 
     // Use shared rules hook
     const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
@@ -84,8 +73,9 @@ export const HexOverlays = React.memo(({
 
                 if (primaryHex !== currentHexIdStr) return null;
 
+                // Security: Validate vId before access to prevent prototype pollution (handled in ternary)
                 // eslint-disable-next-line security/detect-object-injection
-                const vertex = G.board.vertices[vId];
+                const vertex = Object.prototype.hasOwnProperty.call(G.board.vertices, vId) ? G.board.vertices[vId] : undefined;
                 const isOccupied = !!vertex;
                 const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
 
@@ -229,7 +219,8 @@ export const HexOverlays = React.memo(({
                 const midX = (corner.x + nextCorner.x) / 2;
                 const midY = (corner.y + nextCorner.y) / 2;
 
-                const edge = G.board.edges[eId]; // eslint-disable-line security/detect-object-injection
+                // Security: Validate eId before access
+                const edge = Object.prototype.hasOwnProperty.call(G.board.edges, eId) ? G.board.edges[eId] : undefined; // eslint-disable-line security/detect-object-injection
                 const isOccupied = !!edge;
                 const ownerColor = isOccupied ? G.players[edge.owner]?.color : null;
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
