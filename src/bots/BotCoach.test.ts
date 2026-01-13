@@ -104,7 +104,7 @@ describe('BotCoach', () => {
              // Should pick the city (which one depends on analysis)
 
              const actions = result as MakeMoveAction[];
-             expect(actions.length).toBeGreaterThan(0);
+             expect(actions).toHaveLength(1);
              expect(actions[0].payload.type).toBe('buildCity');
         });
 
