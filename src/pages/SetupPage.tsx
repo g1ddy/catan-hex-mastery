@@ -11,20 +11,31 @@ const APP_VERSION_FALLBACK = 'DEV-LOCAL';
 export function SetupPage() {
   const navigate = useNavigate();
 
+  const startGame = (numPlayers: number, mode: string, matchIdPrefix?: string) => {
+    const prefix = matchIdPrefix || mode;
+    navigate('/game', {
+        state: {
+            numPlayers,
+            mode,
+            matchID: `${prefix}-${Date.now()}`
+        }
+    });
+  };
+
   const handlePlayerSelection = (numPlayers: number) => {
-    navigate('/game', { state: { numPlayers, mode: 'local', matchID: `local-${Date.now()}` } });
+    startGame(numPlayers, 'local');
   };
 
   const handleDebugSelection = () => {
-    navigate('/game', { state: { numPlayers: DEBUG_PLAYER_COUNT, mode: 'singleplayer', matchID: `debug-${Date.now()}` } });
+    startGame(DEBUG_PLAYER_COUNT, 'singleplayer', 'debug');
   };
 
   const handleAutoPlaySelection = () => {
-    navigate('/game', { state: { numPlayers: 4, mode: 'autoplay', matchID: `autoplay-${Date.now()}` } });
+    startGame(4, 'autoplay');
   };
 
   const handleVsBotSelection = () => {
-    navigate('/game', { state: { numPlayers: 3, mode: 'vs-bots', matchID: `vs-bots-${Date.now()}` } });
+    startGame(3, 'vs-bots');
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';

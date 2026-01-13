@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
@@ -10,71 +10,93 @@ interface GameClientProps {
   playerID?: string | null;
   matchID?: string;
   onPlayerChange?: (playerID: string) => void;
+  // Deprecated 'mode' prop - derived from props instead
   mode?: 'local' | 'singleplayer' | 'autoplay' | 'vs-bots';
 }
 
-// 1. Local Multiplayer Client (Original behavior)
-const LocalClient = Client({
-  game: CatanGame,
-  board: Board,
-  debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
-  multiplayer: Local({ bots: { 'random': DebugBot } }),
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 2. Single Player / Debug Client
-const SinglePlayerClient = Client({
-  game: CatanGame,
-  board: Board,
-  debug: { collapseOnLoad: false },
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 3. Auto Play Client (4 Bots)
-// Configure Local with explicit bot mapping for players 0-3
-const AutoPlayClient = Client({
-  game: CatanGame,
-  board: Board,
-  numPlayers: 4,
-  debug: { collapseOnLoad: true }, // Hide debug panel to focus on board
-  multiplayer: Local({
-    bots: {
-      '0': DebugBot,
-      '1': DebugBot,
-      '2': DebugBot,
-      '3': DebugBot,
-    }
-  }),
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 4. Vs Bots Client (1 Human vs 2 Bots)
-const VsBotClient = Client({
-  game: CatanGame,
-  board: Board,
-  numPlayers: 3,
-  debug: { collapseOnLoad: true },
-  multiplayer: Local({
-    bots: {
-      '1': DebugBot,
-      '2': DebugBot,
-    }
-  }),
-}) as unknown as React.ComponentType<GameClientProps>;
-
-// 5. Game Client Factory / Wrapper
 export const GameClient: React.FC<GameClientProps> = (props) => {
-  const { mode = 'local', ...clientProps } = props;
+  const { mode = 'local', numPlayers, ...clientProps } = props;
 
-  if (mode === 'singleplayer') {
-    return <SinglePlayerClient {...clientProps} playerID="0" />;
-  }
+  // Determine configuration based on mode
+  // Ideally, this should be passed in directly, but for now we map the legacy mode
+  // to a specific configuration.
 
-  if (mode === 'autoplay') {
-    // For auto-play, we pass playerID=null (spectator) and let the bots configured in Local take over
-    return <AutoPlayClient {...clientProps} playerID={null} />;
-  }
+  const clientConfig = useMemo(() => {
+    // 1. Single Player (Debug)
+    if (mode === 'singleplayer') {
+      return {
+        debug: { collapseOnLoad: false },
+        // No multiplayer backend needed for singleplayer debug (uses default local)
+        // or we can use Local with no bots if we want explicit control
+        multiplayer: undefined,
+        playerIDOverride: '0',
+      };
+    }
 
-  if (mode === 'vs-bots') {
-    return <VsBotClient {...clientProps} playerID="0" />;
-  }
+    // 2. Auto Play (0 Players, 4 Bots)
+    if (mode === 'autoplay') {
+       return {
+         debug: { collapseOnLoad: true },
+         multiplayer: Local({
+            bots: {
+                '0': DebugBot,
+                '1': DebugBot,
+                '2': DebugBot,
+                '3': DebugBot,
+            }
+         }),
+         playerIDOverride: null, // Spectator
+       };
+    }
 
-  return <LocalClient {...clientProps} />;
+    // 3. Vs Bots (1 Human, N-1 Bots)
+    if (mode === 'vs-bots') {
+        // Dynamically create bot map for all players except Player 0
+        const bots: Record<string, typeof DebugBot> = {};
+        for (let i = 1; i < numPlayers; i++) {
+            bots[i.toString()] = DebugBot;
+        }
+
+        return {
+            debug: { collapseOnLoad: true },
+            multiplayer: Local({ bots }),
+            playerIDOverride: '0',
+        };
+    }
+
+    // 4. Local Multiplayer (Default)
+    // Pass-and-play with random bots available for replacement if needed
+    return {
+        debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
+        multiplayer: Local({ bots: { 'random': DebugBot } }),
+        playerIDOverride: clientProps.playerID, // Use passed playerID
+    };
+  }, [mode, numPlayers, clientProps.playerID]);
+
+
+  // Dynamic Client Creation
+  // Note: boardgame.io Client is a factory. We memoize the result to avoid recreating it
+  // unless the structural config changes (which shouldn't happen during a game).
+  const ConfiguredClient = useMemo(() => {
+     return Client({
+        game: CatanGame,
+        board: Board,
+        numPlayers: numPlayers,
+        debug: clientConfig.debug,
+        multiplayer: clientConfig.multiplayer,
+     });
+  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer]);
+
+  // Use the override if specified, otherwise fall back to props
+  const finalPlayerID = clientConfig.playerIDOverride !== undefined
+      ? clientConfig.playerIDOverride
+      : clientProps.playerID;
+
+  return (
+    <ConfiguredClient
+        {...clientProps}
+        numPlayers={numPlayers}
+        playerID={finalPlayerID}
+    />
+  );
 };

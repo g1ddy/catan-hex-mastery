@@ -2,11 +2,16 @@ import { useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
 
+const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
+
 export function GamePage() {
   const location = useLocation();
   const numPlayers = location.state?.numPlayers;
   const mode = location.state?.mode || 'local';
-  const matchID = location.state?.matchID || 'default';
+  const rawMatchID = location.state?.matchID || 'default';
+
+  // Sanitize matchID to prevent XSS (only allow alphanumeric and hyphens)
+  const matchID = MATCH_ID_REGEX.test(rawMatchID) ? rawMatchID : 'default';
 
   // Default to player '0' for local/singleplayer, but null (spectator) for autoplay
   const [playerID, setPlayerID] = useState<string | null>(mode === 'autoplay' ? null : '0');
