@@ -23,12 +23,18 @@ export const getHexGeometry = (hex: Hex): CachedHexGeometry => {
 
     const cached = geometryCache.get(idStr);
     if (cached) {
+        // LRU: Refresh the key by deleting and re-setting
+        geometryCache.delete(idStr);
+        geometryCache.set(idStr, cached);
         return cached;
     }
 
-    // Cache Eviction Policy: Simple clear if too big
+    // Cache Eviction Policy: LRU (remove first inserted/oldest)
     if (geometryCache.size >= MAX_CACHE_SIZE) {
-        geometryCache.clear();
+        const firstKey = geometryCache.keys().next().value;
+        if (firstKey) {
+            geometryCache.delete(firstKey);
+        }
     }
 
     const rawVertexIds = getVerticesForHex(hex.coords);

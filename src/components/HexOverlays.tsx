@@ -73,14 +73,7 @@ export const HexOverlays = React.memo(({
 
                 if (primaryHex !== currentHexIdStr) return null;
 
-                // Security: Validate vId before access to prevent prototype pollution
-                if (!Object.prototype.hasOwnProperty.call(G.board.vertices, vId)) {
-                     // If it doesn't exist as an own property, treat as empty (or handle error)
-                     // However, standard access G.board.vertices[vId] returns undefined if not found.
-                     // The risk is if vId is "__proto__".
-                     // Since vId comes from our geometry generator, it should be safe, but we add this check as requested.
-                }
-
+                // Security: Validate vId before access to prevent prototype pollution (handled in ternary)
                 // eslint-disable-next-line security/detect-object-injection
                 const vertex = Object.prototype.hasOwnProperty.call(G.board.vertices, vId) ? G.board.vertices[vId] : undefined;
                 const isOccupied = !!vertex;
