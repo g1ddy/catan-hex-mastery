@@ -34,10 +34,10 @@ Acts as the bridge between the raw analysis (`Coach`) and the bot's actions. It 
 ### **Current Purpose**
 The visual logic layer. It renders interactive elements (vertices, edges) over the hex grid.
 
-### **Refactoring Status: Mostly Completed**
+### **Refactoring Status: Completed**
 - **Logic Separation**: Now uses `useBoardInteractions` hook, decoupling validation logic from rendering.
 - **`BuildingIcon`**: Extracted to `src/components/board/BuildingIcon.tsx`.
-- **Geometry**: Optimized with `React.useMemo` locally. **Next Step**: Move to a global static lookup table (`staticGeometry.ts`) to eliminate per-instance calculation.
+- **Geometry**: Implemented global static lookup table in `staticGeometry.ts` (using lazy-loaded caching) to eliminate per-instance calculation and improve render performance.
 
 ---
 
@@ -136,6 +136,5 @@ graph TD
 ```
 
 ## Next Steps
-1.  **Optimize `HexOverlays`**: Implement global static geometry lookup.
-2.  **Refactor `Coach` Advice**: Extract hardcoded advice strings into `BotProfile` or `Advisor` configuration.
-3.  **Expand Tests**: Add more scenario-based tests for `BotCoach` decision making.
+1.  **Refactor `Coach` Advice**: Extract hardcoded advice strings into `BotProfile` or `Advisor` configuration.
+2.  **Expand Tests**: Add more scenario-based tests for `BotCoach` decision making.
