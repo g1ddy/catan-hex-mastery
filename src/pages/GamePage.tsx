@@ -13,7 +13,7 @@ export function GamePage() {
   const rawMatchID = location.state?.matchID || 'default';
 
   // numBots: total number of bots in the game
-  const numBots = (location.state?.numBots as number) || 0;
+  const numBots = Number(location.state?.numBots) || 0;
 
   // Sanitize matchID to prevent XSS (only allow alphanumeric and hyphens)
   const matchID = MATCH_ID_REGEX.test(rawMatchID) ? rawMatchID : 'default';
