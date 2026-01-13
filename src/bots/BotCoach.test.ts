@@ -22,6 +22,9 @@ jest.mock('../game/mechanics/costs', () => ({
         devCard: true
     }))
 }));
+jest.mock('../game/hexUtils', () => ({
+    getHexesForVertex: jest.fn(() => []),
+}));
 
 // Helper to create mock Redux actions (simplified)
 const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
@@ -92,17 +95,16 @@ describe('BotCoach', () => {
                  mockAction('buildCity', ['v3'])  // Highest weight
              ];
 
-             // Mock board and hexes to prevent crash in pip calculation logic
-             G.board = { hexes: {}, vertices: {}, edges: {} } as any;
-             jest.mock('../game/hexUtils', () => ({
-                getHexesForVertex: jest.fn(() => []),
-             }));
+             // We need to mock getBestCitySpots to prevent errors and ensure deterministic behavior
+             (coach.getBestCitySpots as jest.Mock).mockReturnValue([
+                { vertexId: 'v2', score: 10 }, { vertexId: 'v3', score: 5 }
+             ]);
 
              const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
-             // With the new logic, it should pick the single best city, not both.
-             expect(result).toHaveLength(1);
+             // Should pick the city (which one depends on analysis)
 
              const actions = result as MakeMoveAction[];
+             expect(actions).toHaveLength(1);
              expect(actions[0].payload.type).toBe('buildCity');
         });
 
@@ -125,34 +127,16 @@ describe('BotCoach', () => {
              expect(result).toHaveLength(2);
         });
 
-        it('should choose the city with the highest pips when upgrading', () => {
-            // High-pip settlement at vertex v1, low-pip at v2
-            G.board = {
-                hexes: {
-                    'h1': { tokenValue: 8 }, // 5 pips
-                    'h2': { tokenValue: 5 }, // 4 pips
-                    'h3': { tokenValue: 9 }, // 4 pips
-                    'h4': { tokenValue: 2 }, // 1 pip
-                    'h5': { tokenValue: 12 },// 1 pip
-                    'h6': { tokenValue: 3 }  // 2 pips
-                },
-                vertices: {},
-                edges: {},
-            } as any;
+        it('should choose the city recommended by Coach when upgrading', () => {
+            // Mock Coach to recommend v1 over v2
+            (coach.getBestCitySpots as jest.Mock).mockReturnValue([
+                { vertexId: 'v1', score: 20 },
+                { vertexId: 'v2', score: 5 }
+            ]);
 
-            // Mock getHexesForVertex to link vertices to hexes
-            jest.mock('../game/hexUtils', () => ({
-                getHexesForVertex: jest.fn(vId => {
-                    if (vId === 'v1') return ['h1', 'h2', 'h3']; // 5 + 4 + 4 = 13 pips
-                    if (vId === 'v2') return ['h4', 'h5', 'h6']; // 1 + 1 + 2 = 4 pips
-                    return [];
-                }),
-            }));
-
-            // Both moves have the same high weight
             const moves = [
-                mockAction('buildCity', ['v1']), // Correct choice
-                mockAction('buildCity', ['v2'])
+                mockAction('buildCity', ['v2']), // Lower score
+                mockAction('buildCity', ['v1'])  // Higher score
             ];
 
             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
@@ -161,6 +145,9 @@ describe('BotCoach', () => {
             const action = result[0] as MakeMoveAction;
             expect(action.payload.type).toBe('buildCity');
             expect(action.payload.args[0]).toBe('v1');
+
+            // Verify coach was called correctly
+            expect(coach.getBestCitySpots).toHaveBeenCalledWith('0', mockCtx, ['v2', 'v1']);
         });
     });
 });
