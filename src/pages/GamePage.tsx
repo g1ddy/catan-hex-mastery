@@ -6,7 +6,10 @@ export function GamePage() {
   const location = useLocation();
   const numPlayers = location.state?.numPlayers;
   const mode = location.state?.mode || 'local';
-  const [playerID, setPlayerID] = useState('0');
+
+  // Experiment: Force playerID='0' even for autoplay to see if it triggers bots.
+  // Originally was null for autoplay.
+  const [playerID, setPlayerID] = useState<string | null>('0');
 
   if (!numPlayers) {
     return <Navigate to="/" replace />;
@@ -18,7 +21,7 @@ export function GamePage() {
         numPlayers={numPlayers}
         matchID="default"
         playerID={playerID}
-        onPlayerChange={setPlayerID}
+        onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}
       />
     </div>
