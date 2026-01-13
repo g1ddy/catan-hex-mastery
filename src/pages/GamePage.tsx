@@ -7,9 +7,8 @@ export function GamePage() {
   const numPlayers = location.state?.numPlayers;
   const mode = location.state?.mode || 'local';
 
-  // Experiment: Force playerID='0' even for autoplay to see if it triggers bots.
-  // Originally was null for autoplay.
-  const [playerID, setPlayerID] = useState<string | null>('0');
+  // Default to player '0' for local/singleplayer, but null (spectator) for autoplay
+  const [playerID, setPlayerID] = useState<string | null>(mode === 'autoplay' ? null : '0');
 
   if (!numPlayers) {
     return <Navigate to="/" replace />;

@@ -54,7 +54,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
 
   if (mode === 'autoplay') {
     // For auto-play, we pass playerID=null (spectator) and let the bots configured in Local take over
-    return <AutoPlayClient {...clientProps} />;
+    return <AutoPlayClient {...clientProps} playerID={null} />;
   }
 
   return <LocalClient {...clientProps} />;
