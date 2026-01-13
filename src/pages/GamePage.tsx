@@ -9,33 +9,35 @@ export function GamePage() {
   const location = useLocation();
   const numPlayers = location.state?.numPlayers;
   // 'mode' is strictly 'local' or 'singleplayer' now.
-  // Legacy modes like 'autoplay' or 'vs-bots' are handled via botConfig.
   const mode = location.state?.mode || 'local';
   const rawMatchID = location.state?.matchID || 'default';
 
-  // botConfig: { '0': true, '1': true } maps playerID to boolean (enable bot)
-  const botConfig = location.state?.botConfig as Record<string, boolean> | undefined;
+  // numBots: total number of bots in the game
+  const numBots = (location.state?.numBots as number) || 0;
 
   // Sanitize matchID to prevent XSS (only allow alphanumeric and hyphens)
   const matchID = MATCH_ID_REGEX.test(rawMatchID) ? rawMatchID : 'default';
 
   // Determine initial playerID
-  // If player 0 is a bot (e.g. AutoPlay), start as spectator (null).
+  // If ALL players are bots, start as spectator (null).
   // Otherwise default to '0'.
-  const initialPlayerID = botConfig && botConfig['0'] ? null : '0';
+  const isAutoPlay = numBots === numPlayers;
+  const initialPlayerID = isAutoPlay ? null : '0';
 
   const [playerID, setPlayerID] = useState<string | null>(initialPlayerID);
 
-  // Construct explicit bots map for GameClient
-  // Maps playerID -> BotClass
+  // Construct explicit bots map for GameClient based on numBots
+  // Bots fill seats starting from the last player index backwards.
+  // Example: 3 Players, 2 Bots -> Bots are Player 1 and Player 2. (Indices 1, 2)
+  // Example: 4 Players, 4 Bots -> Bots are 0, 1, 2, 3.
   let bots: Record<string, typeof DebugBot> | undefined;
-  if (botConfig) {
+
+  if (numBots > 0) {
       bots = {};
-      Object.keys(botConfig).forEach(pid => {
-          if (botConfig[pid]) {
-              bots![pid] = DebugBot;
-          }
-      });
+      const startBotIndex = numPlayers - numBots;
+      for (let i = startBotIndex; i < numPlayers; i++) {
+          bots[i.toString()] = DebugBot;
+      }
   }
 
   if (!numPlayers) {

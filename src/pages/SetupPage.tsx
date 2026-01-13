@@ -18,45 +18,39 @@ const INDIGO_BTN_CLASS = `${BASE_BTN_CLASS} bg-indigo-600/90 border border-indig
 const TEAL_BTN_CLASS = `${BASE_BTN_CLASS} bg-teal-600/90 border border-teal-500 hover:bg-teal-500 hover:border-teal-400`;
 const PURPLE_BTN_CLASS = `${BASE_BTN_CLASS} bg-purple-600/90 border border-purple-500 hover:bg-purple-500 hover:border-purple-400`;
 
-// New constants for configuring bots
-const AUTO_PLAY_BOT_CONFIG = {
-    '0': true, '1': true, '2': true, '3': true
-};
-const VS_BOTS_CONFIG = {
-    '1': true, '2': true
-};
-
 export function SetupPage() {
   const navigate = useNavigate();
 
   // Unified start handler
-  const startGame = (numPlayers: number, mode: string, matchIdPrefix: string, botConfig?: Record<string, boolean>) => {
+  const startGame = (numPlayers: number, mode: string, numBots: number = 0) => {
     navigate('/game', {
         state: {
             numPlayers,
             mode,
-            matchID: `${matchIdPrefix}-${Date.now()}`,
-            botConfig
+            numBots,
+            matchID: `${mode}-${Date.now()}`
         }
     });
   };
 
   const handlePlayerSelection = (numPlayers: number) => {
-    startGame(numPlayers, 'local', 'local');
+    startGame(numPlayers, 'local');
   };
 
   const handleDebugSelection = () => {
-    startGame(DEBUG_PLAYER_COUNT, 'singleplayer', 'debug');
+    // Singleplayer mode (Debug) doesn't use the numBots logic the same way (implied 1 bot usually or empty)
+    // but we pass 0 here and let GameClient handle the specific singleplayer config.
+    startGame(DEBUG_PLAYER_COUNT, 'singleplayer');
   };
 
   const handleAutoPlaySelection = () => {
-    // 0 Human Players (spectator), 4 Bots
-    startGame(4, 'local', 'autoplay', AUTO_PLAY_BOT_CONFIG);
+    // 4 Players, All 4 are bots
+    startGame(4, 'local', 4);
   };
 
   const handleVsBotSelection = () => {
-    // 1 Human Player (0), 2 Bots (1, 2)
-    startGame(3, 'local', 'vs-bots', VS_BOTS_CONFIG);
+    // 3 Players (1 Human, 2 Bots)
+    startGame(3, 'local', 2);
   };
 
   const isLocalMode = GAME_CONFIG.mode === 'local';
