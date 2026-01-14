@@ -108,4 +108,52 @@ describe('GameControls Accessibility', () => {
         // Should be true now
         expect(screen.getByLabelText(/Build Road/i)).toHaveAttribute('aria-pressed', 'true');
     });
+
+    test('Trade tooltip contains JSON when trade is possible', () => {
+        const tradeG = {
+            ...mockG,
+            players: {
+                '0': {
+                    ...mockG.players['0'],
+                    resources: { wood: 4, brick: 0, wheat: 0, sheep: 0, ore: 0 } // 4 Wood, can trade
+                }
+            }
+        };
+
+        render(<GameControls {...props} G={tradeG} />);
+
+        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+
+        // Check content
+        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
+
+        const content = tradeButtonContainer?.getAttribute('data-tooltip-content');
+        expect(content).toBeDefined();
+
+        const parsed = JSON.parse(content!);
+        expect(parsed).toEqual({
+            give: 'wood',
+            receive: 'brick',
+            giveAmount: 4,
+            receiveAmount: 1
+        });
+    });
+
+    test('Trade tooltip shows text when trade is not possible', () => {
+        const noResourcesG = {
+            ...mockG,
+            players: {
+                '0': {
+                    ...mockG.players['0'],
+                    resources: { wood: 3, brick: 0, wheat: 0, sheep: 0, ore: 0 } // Not enough
+                }
+            }
+        };
+
+        render(<GameControls {...props} G={noResourcesG} />);
+
+        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+
+        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource to trade');
+    });
 });
