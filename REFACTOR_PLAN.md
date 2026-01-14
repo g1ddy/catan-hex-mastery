@@ -123,6 +123,7 @@ graph TD
     R --> HU
     Setup --> P
     Setup --> HU
+    Setup --> R
     Build --> P
 
     AI --> V
@@ -133,6 +134,7 @@ graph TD
     C --> V
     C --> S
     C --> BP
+    C --> R
 ```
 
 ## Next Steps
