@@ -4,6 +4,7 @@ import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
+import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
@@ -25,6 +26,7 @@ const MOVE_MAP = {
     buildRoad,
     buildSettlement,
     buildCity,
+    tradeBank,
     endTurn,
     placeSettlement,
     placeRoad,
@@ -156,10 +158,6 @@ export const CatanGame: Game<GameState> = {
            }
         }
       }
-    },
-    [PHASES.TRADE]: {
-        // Placeholder for Trade Phase logic
-        moves: {}
     },
     [PHASES.GAME_OVER]: {
         // Placeholder for Game Over logic
