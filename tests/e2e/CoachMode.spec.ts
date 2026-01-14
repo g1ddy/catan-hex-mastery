@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('Coach Mode Toggle and Visualization', async ({ page }) => {
   // 1. Navigate to the game (Setup Phase)
   await page.goto('/');
-  await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+  await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
 
   // Wait for game to load
   await expect(page.getByTestId('game-layout')).toBeVisible({ timeout: 10000 });

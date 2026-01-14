@@ -11,7 +11,7 @@ test.describe('Game Layout and Navigation', () => {
     // 1. Setup Desktop Viewport
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // 2. Verify Initial State (Sidebar Open)
@@ -40,7 +40,7 @@ test.describe('Game Layout and Navigation', () => {
     // 1. Setup Mobile Viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
     await page.getByRole('button', { name: 'Begin Placement' }).waitFor({ state: 'visible', timeout: 15000 });
 
     // 2. Verify Initial State (Drawer Closed)

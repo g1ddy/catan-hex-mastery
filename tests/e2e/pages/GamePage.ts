@@ -11,8 +11,8 @@ export class GamePage {
 
   constructor(page: Page) {
     this.page = page;
-    // Initial setup button (2 Players)
-    this.setupButton = page.getByRole('button', { name: 'Start game with 2 players' });
+    // Initial setup button (3 Players No Bots)
+    this.setupButton = page.getByRole('button', { name: '3 Players (No Bots)' });
 
     // Layout verification locators
     this.gameLayout = page.getByTestId('game-layout');

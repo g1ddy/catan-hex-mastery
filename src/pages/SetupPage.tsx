@@ -112,40 +112,44 @@ export function SetupPage() {
             })}
         </div>
 
-        <p className="text-xl mb-6">Legacy Multiplayer:</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-          {SUPPORTED_PLAYER_COUNTS.map((num) => {
-            const isDisabled = isLocalMode && num > 2;
-            return (
-              <div
-                  key={num}
-                  className="flex-1"
-                  data-tooltip-id={isDisabled ? "setup-tooltip" : undefined}
-                  data-tooltip-content={isDisabled ? LOCAL_MODE_WARNING : undefined}
-              >
-                  <button
-                      onClick={() => handlePlayerSelection(num)}
-                      aria-label={`Start game with ${num} players`}
-                      className={`
-                        w-full h-full py-4 px-6
-                        bg-slate-800/80 backdrop-blur-sm border border-slate-600
-                        hover:bg-slate-700 hover:border-slate-500
-                        text-white text-lg font-bold rounded-xl shadow-lg
-                        transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
-                      `}
-                      disabled={isDisabled}
-                  >
-                    {num} Players
-                  </button>
-              </div>
-            );
-          })}
-        </div>
-        {isLocalMode && (
-             <p className="local-mode-warning text-sm text-gray-400 mt-6 italic">
-                 * {LOCAL_MODE_WARNING}
-             </p>
+        {import.meta.env.DEV && (
+            <>
+                <p className="text-xl mb-6">Legacy Multiplayer:</p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+                {SUPPORTED_PLAYER_COUNTS.map((num) => {
+                    const isDisabled = isLocalMode && num > 2;
+                    return (
+                    <div
+                        key={num}
+                        className="flex-1"
+                        data-tooltip-id={isDisabled ? "setup-tooltip" : undefined}
+                        data-tooltip-content={isDisabled ? LOCAL_MODE_WARNING : undefined}
+                    >
+                        <button
+                            onClick={() => handlePlayerSelection(num)}
+                            aria-label={`Start game with ${num} players`}
+                            className={`
+                                w-full h-full py-4 px-6
+                                bg-slate-800/80 backdrop-blur-sm border border-slate-600
+                                hover:bg-slate-700 hover:border-slate-500
+                                text-white text-lg font-bold rounded-xl shadow-lg
+                                transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
+                                disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
+                            `}
+                            disabled={isDisabled}
+                        >
+                            {num} Players
+                        </button>
+                    </div>
+                    );
+                })}
+                </div>
+                {isLocalMode && (
+                    <p className="local-mode-warning text-sm text-gray-400 mt-6 italic">
+                        * {LOCAL_MODE_WARNING}
+                    </p>
+                )}
+            </>
         )}
       </div>
 

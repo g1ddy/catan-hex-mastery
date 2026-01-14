@@ -4,7 +4,7 @@ test('Verify NumberToken SVG Structure', async ({ page }) => {
   await page.goto('/');
 
   // Enter game
-  await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+  await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
 
   // Begin placement to ensure stable state
   const beginBtn = page.locator('button:has-text("Begin Placement")');
