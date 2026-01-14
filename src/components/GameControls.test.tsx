@@ -69,6 +69,7 @@ describe('GameControls Accessibility', () => {
     const mockMoves = {
         rollDice: jest.fn(),
         endTurn: jest.fn(),
+        tradeBank: jest.fn(),
     };
 
     const props = {
