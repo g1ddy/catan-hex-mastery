@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Ctx } from 'boardgame.io';
 import { GameState } from '../game/types';
 import { calculatePlayerPotentialPips } from '../game/analyst';
 import { ResourceIconRow } from './ResourceIconRow';
-import { Coach } from '../game/analysis/coach';
+import { StrategicAdvice } from '../game/analysis/coach';
 
 interface CoachPanelProps {
     G?: GameState;
@@ -12,24 +12,19 @@ interface CoachPanelProps {
     setShowResourceHeatmap: (show: boolean) => void;
     isCoachModeEnabled: boolean;
     setIsCoachModeEnabled: (enabled: boolean) => void;
+    advice?: StrategicAdvice | null;
 }
 
 export const CoachPanel: React.FC<CoachPanelProps> = ({
     G,
-    ctx,
+    ctx, // eslint-disable-line @typescript-eslint/no-unused-vars
     showResourceHeatmap,
     setShowResourceHeatmap,
     isCoachModeEnabled,
-    setIsCoachModeEnabled
+    setIsCoachModeEnabled,
+    advice
 }) => {
     const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
-
-    const strategicAdvice = useMemo(() => {
-        if (!G) return { text: "Waiting for game state...", recommendedMoves: [] };
-        const coach = new Coach(G);
-        const playerID = ctx.currentPlayer;
-        return coach.getStrategicAdvice(playerID, ctx);
-    }, [G, ctx]);
 
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">
@@ -91,7 +86,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
                 <div className="bg-slate-800 p-4 rounded border border-slate-700 shadow-sm">
                     {isCoachModeEnabled ? (
                         <p className="text-sm italic text-slate-300">
-                            "{strategicAdvice.text}"
+                            "{advice ? advice.text : "Waiting for game state..."}"
                         </p>
                     ) : (
                         <p className="text-sm italic text-slate-500">

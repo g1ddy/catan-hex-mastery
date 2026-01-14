@@ -43,6 +43,14 @@ const DEFAULT_CONFIG: CoachConfig = {
     needBonus: 5,
 };
 
+const EARLY_GAME_VP_THRESHOLD = 5;
+const MID_GAME_VP_THRESHOLD = 7;
+
+const ERROR_ADVICE_RESULT: StrategicAdvice = {
+    text: STRATEGIC_ADVICE.ERROR.INVALID_PLAYER,
+    recommendedMoves: []
+};
+
 export class Coach {
     private G: GameState;
     private config: CoachConfig;
@@ -311,16 +319,14 @@ export class Coach {
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
-        const errorResult = { text: STRATEGIC_ADVICE.ERROR.INVALID_PLAYER, recommendedMoves: [] };
-
         // Security check: Validate playerID before use
         if (!isValidPlayer(this.G, playerID)) {
-            return errorResult;
+            return ERROR_ADVICE_RESULT;
         }
 
         // Security check: Only provide advice to the current player.
         if (playerID !== ctx.currentPlayer) {
-            return errorResult;
+            return ERROR_ADVICE_RESULT;
         }
 
         // eslint-disable-next-line security/detect-object-injection
@@ -345,21 +351,21 @@ export class Coach {
         if (stage === STAGES.ACTING || stage === STAGES.ROLLING) {
             const vp = player.victoryPoints;
 
-            // Early Game (< 5 VP)
-            if (vp < 5) {
+            // Early Game
+            if (vp < EARLY_GAME_VP_THRESHOLD) {
                 return {
                     text: STRATEGIC_ADVICE.GAMEPLAY.EARLY,
                     recommendedMoves: ['buildRoad', 'buildSettlement']
                 };
             }
-            // Mid Game (5-7 VP)
-            else if (vp <= 7) {
+            // Mid Game
+            else if (vp <= MID_GAME_VP_THRESHOLD) {
                 return {
                     text: STRATEGIC_ADVICE.GAMEPLAY.MID,
                     recommendedMoves: ['buildCity']
                 };
             }
-            // Late Game (> 7 VP)
+            // Late Game
             else {
                 return {
                     text: STRATEGIC_ADVICE.GAMEPLAY.LATE,

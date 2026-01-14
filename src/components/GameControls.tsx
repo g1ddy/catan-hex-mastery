@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameState } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
@@ -9,7 +9,7 @@ import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
 import { capitalize } from '../utils/stringUtils';
-import { Coach } from '../game/analysis/coach';
+import { StrategicAdvice } from '../game/analysis/coach';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -30,6 +30,7 @@ export interface GameControlsProps {
     setUiMode: (mode: UiMode) => void;
     className?: string;
     isCoachModeEnabled?: boolean;
+    advice?: StrategicAdvice | null;
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -50,7 +51,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     uiMode,
     setUiMode,
     className = '',
-    isCoachModeEnabled = false
+    isCoachModeEnabled = false,
+    advice = null
 }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
@@ -65,13 +67,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
         setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
-
-    // Compute Strategic Advice for highlighting
-    const advice = useMemo(() => {
-        if (!isCoachModeEnabled || !isGameplay) return null;
-        const coach = new Coach(G);
-        return coach.getStrategicAdvice(ctx.currentPlayer, ctx);
-    }, [G, ctx, isCoachModeEnabled, isGameplay]);
 
     // Setup Phase
     if (isSetup) {
