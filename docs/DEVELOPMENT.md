@@ -94,16 +94,22 @@ graph TD
         BP[BotProfile.ts]
     end
 
+    subgraph Moves_Layer [Moves Layer]
+        Setup[moves/setup.ts]
+    end
+
     subgraph Logic_Layer [Core Logic Layer]
         V[rules/validator.ts]
         P[rules/placement.ts]
         S[mechanics/scoring.ts]
         R[mechanics/resources.ts]
         HU[hexUtils.ts]
+        SG[staticGeometry.ts]
     end
 
     %% UI Dependencies
     HO --> UBI
+    HO --> SG
     UBI --> V
 
     %% Bot Dependencies
@@ -118,7 +124,12 @@ graph TD
     C --> V
     C --> S
     C --> R
-    C --> BP
+    %% Removed C --> BP based on code verification
+
+    %% Moves Dependencies
+    Setup --> P
+    Setup --> HU
+    Setup --> R
 
     %% Core Logic Dependencies
     V --> P
