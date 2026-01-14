@@ -307,7 +307,8 @@ export class Coach {
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): string {
         // Security check: Only provide advice to the current player.
-        if (playerID !== ctx.currentPlayer) {
+        // Also validates playerID exists to prevent prototype pollution.
+        if (playerID !== ctx.currentPlayer || !isValidPlayer(this.G, playerID)) {
             return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
         }
 

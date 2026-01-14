@@ -47,7 +47,7 @@ export const isValidHexId = (id: string): boolean => {
 export const isValidPlayer = (G: GameState, playerID: string): boolean => {
     if (typeof playerID !== 'string') return false;
     // Basic safety checks against prototype pollution keys
-    if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') return false;
+    if (['__proto__', 'constructor', 'prototype'].includes(playerID)) return false;
 
     return Object.prototype.hasOwnProperty.call(G.players, playerID);
 };
