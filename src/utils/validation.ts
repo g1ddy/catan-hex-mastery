@@ -1,3 +1,4 @@
+import { GameState } from '../game/types';
 
 /**
  * Validates that a string is a safe hex coordinate ID.
@@ -37,4 +38,16 @@ export const isValidHexId = (id: string): boolean => {
         // For a valid cube coordinate, the sum of its components must be 0.
         return q + r + s === 0;
     });
+};
+
+/**
+ * Validates that a playerID exists in the current GameState.
+ * Prevents prototype pollution and access to undefined players.
+ */
+export const isValidPlayer = (G: GameState, playerID: string): boolean => {
+    if (typeof playerID !== 'string') return false;
+    // Basic safety checks against prototype pollution keys
+    if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') return false;
+
+    return Object.prototype.hasOwnProperty.call(G.players, playerID);
 };

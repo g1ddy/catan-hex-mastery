@@ -136,5 +136,9 @@ graph TD
 ```
 
 ## Next Steps
-1.  **Refactor `Coach` Advice**: Extract hardcoded advice strings into `BotProfile` or `Advisor` configuration.
-2.  **Expand Tests**: Add more scenario-based tests for `BotCoach` decision making.
+(All planned refactoring steps have been completed.)
+
+## Recent Improvements
+1.  **Refactor `Coach` Advice**: Extracted hardcoded advice strings into `src/game/analysis/adviceConstants.ts`.
+2.  **Expand Tests**: Added comprehensive tests for `BotCoach` (gameplay settlements, invalid players, analysis fallback).
+3.  **Security**: Centralized player ID validation in `src/utils/validation.ts`.

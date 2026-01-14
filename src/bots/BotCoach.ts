@@ -2,6 +2,7 @@ import { Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
+import { isValidPlayer } from '../utils/validation';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
@@ -17,11 +18,6 @@ export class BotCoach {
         this.G = G;
         this.coach = coach;
         this.profile = profile;
-    }
-
-    private isValidPlayerID(playerID: string): boolean {
-        // Validate playerID using strict object check to prevent prototype pollution or inherited property access
-        return Object.prototype.hasOwnProperty.call(this.G.players, playerID);
     }
 
     private getMoveName(action: GameAction): string {
@@ -51,7 +47,7 @@ export class BotCoach {
             return [];
         }
 
-        if (!this.isValidPlayerID(playerID)) {
+        if (!isValidPlayer(this.G, playerID)) {
             console.warn('Invalid playerID:', playerID);
             return [];
         }
