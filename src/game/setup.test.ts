@@ -1,6 +1,7 @@
 import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
 import { getSnakeDraftOrder } from './turnOrder';
+import { TerrainType } from './types';
 
 describe('Setup Phase Logic', () => {
   let client: ReturnType<typeof Client>;
@@ -18,6 +19,16 @@ describe('Setup Phase Logic', () => {
     expect(Object.keys(G.players)).toHaveLength(4);
     expect(G.players['0'].color).toBeDefined();
     expect(G.setupPhase.activeRound).toBe(1);
+  });
+
+  test('Robber starts on the desert', () => {
+    const { G } = client.store.getState();
+    const robberHexId = G.robberLocation;
+    const hexes = G.board.hexes;
+    const robberHex = hexes[robberHexId];
+
+    expect(robberHex.terrain).toBe(TerrainType.Desert);
+    expect(robberHex.tokenValue).toBeNull();
   });
 
   test('Snake draft order is correct', () => {
