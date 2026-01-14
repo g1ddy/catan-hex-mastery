@@ -9,7 +9,7 @@ import { CoachPanel } from './CoachPanel';
 import { GameLayout } from './GameLayout';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
-import { CoachRecommendation, Coach } from '../game/analysis/coach';
+import { CoachRecommendation, Coach, StrategicAdvice } from '../game/analysis/coach';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
@@ -77,6 +77,13 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
+
+    // Calculate Strategic Advice (Lifted from GameControls/CoachPanel)
+    const strategicAdvice: StrategicAdvice | null = React.useMemo(() => {
+        if (!isCoachModeEnabled) return null;
+        const coach = new Coach(G);
+        return coach.getStrategicAdvice(ctx.currentPlayer, ctx);
+    }, [G, ctx, isCoachModeEnabled]);
 
     // Calculate Coach Data at Board Level (O(Vertices)) instead of per-hex
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
@@ -248,6 +255,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           setBuildMode={setBuildMode}
           uiMode={uiMode}
           setUiMode={setUiMode}
+          isCoachModeEnabled={isCoachModeEnabled}
+          advice={strategicAdvice}
         />
       }
       dashboard={
@@ -274,6 +283,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
               setShowResourceHeatmap={setShowResourceHeatmap}
               isCoachModeEnabled={isCoachModeEnabled}
               setIsCoachModeEnabled={handleSetCoachModeEnabled}
+              advice={strategicAdvice}
           />
       }
       activePanel={activePanel}
