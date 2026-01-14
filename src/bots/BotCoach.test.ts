@@ -151,24 +151,24 @@ describe('BotCoach', () => {
         });
 
         it('should choose the settlement recommended by Coach when building in gameplay', () => {
-             // Mock Coach to recommend v1 over v2
-             (coach.getAllSettlementScores as jest.Mock).mockReturnValue([
-                 { vertexId: 'v1', score: 20 },
-                 { vertexId: 'v2', score: 5 }
-             ]);
+            // Mock Coach to recommend v1 over v2
+            (coach.getAllSettlementScores as jest.Mock).mockReturnValue([
+                { vertexId: 'v1', score: 20 },
+                { vertexId: 'v2', score: 5 }
+            ]);
 
-             const moves = [
-                 mockAction('buildSettlement', ['v2']),
-                 mockAction('buildSettlement', ['v1']),
-                 mockAction('buildRoad', ['e1']) // Lower weight
-             ];
+            const moves = [
+                mockAction('buildSettlement', ['v2']),
+                mockAction('buildSettlement', ['v1']),
+                mockAction('buildRoad', ['e1']) // Lower weight
+            ];
 
-             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
 
-             expect(result).toHaveLength(1);
-             const action = result[0] as MakeMoveAction;
-             expect(action.payload.type).toBe('buildSettlement');
-             expect(action.payload.args[0]).toBe('v1');
+            expect(result).toHaveLength(1);
+            const action = result[0] as MakeMoveAction;
+            expect(action.payload.type).toBe('buildSettlement');
+            expect(action.payload.args[0]).toBe('v1');
         });
 
         it('should handle invalid player ID gracefully', () => {
@@ -180,16 +180,16 @@ describe('BotCoach', () => {
         });
 
         it('should return all setup settlement moves if analysis fails/returns empty', () => {
-             const moves = [
-                 mockAction('placeSettlement', ['v1']),
-                 mockAction('placeSettlement', ['v2'])
-             ];
+            const moves = [
+                mockAction('placeSettlement', ['v1']),
+                mockAction('placeSettlement', ['v2'])
+            ];
 
-             // Mock coach to return empty
-             (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
+            // Mock coach to return empty
+            (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
 
-             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
-             expect(result).toHaveLength(2);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            expect(result).toHaveLength(2);
         });
     });
 });
