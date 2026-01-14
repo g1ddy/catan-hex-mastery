@@ -1,6 +1,7 @@
 import { Ctx } from 'boardgame.io';
-import { getBestSettlementSpots } from './coach';
+import { getBestSettlementSpots, Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
+import { STRATEGIC_ADVICE } from './adviceConstants';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.
@@ -24,7 +25,7 @@ jest.mock('../hexUtils', () => ({
     getHexesForVertex: (vertexId: string) => vertexId.split('::')
 }));
 
-describe('getBestSettlementSpots', () => {
+describe('Coach Analysis', () => {
     const mockCtx: Ctx = {
         numPlayers: 1,
         turn: 1,
@@ -340,6 +341,22 @@ describe('getBestSettlementSpots', () => {
             const G = createMockState(hexes);
             const results = getBestSettlementSpots(G, '1', mockCtx); // '1' is not current
             expect(results).toHaveLength(0);
+        });
+    });
+
+    describe('getStrategicAdvice', () => {
+        test('Should return invalid player error for suspicious playerID', () => {
+            const hexes = [{ id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 }];
+            const G = createMockState(hexes);
+            const coach = new Coach(G);
+
+            // Even if ctx says it's this player's turn, if the ID is suspicious/invalid in G, it should fail
+            const suspiciousId = '__proto__';
+            // Force context to match suspicious ID so the first check passes
+            const ctxWithSuspicious = { ...mockCtx, currentPlayer: suspiciousId };
+
+            const advice = coach.getStrategicAdvice(suspiciousId, ctxWithSuspicious);
+            expect(advice).toBe(STRATEGIC_ADVICE.ERROR.INVALID_PLAYER);
         });
     });
 });

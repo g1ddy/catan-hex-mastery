@@ -149,5 +149,47 @@ describe('BotCoach', () => {
             // Verify coach was called correctly
             expect(coach.getBestCitySpots).toHaveBeenCalledWith('0', mockCtx, ['v2', 'v1']);
         });
+
+        it('should choose the settlement recommended by Coach when building in gameplay', () => {
+            // Mock Coach to recommend v1 over v2
+            (coach.getAllSettlementScores as jest.Mock).mockReturnValue([
+                { vertexId: 'v1', score: 20 },
+                { vertexId: 'v2', score: 5 }
+            ]);
+
+            const moves = [
+                mockAction('buildSettlement', ['v2']),
+                mockAction('buildSettlement', ['v1']),
+                mockAction('buildRoad', ['e1']) // Lower weight
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+
+            expect(result).toHaveLength(1);
+            const action = result[0] as MakeMoveAction;
+            expect(action.payload.type).toBe('buildSettlement');
+            expect(action.payload.args[0]).toBe('v1');
+        });
+
+        it('should handle invalid player ID gracefully', () => {
+            const moves = [mockAction('endTurn')];
+            // Match currentPlayer to bypass the first check
+            const ctxWithInvalidPlayer = { ...mockCtx, currentPlayer: '999' };
+            const result = botCoach.filterOptimalMoves(moves, '999', ctxWithInvalidPlayer);
+            expect(result).toEqual([]);
+        });
+
+        it('should return all setup settlement moves if analysis fails/returns empty', () => {
+            const moves = [
+                mockAction('placeSettlement', ['v1']),
+                mockAction('placeSettlement', ['v2'])
+            ];
+
+            // Mock coach to return empty
+            (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            expect(result).toHaveLength(2);
+        });
     });
 });

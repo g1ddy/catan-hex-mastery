@@ -1,6 +1,7 @@
 import { GameState, GameAction, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
+import { isValidPlayer } from '../utils/validation';
 import {
     getValidSetupSettlementSpots,
     getValidSetupRoadSpots,
@@ -25,7 +26,7 @@ const makeMove = (moveName: string, args: any[]): BotMove => ({
  */
 export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[] => {
     // Validate playerID using strict object check to prevent prototype pollution or inherited property access
-    if (!Object.prototype.hasOwnProperty.call(G.players, playerID)) {
+    if (!isValidPlayer(G, playerID)) {
         console.warn('Invalid playerID:', playerID);
         return [];
     }

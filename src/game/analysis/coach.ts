@@ -1,10 +1,12 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, TerrainType } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
+import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
+import { STRATEGIC_ADVICE } from './adviceConstants';
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -152,7 +154,7 @@ export class Coach {
 
     private getExistingResources(playerID: string): Set<string> {
         // Security: Validate playerID exists to prevent prototype pollution
-        if (!Object.prototype.hasOwnProperty.call(this.G.players, playerID)) {
+        if (!isValidPlayer(this.G, playerID)) {
             return new Set<string>();
         }
 
@@ -245,11 +247,7 @@ export class Coach {
         existingResources: Set<string>
     ): CoachRecommendation {
         // Security check for playerID
-        if (playerID === '__proto__' || playerID === 'constructor' || playerID === 'prototype') {
-             throw new Error("Invalid playerID");
-        }
-        // eslint-disable-next-line security/detect-object-injection
-        if (!this.G.players[playerID]) {
+        if (!isValidPlayer(this.G, playerID)) {
              throw new Error(`Player ${playerID} not found`);
         }
 
@@ -308,9 +306,14 @@ export class Coach {
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): string {
+        // Security check: Validate playerID before use
+        if (!isValidPlayer(this.G, playerID)) {
+            return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
+        }
+
         // Security check: Only provide advice to the current player.
         if (playerID !== ctx.currentPlayer) {
-            return "Invalid player ID.";
+            return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
         }
 
         // eslint-disable-next-line security/detect-object-injection
@@ -319,10 +322,10 @@ export class Coach {
 
         // 1. Setup Phase
         if (stage === STAGES.PLACE_SETTLEMENT) {
-            return "Focus on high-pip spots with diverse resources (Wood/Brick for roads, Ore/Wheat for cities).";
+            return STRATEGIC_ADVICE.SETUP.SETTLEMENT;
         }
         if (stage === STAGES.PLACE_ROAD) {
-            return "Point your road toward future expansion spots or the coast.";
+            return STRATEGIC_ADVICE.SETUP.ROAD;
         }
 
         // 2. Gameplay Phase (Acting)
@@ -331,19 +334,19 @@ export class Coach {
 
             // Early Game (< 5 VP)
             if (vp < 5) {
-                return "Early Game: Focus on expansion. Prioritize Wood and Brick to build new settlements and roads.";
+                return STRATEGIC_ADVICE.GAMEPLAY.EARLY;
             }
             // Mid Game (5-7 VP)
             else if (vp <= 7) {
-                return "Mid Game: Consolidate power. Upgrade settlements to cities (Ore/Wheat) and block opponents.";
+                return STRATEGIC_ADVICE.GAMEPLAY.MID;
             }
             // Late Game (> 7 VP)
             else {
-                return "Late Game: Push for victory! Buy Development Cards for VPs/Knights or connect roads for Longest Road.";
+                return STRATEGIC_ADVICE.GAMEPLAY.LATE;
             }
         }
 
-        return "Observe the board and plan your next move.";
+        return STRATEGIC_ADVICE.DEFAULT;
     }
 }
 
