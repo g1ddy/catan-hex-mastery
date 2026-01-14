@@ -19,10 +19,10 @@ test.describe('Documentation Screenshots', () => {
     await page.getByRole('button', { name: TARGET_BUTTON_NAME }).click();
 
     // Wait for board to load
-    await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
+    await expect(page.locator('svg.hex-grid-svg')).toBeVisible();
 
     // Wait for the grid to be fully rendered before snapping
-    await expect(page.locator('svg.grid')).toBeVisible();
+    await expect(page.locator('svg.hex-grid-svg')).toBeVisible();
 
     // Take screenshot
     await page.screenshot({ path: path.join(OUTPUT_DIR, 'hero-board-desktop.png') });
