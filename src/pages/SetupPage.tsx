@@ -44,8 +44,8 @@ export function SetupPage() {
   };
 
   const handleAutoPlaySelection = () => {
-    // 4 Players, All 4 are bots
-    startGame(4, 'local', 4);
+    // 3 Players, All 3 are bots
+    startGame(3, 'local', 3);
   };
 
   const handleVsBotSelection = () => {
@@ -87,23 +87,23 @@ export function SetupPage() {
 
         <div className="mb-4 flex flex-col items-center">
             <button
+                onClick={handleAutoPlaySelection}
+                data-tooltip-id="setup-tooltip"
+                data-tooltip-content="0 Players (Auto Play): Watch 3 Debug Bots play against each other"
+                className={PURPLE_BTN_CLASS}
+            >
+                0 Players (Auto Play)
+            </button>
+        </div>
+
+        <div className="mb-8 flex flex-col items-center">
+            <button
                 onClick={handleVsBotSelection}
                 data-tooltip-id="setup-tooltip"
                 data-tooltip-content="1 Player (vs Bots): Play against 2 Debug Bots"
                 className={TEAL_BTN_CLASS}
             >
                 1 Player (vs Bots)
-            </button>
-        </div>
-
-        <div className="mb-8 flex flex-col items-center">
-            <button
-                onClick={handleAutoPlaySelection}
-                data-tooltip-id="setup-tooltip"
-                data-tooltip-content="0 Players (Auto Play): Watch 4 Debug Bots play against each other"
-                className={PURPLE_BTN_CLASS}
-            >
-                0 Players (Auto Play)
             </button>
         </div>
 
