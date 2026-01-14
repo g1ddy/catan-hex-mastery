@@ -9,9 +9,9 @@ test.describe('Player Panel Tests', () => {
     // regardless of the browser project configuration (e.g. Mobile Safari worker).
     await page.setViewportSize({ width: 1280, height: 800 });
 
-    // Navigate to game with 2 players
+    // Navigate to game with 3 players
     await page.goto('/');
-    await page.click('button:has-text("2 Players")');
+    await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
 
     // Wait for the "Begin Placement" button and click it to enter placement mode
     const beginButton = page.locator('button', { hasText: 'Begin Placement' });
@@ -62,7 +62,7 @@ test.describe('Player Panel Tests', () => {
 
     // Navigate to game
     await page.goto('/');
-    await page.click('button:has-text("2 Players")');
+    await page.getByRole('button', { name: '3 Players (No Bots)' }).click();
 
     // Wait for "Begin Placement" and click
     const beginButton = page.locator('button', { hasText: 'Begin Placement' });

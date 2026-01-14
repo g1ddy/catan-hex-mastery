@@ -14,12 +14,20 @@ test.describe('Desktop Layout', () => {
 
         await expect(game.gameLayout).toBeVisible({ timeout: 30000 });
 
-        // Run Setup Sequence (Snake Draft: P1, P2, P2, P1)
+        // Run Setup Sequence (Snake Draft: P1, P2, P3, P3, P2, P1)
         // P1
         await game.placeSettlement();
         await game.placeRoad();
 
         // P2
+        await game.placeSettlement();
+        await game.placeRoad();
+
+        // P3
+        await game.placeSettlement();
+        await game.placeRoad();
+
+        // P3 (Snake return)
         await game.placeSettlement();
         await game.placeRoad();
 
