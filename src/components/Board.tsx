@@ -179,6 +179,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         width="100%"
         height="100%"
         viewBox={BOARD_VIEWBOX}
+        className="hex-grid-svg absolute top-0 left-0 w-full h-full block"
       >
         <Layout
           size={BOARD_CONFIG.HEX_SIZE}

@@ -62,7 +62,7 @@ export class GamePage {
   async getBoardSvgInfo() {
     // Helper specifically for the mobile test SVG verification
     return await this.page.evaluate(() => {
-        const svg = document.querySelector('svg.grid');
+        const svg = document.querySelector('svg.hex-grid-svg');
         if (!svg) return null;
 
         const style = window.getComputedStyle(svg);
