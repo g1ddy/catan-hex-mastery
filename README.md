@@ -37,8 +37,13 @@ A real-time sidebar that acts as your HUD.
 
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
-*   Play against our **Smart Bots** to test your initial placement strategies.
-*   Experiment with being Player 1 (Best Spot) vs. Player 4 (The Wheel).
+*   **Play against Smart Bots**: Test your strategies against AI opponents.
+*   **Optimized for 3 Players**: The game is designed for balanced 3-player matches.
+*   **Flexible Configurations**:
+    *   **Solo**: 1 Human + 2 Bots
+    *   **Local Multiplayer**: 2 Humans + 1 Bot
+    *   **Local PvP**: 3 Humans
+    *   **Auto Play**: 0 Humans + 3 Bots (Spectate mode)
 
 ![Setup Phase / Snake Draft](docs/images/setup-draft.png)
 
