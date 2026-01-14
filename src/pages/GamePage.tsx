@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
 import { DebugBot } from '../bots/DebugBot';
@@ -30,15 +30,20 @@ export function GamePage() {
   // Bots fill seats starting from the last player index backwards.
   // Example: 3 Players, 2 Bots -> Bots are Player 1 and Player 2. (Indices 1, 2)
   // Example: 4 Players, 4 Bots -> Bots are 0, 1, 2, 3.
-  let bots: Record<string, typeof DebugBot> | undefined;
+  const bots = useMemo(() => {
+    if (!numBots || numBots <= 0 || !numPlayers) {
+      return undefined;
+    }
 
-  if (numBots > 0) {
-      bots = {};
-      const startBotIndex = numPlayers - numBots;
-      for (let i = startBotIndex; i < numPlayers; i++) {
-          bots[i.toString()] = DebugBot;
-      }
-  }
+    const result: Record<string, typeof DebugBot> = {};
+    const startBotIndex = numPlayers - numBots;
+
+    for (let i = startBotIndex; i < numPlayers; i++) {
+      result[i.toString()] = DebugBot;
+    }
+
+    return result;
+  }, [numBots, numPlayers]);
 
   if (!numPlayers) {
     return <Navigate to="/" replace />;
