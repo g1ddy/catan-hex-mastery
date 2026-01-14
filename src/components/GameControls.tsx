@@ -18,6 +18,8 @@ export interface GameControlsProps {
     ctx: Ctx;
     moves: {
         rollDice: () => void;
+        startRoll: () => void;
+        resolveRoll: () => void;
         endTurn: () => void;
         tradeBank: () => void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,9 +30,6 @@ export interface GameControlsProps {
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
     className?: string;
-    // New props for lifted state
-    isRolling?: boolean;
-    setIsRolling?: (isRolling: boolean) => void;
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -43,8 +42,7 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
 );
 
 export const GameControls: React.FC<GameControlsProps> = ({
-    G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '',
-    isRolling: propIsRolling, setIsRolling: propSetIsRolling
+    G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = ''
 }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
@@ -52,17 +50,12 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
 
-    // Use local state if props are not provided (backward compatibility / isolation)
-    const [localIsRolling, setLocalIsRolling] = useState(false);
+    // Use local state only for ending turn
     const [isEndingTurn, setIsEndingTurn] = useState(false);
 
-    const isRolling = propIsRolling !== undefined ? propIsRolling : localIsRolling;
-    const setRolling = propSetIsRolling || setLocalIsRolling;
-
     useEffect(() => {
-        setRolling(false);
         setIsEndingTurn(false);
-    }, [ctx.currentPlayer, ctx.phase, activeStage, setRolling]);
+    }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
     // Setup Phase
     if (isSetup) {
@@ -166,28 +159,32 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
         // Roll Logic
-        const rollLabel = isRolling ? "Rolling..." : "Roll";
-        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
+        const isRollingState = G.rollStatus === 'ROLLING';
+        const rollLabel = isRollingState ? "Rolling..." : "Roll";
+        const rollIcon = isRollingState ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
         const handleRoll = () => {
-            if (!isMoveAllowed('rollDice')) return;
+            // If already rolling, ignore clicks
+            if (G.rollStatus !== 'IDLE') return;
 
-            // Start local or lifted rolling state
-            setRolling(true);
+            // Check if startRoll is allowed (should be if we are in ROLLING stage)
+            if (!isMoveAllowed('startRoll')) return;
 
-            // Delay the actual move execution by 1 second to show animation
+            // 1. Trigger Start Roll (Sets G.rollStatus = 'ROLLING')
+            safeMove(() => moves.startRoll());
+
+            // 2. Delay the result logic
             setTimeout(() => {
-                if (!safeMove(() => moves.rollDice())) {
-                    setRolling(false);
-                } else {
-                    setRolling(false);
-                }
+                 // 3. Resolve Roll (Calculates dice, sets G.rollStatus = 'RESOLVED')
+                 // This move will check if status is ROLLING, so it's safe
+                 safeMove(() => moves.resolveRoll());
             }, 1000);
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
-        const showLastRoll = !isMoveAllowed('rollDice') && lastRollSum > 0;
-        const showRollButton = isMoveAllowed('rollDice') || isRollingStage; // Keep visible during transition/check
+        const showLastRoll = (!isMoveAllowed('startRoll') && !isRollingState) && lastRollSum > 0;
+        // Show roll button if we are allowed to start rolling OR if we are currently rolling (to show loading state)
+        const showRollButton = (isMoveAllowed('startRoll') || isRollingState) && isRollingStage;
 
         return (
              <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
@@ -254,7 +251,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 {showRollButton && (
                     <button
                         onClick={handleRoll}
-                        disabled={G.hasRolled || isRolling}
+                        disabled={G.hasRolled || isRollingState}
                         aria-label={rollLabel}
                         className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap btn-focus-ring"
                     >

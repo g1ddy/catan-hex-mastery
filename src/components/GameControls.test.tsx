@@ -53,6 +53,7 @@ describe('GameControls Accessibility', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         hasRolled: true,
+        rollStatus: 'IDLE',
     } as unknown as GameState;
 
     const mockCtx = {
@@ -68,6 +69,8 @@ describe('GameControls Accessibility', () => {
 
     const mockMoves = {
         rollDice: jest.fn(),
+        startRoll: jest.fn(),
+        resolveRoll: jest.fn(),
         endTurn: jest.fn(),
         tradeBank: jest.fn(),
     };

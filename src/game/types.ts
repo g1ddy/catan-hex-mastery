@@ -64,6 +64,8 @@ export interface BoardStats {
   warnings: string[];
 }
 
+export type RollStatus = 'IDLE' | 'ROLLING' | 'RESOLVED';
+
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
@@ -73,6 +75,7 @@ export interface GameState {
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
   hasRolled: boolean;
+  rollStatus: RollStatus;
 }
 
 // Legacy format: { move: 'name', args: [] }

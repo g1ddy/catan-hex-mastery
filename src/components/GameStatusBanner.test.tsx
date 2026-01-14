@@ -36,6 +36,7 @@ describe('GameStatusBanner', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         hasRolled: false,
+        rollStatus: 'IDLE',
     } as unknown as GameState;
 
     const mockCtx = {
@@ -50,7 +51,6 @@ describe('GameStatusBanner', () => {
         playerID: '0',
         uiMode: 'viewing' as const,
         buildMode: null,
-        isRolling: false
     };
 
     test('renders setup instruction', () => {
@@ -73,21 +73,20 @@ describe('GameStatusBanner', () => {
          expect(screen.getByText('Place Road')).toBeInTheDocument();
     });
 
-    test('renders roll result properly handled by isRolling prop', () => {
+    test('renders roll result properly handled by rollStatus', () => {
         jest.useFakeTimers();
         // Initially no roll
         const { rerender } = render(<GameStatusBanner {...props} />);
         expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
 
         // Simulate Rolling State (Before result arrives)
-        // This confirms the "Rolling..." text appears when isRolling is true
-        rerender(<GameStatusBanner {...props} isRolling={true} />);
+        const rollingG = { ...mockG, rollStatus: 'ROLLING' as const };
+        rerender(<GameStatusBanner {...props} G={rollingG} />);
         expect(screen.getByText('Rolling...')).toBeInTheDocument();
 
         // Simulate Roll Result Arrival + Stop Rolling
-        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
-        // isRolling false, G updated -> trigger showRollResult
-        rerender(<GameStatusBanner {...props} G={rolledG} isRolling={false} />);
+        const rolledG = { ...mockG, rollStatus: 'RESOLVED' as const, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
+        rerender(<GameStatusBanner {...props} G={rolledG} />);
 
         // Now shows result (dice icons) immediately (controlled component logic)
         expect(screen.getByTestId('icon-dice-3')).toBeInTheDocument();

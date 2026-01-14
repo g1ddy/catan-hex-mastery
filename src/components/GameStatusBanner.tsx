@@ -20,7 +20,6 @@ interface GameStatusBannerProps {
     customMessage?: CustomMessage | null;
     onCustomMessageClear?: () => void;
     customMessageDuration?: number;
-    isRolling?: boolean;
 }
 
 export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
@@ -31,8 +30,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     buildMode,
     customMessage,
     onCustomMessageClear,
-    customMessageDuration = 3000,
-    isRolling = false
+    customMessageDuration = 3000
 }) => {
     const [showRollResult, setShowRollResult] = useState(false);
 
@@ -50,14 +48,17 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     const [d1, d2] = G.lastRoll;
     const sum = d1 + d2;
 
-    // Watch for new rolls
+    // Watch for new rolls (triggered by G.lastRoll change OR G.rollStatus change)
+    // We only show result if rollStatus is RESOLVED
+    const isResolved = G.rollStatus === 'RESOLVED';
+
     useEffect(() => {
-        if (sum > 0) {
+        if (sum > 0 && isResolved) {
             setShowRollResult(true);
             const timer = setTimeout(() => setShowRollResult(false), 4000);
             return () => clearTimeout(timer);
         }
-    }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
+    }, [G.lastRoll, sum, isResolved]);
 
     // Memoize Game Over Emoji
     // We want this to be stable once the game is over.
@@ -80,6 +81,9 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     }, [ctx.gameover, playerID]);
 
     // If showing roll result OR rolling, render ProductionToast (reused)
+    // Now we check G.rollStatus === 'ROLLING' instead of isRolling prop
+    const isRolling = G.rollStatus === 'ROLLING';
+
     if (showRollResult || isRolling) {
         return <ProductionToast G={G} visible={true} isLoading={isRolling} />;
     }

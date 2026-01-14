@@ -5,7 +5,7 @@ import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
-import { rollDice } from './moves/roll';
+import { rollDice, startRoll, resolveRoll } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
@@ -23,6 +23,8 @@ const regenerateBoard: Move<GameState> = ({ G }) => {
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
     rollDice,
+    startRoll,
+    resolveRoll,
     buildRoad,
     buildSettlement,
     buildCity,
@@ -115,7 +117,8 @@ export const CatanGame: Game<GameState> = {
       lastRoll: [0, 0],
       lastRollRewards: {},
       boardStats,
-      hasRolled: false
+      hasRolled: false,
+      rollStatus: 'IDLE'
     };
   },
 
@@ -148,6 +151,7 @@ export const CatanGame: Game<GameState> = {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => {
            G.hasRolled = false;
+           G.rollStatus = 'IDLE';
         },
         stages: {
            [STAGES.ROLLING]: {
