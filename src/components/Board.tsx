@@ -194,6 +194,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 hex={hex}
                 onClick={NO_OP}
                 isProducing={producingHexIds.includes(hex.id)}
+                hasRobber={G.robberLocation === hex.id}
               />
             ))}
           </g>

@@ -122,6 +122,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
         const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
         const isActingStage = isGameplay && activeStage === STAGES.ACTING;
+        const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
         const isMyTurn = playerID === ctx.currentPlayer;
 
         if (!isMyTurn) {
@@ -148,6 +149,9 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
                 };
 
                 message = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
+            } else if (isRobberStage) {
+                message = `Robber! ${getRandomEmoji(LOSE_EMOJIS)}`;
+                colorClass = "text-red-400 font-bold animate-bounce";
             } else {
                 message = "Waiting...";
             }
