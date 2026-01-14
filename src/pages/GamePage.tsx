@@ -31,15 +31,18 @@ export function GamePage() {
   // Example: 3 Players, 2 Bots -> Bots are Player 1 and Player 2. (Indices 1, 2)
   // Example: 4 Players, 4 Bots -> Bots are 0, 1, 2, 3.
   const bots = useMemo(() => {
-    if (numBots > 0 && numPlayers) {
-        const result: Record<string, typeof DebugBot> = {};
-        const startBotIndex = numPlayers - numBots;
-        for (let i = startBotIndex; i < numPlayers; i++) {
-            result[i.toString()] = DebugBot;
-        }
-        return result;
+    if (!numBots || numBots <= 0 || !numPlayers) {
+      return undefined;
     }
-    return undefined;
+
+    const result: Record<string, typeof DebugBot> = {};
+    const startBotIndex = numPlayers - numBots;
+
+    for (let i = startBotIndex; i < numPlayers; i++) {
+      result[i.toString()] = DebugBot;
+    }
+
+    return result;
   }, [numBots, numPlayers]);
 
   if (!numPlayers) {
