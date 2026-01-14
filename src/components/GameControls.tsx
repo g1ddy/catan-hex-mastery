@@ -18,8 +18,6 @@ export interface GameControlsProps {
     ctx: Ctx;
     moves: {
         rollDice: () => void;
-        startRoll: () => void;
-        resolveRoll: () => void;
         endTurn: () => void;
         tradeBank: () => void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,6 +28,11 @@ export interface GameControlsProps {
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
     className?: string;
+    // Events for stage transitions
+    events?: {
+        endStage: () => void;
+        [key: string]: (...args: any[]) => void;
+    };
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -42,7 +45,7 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
 );
 
 export const GameControls: React.FC<GameControlsProps> = ({
-    G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = ''
+    G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '', events
 }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
@@ -167,24 +170,26 @@ export const GameControls: React.FC<GameControlsProps> = ({
             // If already rolling, ignore clicks
             if (G.rollStatus !== 'IDLE') return;
 
-            // Check if startRoll is allowed (should be if we are in ROLLING stage)
-            if (!isMoveAllowed('startRoll')) return;
+            // Check if rollDice is allowed
+            if (!isMoveAllowed('rollDice')) return;
 
-            // 1. Trigger Start Roll (Sets G.rollStatus = 'ROLLING')
-            safeMove(() => moves.startRoll());
+            // 1. Roll Dice (Sets G.rollStatus = 'ROLLING')
+            safeMove(() => moves.rollDice());
 
-            // 2. Delay the result logic
+            // 2. Delay to show animation
             setTimeout(() => {
-                 // 3. Resolve Roll (Calculates dice, sets G.rollStatus = 'RESOLVED')
-                 // This move will check if status is ROLLING, so it's safe
-                 safeMove(() => moves.resolveRoll());
+                 // 3. End Stage (Triggers onEnd -> resource distribution)
+                 // Using strict non-null assertion since we are in gameplay
+                 if (events && events.endStage) {
+                     events.endStage();
+                 }
             }, 1000);
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
-        const showLastRoll = (!isMoveAllowed('startRoll') && !isRollingState) && lastRollSum > 0;
-        // Show roll button if we are allowed to start rolling OR if we are currently rolling (to show loading state)
-        const showRollButton = (isMoveAllowed('startRoll') || isRollingState) && isRollingStage;
+        const showLastRoll = (!isMoveAllowed('rollDice') && !isRollingState) && lastRollSum > 0;
+        // Show roll button if we are allowed to roll OR if we are currently rolling
+        const showRollButton = (isMoveAllowed('rollDice') || isRollingState) && isRollingStage;
 
         return (
              <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>

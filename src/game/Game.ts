@@ -5,13 +5,14 @@ import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
-import { rollDice, startRoll, resolveRoll } from './moves/roll';
+import { rollDice } from './moves/roll';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai';
+import { distributeResources } from './mechanics/resources';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();
@@ -23,8 +24,6 @@ const regenerateBoard: Move<GameState> = ({ G }) => {
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
     rollDice,
-    startRoll,
-    resolveRoll,
     buildRoad,
     buildSettlement,
     buildCity,
@@ -155,7 +154,15 @@ export const CatanGame: Game<GameState> = {
         },
         stages: {
            [STAGES.ROLLING]: {
-              moves: getMovesForStage(STAGES.ROLLING)
+              moves: getMovesForStage(STAGES.ROLLING),
+              next: STAGES.ACTING,
+              onEnd: ({ G }) => {
+                  if (G.hasRolled) {
+                      const rollValue = G.lastRoll[0] + G.lastRoll[1];
+                      G.lastRollRewards = distributeResources(G, rollValue);
+                      G.rollStatus = 'RESOLVED';
+                  }
+              }
            },
            [STAGES.ACTING]: {
               moves: getMovesForStage(STAGES.ACTING)
