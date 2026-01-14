@@ -131,7 +131,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         const tradeResult = calculateTrade(resources);
         const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
         const tradeTooltip = canTrade
-            ? JSON.stringify({ give: tradeResult.give, receive: tradeResult.receive })
+            ? JSON.stringify({
+                give: tradeResult.give,
+                receive: tradeResult.receive,
+                giveAmount: 4,
+                receiveAmount: 1
+            })
             : "Need 4 of a resource to trade";
 
         const handleTrade = () => {
@@ -180,6 +185,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         className="inline-block flex-shrink-0 border-r border-slate-700/50 pr-1"
                         data-tooltip-id="trade-tooltip"
                         data-tooltip-content={tradeTooltip}
+                        data-testid="trade-button-container"
                     >
                         <button
                             onClick={handleTrade}

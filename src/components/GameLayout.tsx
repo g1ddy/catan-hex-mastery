@@ -84,24 +84,24 @@ const renderTradeTooltip = ({ content }: { content: string | null }) => {
                 return (
                     <div className="flex items-center gap-2">
                         <span className="flex items-center gap-1">
-                            <span className="font-bold">4</span>
+                            <span className="font-bold">{parsed.giveAmount || 4}</span>
                             <giveMeta.Icon className={giveMeta.color} size={16} />
                         </span>
                         <ArrowRight size={16} className="text-slate-400" />
                         <span className="flex items-center gap-1">
-                            <span className="font-bold">1</span>
+                            <span className="font-bold">{parsed.receiveAmount || 1}</span>
                             <receiveMeta.Icon className={receiveMeta.color} size={16} />
                         </span>
                     </div>
                 );
             }
         }
-        // Fallback for non-JSON content or invalid data
-        return <div>{content}</div>;
     } catch {
-        // Fallback for plain text content (e.g. "Need 4 of a resource to trade")
-        return <div>{content}</div>;
+        // Ignore parsing errors, fall through to default return
     }
+
+    // Default fallback for plain text or invalid JSON structure
+    return <div>{content}</div>;
 };
 
 export const GameLayout: React.FC<GameLayoutProps> = ({

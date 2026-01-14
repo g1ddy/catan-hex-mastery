@@ -122,7 +122,7 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={tradeG} />);
 
-        const tradeButtonContainer = screen.getByTestId('icon-handshake').closest('button')?.parentElement;
+        const tradeButtonContainer = screen.getByTestId('trade-button-container');
 
         // Check content
         expect(tradeButtonContainer).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
@@ -131,7 +131,12 @@ describe('GameControls Accessibility', () => {
         expect(content).toBeDefined();
 
         const parsed = JSON.parse(content!);
-        expect(parsed).toEqual({ give: 'wood', receive: 'brick' }); // Default order prefers brick if min is same
+        expect(parsed).toEqual({
+            give: 'wood',
+            receive: 'brick',
+            giveAmount: 4,
+            receiveAmount: 1
+        });
     });
 
     test('Trade tooltip shows text when trade is not possible', () => {
@@ -147,7 +152,7 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={noResourcesG} />);
 
-        const tradeButtonContainer = screen.getByTestId('icon-handshake').closest('button')?.parentElement;
+        const tradeButtonContainer = screen.getByTestId('trade-button-container');
 
         expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource to trade');
     });
