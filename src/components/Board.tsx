@@ -48,6 +48,9 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [isCoachModeEnabled, setIsCoachModeEnabled] = useState<boolean>(true);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
 
+  // Lifted state for rolling delay
+  const [isRolling, setIsRolling] = useState(false);
+
   // Active Panel State (Lifted from GameLayout)
   // Default to Analyst on desktop, unless handled by effect
   const [activePanel, setActivePanel] = useState<'analyst' | 'coach' | null>(!isMobile ? 'analyst' : null);
@@ -237,6 +240,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             buildMode={buildMode}
             customMessage={customBannerMessage}
             onCustomMessageClear={() => setCustomBannerMessage(null)}
+            isRolling={isRolling}
         />
       }
       gameControls={
@@ -248,6 +252,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           setBuildMode={setBuildMode}
           uiMode={uiMode}
           setUiMode={setUiMode}
+          isRolling={isRolling}
+          setIsRolling={setIsRolling}
         />
       }
       dashboard={

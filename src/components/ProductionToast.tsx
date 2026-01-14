@@ -9,6 +9,13 @@ import { DiceIcons } from './DiceIcons';
 interface ProductionToastProps {
     G: GameState;
     visible: boolean;
+    /**
+     * If provided, overrides the internal rolling state.
+     * true = force rolling animation
+     * false = force show result
+     * undefined = use internal timer (legacy behavior)
+     */
+    isLoading?: boolean;
 }
 
 const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
@@ -19,20 +26,24 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     sheep: <Cloud size={14} className="text-blue-300" />
 };
 
-export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible }) => {
-    const [isRolling, setIsRolling] = useState(true);
+export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, isLoading }) => {
+    const [internalIsRolling, setInternalIsRolling] = useState(true);
     const rewards = G.lastRollRewards;
     const [d1Val, d2Val] = G.lastRoll;
 
+    // Use external prop if present, otherwise internal state
+    const isRolling = isLoading !== undefined ? isLoading : internalIsRolling;
+
     useEffect(() => {
-        if (visible) {
-            setIsRolling(true);
+        // Only run internal logic if external control is not active
+        if (visible && isLoading === undefined) {
+            setInternalIsRolling(true);
             const timer = setTimeout(() => {
-                setIsRolling(false);
+                setInternalIsRolling(false);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [visible, G.lastRoll]); // Restart animation on new roll
+    }, [visible, G.lastRoll, isLoading]);
 
     const hasAnyResources = useMemo(() => {
         return Object.values(rewards).some(res =>

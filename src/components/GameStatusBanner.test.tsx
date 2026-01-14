@@ -50,6 +50,7 @@ describe('GameStatusBanner', () => {
         playerID: '0',
         uiMode: 'viewing' as const,
         buildMode: null,
+        isRolling: false
     };
 
     test('renders setup instruction', () => {
@@ -72,32 +73,29 @@ describe('GameStatusBanner', () => {
          expect(screen.getByText('Place Road')).toBeInTheDocument();
     });
 
-    test('renders roll result temporarily', () => {
+    test('renders roll result properly handled by isRolling prop', () => {
         jest.useFakeTimers();
         // Initially no roll
         const { rerender } = render(<GameStatusBanner {...props} />);
         expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
 
-        // Simulate roll
-        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
-        rerender(<GameStatusBanner {...props} G={rolledG} />);
-
-        // Should initially show rolling state
+        // Simulate Rolling State (Before result arrives)
+        // This confirms the "Rolling..." text appears when isRolling is true
+        rerender(<GameStatusBanner {...props} isRolling={true} />);
         expect(screen.getByText('Rolling...')).toBeInTheDocument();
 
-        // Advance time to finish rolling animation (1s)
-        act(() => {
-            jest.advanceTimersByTime(1000);
-        });
+        // Simulate Roll Result Arrival + Stop Rolling
+        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
+        // isRolling false, G updated -> trigger showRollResult
+        rerender(<GameStatusBanner {...props} G={rolledG} isRolling={false} />);
 
-        // Now shows result (dice icons)
-        // We mocked 3 and 4
+        // Now shows result (dice icons) immediately (controlled component logic)
         expect(screen.getByTestId('icon-dice-3')).toBeInTheDocument();
         expect(screen.getByTestId('icon-dice-4')).toBeInTheDocument();
 
-        // Fast-forward time to check it disappears (4s total duration)
+        // Fast-forward time to check it disappears (4s total duration controlled by GameStatusBanner)
         act(() => {
-            jest.advanceTimersByTime(3000);
+            jest.advanceTimersByTime(4000);
         });
 
         expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();

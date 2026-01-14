@@ -28,6 +28,9 @@ export interface GameControlsProps {
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
     className?: string;
+    // New props for lifted state
+    isRolling?: boolean;
+    setIsRolling?: (isRolling: boolean) => void;
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -39,20 +42,27 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
     </button>
 );
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
+export const GameControls: React.FC<GameControlsProps> = ({
+    G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '',
+    isRolling: propIsRolling, setIsRolling: propSetIsRolling
+}) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
 
     const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
 
-    const [isRolling, setIsRolling] = useState(false);
+    // Use local state if props are not provided (backward compatibility / isolation)
+    const [localIsRolling, setLocalIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
 
+    const isRolling = propIsRolling !== undefined ? propIsRolling : localIsRolling;
+    const setRolling = propSetIsRolling || setLocalIsRolling;
+
     useEffect(() => {
-        setIsRolling(false);
+        setRolling(false);
         setIsEndingTurn(false);
-    }, [ctx.currentPlayer, ctx.phase, activeStage]);
+    }, [ctx.currentPlayer, ctx.phase, activeStage, setRolling]);
 
     // Setup Phase
     if (isSetup) {
@@ -161,10 +171,18 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
         const handleRoll = () => {
             if (!isMoveAllowed('rollDice')) return;
-            setIsRolling(true);
-            if (!safeMove(() => moves.rollDice())) {
-                setIsRolling(false);
-            }
+
+            // Start local or lifted rolling state
+            setRolling(true);
+
+            // Delay the actual move execution by 1 second to show animation
+            setTimeout(() => {
+                if (!safeMove(() => moves.rollDice())) {
+                    setRolling(false);
+                } else {
+                    setRolling(false);
+                }
+            }, 1000);
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];

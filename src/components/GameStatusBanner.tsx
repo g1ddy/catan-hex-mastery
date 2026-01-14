@@ -20,6 +20,7 @@ interface GameStatusBannerProps {
     customMessage?: CustomMessage | null;
     onCustomMessageClear?: () => void;
     customMessageDuration?: number;
+    isRolling?: boolean;
 }
 
 export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
@@ -30,7 +31,8 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     buildMode,
     customMessage,
     onCustomMessageClear,
-    customMessageDuration = 3000
+    customMessageDuration = 3000,
+    isRolling = false
 }) => {
     const [showRollResult, setShowRollResult] = useState(false);
 
@@ -77,9 +79,9 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         return null;
     }, [ctx.gameover, playerID]);
 
-    // If showing roll result, render ProductionToast (reused)
-    if (showRollResult) {
-        return <ProductionToast G={G} visible={true} />;
+    // If showing roll result OR rolling, render ProductionToast (reused)
+    if (showRollResult || isRolling) {
+        return <ProductionToast G={G} visible={true} isLoading={isRolling} />;
     }
 
     let message = "";
