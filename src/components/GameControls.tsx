@@ -8,6 +8,7 @@ import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
+import { capitalize } from '../utils/stringUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -20,7 +21,7 @@ export interface GameControlsProps {
         endTurn: () => void;
         tradeBank: () => void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: any;
+        [key: string]: (...args: any[]) => void;
     };
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
@@ -130,7 +131,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         // Trade Logic
         const tradeResult = calculateTrade(resources);
         const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
-        const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
         const tradeTooltip = canTrade
             ? `Trade 4 ${capitalize(tradeResult.give)} for 1 ${capitalize(tradeResult.receive)}`
             : "Need 4 of a resource to trade";

@@ -1,5 +1,6 @@
 import { tradeBank, calculateTrade } from './trade';
-import { GameState } from '../types';
+import { createMockGameState } from '../testUtils';
+import { Ctx } from 'boardgame.io';
 
 describe('Trade Logic', () => {
     describe('calculateTrade', () => {
@@ -74,7 +75,7 @@ describe('Trade Logic', () => {
 
     describe('tradeBank Move', () => {
         it('should execute trade correctly', () => {
-            const G = {
+            const G = createMockGameState({
                 players: {
                     '0': {
                         resources: {
@@ -86,9 +87,9 @@ describe('Trade Logic', () => {
                         }
                     }
                 }
-            } as unknown as GameState;
+            });
 
-            const ctx = { currentPlayer: '0' } as any;
+            const ctx = { currentPlayer: '0' } as Ctx;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (tradeBank as any)({ G, ctx });
@@ -99,7 +100,7 @@ describe('Trade Logic', () => {
         });
 
         it('should throw error if trade is invalid', () => {
-            const G = {
+            const G = createMockGameState({
                 players: {
                     '0': {
                         resources: {
@@ -111,9 +112,9 @@ describe('Trade Logic', () => {
                         }
                     }
                 }
-            } as unknown as GameState;
+            });
 
-            const ctx = { currentPlayer: '0' } as any;
+            const ctx = { currentPlayer: '0' } as Ctx;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             expect(() => (tradeBank as any)({ G, ctx })).toThrow("You need at least 4 of a resource to trade.");

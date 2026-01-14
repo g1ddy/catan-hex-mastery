@@ -159,10 +159,6 @@ export const CatanGame: Game<GameState> = {
         }
       }
     },
-    [PHASES.TRADE]: {
-        // Placeholder for Trade Phase logic
-        moves: {}
-    },
     [PHASES.GAME_OVER]: {
         // Placeholder for Game Over logic
         moves: {}

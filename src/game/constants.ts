@@ -1,7 +1,6 @@
 export const PHASES = {
   SETUP: 'setup',
   GAMEPLAY: 'gameplay',
-  TRADE: 'trade',
   GAME_OVER: 'gameOver',
 } as const;
 
