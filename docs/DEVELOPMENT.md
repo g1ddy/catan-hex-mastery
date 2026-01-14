@@ -53,6 +53,79 @@ We use a dual-layer testing strategy:
     npm run test:e2e
     ```
 
+## 🏗 Architecture
+
+The project follows a strict separation of concerns between Game Logic (Rules), Strategic Analysis (AI/Coach), and Presentation (UI).
+
+### 1. Logic Layer (The "What")
+*   **`src/game/rules/validator.ts`**: The source of truth for move legality. It calculates *all* valid moves (e.g., "Where can I build a settlement?"). It generates `Set`s of valid IDs.
+*   **`src/game/rules/placement.ts`**: Atomic validation for individual moves (used by `validator.ts` and `moves/setup.ts`).
+*   **`src/game/mechanics/scoring.ts`**: Pure mathematical utilities for game mechanics (e.g., calculating pips from dice numbers).
+*   **`src/game/hexUtils.ts`**: Immutable grid geometry helpers.
+
+### 2. Strategy Layer (The "Why")
+*   **`src/game/analysis/coach.ts`**: The "brain". It evaluates the board state to score potential moves based on heuristics:
+    *   **Scarcity**: How rare is a resource?
+    *   **Diversity**: Do I have a variety of numbers/resources?
+    *   **Synergy**: Do my resources match my building goals?
+    *   It does *not* decide legality; it only scores moves provided by the Logic Layer.
+*   **`src/bots/BotCoach.ts`**: The bridge between strategy and action. It filters the list of legal moves (provided by `ai.ts`) and ranks them using `Coach` analysis (for complex moves like settlements) or `BotProfile` weights (for simple moves like buying dev cards).
+*   **`src/game/ai.ts`**: The "enumerator". It generates the raw list of all legal actions (`GameAction[]`) for the current turn. This file is critical for `boardgame.io` bot integration.
+
+### 3. Presentation Layer (The "How")
+*   **`src/components/HexOverlays.tsx`**: The visualization engine. It renders interactive elements (vertices/edges) over the SVG grid.
+    *   **Performance**: Uses `src/game/staticGeometry.ts` for O(1) geometry lookups (cached).
+    *   **Interactivity**: Uses `src/hooks/useBoardInteractions.ts` to determine which spots are clickable based on the Logic Layer.
+    *   **Feedback**: Displays `Coach` heatmaps and recommendations.
+
+### Dependency Diagram
+
+```mermaid
+graph TD
+    subgraph UI_Layer [UI Layer]
+        HO[HexOverlays.tsx]
+        UBI[useBoardInteractions.ts]
+    end
+
+    subgraph Bot_Layer [Bot / AI Layer]
+        BC[BotCoach.ts]
+        C[Coach.ts]
+        AI[ai.ts]
+        BP[BotProfile.ts]
+    end
+
+    subgraph Logic_Layer [Core Logic Layer]
+        V[rules/validator.ts]
+        P[rules/placement.ts]
+        S[mechanics/scoring.ts]
+        R[mechanics/resources.ts]
+        HU[hexUtils.ts]
+    end
+
+    %% UI Dependencies
+    HO --> UBI
+    UBI --> V
+
+    %% Bot Dependencies
+    BC --> C
+    BC --> BP
+    %% BC receives moves from AI but does not import it directly in logic flow,
+    %% but conceptually acts on AI output.
+
+    AI --> V
+
+    %% Coach Dependencies
+    C --> V
+    C --> S
+    C --> R
+    C --> BP
+
+    %% Core Logic Dependencies
+    V --> P
+    P --> HU
+    R --> HU
+```
+
 ## 📂 Project Structure
 
 ```
