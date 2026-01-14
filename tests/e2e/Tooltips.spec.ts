@@ -21,7 +21,7 @@ test('Verify Tooltips and Build Buttons', async ({ page }) => {
 
   // 2. Game Page Verification
   // Click "2 Players" to enter game
-  await page.click('button:has-text("2 Players")');
+  await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
   // Click "Begin Placement" to start the setup phase
   const beginButton = page.getByRole('button', { name: 'Begin Placement' });

@@ -12,7 +12,7 @@ export class GamePage {
   constructor(page: Page) {
     this.page = page;
     // Initial setup button (2 Players)
-    this.setupButton = page.getByRole('button', { name: '2 Players' });
+    this.setupButton = page.getByRole('button', { name: 'Start game with 2 players' });
 
     // Layout verification locators
     this.gameLayout = page.getByTestId('game-layout');

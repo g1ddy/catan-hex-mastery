@@ -33,12 +33,8 @@ const generateLabel = (humans: number, bots: number) => {
     return `${pluralize(humans, 'Player')} vs ${pluralize(bots, 'Bot')}`;
 };
 
-const BOT_SCENARIOS = [
-    { humans: 0, bots: 3 },
-    { humans: 1, bots: 2 },
-    { humans: 2, bots: 1 },
-    { humans: 3, bots: 0 },
-];
+// Dynamic generation of scenarios assuming total players = 3
+const BOT_SCENARIOS = Array.from({ length: 4 }, (_, i) => ({ humans: i, bots: 3 - i }));
 
 export function SetupPage() {
   const navigate = useNavigate();
@@ -99,10 +95,11 @@ export function SetupPage() {
 
         <p className="text-xl mb-4">Bot Scenarios:</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full mb-8">
-            {BOT_SCENARIOS.map((scenario, index) => {
+            {BOT_SCENARIOS.map((scenario) => {
                 const totalPlayers = scenario.humans + scenario.bots;
+                const scenarioKey = `${scenario.humans}-humans-${scenario.bots}-bots`;
                 return (
-                    <div key={index} className="flex-1">
+                    <div key={scenarioKey} className="flex-1">
                         <button
                             onClick={() => startGame(totalPlayers, 'local', scenario.bots)}
                             className={BOT_SCENARIO_BTN_CLASS}

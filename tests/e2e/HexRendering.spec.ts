@@ -5,7 +5,7 @@ test('verify hex overlays rendering and setup flow', async ({ page }) => {
   await page.goto('./');
 
   // Check if we are on the setup page and click 2 Players
-  const startButton = page.getByRole('button', { name: '2 Players' });
+  const startButton = page.getByRole('button', { name: 'Start game with 2 players' });
   if (await startButton.isVisible()) {
       await startButton.click();
   }

@@ -11,7 +11,7 @@ test.describe('Player Panel Tests', () => {
 
     // Navigate to game with 2 players
     await page.goto('/');
-    await page.click('button:has-text("2 Players")');
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Wait for the "Begin Placement" button and click it to enter placement mode
     const beginButton = page.locator('button', { hasText: 'Begin Placement' });
@@ -62,7 +62,7 @@ test.describe('Player Panel Tests', () => {
 
     // Navigate to game
     await page.goto('/');
-    await page.click('button:has-text("2 Players")');
+    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
 
     // Wait for "Begin Placement" and click
     const beginButton = page.locator('button', { hasText: 'Begin Placement' });
