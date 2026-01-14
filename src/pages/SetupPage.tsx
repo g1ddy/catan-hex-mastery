@@ -7,20 +7,25 @@ const LOCAL_MODE_WARNING = "3-4 Player modes are unavailable in Local Pass-and-P
 const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
 const DEBUG_PLAYER_COUNT = 2;
 const APP_VERSION_FALLBACK = 'DEV-LOCAL';
+const BOT_SCENARIO_PLAYER_COUNT = 3;
 
 // CSS Constants
-const BASE_BTN_CLASS = `
-    w-full max-w-xs py-3 px-6
+const SHARED_BTN_BASE = `
     backdrop-blur-sm text-white font-bold rounded-lg shadow-md
     transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
 `;
+
+const BASE_BTN_CLASS = `
+    ${SHARED_BTN_BASE}
+    w-full max-w-xs py-3 px-6
+`;
+
 const INDIGO_BTN_CLASS = `${BASE_BTN_CLASS} bg-indigo-600/90 border border-indigo-500 hover:bg-indigo-500 hover:border-indigo-400`;
 
 // Modified Teal class for the scenario buttons (removes max-w-xs to allow flex growing)
 const BOT_SCENARIO_BTN_CLASS = `
+    ${SHARED_BTN_BASE}
     w-full h-full py-3 px-2
-    backdrop-blur-sm text-white font-bold rounded-lg shadow-md
-    transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
     bg-teal-600/90 border border-teal-500 hover:bg-teal-500 hover:border-teal-400
     text-sm sm:text-base
 `;
@@ -93,10 +98,10 @@ export function SetupPage() {
         <p className="text-xl mb-4">Bot Scenarios:</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full mb-8">
             {/* Iterate from 0 to 3 human players (Total 3 players in game) */}
-            {Array.from({ length: 4 }, (_, i) => {
+            {Array.from({ length: BOT_SCENARIO_PLAYER_COUNT + 1 }, (_, i) => {
                 const humans = i;
-                const bots = 3 - i;
-                const totalPlayers = 3;
+                const bots = BOT_SCENARIO_PLAYER_COUNT - i;
+                const totalPlayers = BOT_SCENARIO_PLAYER_COUNT;
                 const scenarioKey = `${humans}-humans-${bots}-bots`;
 
                 return (
