@@ -356,7 +356,20 @@ describe('Coach Analysis', () => {
             const ctxWithSuspicious = { ...mockCtx, currentPlayer: suspiciousId };
 
             const advice = coach.getStrategicAdvice(suspiciousId, ctxWithSuspicious);
-            expect(advice).toBe(STRATEGIC_ADVICE.ERROR.INVALID_PLAYER);
+            expect(advice.text).toBe(STRATEGIC_ADVICE.ERROR.INVALID_PLAYER);
+        });
+
+        test('Should return recommended moves', () => {
+            const hexes = [{ id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 }];
+            const G = createMockState(hexes);
+            const coach = new Coach(G);
+
+            // Set stage to ACTING
+            const ctx = { ...mockCtx, phase: 'gameplay', activePlayers: { '0': 'acting' } };
+
+            // Early game (< 5 VP)
+            const advice = coach.getStrategicAdvice('0', ctx);
+            expect(advice.recommendedMoves).toEqual(['buildRoad', 'buildSettlement']);
         });
     });
 });

@@ -25,7 +25,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
     const playerPotentials = G ? calculatePlayerPotentialPips(G) : null;
 
     const strategicAdvice = useMemo(() => {
-        if (!G) return "Waiting for game state...";
+        if (!G) return { text: "Waiting for game state...", recommendedMoves: [] };
         const coach = new Coach(G);
         const playerID = ctx.currentPlayer;
         return coach.getStrategicAdvice(playerID, ctx);
@@ -91,7 +91,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
                 <div className="bg-slate-800 p-4 rounded border border-slate-700 shadow-sm">
                     {isCoachModeEnabled ? (
                         <p className="text-sm italic text-slate-300">
-                            "{strategicAdvice}"
+                            "{strategicAdvice.text}"
                         </p>
                     ) : (
                         <p className="text-sm italic text-slate-500">

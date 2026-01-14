@@ -22,6 +22,11 @@ export interface CoachRecommendation {
     };
 }
 
+export interface StrategicAdvice {
+    text: string;
+    recommendedMoves: string[];
+}
+
 export interface CoachConfig {
     scarcityThreshold: number;
     scarcityMultiplier: number;
@@ -305,15 +310,17 @@ export class Coach {
         return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
     }
 
-    public getStrategicAdvice(playerID: string, ctx: Ctx): string {
+    public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
+        const errorResult = { text: STRATEGIC_ADVICE.ERROR.INVALID_PLAYER, recommendedMoves: [] };
+
         // Security check: Validate playerID before use
         if (!isValidPlayer(this.G, playerID)) {
-            return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
+            return errorResult;
         }
 
         // Security check: Only provide advice to the current player.
         if (playerID !== ctx.currentPlayer) {
-            return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
+            return errorResult;
         }
 
         // eslint-disable-next-line security/detect-object-injection
@@ -322,10 +329,16 @@ export class Coach {
 
         // 1. Setup Phase
         if (stage === STAGES.PLACE_SETTLEMENT) {
-            return STRATEGIC_ADVICE.SETUP.SETTLEMENT;
+            return {
+                text: STRATEGIC_ADVICE.SETUP.SETTLEMENT,
+                recommendedMoves: []
+            };
         }
         if (stage === STAGES.PLACE_ROAD) {
-            return STRATEGIC_ADVICE.SETUP.ROAD;
+            return {
+                text: STRATEGIC_ADVICE.SETUP.ROAD,
+                recommendedMoves: []
+            };
         }
 
         // 2. Gameplay Phase (Acting)
@@ -334,19 +347,33 @@ export class Coach {
 
             // Early Game (< 5 VP)
             if (vp < 5) {
-                return STRATEGIC_ADVICE.GAMEPLAY.EARLY;
+                return {
+                    text: STRATEGIC_ADVICE.GAMEPLAY.EARLY,
+                    recommendedMoves: ['buildRoad', 'buildSettlement']
+                };
             }
             // Mid Game (5-7 VP)
             else if (vp <= 7) {
-                return STRATEGIC_ADVICE.GAMEPLAY.MID;
+                return {
+                    text: STRATEGIC_ADVICE.GAMEPLAY.MID,
+                    recommendedMoves: ['buildCity']
+                };
             }
             // Late Game (> 7 VP)
             else {
-                return STRATEGIC_ADVICE.GAMEPLAY.LATE;
+                return {
+                    text: STRATEGIC_ADVICE.GAMEPLAY.LATE,
+                    // Advice says "Buy Dev Cards... connect roads".
+                    // Since Dev Cards aren't implemented, we recommend Roads.
+                    recommendedMoves: ['buildRoad']
+                };
             }
         }
 
-        return STRATEGIC_ADVICE.DEFAULT;
+        return {
+            text: STRATEGIC_ADVICE.DEFAULT,
+            recommendedMoves: []
+        };
     }
 }
 

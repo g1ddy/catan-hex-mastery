@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GameState } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
@@ -9,6 +9,7 @@ import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
 import { capitalize } from '../utils/stringUtils';
+import { Coach } from '../game/analysis/coach';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -28,6 +29,7 @@ export interface GameControlsProps {
     uiMode: UiMode;
     setUiMode: (mode: UiMode) => void;
     className?: string;
+    isCoachModeEnabled?: boolean;
 }
 
 const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
@@ -39,7 +41,17 @@ const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }
     </button>
 );
 
-export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, className = '' }) => {
+export const GameControls: React.FC<GameControlsProps> = ({
+    G,
+    ctx,
+    moves,
+    buildMode,
+    setBuildMode,
+    uiMode,
+    setUiMode,
+    className = '',
+    isCoachModeEnabled = false
+}) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
 
@@ -53,6 +65,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
+
+    // Compute Strategic Advice for highlighting
+    const advice = useMemo(() => {
+        if (!isCoachModeEnabled || !isGameplay) return null;
+        const coach = new Coach(G);
+        return coach.getStrategicAdvice(ctx.currentPlayer, ctx);
+    }, [G, ctx, isCoachModeEnabled, isGameplay]);
 
     // Setup Phase
     if (isSetup) {
@@ -118,8 +137,14 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
              return `Cost: ${parts.join(', ')}`;
         };
 
-        const getButtonClass = (mode: BuildMode) => {
+        const getButtonClass = (mode: BuildMode, isRecommended: boolean) => {
             const base = "btn-focus-ring";
+
+            // Highlight if recommended
+            if (isRecommended) {
+                 return `${base} bg-amber-500 text-slate-900 border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.8)] animate-pulse motion-reduce:animate-none`;
+            }
+
             if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
             return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed`;
         };
@@ -204,6 +229,18 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                         // But strictly only if the move is allowed in the current stage.
                         const isEnabled = moveAllowed && (affordable || buildMode === type);
 
+                        // Coach Highlight Logic
+                        // Highlight if:
+                        // 1. Coach Mode is ON
+                        // 2. Button is enabled (affordable + allowed)
+                        // 3. Move is in recommended moves
+                        const isRecommended = !!(
+                            isCoachModeEnabled &&
+                            isEnabled &&
+                            advice &&
+                            advice.recommendedMoves.includes(moveNameMap[type])
+                        );
+
                         return (
                             <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
                                 <button
@@ -211,7 +248,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                                     disabled={!isEnabled}
                                     aria-label={`${ariaPrefix} (${costString(type)})`}
                                     aria-pressed={buildMode === type}
-                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type)}`}
+                                    className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, isRecommended)}`}
                                 >
                                     <Icon size={20} />
                                 </button>
