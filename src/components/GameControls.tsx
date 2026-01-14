@@ -7,6 +7,7 @@ import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { calculateTrade } from '../game/moves/trade';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -17,6 +18,9 @@ export interface GameControlsProps {
     moves: {
         rollDice: () => void;
         endTurn: () => void;
+        tradeBank: () => void;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [key: string]: any;
     };
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
@@ -123,6 +127,20 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
             setBuildMode(buildMode === mode ? null : mode);
         };
 
+        // Trade Logic
+        const tradeResult = calculateTrade(resources);
+        const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
+        const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+        const tradeTooltip = canTrade
+            ? `Trade 4 ${capitalize(tradeResult.give)} for 1 ${capitalize(tradeResult.receive)}`
+            : "Need 4 of a resource to trade";
+
+        const handleTrade = () => {
+            if (canTrade) {
+                safeMove(() => moves.tradeBank());
+            }
+        };
+
         // End Turn Logic
         const handleEndTurn = () => {
             if (!isMoveAllowed('endTurn')) return;
@@ -158,16 +176,21 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
 
                  {/* 1. Build Buttons */}
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                    {/* Trade Button (Coming Soon) */}
+                    {/* Trade Button */}
                     <div
                         className="inline-block flex-shrink-0 border-r border-slate-700/50 pr-1"
                         data-tooltip-id="resource-tooltip"
-                        data-tooltip-content="Coming Soon"
+                        data-tooltip-content={tradeTooltip}
                     >
                         <button
-                            disabled={true}
-                            aria-label="Trade (Coming Soon)"
-                            className="p-3 rounded-lg flex items-center justify-center btn-focus-ring bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed"
+                            onClick={handleTrade}
+                            disabled={!canTrade}
+                            aria-label="Trade 4:1"
+                            className={`p-3 rounded-lg flex items-center justify-center transition-all ${
+                                canTrade
+                                ? "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white btn-focus-ring"
+                                : "bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed"
+                            }`}
                         >
                             <Handshake size={20} />
                         </button>
