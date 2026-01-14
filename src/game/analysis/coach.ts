@@ -306,9 +306,13 @@ export class Coach {
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): string {
+        // Security check: Validate playerID before use
+        if (!isValidPlayer(this.G, playerID)) {
+            return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
+        }
+
         // Security check: Only provide advice to the current player.
-        // Also validates playerID exists to prevent prototype pollution.
-        if (playerID !== ctx.currentPlayer || !isValidPlayer(this.G, playerID)) {
+        if (playerID !== ctx.currentPlayer) {
             return STRATEGIC_ADVICE.ERROR.INVALID_PLAYER;
         }
 
