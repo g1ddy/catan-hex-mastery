@@ -19,11 +19,17 @@ We realized that to truly improve, players need immediate, data-driven feedback 
 ## ✨ Key Features
 
 ### 🧠 Coach Mode
-Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap. It factors in:
+Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap.
+
+**Key Features:**
 *   **Resource Heatmap**: See "Winning Moves" directly on the board with a color-coded overlay.
 *   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
+
+**Heatmap Factors:**
+The Coach evaluates moves based on:
 *   **Production Probability (Pips)**
 *   **Synergy** (Do you have the Brick to match your Wood?)
+*   **Scarcity** (Are you securing rare resources?)
 
 ![Resource Heatmap in Coach Mode](docs/images/coach-heatmap.png)
 
@@ -37,8 +43,13 @@ A real-time sidebar that acts as your HUD.
 
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
-*   Play against our **Smart Bots** to test your initial placement strategies.
-*   Experiment with being Player 1 (Best Spot) vs. Player 4 (The Wheel).
+*   **Play against Smart Bots**: Test your strategies against AI opponents.
+*   **Optimized for 3 Players**: The game is designed for balanced 3-player matches.
+*   **Flexible Configurations**:
+    *   **Solo**: 1 Human + 2 Bots
+    *   **Local Multiplayer**: 2 Humans + 1 Bot
+    *   **Local PvP**: 3 Humans
+    *   **Auto Play**: 0 Humans + 3 Bots (Spectate mode)
 
 ![Setup Phase / Snake Draft](docs/images/setup-draft.png)
 

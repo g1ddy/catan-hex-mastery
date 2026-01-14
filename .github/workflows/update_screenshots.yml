@@ -6,6 +6,7 @@ on:
     paths:
       - 'docs/**'
       - '!docs/images/**'
+      - 'README.md'
 
 jobs:
   generate-screenshots:
