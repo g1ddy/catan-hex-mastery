@@ -8,7 +8,6 @@ import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
-import { capitalize } from '../utils/stringUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -132,7 +131,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
         const tradeResult = calculateTrade(resources);
         const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
         const tradeTooltip = canTrade
-            ? `Trade 4 ${capitalize(tradeResult.give)} for 1 ${capitalize(tradeResult.receive)}`
+            ? JSON.stringify({ give: tradeResult.give, receive: tradeResult.receive })
             : "Need 4 of a resource to trade";
 
         const handleTrade = () => {
@@ -179,7 +178,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ G, ctx, moves, build
                     {/* Trade Button */}
                     <div
                         className="inline-block flex-shrink-0 border-r border-slate-700/50 pr-1"
-                        data-tooltip-id="resource-tooltip"
+                        data-tooltip-id="trade-tooltip"
                         data-tooltip-content={tradeTooltip}
                     >
                         <button

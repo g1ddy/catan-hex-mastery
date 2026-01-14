@@ -5,7 +5,7 @@ import {
     Z_INDEX_GAME_CONTROLS_CONTAINER,
     Z_INDEX_FLOATING_UI
 } from '../styles/z-indices';
-import { BarChart2, Bot } from 'lucide-react';
+import { BarChart2, Bot, ArrowRight } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -68,6 +68,39 @@ const renderDiceTooltip = ({ content }: { content: string | null }) => {
     } catch (error) {
         console.error('Failed to parse dice tooltip content:', error);
         return null;
+    }
+};
+
+const renderTradeTooltip = ({ content }: { content: string | null }) => {
+    if (!content) return null;
+
+    try {
+        const parsed = JSON.parse(content);
+        if (parsed && parsed.give && parsed.receive) {
+            const giveMeta = RESOURCE_META.find(r => r.name === parsed.give);
+            const receiveMeta = RESOURCE_META.find(r => r.name === parsed.receive);
+
+            if (giveMeta && receiveMeta) {
+                return (
+                    <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1">
+                            <span className="font-bold">4</span>
+                            <giveMeta.Icon className={giveMeta.color} size={16} />
+                        </span>
+                        <ArrowRight size={16} className="text-slate-400" />
+                        <span className="flex items-center gap-1">
+                            <span className="font-bold">1</span>
+                            <receiveMeta.Icon className={receiveMeta.color} size={16} />
+                        </span>
+                    </div>
+                );
+            }
+        }
+        // Fallback for non-JSON content or invalid data
+        return <div>{content}</div>;
+    } catch {
+        // Fallback for plain text content (e.g. "Need 4 of a resource to trade")
+        return <div>{content}</div>;
     }
 };
 
@@ -146,6 +179,12 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           place="top"
           style={{ zIndex: Z_INDEX_TOOLTIP }}
           render={renderDiceTooltip}
+      />
+      <Tooltip
+          id="trade-tooltip"
+          place="top"
+          style={{ zIndex: Z_INDEX_TOOLTIP }}
+          render={renderTradeTooltip}
       />
 
       {/* 2. Analyst Panel (Left Sidebar on Desktop, Top Drawer on Mobile) */}
