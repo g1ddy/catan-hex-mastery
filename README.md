@@ -19,11 +19,17 @@ We realized that to truly improve, players need immediate, data-driven feedback 
 ## ✨ Key Features
 
 ### 🧠 Coach Mode
-Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap. It factors in:
+Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap.
+
+**Key Features:**
 *   **Resource Heatmap**: See "Winning Moves" directly on the board with a color-coded overlay.
 *   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
+
+**Heatmap Factors:**
+The Coach evaluates moves based on:
 *   **Production Probability (Pips)**
 *   **Synergy** (Do you have the Brick to match your Wood?)
+*   **Scarcity** (Are you securing rare resources?)
 
 ![Resource Heatmap in Coach Mode](docs/images/coach-heatmap.png)
 
