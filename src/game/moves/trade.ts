@@ -22,19 +22,11 @@ export const calculateTrade = (resources: Resources): TradeResult => {
     for (const res of RESOURCE_ORDER) {
         const val = resources[res];
 
-        // strictly greater to prefer earlier in list for ties?
-        // No, "Most" -> if we have 5 wood, 5 brick. maxVal starts -1.
-        // Wood (5) > -1 -> max=Wood.
-        // Brick (5) > 5? No. So ties keep the first one.
         if (val > maxVal) {
             maxVal = val;
             maxRes = res;
         }
 
-        // strictly less to prefer earlier in list for ties?
-        // 0 wood, 0 brick. minVal starts Inf.
-        // Wood (0) < Inf -> min=Wood.
-        // Brick (0) < 0? No. So ties keep the first one.
         if (val < minVal) {
             minVal = val;
             minRes = res;
