@@ -3,13 +3,13 @@ import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex } from '../game/types';
 import { HEX_CORNERS, getHexGeometry } from '../game/staticGeometry';
-import { BOARD_CONFIG } from '../game/config';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { PHASES, STAGES } from '../game/constants';
-import { BuildingIcon } from './board/BuildingIcon';
 import { useBoardInteractions } from '../hooks/useBoardInteractions';
+import { OverlayVertex } from './board/OverlayVertex';
+import { OverlayEdge } from './board/OverlayEdge';
 
 export interface CoachData {
     recommendations: Record<string, CoachRecommendation>;
@@ -76,8 +76,7 @@ export const HexOverlays = React.memo(({
                 // Security: Validate vId before access to prevent prototype pollution (handled in ternary)
                 // eslint-disable-next-line security/detect-object-injection
                 const vertex = Object.prototype.hasOwnProperty.call(G.board.vertices, vId) ? G.board.vertices[vId] : undefined;
-                const isOccupied = !!vertex;
-                const ownerColor = isOccupied ? G.players[vertex.owner]?.color : null;
+                const ownerColor = (vertex && G.players[vertex.owner]?.color) || null;
 
                 const isSetup = ctx.phase === PHASES.SETUP;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
@@ -85,7 +84,6 @@ export const HexOverlays = React.memo(({
 
                 let isClickable = false;
                 let isGhost = false;
-                let isRecommended = false;
                 let recommendationData: CoachRecommendation | undefined;
                 let heatmapColor = "";
                 let isTop3 = false;
@@ -94,7 +92,6 @@ export const HexOverlays = React.memo(({
                 const applyCoachRecommendation = () => {
                     const rec = recommendations[vId]; // eslint-disable-line security/detect-object-injection
                     if (rec) {
-                        isRecommended = true;
                         recommendationData = rec;
                         heatmapColor = getHeatmapColor(rec.score, minScore, maxScore);
                         if (top3Set.has(vId)) {
@@ -105,7 +102,6 @@ export const HexOverlays = React.memo(({
 
                 if (isSetup) {
                     if (currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing') {
-                        // REFACTORED: Use Hook
                         if (validSettlements.has(vId)) {
                             isClickable = true;
                             isGhost = true;
@@ -117,7 +113,6 @@ export const HexOverlays = React.memo(({
                     }
                 } else if (isActingStage) {
                     if (buildMode === 'settlement') {
-                        // REFACTOR: Use Hook
                         if (validSettlements.has(vId)) {
                              isClickable = true;
                              isGhost = true;
@@ -128,7 +123,6 @@ export const HexOverlays = React.memo(({
                              applyCoachRecommendation();
                         }
                     } else if (buildMode === 'city') {
-                        // REFACTOR: Use Hook
                         if (validCities.has(vId)) {
                              isClickable = true;
                              isGhost = false;
@@ -141,69 +135,24 @@ export const HexOverlays = React.memo(({
                 }
 
                 return (
-                    <g key={i} className="group" onClick={(e) => {
-                        e.stopPropagation();
-                        if (isClickable) clickAction();
-                    }}>
-                        <circle
-                            cx={corner.x} cy={corner.y}
-                            r={3}
-                            fill="transparent"
-                            style={{ cursor: isClickable ? 'pointer' : 'default' }}
-                            data-testid={isGhost ? "ghost-vertex" : undefined}
-                        />
-                        {isOccupied && (
-                            <BuildingIcon
-                                vertex={vertex}
-                                corner={corner}
-                                ownerColor={ownerColor}
-                            />
-                        )}
-
-                        {isGhost && (
-                            <circle cx={corner.x} cy={corner.y} r={BOARD_CONFIG.GHOST_VERTEX_RADIUS} fill="white" opacity={0.5} className="ghost-vertex" />
-                        )}
-
-                        {isClickable && buildMode === 'city' && (
-                             <circle cx={corner.x} cy={corner.y} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse motion-reduce:animate-none" />
-                        )}
-
-                        {isRecommended && (
-                             <g
-                                className={`coach-highlight transition-opacity duration-200 ${
-                                    isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                                }`}
-                                data-tooltip-id="coach-tooltip"
-                                data-tooltip-content={recommendationData ? vId : ""}
-                             >
-                                <circle
-                                    cx={corner.x} cy={corner.y}
-                                    r={4}
-                                    fill={heatmapColor}
-                                    opacity={0.6}
-                                    stroke="none"
-                                />
-                                {isTop3 ? (
-                                    <circle
-                                        cx={corner.x} cy={corner.y}
-                                        r={5}
-                                        fill="none"
-                                        stroke="#FFD700"
-                                        strokeWidth={2}
-                                        className="animate-pulse motion-reduce:animate-none"
-                                    />
-                                ) : (
-                                    <circle
-                                        cx={corner.x} cy={corner.y}
-                                        r={4}
-                                        fill="none"
-                                        stroke={heatmapColor}
-                                        strokeWidth={0.5}
-                                    />
-                                )}
-                             </g>
-                        )}
-                    </g>
+                    <OverlayVertex
+                        key={i}
+                        vId={vId}
+                        cx={corner.x}
+                        cy={corner.y}
+                        vertex={vertex}
+                        ownerColor={ownerColor}
+                        isClickable={isClickable}
+                        isGhost={isGhost}
+                        onClick={clickAction}
+                        buildMode={buildMode}
+                        recommendation={recommendationData ? {
+                            heatmapColor,
+                            isTop3,
+                            data: recommendationData
+                        } : undefined}
+                        showResourceHeatmap={showResourceHeatmap}
+                    />
                 );
             })}
 
@@ -222,7 +171,7 @@ export const HexOverlays = React.memo(({
                 // Security: Validate eId before access
                 const edge = Object.prototype.hasOwnProperty.call(G.board.edges, eId) ? G.board.edges[eId] : undefined; // eslint-disable-line security/detect-object-injection
                 const isOccupied = !!edge;
-                const ownerColor = isOccupied ? G.players[edge.owner]?.color : null;
+                const ownerColor = (edge && G.players[edge.owner]?.color) || null;
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
 
                 const isSetup = ctx.phase === PHASES.SETUP;
@@ -235,7 +184,6 @@ export const HexOverlays = React.memo(({
 
                 if (isSetup) {
                      if (currentStage === STAGES.PLACE_ROAD && !isOccupied && uiMode === 'placing') {
-                        // REFACTOR: Use Hook
                         if (validRoads.has(eId)) {
                             isClickable = true;
                             isGhost = true;
@@ -247,7 +195,6 @@ export const HexOverlays = React.memo(({
                      }
                 } else if (isActingStage) {
                     if (buildMode === 'road') {
-                        // REFACTOR: Use Hook
                         if (validRoads.has(eId)) {
                              isClickable = true;
                              isGhost = true;
@@ -260,30 +207,17 @@ export const HexOverlays = React.memo(({
                 }
 
                 return (
-                     <g key={`edge-${i}`} onClick={(e) => {
-                        e.stopPropagation();
-                        if (isClickable) clickAction();
-                    }}>
-                        <circle cx={midX} cy={midY} r={2.5} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
-                        {isOccupied && (
-                            <rect
-                                x={midX - 3} y={midY - 1}
-                                width={6} height={2}
-                                fill={ownerColor || 'none'}
-                                transform={`rotate(${angle} ${midX} ${midY})`}
-                                data-testid="occupied-edge"
-                            />
-                        )}
-                         {isGhost && (
-                            <rect
-                                x={midX - 3} y={midY - 1}
-                                width={6} height={2}
-                                fill="white" opacity={0.5}
-                                transform={`rotate(${angle} ${midX} ${midY})`}
-                                data-testid="ghost-edge"
-                            />
-                        )}
-                    </g>
+                    <OverlayEdge
+                        key={`edge-${i}`}
+                        cx={midX}
+                        cy={midY}
+                        angle={angle}
+                        isOccupied={isOccupied}
+                        ownerColor={ownerColor}
+                        isClickable={isClickable}
+                        isGhost={isGhost}
+                        onClick={clickAction}
+                    />
                 );
             })}
         </Hexagon>
