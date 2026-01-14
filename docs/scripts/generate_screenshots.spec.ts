@@ -15,7 +15,7 @@ test.describe('Documentation Screenshots', () => {
     await page.goto('/');
 
     // Select 2 players (Enabled option)
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Wait for board to load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
@@ -30,7 +30,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate coach-heatmap.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Enter Placement Mode (Required for Coach Heatmap to render)
     await page.getByRole('button', { name: 'Begin Placement' }).click();
@@ -65,7 +65,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate coach-tooltip.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Enter Placement Mode (Required for Coach Heatmap to render)
     await page.getByRole('button', { name: 'Begin Placement' }).click();
@@ -102,7 +102,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate mobile-coach-tooltip.png', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Enter Placement Mode to see coach recommendations
     await page.getByRole('button', { name: 'Begin Placement' }).click();
@@ -131,7 +131,7 @@ test.describe('Documentation Screenshots', () => {
     // Mobile Viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Wait for layout
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
@@ -152,7 +152,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate analyst-panel.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Open Analyst Panel (if closed)
     const toggleBtn = page.getByRole('button', { name: 'Toggle Analyst Dashboard' });
@@ -180,7 +180,7 @@ test.describe('Documentation Screenshots', () => {
   test('generate setup-draft.png', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByRole('button', { name: 'Start game with 2 players' }).click();
+    await page.getByRole('button', { name: '2 Players vs 1 Bot' }).click();
 
     // Wait for load
     await expect(page.locator('[data-testid="game-layout"]')).toBeVisible();
