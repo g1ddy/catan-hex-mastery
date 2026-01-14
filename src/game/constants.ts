@@ -7,6 +7,7 @@ export const PHASES = {
 export const STAGES = {
   ROLLING: 'rolling',
   ACTING: 'acting',
+  ROBBER: 'robber',
   // Setup stages
   PLACE_SETTLEMENT: 'placeSettlement',
   PLACE_ROAD: 'placeRoad',
@@ -17,6 +18,7 @@ export const STAGES = {
 export const STAGE_MOVES = {
     [STAGES.ROLLING]: ['rollDice'],
     [STAGES.ACTING]: ['buildRoad', 'buildSettlement', 'buildCity', 'tradeBank', 'endTurn'],
+    [STAGES.ROBBER]: ['dismissRobber'],
     [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard'],
     [STAGES.PLACE_ROAD]: ['placeRoad'],
 } as const;

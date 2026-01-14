@@ -32,12 +32,12 @@ export interface GameControlsProps {
     advice?: StrategicAdvice | null;
 }
 
-const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string }> = ({ onClick, className }) => (
+const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string, label?: string }> = ({ onClick, className, label = "Begin Placement" }) => (
     <button
         onClick={onClick}
         className={className}
     >
-        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>Begin Placement</span>
+        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>{label}</span>
     </button>
 );
 
@@ -58,6 +58,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
+    const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
 
     const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
@@ -108,6 +109,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
     }
 
     if (isGameplay) {
+        // Robber Dismissal
+        if (isRobberStage) {
+             return (
+                <div className={`flex-grow flex pointer-events-auto ${className}`}>
+                    <BeginPlacementButton
+                        onClick={() => safeMove(() => moves.dismissRobber())}
+                        className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-red-600 hover:bg-red-500 backdrop-blur-md border border-red-500/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse motion-reduce:animate-none"
+                        label="Dismiss Robber"
+                    />
+                </div>
+             );
+        }
+
         const resources = G.players[ctx.currentPlayer].resources;
 
         // Helper to check if a move is allowed in the current stage

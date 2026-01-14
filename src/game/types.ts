@@ -73,6 +73,7 @@ export interface GameState {
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
   hasRolled: boolean;
+  robberLocation: string; // Hex ID
 }
 
 // Legacy format: { move: 'name', args: [] }

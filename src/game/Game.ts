@@ -6,6 +6,7 @@ import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
+import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
@@ -30,7 +31,8 @@ const MOVE_MAP = {
     endTurn,
     placeSettlement,
     placeRoad,
-    regenerateBoard
+    regenerateBoard,
+    dismissRobber
 };
 
 // Helper to pick moves from STAGE_MOVES
@@ -78,6 +80,15 @@ export const CatanGame: Game<GameState> = {
 
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+
+    // Find initial robber location (Option B: Triggerable location)
+    // We pick the first hex with a number token so it can be triggered by a roll.
+    // Standard rules place it on Desert (no token), but that would make this feature untestable/unreachable
+    // without implementing robber movement first.
+    // eslint-disable-next-line security/detect-object-injection
+    const robberHex = boardHexes.find(h => h.tokenValue !== null) || boardHexes[0];
+    const robberLocation = robberHex?.id || '';
+
     const boardStats = calculateBoardStats(hexesMap);
 
     const initialResources: Resources = {
@@ -115,7 +126,8 @@ export const CatanGame: Game<GameState> = {
       lastRoll: [0, 0],
       lastRollRewards: {},
       boardStats,
-      hasRolled: false
+      hasRolled: false,
+      robberLocation
     };
   },
 
@@ -155,6 +167,9 @@ export const CatanGame: Game<GameState> = {
            },
            [STAGES.ACTING]: {
               moves: getMovesForStage(STAGES.ACTING)
+           },
+           [STAGES.ROBBER]: {
+              moves: getMovesForStage(STAGES.ROBBER)
            }
         }
       }
