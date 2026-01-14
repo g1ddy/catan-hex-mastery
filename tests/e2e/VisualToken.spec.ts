@@ -12,7 +12,7 @@ test('Verify NumberToken SVG Structure', async ({ page }) => {
   await beginBtn.click();
 
   // Wait for board - using a generic SVG check inside the main content area
-  await expect(page.locator('svg.grid').first()).toBeVisible();
+  await expect(page.locator('svg.hex-grid-svg').first()).toBeVisible();
 
   const verifyToken = async (value: number, pipsCount: number, color: string) => {
     // Find the text element with the value

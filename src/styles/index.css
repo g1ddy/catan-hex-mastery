@@ -8,17 +8,6 @@
   }
 }
 
-/* Fix for react-hexgrid conflict with Tailwind */
-/* react-hexgrid adds className="grid" to the SVG, which Tailwind interprets as display: grid */
-svg.grid {
-  display: block !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 /* Disable tap highlight on interactive SVG elements */
 svg g, svg circle, svg rect, svg polygon {
   -webkit-tap-highlight-color: transparent;
