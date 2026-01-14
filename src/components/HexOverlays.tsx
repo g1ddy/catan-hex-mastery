@@ -136,7 +136,7 @@ export const HexOverlays = React.memo(({
 
                 return (
                     <OverlayVertex
-                        key={i}
+                        key={vId}
                         vId={vId}
                         cx={corner.x}
                         cy={corner.y}
@@ -208,7 +208,7 @@ export const HexOverlays = React.memo(({
 
                 return (
                     <OverlayEdge
-                        key={`edge-${i}`}
+                        key={eId}
                         cx={midX}
                         cy={midY}
                         angle={angle}
