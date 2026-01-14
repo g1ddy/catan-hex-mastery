@@ -7,7 +7,9 @@ describe('Robber Moves', () => {
             setActivePlayers: jest.fn()
         };
 
-        dismissRobber({ events } as any);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const move = dismissRobber as any;
+        move({ events });
 
         expect(events.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: STAGES.ACTING });
     });

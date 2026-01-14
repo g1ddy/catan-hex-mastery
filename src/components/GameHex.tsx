@@ -59,7 +59,7 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, h
                 y={-4}
                 width={8}
                 height={8}
-                className="stroke-slate-800 fill-slate-400 drop-shadow-md"
+                className="text-slate-800 drop-shadow-md fill-slate-400"
                 strokeWidth={1.5}
             />
         )}

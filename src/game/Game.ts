@@ -87,10 +87,7 @@ export const CatanGame: Game<GameState> = {
     // without implementing robber movement first.
     // eslint-disable-next-line security/detect-object-injection
     const robberHex = boardHexes.find(h => h.tokenValue !== null) || boardHexes[0];
-    if (!robberHex) {
-        throw new Error("Board generation failed: no hexes available for robber placement.");
-    }
-    const robberLocation = robberHex.id;
+    const robberLocation = robberHex?.id || '';
 
     const boardStats = calculateBoardStats(hexesMap);
 
