@@ -17,7 +17,6 @@ interface CoachPanelProps {
 
 export const CoachPanel: React.FC<CoachPanelProps> = ({
     G,
-    ctx, // eslint-disable-line @typescript-eslint/no-unused-vars
     showResourceHeatmap,
     setShowResourceHeatmap,
     isCoachModeEnabled,
