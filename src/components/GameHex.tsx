@@ -59,9 +59,8 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, h
                 y={-4}
                 width={8}
                 height={8}
-                className="text-slate-800 drop-shadow-md"
+                className="stroke-slate-800 fill-slate-400 drop-shadow-md"
                 strokeWidth={1.5}
-                fill="#94a3b8" // slate-400
             />
         )}
         </Hexagon>

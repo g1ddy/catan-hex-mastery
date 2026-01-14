@@ -23,8 +23,8 @@ def verify_robber(page):
     # Wait for board
     page.wait_for_selector(".hex-grid-svg", timeout=10000)
 
-    # Allow some render time
-    time.sleep(2)
+    # Wait for the skull to be visible
+    expect(page.locator(".lucide-skull").first).to_be_visible()
 
     # Take screenshot
     page.screenshot(path="verification/robber_board.png")
