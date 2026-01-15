@@ -26,7 +26,7 @@ describe('Setup Phase Logic', () => {
     const robberHexId = G.robberLocation;
     const hexes = G.board.hexes;
     const robberHex = hexes[robberHexId];
-
+    expect(robberHex).toBeDefined();
     expect(robberHex.terrain).toBe(TerrainType.Desert);
     expect(robberHex.tokenValue).toBeNull();
   });

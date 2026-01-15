@@ -82,8 +82,11 @@ export const CatanGame: Game<GameState> = {
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
 
     // Find initial robber location (Standard Rules: Desert)
-    const robberHex = boardHexes.find(h => h.terrain === TerrainType.Desert) || boardHexes[0];
-    const robberLocation = robberHex?.id || '';
+    const robberHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
+    if (!robberHex) {
+      throw new Error('Board setup failed: Desert hex not found.');
+    }
+    const robberLocation = robberHex.id;
 
     const boardStats = calculateBoardStats(hexesMap);
 
