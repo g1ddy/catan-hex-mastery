@@ -1,39 +1,16 @@
 import { Move } from 'boardgame.io';
-import { GameState, RollStatus } from '../types';
-import { STAGES } from '../constants';
-import { distributeResources } from '../mechanics/resources';
+import { GameState } from '../types';
 
 export const rollDice: Move<GameState> = ({ G, random }) => {
-    // Basic validation
-    if (G.rollStatus !== RollStatus.IDLE) return 'INVALID_MOVE';
+    // Basic validation is implicit via stage configuration, but can prevent double rolling if needed.
+    // However, since we transition stages immediately after via onMove, this check is less critical
+    // but good for safety if we stick to one roll per turn.
+    // const canRoll = ... (omitted as stage usually restricts this)
 
     const d1 = random.Die(6);
     const d2 = random.Die(6);
 
     G.lastRoll = [d1, d2];
-    G.rollStatus = RollStatus.ROLLING;
     G.lastRollRewards = {}; // Clear previous rewards
-};
-
-export const resolveRoll: Move<GameState> = ({ G, events }) => {
-    if (G.rollStatus !== RollStatus.ROLLING) return 'INVALID_MOVE';
-
-    const [d1, d2] = G.lastRoll;
-    const rollValue = d1 + d2;
-
-    // Distribute Resources
-    G.lastRollRewards = distributeResources(G, rollValue);
-    G.rollStatus = RollStatus.RESOLVED;
-
-    // Check for Robber Trigger (Standard Rules: 7)
-    if (rollValue === 7) {
-        if (events && events.setActivePlayers) {
-            events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
-        }
-    } else {
-        // Transition to Acting Stage
-        if (events && events.setActivePlayers) {
-            events.setActivePlayers({ currentPlayer: STAGES.ACTING });
-        }
-    }
+    // RollStatus update is handled implicitly by stage transition or onMove
 };

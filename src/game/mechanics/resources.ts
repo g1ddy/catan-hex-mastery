@@ -40,6 +40,9 @@ export function distributeResources(G: GameState, roll: number): Record<string, 
     }
 
     Object.values(G.board.hexes).forEach(hex => {
+        // Skip if Robber is present
+        if (hex.id === G.robberLocation) return;
+
         if (hex.tokenValue === roll) {
             const resource = TERRAIN_CONFIG[hex.terrain];
             if (resource) { // Skip Desert/Sea

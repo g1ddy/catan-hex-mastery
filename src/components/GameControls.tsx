@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GameState, RollStatus } from '../game/types';
 import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
@@ -62,25 +62,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
     const [isEndingTurn, setIsEndingTurn] = useState(false);
 
-    // Stable reference to moves to avoid re-triggering effect on re-renders
-    const movesRef = useRef(moves);
-    useEffect(() => {
-        movesRef.current = moves;
-    }, [moves]);
-
     useEffect(() => {
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
-
-    // Handle Roll Delay
-    useEffect(() => {
-        if (G.rollStatus === RollStatus.ROLLING) {
-            const timer = setTimeout(() => {
-                safeMove(() => movesRef.current.resolveRoll());
-            }, 1000); // 1s delay for animation
-            return () => clearTimeout(timer);
-        }
-    }, [G.rollStatus]);
 
     // Setup Phase
     if (isSetup) {
