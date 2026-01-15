@@ -1,5 +1,5 @@
 import { Game, Move } from 'boardgame.io';
-import { GameState, Player, Resources } from './types';
+import { GameState, Player, Resources, TerrainType } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
@@ -81,13 +81,12 @@ export const CatanGame: Game<GameState> = {
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
 
-    // Find initial robber location (Option B: Triggerable location)
-    // We pick the first hex with a number token so it can be triggered by a roll.
-    // Standard rules place it on Desert (no token), but that would make this feature untestable/unreachable
-    // without implementing robber movement first.
-    // eslint-disable-next-line security/detect-object-injection
-    const robberHex = boardHexes.find(h => h.tokenValue !== null) || boardHexes[0];
-    const robberLocation = robberHex?.id || '';
+    // Find initial robber location (Standard Rules: Desert)
+    const robberHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
+    if (!robberHex) {
+      throw new Error('Board setup failed: Desert hex not found.');
+    }
+    const robberLocation = robberHex.id;
 
     const boardStats = calculateBoardStats(hexesMap);
 
