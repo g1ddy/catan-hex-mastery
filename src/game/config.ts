@@ -50,3 +50,6 @@ export const PIP_MAP: Record<number, number> = {
   6: 5, 8: 5,
   7: 0
 };
+
+export const BANK_TRADE_GIVE_AMOUNT = 4;
+export const BANK_TRADE_RECEIVE_AMOUNT = 1;
