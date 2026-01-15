@@ -161,30 +161,33 @@ export const CatanGame: Game<GameState> = {
         onBegin: ({ G }) => {
            G.rollStatus = 'IDLE';
         },
+        onMove: ({ G, events }) => {
+            // If the move just executed was rolling the dice, logic follows here
+            if (G.rollStatus === 'ROLLING') {
+                const rollValue = G.lastRoll[0] + G.lastRoll[1];
+                G.lastRollRewards = distributeResources(G, rollValue);
+                G.rollStatus = 'RESOLVED';
+
+                // Check for Robber Trigger (Option B: Robber activates if its hex number is rolled OR if 7 is rolled)
+                // eslint-disable-next-line security/detect-object-injection
+                const robberHex = G.board.hexes[G.robberLocation];
+                const isRobberTriggered = rollValue === 7 || (robberHex && robberHex.tokenValue === rollValue);
+
+                if (isRobberTriggered) {
+                    if (events && events.setActivePlayers) {
+                        events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
+                    }
+                } else {
+                    if (events && events.endStage) {
+                        events.endStage();
+                    }
+                }
+            }
+        },
         stages: {
            [STAGES.ROLLING]: {
               moves: getMovesForStage(STAGES.ROLLING),
-              next: STAGES.ACTING,
-              onEnd: ({ G, events }) => {
-                  // If we are ending the rolling stage, calculate rewards
-                  if (G.rollStatus === 'ROLLING') {
-                      const rollValue = G.lastRoll[0] + G.lastRoll[1];
-                      G.lastRollRewards = distributeResources(G, rollValue);
-                      G.rollStatus = 'RESOLVED';
-
-                      // Check for Robber Trigger (Option B: Robber activates if its hex number is rolled)
-                      // eslint-disable-next-line security/detect-object-injection
-                      const robberHex = G.board.hexes[G.robberLocation];
-                      const isRobberTriggered = robberHex && robberHex.tokenValue === rollValue;
-                      
-                      if (isRobberTriggered) {
-                          if (events && events.setActivePlayers) {
-                              events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
-                          }
-                          return;
-                      }
-                  }
-              }
+              next: STAGES.ACTING
            },
            [STAGES.ACTING]: {
               moves: getMovesForStage(STAGES.ACTING)
