@@ -26,7 +26,6 @@ export const resolveRoll: Move<GameState> = ({ G, events }) => {
     G.rollStatus = RollStatus.RESOLVED;
 
     // Check for Robber Trigger (Standard Rules: 7)
-    // User requested: "We can either land on 7 and and enter robber stage"
     if (rollValue === 7) {
         if (events && events.setActivePlayers) {
             events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
