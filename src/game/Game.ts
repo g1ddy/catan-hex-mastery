@@ -1,11 +1,11 @@
 import { Game, Move } from 'boardgame.io';
-import { GameState, Player, Resources, TerrainType } from './types';
+import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
-import { rollDice } from './moves/roll';
+import { rollDice, resolveRoll } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
@@ -24,6 +24,7 @@ const regenerateBoard: Move<GameState> = ({ G }) => {
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
     rollDice,
+    resolveRoll,
     buildRoad,
     buildSettlement,
     buildCity,
@@ -125,7 +126,7 @@ export const CatanGame: Game<GameState> = {
       lastRoll: [0, 0],
       lastRollRewards: {},
       boardStats,
-      hasRolled: false,
+      rollStatus: RollStatus.IDLE,
       robberLocation
     };
   },
@@ -158,7 +159,7 @@ export const CatanGame: Game<GameState> = {
       turn: {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => {
-           G.hasRolled = false;
+           G.rollStatus = RollStatus.IDLE;
         },
         stages: {
            [STAGES.ROLLING]: {

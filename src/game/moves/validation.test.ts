@@ -1,6 +1,6 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { placeRoad, placeSettlement } from './setup';
-import { GameState } from '../types';
+import { GameState, RollStatus } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
@@ -26,7 +26,7 @@ describe('Security Validation: Input Sanitization', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false,
+        rollStatus: RollStatus.IDLE,
         robberLocation: '0',
     };
 

@@ -1,5 +1,5 @@
 import { placeSettlement, placeRoad } from './setup';
-import { GameState } from '../types';
+import { GameState, RollStatus } from '../types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 
@@ -54,7 +54,7 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     lastRoll: [0, 0],
     lastRollRewards: {},
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-    hasRolled: false,
+    rollStatus: RollStatus.IDLE,
     robberLocation: '0',
     ...overrides
 });

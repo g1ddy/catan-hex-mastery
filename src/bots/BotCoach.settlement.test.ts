@@ -3,7 +3,7 @@
  */
 
 import { Ctx } from 'boardgame.io';
-import { GameState, BotMove } from '../game/types';
+import { GameState, BotMove, RollStatus } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
@@ -42,7 +42,7 @@ describe('BotCoach Settlement Test', () => {
             setupOrder: ['0'],
             lastRoll: [1, 1], // Corrected to be a valid tuple
             lastRollRewards: {},
-            hasRolled: false,
+            rollStatus: RollStatus.IDLE,
             boardStats: {
                 totalPips: { wood: 10, brick: 10, sheep: 10, wheat: 10, ore: 10 },
                 fairnessScore: 0.9,

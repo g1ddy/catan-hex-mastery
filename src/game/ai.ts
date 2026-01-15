@@ -1,4 +1,4 @@
-import { GameState, GameAction, BotMove } from './types';
+import { GameState, GameAction, BotMove, RollStatus } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import { isValidPlayer } from '../utils/validation';
@@ -60,7 +60,11 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         }
         case STAGES.ROLLING: {
             // Rolling is mandatory if in this stage
-            moves.push(makeMove('rollDice', []));
+            if (G.rollStatus === RollStatus.ROLLING) {
+                moves.push(makeMove('resolveRoll', []));
+            } else {
+                moves.push(makeMove('rollDice', []));
+            }
             break;
         }
         case STAGES.ACTING: {
