@@ -156,4 +156,17 @@ describe('GameControls Accessibility', () => {
 
         expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource to trade');
     });
+
+    test('Roll button shows "Rolling..." when status is ROLLING', () => {
+        const rollingG = { ...mockG, rollStatus: RollStatus.ROLLING };
+        // Assuming we are in rolling stage
+        const rollingCtx = { ...mockCtx, activePlayers: { '0': STAGES.ROLLING } };
+
+        render(<GameControls {...props} G={rollingG} ctx={rollingCtx} />);
+
+        const rollButton = screen.getByRole('button', { name: /Rolling.../i });
+        expect(rollButton).toBeInTheDocument();
+        expect(rollButton).toBeDisabled();
+        expect(screen.getByTestId('icon-loader')).toBeInTheDocument();
+    });
 });

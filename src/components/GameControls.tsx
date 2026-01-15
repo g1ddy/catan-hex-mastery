@@ -60,24 +60,19 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
     const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
 
-    const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
 
     useEffect(() => {
-        setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
     // Handle Roll Delay
     useEffect(() => {
         if (G.rollStatus === RollStatus.ROLLING) {
-            setIsRolling(true);
             const timer = setTimeout(() => {
                 safeMove(() => moves.resolveRoll());
             }, 1000); // 1s delay for animation
             return () => clearTimeout(timer);
-        } else {
-            setIsRolling(false);
         }
     }, [G.rollStatus, moves]);
 
@@ -207,16 +202,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
         // Roll Logic
-        const isRollingState = G.rollStatus === RollStatus.ROLLING;
-        const rollLabel = isRollingState || isRolling ? "Rolling..." : "Roll";
-        const rollIcon = (isRollingState || isRolling) ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
+        const isRolling = G.rollStatus === RollStatus.ROLLING;
+        const rollLabel = isRolling ? "Rolling..." : "Roll";
+        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
         const handleRoll = () => {
             if (!isMoveAllowed('rollDice')) return;
-            // setIsRolling(true); // Handled by effect
-            if (!safeMove(() => moves.rollDice())) {
-                // setIsRolling(false);
-            }
+            safeMove(() => moves.rollDice());
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
@@ -301,7 +293,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 {showRollButton && (
                     <button
                         onClick={handleRoll}
-                        disabled={G.rollStatus !== RollStatus.IDLE || isRollingState}
+                        disabled={G.rollStatus !== RollStatus.IDLE}
                         aria-label={rollLabel}
                         className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap btn-focus-ring"
                     >
