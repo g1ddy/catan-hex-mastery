@@ -1,11 +1,12 @@
 import { Game, Move } from 'boardgame.io';
-import { GameState, Player, Resources } from './types';
+import { GameState, Player, Resources, TerrainType } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
+import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
@@ -31,7 +32,8 @@ const MOVE_MAP = {
     endTurn,
     placeSettlement,
     placeRoad,
-    regenerateBoard
+    regenerateBoard,
+    dismissRobber
 };
 
 // Helper to pick moves from STAGE_MOVES
@@ -79,6 +81,14 @@ export const CatanGame: Game<GameState> = {
 
     const boardHexes = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+
+    // Find initial robber location (Standard Rules: Desert)
+    const robberHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
+    if (!robberHex) {
+      throw new Error('Board setup failed: Desert hex not found.');
+    }
+    const robberLocation = robberHex.id;
+
     const boardStats = calculateBoardStats(hexesMap);
 
     const initialResources: Resources = {
@@ -117,6 +127,7 @@ export const CatanGame: Game<GameState> = {
       lastRollRewards: {},
       boardStats,
       rollStatus: 'IDLE'
+      robberLocation
     };
   },
 
@@ -165,6 +176,9 @@ export const CatanGame: Game<GameState> = {
            },
            [STAGES.ACTING]: {
               moves: getMovesForStage(STAGES.ACTING)
+           },
+           [STAGES.ROBBER]: {
+              moves: getMovesForStage(STAGES.ROBBER)
            }
         }
       }

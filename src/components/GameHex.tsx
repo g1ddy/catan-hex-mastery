@@ -1,5 +1,6 @@
 import React from 'react';
 import { Hexagon } from 'react-hexgrid';
+import { Skull } from 'lucide-react';
 import { Hex, TerrainType } from '../game/types';
 import { NumberToken } from './NumberToken';
 
@@ -7,6 +8,7 @@ interface GameHexProps {
   hex: Hex;
   onClick: (hex: Hex) => void;
   isProducing?: boolean;
+  hasRobber?: boolean;
 }
 
 const TERRAIN_COLORS: Record<TerrainType, string> = {
@@ -31,7 +33,7 @@ const getPipsCount = (num: number): number => {
   return PIPS_MAP[num] || 0;
 };
 
-const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing }) => {
+const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, hasRobber }) => {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 
@@ -50,6 +52,16 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing })
         >
         {hex.tokenValue && (
             <NumberToken value={hex.tokenValue} pips={pips} />
+        )}
+        {hasRobber && (
+            <Skull
+                x={-4}
+                y={-4}
+                width={8}
+                height={8}
+                className="text-slate-800 drop-shadow-md fill-slate-400"
+                strokeWidth={1.5}
+            />
         )}
         </Hexagon>
     </g>

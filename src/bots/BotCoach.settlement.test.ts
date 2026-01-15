@@ -48,6 +48,7 @@ describe('BotCoach Settlement Test', () => {
                 fairnessScore: 0.9,
                 warnings: [],
             },
+            robberLocation: '0',
         };
 
         // A valid Ctx mock

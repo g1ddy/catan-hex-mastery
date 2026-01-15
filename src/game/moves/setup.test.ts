@@ -55,6 +55,7 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     lastRollRewards: {},
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
     rollStatus: 'IDLE',
+    robberLocation: '0',
     ...overrides
 });
 

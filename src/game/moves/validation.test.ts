@@ -27,6 +27,7 @@ describe('Security Validation: Input Sanitization', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: 'IDLE',
+        robberLocation: '0',
     };
 
     let G: GameState;
