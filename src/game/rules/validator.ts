@@ -164,6 +164,12 @@ export interface ValidMoves {
     validRoads: Set<string>;
 }
 
+const EMPTY_VALID_MOVES: ValidMoves = {
+    validSettlements: new Set(),
+    validCities: new Set(),
+    validRoads: new Set()
+};
+
 /**
  * Returns all valid moves for the current stage, handling both Setup and Gameplay rules.
  * Automatically checks affordability for Gameplay moves unless checkCost is false.
@@ -171,55 +177,34 @@ export interface ValidMoves {
 export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, checkCost = true): ValidMoves => {
     // Validate playerID before any other checks
     if (!isValidPlayer(G, playerID)) {
-        return {
-            validSettlements: new Set(),
-            validCities: new Set(),
-            validRoads: new Set()
-        };
+        return EMPTY_VALID_MOVES;
     }
 
     const currentStage = ctx.activePlayers?.[playerID];
     const currentPhase = ctx.phase;
 
-    switch (currentPhase) {
-        case PHASES.SETUP:
-            switch (currentStage) {
-                case STAGES.PLACE_SETTLEMENT:
-                    return {
-                        validSettlements: getValidSetupSettlementSpots(G),
-                        validCities: new Set(),
-                        validRoads: new Set()
-                    };
-                case STAGES.PLACE_ROAD:
-                    return {
-                        validSettlements: new Set(),
-                        validCities: new Set(),
-                        validRoads: getValidSetupRoadSpots(G, playerID)
-                    };
-                default:
-                    // Fall through to empty return
-                    break;
-            }
-            break;
-
-        case PHASES.GAMEPLAY:
-            switch (currentStage) {
-                case STAGES.ACTING:
-                    return {
-                        validSettlements: getValidSettlementSpots(G, playerID, checkCost),
-                        validCities: getValidCitySpots(G, playerID, checkCost),
-                        validRoads: getValidRoadSpots(G, playerID, checkCost)
-                    };
-                default:
-                    // Fall through to empty return
-                    break;
-            }
-            break;
+    if (currentPhase === PHASES.SETUP) {
+        if (currentStage === STAGES.PLACE_SETTLEMENT) {
+            return {
+                ...EMPTY_VALID_MOVES,
+                validSettlements: getValidSetupSettlementSpots(G)
+            };
+        }
+        if (currentStage === STAGES.PLACE_ROAD) {
+            return {
+                ...EMPTY_VALID_MOVES,
+                validRoads: getValidSetupRoadSpots(G, playerID)
+            };
+        }
+    } else if (currentPhase === PHASES.GAMEPLAY) {
+        if (currentStage === STAGES.ACTING) {
+            return {
+                validSettlements: getValidSettlementSpots(G, playerID, checkCost),
+                validCities: getValidCitySpots(G, playerID, checkCost),
+                validRoads: getValidRoadSpots(G, playerID, checkCost)
+            };
+        }
     }
 
-    return {
-        validSettlements: new Set(),
-        validCities: new Set(),
-        validRoads: new Set()
-    };
+    return EMPTY_VALID_MOVES;
 };
