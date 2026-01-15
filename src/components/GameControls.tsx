@@ -166,6 +166,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const rollLabel = isRollingState ? "Rolling..." : "Roll";
         const rollIcon = isRollingState ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
+        // Effect to handle delayed stage transition when rolling
+        useEffect(() => {
+            if (G.rollStatus === 'ROLLING' && events?.endStage) {
+                const timerId = setTimeout(() => {
+                    events.endStage();
+                }, 1000);
+                return () => clearTimeout(timerId);
+            }
+        }, [G.rollStatus, events]);
+
         const handleRoll = () => {
             // If already rolling, ignore clicks
             if (G.rollStatus !== 'IDLE') return;
@@ -174,16 +184,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
             if (!isMoveAllowed('rollDice')) return;
 
             // 1. Roll Dice (Sets G.rollStatus = 'ROLLING')
+            // The useEffect above will handle the delay and stage transition.
             safeMove(() => moves.rollDice());
-
-            // 2. Delay to show animation
-            setTimeout(() => {
-                 // 3. End Stage (Triggers onEnd -> resource distribution)
-                 // Using strict non-null assertion since we are in gameplay
-                 if (events && events.endStage) {
-                     events.endStage();
-                 }
-            }, 1000);
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
