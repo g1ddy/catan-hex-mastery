@@ -2,14 +2,7 @@ import { GameState, GameAction, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import { isValidPlayer } from '../utils/validation';
-import {
-    getValidSetupSettlementSpots,
-    getValidSetupRoadSpots,
-    getValidSettlementSpots,
-    getValidCitySpots,
-    getValidRoadSpots
-} from './rules/validator';
-import { getAffordableBuilds } from './mechanics/costs';
+import { getValidMovesForStage } from './rules/validator';
 
 // Helper to construct boardgame.io action objects.
 // Previously returned Redux-style actions, now returns simpler BotMove objects ({ move, args }).
@@ -43,17 +36,19 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         return [];
     }
 
+    // Determine all valid "spots" for this stage.
+    // We pass true for checkCost so bots don't try to build things they can't afford.
+    const validMoves = getValidMovesForStage(G, ctx, playerID, true);
+
     switch (stage) {
         case STAGES.PLACE_SETTLEMENT: {
-            const validSpots = getValidSetupSettlementSpots(G);
-            validSpots.forEach(vId => {
+            validMoves.validSettlements.forEach(vId => {
                 moves.push(makeMove('placeSettlement', [vId]));
             });
             break;
         }
         case STAGES.PLACE_ROAD: {
-            const validSpots = getValidSetupRoadSpots(G, playerID);
-            validSpots.forEach(eId => {
+            validMoves.validRoads.forEach(eId => {
                 moves.push(makeMove('placeRoad', [eId]));
             });
             break;
@@ -64,34 +59,20 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             break;
         }
         case STAGES.ACTING: {
-            // eslint-disable-next-line security/detect-object-injection
-            const player = G.players[playerID];
-
-            const affordable = getAffordableBuilds(player.resources);
-
             // 1. Settlements
-            if (affordable.settlement) {
-                const validSpots = getValidSettlementSpots(G, playerID);
-                validSpots.forEach(vId => {
-                    moves.push(makeMove('buildSettlement', [vId]));
-                });
-            }
+            validMoves.validSettlements.forEach(vId => {
+                moves.push(makeMove('buildSettlement', [vId]));
+            });
 
             // 2. Cities
-            if (affordable.city) {
-                const validSpots = getValidCitySpots(G, playerID);
-                validSpots.forEach(vId => {
-                    moves.push(makeMove('buildCity', [vId]));
-                });
-            }
+            validMoves.validCities.forEach(vId => {
+                moves.push(makeMove('buildCity', [vId]));
+            });
 
             // 3. Roads
-            if (affordable.road) {
-                const validSpots = getValidRoadSpots(G, playerID);
-                validSpots.forEach(eId => {
-                    moves.push(makeMove('buildRoad', [eId]));
-                });
-            }
+            validMoves.validRoads.forEach(eId => {
+                moves.push(makeMove('buildRoad', [eId]));
+            });
 
             // Always allow ending turn in ACTING stage
             moves.push(makeMove('endTurn', []));
