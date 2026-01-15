@@ -7,6 +7,24 @@ import { PHASES, STAGES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 
 /**
+ * Internal helper to validate player and check affordability.
+ * Returns true if the player is valid AND (if checkCost is true) can afford the build type.
+ */
+const _canBuild = (G: GameState, playerID: string, type: 'settlement' | 'city' | 'road', checkCost: boolean): boolean => {
+    if (!isValidPlayer(G, playerID)) {
+        return false;
+    }
+
+    if (checkCost) {
+        const affordable = getAffordableBuilds(G.players[playerID].resources);
+        if (!affordable[type]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+/**
  * Returns a set of all vertex IDs where the player can legally build a settlement.
  * Scans the entire board.
  *
@@ -15,15 +33,8 @@ import { isValidPlayer } from '../../utils/validation';
 export const getValidSettlementSpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
 
-    if (!isValidPlayer(G, playerID)) {
+    if (!_canBuild(G, playerID, 'settlement', checkCost)) {
         return validSpots;
-    }
-
-    if (checkCost) {
-        const affordable = getAffordableBuilds(G.players[playerID].resources);
-        if (!affordable.settlement) {
-            return validSpots;
-        }
     }
 
     const checked = new Set<string>();
@@ -53,15 +64,8 @@ export const getValidSettlementSpots = (G: GameState, playerID: string, checkCos
 export const getValidCitySpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
 
-    if (!isValidPlayer(G, playerID)) {
+    if (!_canBuild(G, playerID, 'city', checkCost)) {
         return validSpots;
-    }
-
-    if (checkCost) {
-        const affordable = getAffordableBuilds(G.players[playerID].resources);
-        if (!affordable.city) {
-            return validSpots;
-        }
     }
 
     // Cities can only be built on existing settlements
@@ -82,15 +86,8 @@ export const getValidCitySpots = (G: GameState, playerID: string, checkCost = tr
 export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
 
-    if (!isValidPlayer(G, playerID)) {
+    if (!_canBuild(G, playerID, 'road', checkCost)) {
         return validSpots;
-    }
-
-    if (checkCost) {
-        const affordable = getAffordableBuilds(G.players[playerID].resources);
-        if (!affordable.road) {
-            return validSpots;
-        }
     }
 
     const checked = new Set<string>();
