@@ -5,11 +5,12 @@ import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
-import { rollDice, resolveRoll } from './moves/roll';
+import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
+import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai';
@@ -24,7 +25,6 @@ const regenerateBoard: Move<GameState> = ({ G }) => {
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
     rollDice,
-    resolveRoll,
     buildRoad,
     buildSettlement,
     buildCity,
@@ -160,6 +160,24 @@ export const CatanGame: Game<GameState> = {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => {
            G.rollStatus = RollStatus.IDLE;
+        },
+        onMove: ({ G, ctx, events }) => {
+            const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+            if (activeStage === STAGES.ROLLING) {
+                const [d1, d2] = G.lastRoll;
+                const rollValue = d1 + d2;
+
+                // Distribute Resources
+                G.lastRollRewards = distributeResources(G, rollValue);
+                G.rollStatus = RollStatus.RESOLVED;
+
+                // Check for Robber Trigger (Standard Rules: 7)
+                const nextStage = rollValue === 7 ? STAGES.ROBBER : STAGES.ACTING;
+
+                if (events && events.setActivePlayers) {
+                    events.setActivePlayers({ currentPlayer: nextStage });
+                }
+            }
         },
         stages: {
            [STAGES.ROLLING]: {

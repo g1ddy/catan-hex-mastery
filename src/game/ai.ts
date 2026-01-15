@@ -60,11 +60,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         }
         case STAGES.ROLLING: {
             // Rolling is mandatory if in this stage
-            if (G.rollStatus === RollStatus.ROLLING) {
-                moves.push(makeMove('resolveRoll', []));
-            } else {
-                moves.push(makeMove('rollDice', []));
-            }
+            moves.push(makeMove('rollDice', []));
             break;
         }
         case STAGES.ACTING: {
