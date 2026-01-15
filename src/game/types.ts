@@ -64,6 +64,12 @@ export interface BoardStats {
   warnings: string[];
 }
 
+export enum RollStatus {
+  IDLE = 'idle',
+  ROLLING = 'rolling',
+  RESOLVED = 'resolved'
+}
+
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
@@ -72,7 +78,7 @@ export interface GameState {
   lastRoll: [number, number];
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
-  hasRolled: boolean;
+  rollStatus: RollStatus;
   robberLocation: string; // Hex ID
 }
 

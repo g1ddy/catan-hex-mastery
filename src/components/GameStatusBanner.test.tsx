@@ -2,7 +2,7 @@
 /** @jest-environment jsdom */
 import { render, screen, act } from '@testing-library/react';
 import { GameStatusBanner } from './GameStatusBanner';
-import { GameState } from '../game/types';
+import { GameState, RollStatus } from '../game/types';
 import { PHASES, STAGES } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
@@ -35,7 +35,7 @@ describe('GameStatusBanner', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false,
+        rollStatus: RollStatus.IDLE,
     } as unknown as GameState;
 
     const mockCtx = {

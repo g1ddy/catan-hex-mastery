@@ -2,7 +2,7 @@
 /** @jest-environment jsdom */
 import { render, screen } from '@testing-library/react';
 import { GameControls, BuildMode, UiMode } from './GameControls';
-import { GameState } from '../game/types';
+import { GameState, RollStatus } from '../game/types';
 import { PHASES, STAGES } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
@@ -52,7 +52,7 @@ describe('GameControls Accessibility', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: true,
+        rollStatus: RollStatus.RESOLVED,
     } as unknown as GameState;
 
     const mockCtx = {
@@ -155,5 +155,18 @@ describe('GameControls Accessibility', () => {
         const tradeButtonContainer = screen.getByTestId('trade-button-container');
 
         expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource to trade');
+    });
+
+    test('Roll button shows "Rolling..." when status is ROLLING', () => {
+        const rollingG = { ...mockG, rollStatus: RollStatus.ROLLING };
+        // Assuming we are in rolling stage
+        const rollingCtx = { ...mockCtx, activePlayers: { '0': STAGES.ROLLING } };
+
+        render(<GameControls {...props} G={rollingG} ctx={rollingCtx} />);
+
+        const rollButton = screen.getByRole('button', { name: /Rolling.../i });
+        expect(rollButton).toBeInTheDocument();
+        expect(rollButton).toBeDisabled();
+        expect(screen.getByTestId('icon-loader')).toBeInTheDocument();
     });
 });

@@ -1,5 +1,5 @@
 import { Game, Move } from 'boardgame.io';
-import { GameState, Player, Resources, TerrainType } from './types';
+import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad } from './moves/setup';
@@ -10,6 +10,7 @@ import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
+import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai';
@@ -125,7 +126,7 @@ export const CatanGame: Game<GameState> = {
       lastRoll: [0, 0],
       lastRollRewards: {},
       boardStats,
-      hasRolled: false,
+      rollStatus: RollStatus.IDLE,
       robberLocation
     };
   },
@@ -158,7 +159,25 @@ export const CatanGame: Game<GameState> = {
       turn: {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => {
-           G.hasRolled = false;
+           G.rollStatus = RollStatus.IDLE;
+        },
+        onMove: ({ G, ctx, events }) => {
+            const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+            if (activeStage === STAGES.ROLLING) {
+                const [d1, d2] = G.lastRoll;
+                const rollValue = d1 + d2;
+
+                // Distribute Resources
+                G.lastRollRewards = distributeResources(G, rollValue);
+                G.rollStatus = RollStatus.RESOLVED;
+
+                // Check for Robber Trigger (Standard Rules: 7)
+                const nextStage = rollValue === 7 ? STAGES.ROBBER : STAGES.ACTING;
+
+                if (events && events.setActivePlayers) {
+                    events.setActivePlayers({ currentPlayer: nextStage });
+                }
+            }
         },
         stages: {
            [STAGES.ROLLING]: {

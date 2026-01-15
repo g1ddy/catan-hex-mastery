@@ -1,5 +1,5 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
-import { GameState } from '../types';
+import { GameState, RollStatus } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
@@ -27,7 +27,7 @@ describe('Unit Test: Resource Costs', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false,
+        rollStatus: RollStatus.IDLE,
         robberLocation: '0',
     };
 

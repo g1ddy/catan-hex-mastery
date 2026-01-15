@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GameState } from '../game/types';
+import { GameState, RollStatus } from '../game/types';
 import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
@@ -60,11 +60,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
     const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
 
-    const [isRolling, setIsRolling] = useState(false);
     const [isEndingTurn, setIsEndingTurn] = useState(false);
 
     useEffect(() => {
-        setIsRolling(false);
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
@@ -194,15 +192,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
         // Roll Logic
+        const isRolling = G.rollStatus === RollStatus.ROLLING;
         const rollLabel = isRolling ? "Rolling..." : "Roll";
         const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
         const handleRoll = () => {
             if (!isMoveAllowed('rollDice')) return;
-            setIsRolling(true);
-            if (!safeMove(() => moves.rollDice())) {
-                setIsRolling(false);
-            }
+            safeMove(() => moves.rollDice());
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
@@ -287,7 +283,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 {showRollButton && (
                     <button
                         onClick={handleRoll}
-                        disabled={G.hasRolled || isRolling}
+                        disabled={G.rollStatus !== RollStatus.IDLE}
                         aria-label={rollLabel}
                         className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap btn-focus-ring"
                     >

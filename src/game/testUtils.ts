@@ -1,4 +1,4 @@
-import { GameState, Player, Resources } from './types';
+import { GameState, Player, Resources, RollStatus } from './types';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
 // Legacy exports for existing tests
@@ -20,7 +20,7 @@ export const createTestGameState = (overrides: Partial<GameState> = {}): GameSta
     lastRoll: [0, 0],
     lastRollRewards: {},
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-    hasRolled: false,
+    rollStatus: RollStatus.IDLE,
     robberLocation: '0',
     ...overrides
 });
@@ -69,7 +69,7 @@ export const createMockGameState = (overrides: any = {}): GameState => {
             fairnessScore: 0,
             warnings: [],
         },
-        hasRolled: false,
+        rollStatus: RollStatus.IDLE,
         robberLocation: '0',
     };
 
