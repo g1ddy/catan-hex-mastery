@@ -4,6 +4,7 @@ import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement,
 import { getAffordableBuilds } from '../mechanics/costs';
 import { Ctx } from 'boardgame.io';
 import { PHASES, STAGES } from '../constants';
+import { isValidPlayer } from '../../utils/validation';
 
 /**
  * Returns a set of all vertex IDs where the player can legally build a settlement.
@@ -13,6 +14,10 @@ import { PHASES, STAGES } from '../constants';
  */
 export const getValidSettlementSpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
+
+    if (!isValidPlayer(G, playerID)) {
+        return validSpots;
+    }
 
     if (checkCost) {
         const affordable = getAffordableBuilds(G.players[playerID].resources);
@@ -48,6 +53,10 @@ export const getValidSettlementSpots = (G: GameState, playerID: string, checkCos
 export const getValidCitySpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
 
+    if (!isValidPlayer(G, playerID)) {
+        return validSpots;
+    }
+
     if (checkCost) {
         const affordable = getAffordableBuilds(G.players[playerID].resources);
         if (!affordable.city) {
@@ -72,6 +81,10 @@ export const getValidCitySpots = (G: GameState, playerID: string, checkCost = tr
  */
 export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = true): Set<string> => {
     const validSpots = new Set<string>();
+
+    if (!isValidPlayer(G, playerID)) {
+        return validSpots;
+    }
 
     if (checkCost) {
         const affordable = getAffordableBuilds(G.players[playerID].resources);
@@ -128,6 +141,11 @@ export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<stri
     const validSpots = new Set<string>();
     const checked = new Set<string>();
 
+    // This function also accesses G.players, so we should valid the playerID
+    if (!isValidPlayer(G, playerID)) {
+        return validSpots;
+    }
+
     Object.values(G.board.hexes).forEach(hex => {
         const edges = getEdgesForHex(hex.coords);
         edges.forEach(eId => {
@@ -154,6 +172,15 @@ export interface ValidMoves {
  * Automatically checks affordability for Gameplay moves unless checkCost is false.
  */
 export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, checkCost = true): ValidMoves => {
+    // Validate playerID before any other checks
+    if (!isValidPlayer(G, playerID)) {
+        return {
+            validSettlements: new Set(),
+            validCities: new Set(),
+            validRoads: new Set()
+        };
+    }
+
     const currentStage = ctx.activePlayers?.[playerID];
     const isSetup = ctx.phase === PHASES.SETUP;
 
