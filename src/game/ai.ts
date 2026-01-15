@@ -1,4 +1,4 @@
-import { GameState, GameAction, BotMove, RollStatus } from './types';
+import { GameState, GameAction, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
 import { STAGES } from './constants';
 import { isValidPlayer } from '../utils/validation';
