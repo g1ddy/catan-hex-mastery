@@ -58,7 +58,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
             const timer = setTimeout(() => setShowRollResult(false), ROLL_RESULT_DISPLAY_DURATION);
             return () => clearTimeout(timer);
         }
-    }, [G.lastRoll, sum, isResolved]);
+    }, [G.lastRoll, isResolved]); // removed redundant 'sum' dependency
 
     // Memoize Game Over Emoji
     // We want this to be stable once the game is over.

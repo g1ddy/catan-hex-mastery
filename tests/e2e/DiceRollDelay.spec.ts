@@ -35,10 +35,14 @@ test('Dice roll animation shows delays correctly', async ({ page }) => {
       for (const vertex of vertices) {
         if (await vertex.isVisible()) {
           await vertex.click({ force: true });
-          // Short wait to see if it reacted
-          await page.waitForTimeout(200);
-          const newText = await banner.textContent() || "";
-          if (!newText.includes("Place Settlement")) break; // Moved on
+
+          // Wait for the banner to update, indicating the action was successful.
+          try {
+            await expect(banner).not.toHaveText(/Place Settlement/, { timeout: 250 });
+            break; // Action was successful, exit the loop.
+          } catch (e) {
+            // This click didn't change the state, continue to the next vertex.
+          }
         }
       }
     }
@@ -47,9 +51,14 @@ test('Dice roll animation shows delays correctly', async ({ page }) => {
       for (const edge of edges) {
         if (await edge.isVisible()) {
            await edge.click({ force: true });
-           await page.waitForTimeout(200);
-           const newText = await banner.textContent() || "";
-           if (!newText.includes("Place Road")) break;
+
+           // Wait for the banner to update, indicating the action was successful.
+           try {
+             await expect(banner).not.toHaveText(/Place Road/, { timeout: 250 });
+             break; // Action was successful, exit the loop.
+           } catch (e) {
+             // This click didn't change the state, continue to the next edge.
+           }
         }
       }
     }
@@ -62,9 +71,12 @@ test('Dice roll animation shows delays correctly', async ({ page }) => {
   // 4. Verify "Rolling..." state appears immediately
   await expect(page.getByText('Rolling...')).toBeVisible();
 
-  // 5. Verify the delay lasts at least 800ms (accounting for some execution time)
+  // 5. Verify the delay lasts at least 800ms
   // We check if "Rolling..." is STILL visible after a short wait
   await page.waitForTimeout(800);
+
+  // Assert that the animation is still running
+  await expect(page.getByText('Rolling...')).toBeVisible();
 
   // Should eventually resolve (assuming game logic proceeds)
   // We can check if dice icons appear or text changes back
