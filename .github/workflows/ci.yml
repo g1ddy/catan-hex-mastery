@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: [ "**" ]
 
 permissions:
   contents: write
@@ -21,7 +21,7 @@ jobs:
     - name: Calculate Version
       id: version
       run: |
-        if [[ "${{ github.ref_name }}" == "main" || "${{ github.ref_name }}" == "master" ]]; then
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
           DATE_STR=$(date +'%Y.%m.%d')
           # List tags matching today's pattern vYYYY.MM.DD.*
           # Sort version numbers, taking the last one

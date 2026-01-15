@@ -1,4 +1,5 @@
 import { Move } from 'boardgame.io';
+import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../config';
 import { GameState, Resources } from '../types';
 
 export const RESOURCE_ORDER: (keyof Resources)[] = ['wood', 'brick', 'sheep', 'wheat', 'ore'];
@@ -36,7 +37,7 @@ export const calculateTrade = (resources: Resources): TradeResult => {
     return {
         give: maxRes,
         receive: minRes,
-        canTrade: maxVal >= 4
+        canTrade: maxVal >= BANK_TRADE_GIVE_AMOUNT
     };
 };
 
@@ -45,9 +46,9 @@ export const tradeBank: Move<GameState> = ({ G, ctx }) => {
     const { give, receive, canTrade } = calculateTrade(player.resources);
 
     if (!canTrade) {
-        throw new Error("You need at least 4 of a resource to trade.");
+        throw new Error(`You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade.`);
     }
 
-    player.resources[give] -= 4;
-    player.resources[receive] += 1;
+    player.resources[give] -= BANK_TRADE_GIVE_AMOUNT;
+    player.resources[receive] += BANK_TRADE_RECEIVE_AMOUNT;
 };

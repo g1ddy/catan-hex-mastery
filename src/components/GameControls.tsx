@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, RollStatus } from '../game/types';
-import { BUILD_COSTS } from '../game/config';
+import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
@@ -166,10 +166,10 @@ export const GameControls: React.FC<GameControlsProps> = ({
             ? JSON.stringify({
                 give: tradeResult.give,
                 receive: tradeResult.receive,
-                giveAmount: 4,
-                receiveAmount: 1
+                giveAmount: BANK_TRADE_GIVE_AMOUNT,
+                receiveAmount: BANK_TRADE_RECEIVE_AMOUNT
             })
-            : "Need 4 of a resource to trade";
+            : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade`;
 
         const handleTrade = () => {
             if (canTrade) {
