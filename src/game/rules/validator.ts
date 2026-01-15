@@ -179,31 +179,42 @@ export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, 
     }
 
     const currentStage = ctx.activePlayers?.[playerID];
-    const isSetup = ctx.phase === PHASES.SETUP;
+    const currentPhase = ctx.phase;
 
-    if (isSetup) {
-        if (currentStage === STAGES.PLACE_SETTLEMENT) {
-            return {
-                validSettlements: getValidSetupSettlementSpots(G),
-                validCities: new Set(),
-                validRoads: new Set()
-            };
-        }
-        if (currentStage === STAGES.PLACE_ROAD) {
-            return {
-                validSettlements: new Set(),
-                validCities: new Set(),
-                validRoads: getValidSetupRoadSpots(G, playerID)
-            };
-        }
-    }
+    switch (currentPhase) {
+        case PHASES.SETUP:
+            switch (currentStage) {
+                case STAGES.PLACE_SETTLEMENT:
+                    return {
+                        validSettlements: getValidSetupSettlementSpots(G),
+                        validCities: new Set(),
+                        validRoads: new Set()
+                    };
+                case STAGES.PLACE_ROAD:
+                    return {
+                        validSettlements: new Set(),
+                        validCities: new Set(),
+                        validRoads: getValidSetupRoadSpots(G, playerID)
+                    };
+                default:
+                    // Fall through to empty return
+                    break;
+            }
+            break;
 
-    if (ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING) {
-        return {
-            validSettlements: getValidSettlementSpots(G, playerID, checkCost),
-            validCities: getValidCitySpots(G, playerID, checkCost),
-            validRoads: getValidRoadSpots(G, playerID, checkCost)
-        };
+        case PHASES.GAMEPLAY:
+            switch (currentStage) {
+                case STAGES.ACTING:
+                    return {
+                        validSettlements: getValidSettlementSpots(G, playerID, checkCost),
+                        validCities: getValidCitySpots(G, playerID, checkCost),
+                        validRoads: getValidRoadSpots(G, playerID, checkCost)
+                    };
+                default:
+                    // Fall through to empty return
+                    break;
+            }
+            break;
     }
 
     return {
