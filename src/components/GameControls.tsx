@@ -9,6 +9,7 @@ import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
 import { StrategicAdvice } from '../game/analysis/coach';
+import { formatResourceList, capitalize } from '../utils/stringUtils';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -165,12 +166,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const tradeResult = calculateTrade(resources);
         const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
         const tradeTooltip = canTrade
-            ? JSON.stringify({
-                give: tradeResult.give,
-                receive: tradeResult.receive,
-                giveAmount: 4,
-                receiveAmount: 1
-            })
+            ? `Give: ${capitalize(tradeResult.give)} (4) → Receive: ${capitalize(tradeResult.receive)} (1)`
             : "Need 4 of a resource to trade";
 
         const handleTrade = () => {
@@ -256,7 +252,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                         );
 
                         return (
-                            <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                            <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={formatResourceList(BUILD_COSTS[type])}>
                                 <button
                                     onClick={() => toggleBuildMode(type)}
                                     disabled={!isEnabled}
@@ -300,7 +296,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                      <div
                         className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50 cursor-help"
                         data-tooltip-id="dice-tooltip"
-                        data-tooltip-content={JSON.stringify({ d1: G.lastRoll[0], d2: G.lastRoll[1] })}
+                        data-tooltip-content={`Dice: ${G.lastRoll[0]} + ${G.lastRoll[1]} = ${lastRollSum}`}
                      >
                          <Dice className="text-blue-400" size={20} />
                          <span className="text-xl font-bold text-white">{lastRollSum}</span>
