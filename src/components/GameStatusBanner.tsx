@@ -3,7 +3,7 @@ import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES, ROLL_RESULT_DISPLAY_DURATION } from '../game/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 export interface CustomMessage {
@@ -55,7 +55,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     useEffect(() => {
         if (sum > 0 && isResolved) {
             setShowRollResult(true);
-            const timer = setTimeout(() => setShowRollResult(false), 4000);
+            const timer = setTimeout(() => setShowRollResult(false), ROLL_RESULT_DISPLAY_DURATION);
             return () => clearTimeout(timer);
         }
     }, [G.lastRoll, sum, isResolved]);

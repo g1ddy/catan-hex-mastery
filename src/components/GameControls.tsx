@@ -4,7 +4,7 @@ import { BUILD_COSTS } from '../game/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
-import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
+import { PHASES, STAGES, STAGE_MOVES, ROLL_ANIMATION_DURATION } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { calculateTrade } from '../game/moves/trade';
@@ -162,16 +162,16 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
         // Roll Logic
-        const isRollingState = G.rollStatus === 'ROLLING';
-        const rollLabel = isRollingState ? "Rolling..." : "Roll";
-        const rollIcon = isRollingState ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
+        const isRolling = G.rollStatus === 'ROLLING';
+        const rollLabel = isRolling ? "Rolling..." : "Roll";
+        const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
         // Effect to handle delayed stage transition when rolling
         useEffect(() => {
             if (G.rollStatus === 'ROLLING' && events?.endStage) {
                 const timerId = setTimeout(() => {
                     events.endStage();
-                }, 1000);
+                }, ROLL_ANIMATION_DURATION);
                 return () => clearTimeout(timerId);
             }
         }, [G.rollStatus, events]);
@@ -189,9 +189,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
 
         const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
-        const showLastRoll = (!isMoveAllowed('rollDice') && !isRollingState) && lastRollSum > 0;
+        const showLastRoll = (!isMoveAllowed('rollDice') && !isRolling) && lastRollSum > 0;
         // Show roll button if we are allowed to roll OR if we are currently rolling
-        const showRollButton = (isMoveAllowed('rollDice') || isRollingState) && isRollingStage;
+        const showRollButton = (isMoveAllowed('rollDice') || isRolling) && isRollingStage;
 
         return (
              <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
@@ -258,7 +258,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 {showRollButton && (
                     <button
                         onClick={handleRoll}
-                        disabled={G.hasRolled || isRollingState}
+                        disabled={isRolling}
                         aria-label={rollLabel}
                         className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 text-white px-4 py-3 rounded-lg shadow-lg border border-blue-400/50 transition-all active:scale-95 disabled:active:scale-100 font-bold text-sm whitespace-nowrap btn-focus-ring"
                     >

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 import { DiceIcons } from './DiceIcons';
+import { ROLL_ANIMATION_DURATION } from '../game/constants';
 
 interface ProductionToastProps {
     G: GameState;
@@ -27,20 +28,20 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
 };
 
 export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, isLoading }) => {
-    const [internalIsRolling, setInternalIsRolling] = useState(true);
+    const [isRolling, setIsRolling] = useState(true);
     const rewards = G.lastRollRewards;
     const [d1Val, d2Val] = G.lastRoll;
 
     // Use external prop if present, otherwise internal state
-    const isRolling = isLoading !== undefined ? isLoading : internalIsRolling;
+    const showRolling = isLoading !== undefined ? isLoading : isRolling;
 
     useEffect(() => {
         // Only run internal logic if external control is not active
         if (visible && isLoading === undefined) {
-            setInternalIsRolling(true);
+            setIsRolling(true);
             const timer = setTimeout(() => {
-                setInternalIsRolling(false);
-            }, 1000);
+                setIsRolling(false);
+            }, ROLL_ANIMATION_DURATION);
             return () => clearTimeout(timer);
         }
     }, [visible, G.lastRoll, isLoading]);
@@ -65,7 +66,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, is
             <div className="flex items-center gap-4 text-slate-100">
                 {/* Roll Dice Section */}
                 <div className="flex items-center gap-2">
-                    {isRolling ? (
+                    {showRolling ? (
                         <>
                             <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
                             <span className="font-bold text-lg text-amber-400">Rolling...</span>
@@ -79,7 +80,7 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, is
                 <div className="h-6 w-px bg-slate-600/50" />
 
                 {/* Players & Resources or Emoji - Only show after rolling */}
-                <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${isRolling ? 'opacity-0' : 'opacity-100'}`}>
+                <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${showRolling ? 'opacity-0' : 'opacity-100'}`}>
                     {!hasAnyResources ? (
                         <div className="text-2xl animate-pulse motion-reduce:animate-none" role="img" aria-label="No resources">
                             {randomEmoji}

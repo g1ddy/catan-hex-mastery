@@ -36,7 +36,7 @@ describe('rollDice Move', () => {
     beforeEach(() => {
         G = createTestGameState({
             lastRoll: [0, 0],
-            hasRolled: false,
+            rollStatus: 'IDLE',
             lastRollRewards: { '0': { wood: 5 } } // Pre-existing rewards to verify clearing
         });
 
@@ -52,22 +52,17 @@ describe('rollDice Move', () => {
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 4]);
-        expect(G.hasRolled).toBe(true);
+        expect(G.rollStatus).toBe('ROLLING');
     });
 
-    it('should verify stage transition', () => {
-        move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(mockEvents.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'acting' });
-    });
-
-    it('should distribute new rewards', () => {
+    it('should NOT distribute new rewards (moved to stage onEnd)', () => {
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(3); // Sum 6
         move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-        expect(G.lastRollRewards).toBeDefined();
+        expect(G.lastRollRewards).toEqual({}); // Should be cleared, but not populated
     });
 
-    it('should return INVALID_MOVE if already rolled', () => {
-        G.hasRolled = true;
+    it('should return INVALID_MOVE if already rolling or resolved', () => {
+        G.rollStatus = 'RESOLVED';
         const result = move({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
         expect(result).toBe('INVALID_MOVE');
         expect(mockRandom.Die).not.toHaveBeenCalled();

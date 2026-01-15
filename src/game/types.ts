@@ -74,7 +74,6 @@ export interface GameState {
   lastRoll: [number, number];
   lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
-  hasRolled: boolean;
   rollStatus: RollStatus;
 }
 

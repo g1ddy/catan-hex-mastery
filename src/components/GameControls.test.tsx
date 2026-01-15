@@ -52,7 +52,6 @@ describe('GameControls Accessibility', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: true,
         rollStatus: 'IDLE',
     } as unknown as GameState;
 

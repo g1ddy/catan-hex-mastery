@@ -18,7 +18,7 @@ describe('placement rules', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false
+        rollStatus: 'IDLE'
     } as unknown as GameState);
 
     describe('isValidSettlementLocation', () => {

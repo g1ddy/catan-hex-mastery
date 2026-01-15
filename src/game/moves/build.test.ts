@@ -30,7 +30,7 @@ describe('Gameplay Moves', () => {
             setupOrder: ['0'],
             lastRoll: [0, 0],
             boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-            hasRolled: true
+            rollStatus: 'IDLE'
         } as unknown as GameState;
         ctx = { currentPlayer: '0' };
     });

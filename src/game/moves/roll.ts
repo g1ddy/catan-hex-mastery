@@ -3,13 +3,12 @@ import { GameState } from '../types';
 
 export const rollDice: Move<GameState> = ({ G, random }) => {
     // Basic validation
-    if (G.hasRolled) return 'INVALID_MOVE';
+    if (G.rollStatus !== 'IDLE') return 'INVALID_MOVE';
 
     const d1 = random.Die(6);
     const d2 = random.Die(6);
 
     G.lastRoll = [d1, d2];
-    G.hasRolled = true;
     G.rollStatus = 'ROLLING';
     G.lastRollRewards = {}; // Clear previous rewards
 

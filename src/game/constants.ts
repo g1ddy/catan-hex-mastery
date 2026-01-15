@@ -20,3 +20,6 @@ export const STAGE_MOVES = {
     [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard'],
     [STAGES.PLACE_ROAD]: ['placeRoad'],
 } as const;
+
+export const ROLL_ANIMATION_DURATION = 1000;
+export const ROLL_RESULT_DISPLAY_DURATION = 4000;

@@ -3,7 +3,7 @@
 import { render, screen, act } from '@testing-library/react';
 import { GameStatusBanner } from './GameStatusBanner';
 import { GameState } from '../game/types';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES, ROLL_RESULT_DISPLAY_DURATION } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 
@@ -35,7 +35,6 @@ describe('GameStatusBanner', () => {
         lastRoll: [0, 0],
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false,
         rollStatus: 'IDLE',
     } as unknown as GameState;
 
@@ -94,7 +93,7 @@ describe('GameStatusBanner', () => {
 
         // Fast-forward time to check it disappears (4s total duration controlled by GameStatusBanner)
         act(() => {
-            jest.advanceTimersByTime(4000);
+            jest.advanceTimersByTime(ROLL_RESULT_DISPLAY_DURATION);
         });
 
         expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();

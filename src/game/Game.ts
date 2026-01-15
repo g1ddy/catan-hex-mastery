@@ -116,7 +116,6 @@ export const CatanGame: Game<GameState> = {
       lastRoll: [0, 0],
       lastRollRewards: {},
       boardStats,
-      hasRolled: false,
       rollStatus: 'IDLE'
     };
   },
@@ -149,7 +148,6 @@ export const CatanGame: Game<GameState> = {
       turn: {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => {
-           G.hasRolled = false;
            G.rollStatus = 'IDLE';
         },
         stages: {
@@ -157,7 +155,8 @@ export const CatanGame: Game<GameState> = {
               moves: getMovesForStage(STAGES.ROLLING),
               next: STAGES.ACTING,
               onEnd: ({ G }) => {
-                  if (G.hasRolled) {
+                  // If we are ending the rolling stage, calculate rewards
+                  if (G.rollStatus === 'ROLLING') {
                       const rollValue = G.lastRoll[0] + G.lastRoll[1];
                       G.lastRollRewards = distributeResources(G, rollValue);
                       G.rollStatus = 'RESOLVED';
