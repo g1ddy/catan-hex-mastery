@@ -57,7 +57,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     className = '',
     isCoachModeEnabled = false,
     advice = null,
-    
+    events,
 }) => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
