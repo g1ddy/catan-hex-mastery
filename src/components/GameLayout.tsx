@@ -1,4 +1,5 @@
 import React from 'react';
+import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
@@ -84,12 +85,12 @@ const renderTradeTooltip = ({ content }: { content: string | null }) => {
                 return (
                     <div className="flex items-center gap-2">
                         <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.giveAmount || 4}</span>
+                            <span className="font-bold">{parsed.giveAmount || BANK_TRADE_GIVE_AMOUNT}</span>
                             <giveMeta.Icon className={giveMeta.color} size={16} />
                         </span>
                         <ArrowRight size={16} className="text-slate-400" />
                         <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.receiveAmount || 1}</span>
+                            <span className="font-bold">{parsed.receiveAmount || BANK_TRADE_RECEIVE_AMOUNT}</span>
                             <receiveMeta.Icon className={receiveMeta.color} size={16} />
                         </span>
                     </div>
