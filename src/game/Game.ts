@@ -172,15 +172,10 @@ export const CatanGame: Game<GameState> = {
                 G.rollStatus = RollStatus.RESOLVED;
 
                 // Check for Robber Trigger (Standard Rules: 7)
-                if (rollValue === 7) {
-                    if (events && events.setActivePlayers) {
-                        events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
-                    }
-                } else {
-                    // Transition to Acting Stage
-                    if (events && events.setActivePlayers) {
-                        events.setActivePlayers({ currentPlayer: STAGES.ACTING });
-                    }
+                const nextStage = rollValue === 7 ? STAGES.ROBBER : STAGES.ACTING;
+
+                if (events && events.setActivePlayers) {
+                    events.setActivePlayers({ currentPlayer: nextStage });
                 }
             }
         },

@@ -45,12 +45,13 @@ describe('rollDice', () => {
         mockEvents.setActivePlayers.mockReset();
     });
 
-    it('should generate numbers and clear rewards', () => {
+    it('should generate numbers, set ROLLING status, and clear rewards', () => {
         mockRandom.Die.mockReturnValueOnce(3).mockReturnValueOnce(4);
 
         rollMove({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
 
         expect(G.lastRoll).toEqual([3, 4]);
+        expect(G.rollStatus).toBe(RollStatus.ROLLING);
         expect(G.lastRollRewards).toEqual({}); // Cleared
 
         // rollDice itself does NOT handle stage transitions or resource distribution anymore.

@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io';
-import { GameState } from '../types';
+import { GameState, RollStatus } from '../types';
 
 export const rollDice: Move<GameState> = ({ G, random }) => {
     // Basic validation is implicit via stage configuration, but can prevent double rolling if needed.
@@ -11,6 +11,7 @@ export const rollDice: Move<GameState> = ({ G, random }) => {
     const d2 = random.Die(6);
 
     G.lastRoll = [d1, d2];
+    G.rollStatus = RollStatus.ROLLING;
     G.lastRollRewards = {}; // Clear previous rewards
     // RollStatus update is handled implicitly by stage transition or onMove
 };
