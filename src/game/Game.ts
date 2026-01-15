@@ -165,7 +165,7 @@ export const CatanGame: Game<GameState> = {
            [STAGES.ROLLING]: {
               moves: getMovesForStage(STAGES.ROLLING),
               next: STAGES.ACTING,
-              onEnd: ({ G }) => {
+              onEnd: ({ G, events }) => {
                   // If we are ending the rolling stage, calculate rewards
                   if (G.rollStatus === 'ROLLING') {
                       const rollValue = G.lastRoll[0] + G.lastRoll[1];
