@@ -4,15 +4,47 @@ import { GameState } from './types';
 import { STAGES } from './constants';
 
 // Mock validator functions
-jest.mock('./rules/validator', () => ({
-    getValidSetupSettlementSpots: jest.fn(() => new Set(['1_1_1'])),
-    getValidSetupRoadSpots: jest.fn(() => new Set(['edge_1'])),
-    getValidSettlementSpots: jest.fn(() => new Set(['2_2_2'])),
-    getValidCitySpots: jest.fn(() => new Set(['3_3_3'])),
-    getValidRoadSpots: jest.fn(() => new Set(['edge_2'])),
-    getEdgesForHex: jest.fn(() => []),
-    getVerticesForHex: jest.fn(() => [])
-}));
+jest.mock('./rules/validator', () => {
+    return {
+        getValidSetupSettlementSpots: jest.fn(() => new Set(['1_1_1'])),
+        getValidSetupRoadSpots: jest.fn(() => new Set(['edge_1'])),
+        getValidSettlementSpots: jest.fn(() => new Set(['2_2_2'])),
+        getValidCitySpots: jest.fn(() => new Set(['3_3_3'])),
+        getValidRoadSpots: jest.fn(() => new Set(['edge_2'])),
+        getEdgesForHex: jest.fn(() => []),
+        getVerticesForHex: jest.fn(() => []),
+        // Mock the new consolidated function
+        getValidMovesForStage: jest.fn((_G, ctx, playerID) => {
+            const stage = ctx.activePlayers?.[playerID];
+            if (stage === 'placeSettlement') {
+                return {
+                    validSettlements: new Set(['1_1_1']),
+                    validCities: new Set(),
+                    validRoads: new Set()
+                };
+            }
+            if (stage === 'placeRoad') {
+                return {
+                    validSettlements: new Set(),
+                    validCities: new Set(),
+                    validRoads: new Set(['edge_1'])
+                };
+            }
+            if (stage === 'acting') {
+                return {
+                    validSettlements: new Set(['2_2_2']),
+                    validCities: new Set(['3_3_3']),
+                    validRoads: new Set(['edge_2'])
+                };
+            }
+            return {
+                validSettlements: new Set(),
+                validCities: new Set(),
+                validRoads: new Set()
+            };
+        })
+    };
+});
 
 // Mock costs
 jest.mock('./mechanics/costs', () => ({
