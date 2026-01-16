@@ -1,6 +1,6 @@
 import { GameState, GameAction, BotMove } from './types';
 import { Ctx } from 'boardgame.io';
-import { STAGES } from './constants';
+import { STAGES, STAGE_MOVES } from './constants';
 import { isValidPlayer } from '../utils/validation';
 import { getValidMovesForStage } from './rules/validator';
 
@@ -81,6 +81,19 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
 
             // Always allow ending turn in ACTING stage
             moves.push(makeMove('endTurn', []));
+            break;
+        }
+        default: {
+            // Safety fallback: Check if the stage has exactly one move defined in constants.
+            // If so, assume it's a simple state transition (like rollDice or dismissRobber) that takes no args.
+            // This prevents bots from getting stuck if a new stage is added but not explicitly handled here.
+            const possibleMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
+            if (possibleMoves && possibleMoves.length === 1) {
+                console.warn(`Stage '${stage}' not explicitly handled in AI enumerate. Auto-generating move '${possibleMoves[0]}'.`);
+                moves.push(makeMove(possibleMoves[0], []));
+            } else {
+                console.error(`Stage '${stage}' is unhandled in AI enumerate and has ambiguous moves.`);
+            }
             break;
         }
     }

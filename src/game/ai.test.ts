@@ -56,6 +56,18 @@ jest.mock('./mechanics/costs', () => ({
     }))
 }));
 
+jest.mock('./constants', () => {
+    const original = jest.requireActual('./constants');
+    return {
+        ...original,
+        STAGE_MOVES: {
+            ...original.STAGE_MOVES,
+            'test_single': ['singleMove'],
+            'test_multi': ['move1', 'move2']
+        }
+    };
+});
+
 // Helper to create expected action objects
 // UPDATED: Now expects simple BotMove objects { move, args }
 const expectedAction = (move: string, args: any[] = []) => ({
@@ -122,5 +134,23 @@ describe('ai.enumerate', () => {
         ctx.activePlayers['0'] = STAGES.ROBBER;
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([expectedAction('dismissRobber', [])]);
+    });
+
+    it('should auto-generate move for unhandled stage with single move', () => {
+        ctx.activePlayers['0'] = 'test_single';
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+        const moves = enumerate(G, ctx, '0');
+        expect(moves).toEqual([expectedAction('singleMove', [])]);
+        expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_single\' not explicitly handled'));
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should log error and return empty for unhandled stage with multiple moves', () => {
+        ctx.activePlayers['0'] = 'test_multi';
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+        const moves = enumerate(G, ctx, '0');
+        expect(moves).toEqual([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_multi\' is unhandled'));
+        consoleErrorSpy.mockRestore();
     });
 });
