@@ -58,16 +58,15 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
 
     // Dismiss toast on turn change
-    const prevCurrentPlayer = useRef(ctx.currentPlayer);
-    const prevPhase = useRef(ctx.phase);
+    const isFirstRun = useRef(true);
 
     useEffect(() => {
-        if (prevCurrentPlayer.current !== ctx.currentPlayer || prevPhase.current !== ctx.phase) {
-            setShowRollResult(false);
-            prevCurrentPlayer.current = ctx.currentPlayer;
-            prevPhase.current = ctx.phase;
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
         }
-    }, [ctx.currentPlayer, ctx.phase]);
+        setShowRollResult(false);
+    }, [ctx.currentPlayer]);
 
     // Memoize Game Over Emoji
     // We want this to be stable once the game is over.
