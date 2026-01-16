@@ -4,7 +4,7 @@ import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { getValidMovesForStage } from '../rules/validator';
-import { calculateTrade } from '../moves/trade';
+import { calculateTrade } from '../mechanics/trade';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = (moveName: string, args: any[]): BotMove => ({

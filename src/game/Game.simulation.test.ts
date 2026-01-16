@@ -2,7 +2,7 @@ import { Client } from 'boardgame.io/client';
 import { CatanGame } from './Game';
 import { DebugBot } from '../bots/DebugBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
-import { enumerate } from './ai';
+import { enumerate } from './ai/enumerator';
 
 describe('Game Simulation with DebugBot', () => {
   it('should run a 2-player game without crashing', async () => {

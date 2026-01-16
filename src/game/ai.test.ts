@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import { enumerate } from './ai';
+import { enumerate } from './ai/enumerator';
 import { GameState } from './types';
 import { STAGES } from './constants';
 
