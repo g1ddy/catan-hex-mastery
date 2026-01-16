@@ -104,6 +104,27 @@ describe('GameStatusBanner', () => {
         jest.useRealTimers();
     });
 
+    test('dismisses roll result when turn ends (player changes)', () => {
+        jest.useFakeTimers();
+        // Start with a roll active
+        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
+        const { rerender } = render(<GameStatusBanner {...props} G={rolledG} />);
+
+        // Verify toast is present
+        expect(screen.getByText('Rolling...')).toBeInTheDocument();
+
+        // Change Player (End Turn)
+        const nextPlayerCtx = { ...mockCtx, currentPlayer: '1' };
+        rerender(<GameStatusBanner {...props} G={rolledG} ctx={nextPlayerCtx} />);
+
+        // Verify toast is gone immediately
+        expect(screen.queryByText('Rolling...')).not.toBeInTheDocument();
+        // Should show waiting message for player 0 (since it's player 1's turn now)
+        expect(screen.getByText('Wait for your turn...')).toBeInTheDocument();
+
+        jest.useRealTimers();
+    });
+
     test('renders Win message', () => {
         const gameOverCtx = { ...mockCtx, gameover: { winner: '0' } };
         const gameOverProps = { ...props, ctx: gameOverCtx };

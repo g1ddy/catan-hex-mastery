@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
@@ -56,6 +56,18 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
             return () => clearTimeout(timer);
         }
     }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
+
+    // Dismiss toast on turn change
+    const prevCurrentPlayer = useRef(ctx.currentPlayer);
+    const prevPhase = useRef(ctx.phase);
+
+    useEffect(() => {
+        if (prevCurrentPlayer.current !== ctx.currentPlayer || prevPhase.current !== ctx.phase) {
+            setShowRollResult(false);
+            prevCurrentPlayer.current = ctx.currentPlayer;
+            prevPhase.current = ctx.phase;
+        }
+    }, [ctx.currentPlayer, ctx.phase]);
 
     // Memoize Game Over Emoji
     // We want this to be stable once the game is over.
