@@ -59,17 +59,24 @@ export const isValidSettlementLocation = (G: GameState, vertexId: string): boole
  * @param G The game state.
  * @param vertexId The ID of the vertex.
  * @param playerID The player ID.
- * @returns True if valid and connected.
+ * @returns ValidationResult
  */
-export const isValidSettlementPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
-    if (!isValidSettlementLocation(G, vertexId)) return false;
+export const isValidSettlementPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
+    const locationCheck = validateSettlementLocation(G, vertexId);
+    if (!locationCheck.isValid) return locationCheck;
 
     // Check connectivity to own road
     const adjEdges = getEdgesForVertex(vertexId);
-    return adjEdges.some(eId => {
+    const hasOwnRoad = adjEdges.some(eId => {
         const edge = G.board.edges[eId];
         return edge && edge.owner === playerID;
     });
+
+    if (!hasOwnRoad) {
+        return { isValid: false, reason: "Settlement must connect to your own road" };
+    }
+
+    return { isValid: true };
 };
 
 /**
@@ -80,16 +87,24 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
  * @param G The game state.
  * @param vertexId The ID of the vertex to check.
  * @param playerID The ID of the player attempting to build.
- * @returns True if valid.
+ * @returns ValidationResult
  */
-export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
+export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
     // 0. Security Validation
     if (!isValidHexId(vertexId)) {
-        return false;
+        return { isValid: false, reason: "Invalid vertex ID format" };
     }
     const vertex = G.board.vertices[vertexId];
-    if (!vertex) return false;
-    return vertex.type === 'settlement' && vertex.owner === playerID;
+    if (!vertex) {
+        return { isValid: false, reason: "No settlement exists at this location" };
+    }
+    if (vertex.type !== 'settlement') {
+        return { isValid: false, reason: "Only settlements can be upgraded to cities" };
+    }
+    if (vertex.owner !== playerID) {
+        return { isValid: false, reason: "You can only upgrade your own settlements" };
+    }
+    return { isValid: true };
 };
 
 /**

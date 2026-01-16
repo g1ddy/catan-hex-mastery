@@ -1,4 +1,10 @@
-import { isValidSettlementLocation, isValidCityPlacement, isValidRoadPlacement, isValidSetupRoadPlacement } from './spatial';
+import {
+    isValidSettlementLocation,
+    isValidCityPlacement,
+    isValidRoadPlacement,
+    isValidSetupRoadPlacement,
+    isValidSettlementPlacement
+} from './spatial';
 import { GameState } from '../types';
 
 describe('spatial rules', () => {
@@ -41,19 +47,50 @@ describe('spatial rules', () => {
         });
     });
 
+    describe('isValidSettlementPlacement', () => {
+        it('returns false if not connected to own road', () => {
+            const G = mockG();
+            const targetVertex = '0,0,0::1,-1,0::1,0,-1';
+            // No roads
+            const result = isValidSettlementPlacement(G, targetVertex, 'p1');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toContain('connect to your own road');
+        });
+
+        it('returns true if connected to own road', () => {
+             const targetVertex = '0,0,0::1,-1,0::1,0,-1';
+             const connectedEdge = '0,0,0::1,-1,0';
+             const G = mockG({}, { [connectedEdge]: { owner: 'p1' } }); // Mock road
+             const result = isValidSettlementPlacement(G, targetVertex, 'p1');
+             expect(result.isValid).toBe(true);
+        });
+
+        it('returns false if occupied (delegates to location check)', () => {
+             const vertexId = '0,0,0::1,0,-1::0,1,-1';
+             const edgeId = '0,0,0::1,0,-1';
+             const G = mockG({ [vertexId]: { owner: 'p1', type: 'settlement' } }, { [edgeId]: { owner: 'p1' } });
+             const result = isValidSettlementPlacement(G, vertexId, 'p1');
+             expect(result.isValid).toBe(false);
+        });
+    });
+
     describe('isValidCityPlacement', () => {
         const validVertexId = '0,0,0::1,-1,0::1,0,-1';
         it('returns true for own settlement', () => {
             const G = mockG({ [validVertexId]: { owner: 'p1', type: 'settlement' } });
-            expect(isValidCityPlacement(G, validVertexId, 'p1')).toBe(true);
+            expect(isValidCityPlacement(G, validVertexId, 'p1').isValid).toBe(true);
         });
         it('returns false for other player settlement', () => {
             const G = mockG({ [validVertexId]: { owner: 'p2', type: 'settlement' } });
-            expect(isValidCityPlacement(G, validVertexId, 'p1')).toBe(false);
+            const result = isValidCityPlacement(G, validVertexId, 'p1');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("You can only upgrade your own settlements");
         });
         it('returns false for city (already upgraded)', () => {
             const G = mockG({ [validVertexId]: { owner: 'p1', type: 'city' } });
-            expect(isValidCityPlacement(G, validVertexId, 'p1')).toBe(false);
+            const result = isValidCityPlacement(G, validVertexId, 'p1');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("Only settlements can be upgraded to cities");
         });
     });
 
@@ -88,7 +125,7 @@ describe('spatial rules', () => {
 
             it(`isValidCityPlacement should return false for malicious input: ${input}`, () => {
                 const G = mockG();
-                expect(isValidCityPlacement(G, input, 'p1')).toBe(false);
+                expect(isValidCityPlacement(G, input, 'p1').isValid).toBe(false);
             });
 
             it(`isValidRoadPlacement should return false for malicious input: ${input}`, () => {
