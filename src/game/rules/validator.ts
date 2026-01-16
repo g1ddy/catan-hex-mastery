@@ -9,7 +9,7 @@ import {
     isValidRoadPlacement,
     ValidationResult
 } from './spatial';
-import { getVerticesForHex, getEdgesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
+import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
 import { getAffordableBuilds } from '../mechanics/costs';
 import { PHASES, STAGES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
@@ -211,7 +211,6 @@ export const getValidSetupSettlementSpots = (G: GameState): Set<string> => {
  */
 export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<string> => {
     const validSpots = new Set<string>();
-    const checked = new Set<string>();
 
     // This function also accesses G.players, so we should valid the playerID
     if (!isValidPlayer(G, playerID)) {
