@@ -4,6 +4,7 @@ import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { getValidMovesForStage } from '../rules/validator';
+import { calculateTrade } from '../moves/trade';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = (moveName: string, args: any[]): BotMove => ({
@@ -11,16 +12,12 @@ const makeMove = (moveName: string, args: any[]): BotMove => ({
     args
 });
 
-// Explicit list of moves that require arguments (Spatial or Transactional)
+// Explicit list of moves that require arguments OR specific validation logic
 const PARAMETERIZED_MOVES = new Set([
     'placeSettlement', 'buildSettlement',
     'buildCity',
     'placeRoad', 'buildRoad',
-    // 'tradeBank' - tradeBank currently handled as 0-arg in some contexts or requires UI args the bot doesn't know.
-    // If tradeBank requires args, it should be in here and handled.
-    // If it's 0-arg (opening a menu), it falls through.
-    // Assuming for now AI doesn't know how to trade effectively with specific args yet,
-    // but we want it to at least be enumerated if it's 0-arg valid.
+    'tradeBank' // Requires validation even if 0-arg
 ]);
 
 /**
@@ -49,14 +46,14 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
 
     // Calculate valid spots once if needed (optimization)
     // Only verify if we actually have spatial moves to process
-    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m));
+    const hasSpatialMoves = moveTypesList.some(m => ['placeSettlement', 'buildSettlement', 'buildCity', 'placeRoad', 'buildRoad'].includes(m));
     const validSpots = hasSpatialMoves
         ? getValidMovesForStage(G, ctx, playerID, true)
         : { validSettlements: new Set(), validCities: new Set(), validRoads: new Set() }; // Empty dummy
 
     // Iterate through ALL potential moves for this stage
     moveTypesList.forEach(moveName => {
-        // 1. Handle Parameterized Moves (Spatial)
+        // 1. Handle Parameterized/Special Moves
         if (PARAMETERIZED_MOVES.has(moveName)) {
             switch (moveName) {
                 case 'placeSettlement':
@@ -70,11 +67,20 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
                 case 'buildRoad':
                     validSpots.validRoads.forEach(eId => moves.push(makeMove(moveName, [eId])));
                     break;
+                case 'tradeBank': {
+                    // Check if trade is actually possible before enumerating
+                    // eslint-disable-next-line security/detect-object-injection
+                    const player = G.players[playerID];
+                    if (player && calculateTrade(player.resources).canTrade) {
+                        moves.push(makeMove(moveName, []));
+                    }
+                    break;
+                }
             }
         }
         // 2. Handle Non-Parameterized Moves (Everything else)
         else {
-            // Assume 0-argument validity (e.g., rollDice, endTurn, dismissRobber, tradeBank, regenerateBoard)
+            // Assume 0-argument validity (e.g., rollDice, endTurn, dismissRobber, regenerateBoard)
             moves.push(makeMove(moveName, []));
         }
     });
