@@ -168,7 +168,7 @@ export class BotCoach {
             topMoves,
             sortedMoves,
             'buildSettlement',
-            () => this.coach.getAllSettlementScores(playerID, ctx) // Ignore candidates arg, getAll scores all valid
+            (_candidates) => this.coach.getAllSettlementScores(playerID, ctx) // Ignore candidates arg, getAll scores all valid
         );
         if (refinedSettlements) return refinedSettlements;
 
