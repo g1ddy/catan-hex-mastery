@@ -5,6 +5,14 @@ import { isValidHexId } from '../../utils/validation';
 /* eslint-disable security/detect-object-injection */
 
 /**
+ * Represents the result of a validation check.
+ */
+export interface ValidationResult {
+    isValid: boolean;
+    reason?: string;
+}
+
+/**
  * Checks if a settlement can be placed at the given vertex based on physical rules.
  * Enforces:
  * 1. Spot is not already occupied.
@@ -51,17 +59,24 @@ export const isValidSettlementLocation = (G: GameState, vertexId: string): boole
  * @param G The game state.
  * @param vertexId The ID of the vertex.
  * @param playerID The player ID.
- * @returns True if valid and connected.
+ * @returns ValidationResult
  */
-export const isValidSettlementPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
-    if (!isValidSettlementLocation(G, vertexId)) return false;
+export const isValidSettlementPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
+    const locationCheck = validateSettlementLocation(G, vertexId);
+    if (!locationCheck.isValid) return locationCheck;
 
     // Check connectivity to own road
     const adjEdges = getEdgesForVertex(vertexId);
-    return adjEdges.some(eId => {
+    const hasOwnRoad = adjEdges.some(eId => {
         const edge = G.board.edges[eId];
         return edge && edge.owner === playerID;
     });
+
+    if (!hasOwnRoad) {
+        return { isValid: false, reason: "Settlement must connect to your own road" };
+    }
+
+    return { isValid: true };
 };
 
 /**
@@ -72,16 +87,24 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
  * @param G The game state.
  * @param vertexId The ID of the vertex to check.
  * @param playerID The ID of the player attempting to build.
- * @returns True if valid.
+ * @returns ValidationResult
  */
-export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): boolean => {
+export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
     // 0. Security Validation
     if (!isValidHexId(vertexId)) {
-        return false;
+        return { isValid: false, reason: "Invalid vertex ID format" };
     }
     const vertex = G.board.vertices[vertexId];
-    if (!vertex) return false;
-    return vertex.type === 'settlement' && vertex.owner === playerID;
+    if (!vertex) {
+        return { isValid: false, reason: "No settlement exists at this location" };
+    }
+    if (vertex.type !== 'settlement') {
+        return { isValid: false, reason: "Only settlements can be upgraded to cities" };
+    }
+    if (vertex.owner !== playerID) {
+        return { isValid: false, reason: "You can only upgrade your own settlements" };
+    }
+    return { isValid: true };
 };
 
 /**
@@ -94,23 +117,23 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
  * @param G The game state.
  * @param edgeId The ID of the edge to check.
  * @param playerID The ID of the player attempting to build.
- * @returns True if valid.
+ * @returns A ValidationResult object.
  */
-export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
     // 0. Security Validation
     if (!isValidHexId(edgeId)) {
-        return false;
+        return { isValid: false, reason: "Invalid edge ID format" };
     }
 
     // 1. Check if occupied
     if (G.board.edges[edgeId]) {
-        return false;
+        return { isValid: false, reason: "This edge is already occupied" };
     }
 
     // 2. Connectivity & Blocking
     const endpoints = getVerticesForEdge(edgeId);
 
-    return endpoints.some(vId => {
+    const hasConnection = endpoints.some(vId => {
         const vertex = G.board.vertices[vId];
 
         // A. Direct connection to own.
@@ -128,16 +151,13 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
             return adjEdge && adjEdge.owner === playerID;
         });
     });
+
+    if (!hasConnection) {
+        return { isValid: false, reason: "Road must connect to your existing road or settlement" };
+    }
+
+    return { isValid: true };
 };
-
-
-/**
- * Represents the result of a validation check.
- */
-export interface ValidationResult {
-    isValid: boolean;
-    reason?: string;
-}
 
 /**
  * Checks if a road can be placed during the Setup Phase.

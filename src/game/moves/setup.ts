@@ -2,9 +2,9 @@ import { Move } from 'boardgame.io';
 import { GameState } from '../types';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
-import { isValidSetupRoadPlacement, validateSettlementLocation } from '../rules/placement';
 import { isValidHexId } from '../../utils/validation';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
+import { RuleEngine } from '../rules/validator';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
@@ -13,11 +13,8 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     throw new Error("Invalid vertex ID format");
   }
 
-  // 1. Validation: Occupancy & Distance Rule
-  const validation = validateSettlementLocation(G, vertexId);
-  if (!validation.isValid) {
-    throw new Error(validation.reason || "Invalid settlement placement");
-  }
+  // 1. Delegate Validation to Rule Engine
+  RuleEngine.validateMoveOrThrow(G, ctx, 'placeSettlement', [vertexId]);
 
   // Execution
   // eslint-disable-next-line security/detect-object-injection
@@ -55,12 +52,9 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
 };
 
 export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
-  // Use centralized validation logic.
-  // This function checks for both occupancy and connectivity to the last placed settlement.
-  const validation = isValidSetupRoadPlacement(G, edgeId, ctx.currentPlayer);
-  if (!validation.isValid) {
-    throw new Error(validation.reason || "Invalid road placement: The edge may be occupied or not connected to your last settlement.");
-  }
+
+  // 1. Delegate Validation to Rule Engine
+  RuleEngine.validateMoveOrThrow(G, ctx, 'placeRoad', [edgeId]);
 
   // Execution
   // eslint-disable-next-line security/detect-object-injection

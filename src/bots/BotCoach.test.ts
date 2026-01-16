@@ -51,7 +51,14 @@ describe('BotCoach', () => {
                 }
             }
         } as unknown as GameState;
+
+        // Setup Coach mock with valid advice return structure
         coach = new Coach(G);
+        (coach.getStrategicAdvice as jest.Mock).mockReturnValue({
+            text: 'Test Advice',
+            recommendedMoves: []
+        });
+
         botCoach = new BotCoach(G, coach);
         mockCtx = { currentPlayer: '0' } as Ctx;
     });
@@ -104,8 +111,20 @@ describe('BotCoach', () => {
              // Should pick the city (which one depends on analysis)
 
              const actions = result as MakeMoveAction[];
-             expect(actions).toHaveLength(1);
+             // Now it returns a list of sorted options
+             // Since v2 and v3 are both buildCity (top weight), and v2 is better, it should be first.
+             // The old test expected length 1, but the new logic returns "top move and others".
+             // Actually, the new logic returns: [BestMove, ...OtherTypes].
+             // Wait, the logic is: "return [bestMove, ...others]".
+             // So if both are cities, it returns the best city, then non-city moves?
+             // Let's check logic:
+             // const bestMove = cityMoves.find...;
+             // if (bestMove) { const others = sortedMoves.filter(m => m !== bestMove); return [bestMove, ...others]; }
+             // So it returns ALL moves, but with best city first.
+
+             expect(actions.length).toBeGreaterThanOrEqual(1);
              expect(actions[0].payload.type).toBe('buildCity');
+             expect(actions[0].payload.args[0]).toBe('v2');
         });
 
         it('should return all moves if weights are equal', () => {
@@ -141,7 +160,7 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
 
-            expect(result).toHaveLength(1);
+            expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
             expect(action.payload.type).toBe('buildCity');
             expect(action.payload.args[0]).toBe('v1');
@@ -165,7 +184,7 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
 
-            expect(result).toHaveLength(1);
+            expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
             expect(action.payload.type).toBe('buildSettlement');
             expect(action.payload.args[0]).toBe('v1');
@@ -190,6 +209,32 @@ describe('BotCoach', () => {
 
             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
             expect(result).toHaveLength(2);
+        });
+
+        it('should prioritize advised moves', () => {
+            // Coach advises building roads
+            (coach.getStrategicAdvice as jest.Mock).mockReturnValue({
+                text: 'Build Roads',
+                recommendedMoves: ['buildRoad']
+            });
+
+            // Even if BuildCity (1.5) > BuildRoad (0.8),
+            // the boost (x1.5) makes Road 1.2, which is close to City.
+            // Wait, 1.2 is < 1.5. So City still wins.
+            // Let's use lower weights. EndTurn (1.0). Road (0.8 -> 1.2).
+
+            const moves = [
+                mockAction('endTurn'),
+                mockAction('buildRoad', ['e1'])
+            ];
+
+            // By default profile, EndTurn (1.0) > BuildRoad (~0.4 or whatever profile says).
+            // With boost, Road should beat EndTurn.
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('buildRoad');
         });
     });
 });

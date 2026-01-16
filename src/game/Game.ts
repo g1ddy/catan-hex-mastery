@@ -13,7 +13,7 @@ import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
-import { enumerate } from './ai';
+import { enumerate } from './ai/enumerator';
 
 const regenerateBoard: Move<GameState> = ({ G }) => {
     const boardHexes = generateBoard();

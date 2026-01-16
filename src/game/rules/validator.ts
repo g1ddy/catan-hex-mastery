@@ -1,10 +1,63 @@
 import { GameState } from '../types';
-import { getVerticesForHex, getEdgesForHex } from '../hexUtils';
-import { isValidSettlementPlacement, isValidCityPlacement, isValidRoadPlacement, validateSettlementLocation, isValidSetupRoadPlacement } from './placement';
-import { getAffordableBuilds } from '../mechanics/costs';
 import { Ctx } from 'boardgame.io';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity } from './gameplay';
+import {
+    validateSettlementLocation,
+    isValidSetupRoadPlacement,
+    isValidSettlementPlacement,
+    isValidCityPlacement,
+    isValidRoadPlacement,
+    ValidationResult
+} from './spatial';
+import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
+import { getAffordableBuilds } from '../mechanics/costs';
 import { PHASES, STAGES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
+
+/**
+ * The Rule Engine Facade.
+ * Centralizes validation for all moves.
+ */
+export const RuleEngine = {
+    /**
+     * Validates a move and returns a result object.
+     */
+    validateMove: (G: GameState, ctx: Ctx, moveName: string, args: any[]): ValidationResult => {
+        const playerID = ctx.currentPlayer;
+
+        switch (moveName) {
+            // Gameplay Moves
+            case 'buildRoad':
+                return validateBuildRoad(G, playerID, args[0]);
+            case 'buildSettlement':
+                return validateBuildSettlement(G, playerID, args[0]);
+            case 'buildCity':
+                return validateBuildCity(G, playerID, args[0]);
+
+            // Setup Moves
+            case 'placeSettlement':
+                // In Setup, "placeSettlement" checks geometric rules but ignores cost/connectivity to road
+                return validateSettlementLocation(G, args[0]);
+            case 'placeRoad':
+                // In Setup, "placeRoad" must connect to the just-placed settlement
+                return isValidSetupRoadPlacement(G, args[0], playerID);
+
+            default:
+                return { isValid: false, reason: `Unknown move: ${moveName}` };
+        }
+    },
+
+    /**
+     * Validates a move and throws an error if invalid.
+     * Used by move handlers to abort execution.
+     */
+    validateMoveOrThrow: (G: GameState, ctx: Ctx, moveName: string, args: any[]): void => {
+        const result = RuleEngine.validateMove(G, ctx, moveName, args);
+        if (!result.isValid) {
+            throw new Error(result.reason || "Invalid move");
+        }
+    }
+};
 
 /**
  * Internal helper to validate player and check affordability.
@@ -37,20 +90,18 @@ export const getValidSettlementSpots = (G: GameState, playerID: string, checkCos
         return validSpots;
     }
 
-    const checked = new Set<string>();
+    // Optimization: Collect all vertices adjacent to roads (candidate spots)
+    const verticesToCheck = new Set<string>();
+    const playerRoads = G.players[playerID]?.roads || [];
 
-    // Optimization: Instead of scanning all possible vertices, we could scan near player's roads.
-    // However, for total correctness (and because the board is small), scanning hexes is acceptable.
-    Object.values(G.board.hexes).forEach(hex => {
-        const vertices = getVerticesForHex(hex.coords);
-        vertices.forEach(vId => {
-            if (checked.has(vId)) return;
-            checked.add(vId);
+    playerRoads.forEach(roadId => {
+        getVerticesForEdge(roadId).forEach(vId => verticesToCheck.add(vId));
+    });
 
-            if (isValidSettlementPlacement(G, vId, playerID)) {
-                validSpots.add(vId);
-            }
-        });
+    verticesToCheck.forEach(vId => {
+        if (isValidSettlementPlacement(G, vId, playerID).isValid) {
+            validSpots.add(vId);
+        }
     });
 
     return validSpots;
@@ -69,11 +120,11 @@ export const getValidCitySpots = (G: GameState, playerID: string, checkCost = tr
     }
 
     // Cities can only be built on existing settlements
-    G.players[playerID].settlements.forEach(vId => {
-        if (isValidCityPlacement(G, vId, playerID)) {
-            validSpots.add(vId);
-        }
-    });
+(G.players[playerID]?.settlements || []).forEach(vId => {
+    if (isValidCityPlacement(G, vId, playerID).isValid) {
+        validSpots.add(vId);
+    }
+});
 
     return validSpots;
 };
@@ -92,13 +143,28 @@ export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = tr
 
     const checked = new Set<string>();
 
-    Object.values(G.board.hexes).forEach(hex => {
-        const edges = getEdgesForHex(hex.coords);
-        edges.forEach(eId => {
+    // Optimization: Instead of scanning all possible edges, we only scan edges adjacent
+    // to the player's network (roads, settlements, cities).
+    const player = G.players[playerID];
+    if (!player) return validSpots;
+
+    const networkVertices = new Set<string>();
+
+    // Collect all vertices from the player's roads
+    player.roads.forEach(roadId => {
+        getVerticesForEdge(roadId).forEach(vId => networkVertices.add(vId));
+    });
+
+    // Collect all vertices from the player's settlements/cities
+    player.settlements.forEach(vId => networkVertices.add(vId));
+
+    // For each unique vertex in the network, check adjacent edges
+    networkVertices.forEach(vId => {
+        const adjEdges = getEdgesForVertex(vId);
+        adjEdges.forEach(eId => {
             if (checked.has(eId)) return;
             checked.add(eId);
-
-            if (isValidRoadPlacement(G, eId, playerID)) {
+            if (isValidRoadPlacement(G, eId, playerID).isValid) {
                 validSpots.add(eId);
             }
         });
@@ -136,24 +202,25 @@ export const getValidSetupSettlementSpots = (G: GameState): Set<string> => {
  */
 export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<string> => {
     const validSpots = new Set<string>();
-    const checked = new Set<string>();
 
     // This function also accesses G.players, so we should valid the playerID
     if (!isValidPlayer(G, playerID)) {
         return validSpots;
     }
 
-    Object.values(G.board.hexes).forEach(hex => {
-        const edges = getEdgesForHex(hex.coords);
-        edges.forEach(eId => {
-            if (checked.has(eId)) return;
-            checked.add(eId);
+    // Optimization: In Setup, a road MUST attach to the last placed settlement.
+    // So we only need to check edges adjacent to that single settlement.
+    const lastSettlementId = G.players[playerID]?.settlements.at(-1);
 
-            if (isValidSetupRoadPlacement(G, eId, playerID).isValid) {
-                validSpots.add(eId);
-            }
+    if (lastSettlementId) {
+        const adjEdges = getEdgesForVertex(lastSettlementId);
+        adjEdges.forEach(eId => {
+             // No need for 'checked' set as we iterate a small, unique list once
+             if (isValidSetupRoadPlacement(G, eId, playerID).isValid) {
+                 validSpots.add(eId);
+             }
         });
-    });
+    }
 
     return validSpots;
 };

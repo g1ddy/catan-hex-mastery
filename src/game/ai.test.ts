@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import { enumerate } from './ai';
+import { enumerate } from './ai/enumerator';
 import { GameState } from './types';
 import { STAGES } from './constants';
 
@@ -140,20 +140,20 @@ describe('ai.enumerate', () => {
         expect(moves).toEqual([expectedAction('dismissRobber', [])]);
     });
 
-    it('should auto-generate move for unhandled stage with single move', () => {
+    it('should correctly enumerate single moves from custom stages', () => {
         ctx.activePlayers['0'] = 'test_single';
-        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([expectedAction('singleMove', [])]);
-        expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_single\' not explicitly handled'));
     });
 
-    it('should log error and return empty for unhandled stage with multiple moves', () => {
+    it('should correctly enumerate multiple moves from custom stages', () => {
         ctx.activePlayers['0'] = 'test_multi';
-        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toEqual([]);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_multi\' is unhandled'));
+
+        // Should contain both moves
+        expect(moves).toHaveLength(2);
+        expect(moves).toContainEqual(expectedAction('move1', []));
+        expect(moves).toContainEqual(expectedAction('move2', []));
     });
 
     it('should log error for unknown stage (not in STAGE_MOVES)', () => {
@@ -161,6 +161,6 @@ describe('ai.enumerate', () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([]);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('is not a recognized fallback stage'));
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('No moves defined for stage: unknown_stage'));
     });
 });

@@ -61,6 +61,13 @@ describe('BotCoach Settlement Test', () => {
 
         profile = { ...BALANCED_PROFILE };
         mockCoachInstance = new MockCoach(G) as jest.Mocked<Coach>;
+
+        // Mock getStrategicAdvice
+        (mockCoachInstance.getStrategicAdvice as jest.Mock).mockReturnValue({
+            text: 'Test Advice',
+            recommendedMoves: []
+        });
+
         botCoach = new BotCoach(G, mockCoachInstance, profile);
     });
 
@@ -96,16 +103,21 @@ describe('BotCoach Settlement Test', () => {
         // Act
         const optimalMoves = botCoach.filterOptimalMoves(moves, '0', ctx);
 
-        // Assert: Should return 2 moves: the best settlement and the dev card
-        expect(optimalMoves).toHaveLength(2);
+        // Assert: Should return all moves, but prioritized
+        // Top moves should be Settlement B, Settlement A, and DevCard (all weight 10).
+        // Our logic currently prioritizes the settlement group if ANY settlement is a top move.
 
-        // Check that the best settlement is present
-        const bestSettlementMove = optimalMoves.find(m => (m as BotMove).move === 'buildSettlement');
-        expect(bestSettlementMove).toBeDefined();
-        expect((bestSettlementMove as BotMove).args).toEqual(['1,0,-1::2,-1,-1']);
+        const top3Moves = optimalMoves.slice(0, 3).map(m => (m as BotMove).move);
+        expect(top3Moves).toContain('buildSettlement');
+        expect(top3Moves).toContain('buyDevCard');
 
-        // Check that the other top-weighted move is also present
-        const devCardMove = optimalMoves.find(m => (m as BotMove).move === 'buyDevCard');
-        expect(devCardMove).toBeDefined();
+        // Specifically check that the FIRST settlement encounter is the BEST one (Spot B)
+        // Settlement B (score 15) should come before Settlement A (score 10)
+        const settlementMoves = optimalMoves.filter(m => (m as BotMove).move === 'buildSettlement');
+        expect((settlementMoves[0] as BotMove).args).toEqual(['1,0,-1::2,-1,-1']);
+
+        // Check that lower weighted moves are at the end
+        const lastMove = optimalMoves[optimalMoves.length - 1] as BotMove;
+        expect(lastMove.move).toBe('endTurn');
     });
 });

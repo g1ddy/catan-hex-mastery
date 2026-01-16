@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, TerrainType } from '../types';
+import { GameState, TerrainType, GameAction, BotMove } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
@@ -45,6 +45,7 @@ const DEFAULT_CONFIG: CoachConfig = {
 
 const EARLY_GAME_VP_THRESHOLD = 5;
 const MID_GAME_VP_THRESHOLD = 7;
+const SPATIAL_SCORE_NORMALIZATION_FACTOR = 5;
 
 const ERROR_ADVICE_RESULT: StrategicAdvice = {
     text: STRATEGIC_ADVICE.ERROR.INVALID_PLAYER,
@@ -380,6 +381,51 @@ export class Coach {
             text: STRATEGIC_ADVICE.DEFAULT,
             recommendedMoves: []
         };
+    }
+
+    /**
+     * Generic action scorer for BotCoach.
+     * Evaluates a full action object, combining spatial scoring (for spots) and strategic scoring (for types).
+     *
+     * @experimental This method is intended for future generic Bot implementations (e.g. MCTS) that need a
+     * unified evaluation function. Currently, `BotCoach.ts` uses an optimized inline version of this logic
+     * to avoid performance overhead from repeated scarcity map calculations.
+     */
+    public scoreAction(playerID: string, action: GameAction, ctx: Ctx): number {
+        // Handle payload vs simple format
+        const moveName = 'payload' in action ? action.payload.type : (action as BotMove).move;
+        const args = 'payload' in action ? action.payload.args : (action as BotMove).args;
+
+        const advice = this.getStrategicAdvice(playerID, ctx);
+        let score = 1.0;
+
+        // 1. Strategic Boost: If the move type is recommended by Coach, boost it.
+        if (advice.recommendedMoves.includes(moveName)) {
+            score *= 1.5; // 50% boost for following advice
+        }
+
+        // 2. Spatial Scoring: If it's a placement move, use the spatial score.
+        if (moveName === 'placeSettlement' || moveName === 'buildSettlement') {
+            const vId = args && args[0];
+            if (vId) {
+                try {
+                    // Reuse scoreVertex
+                    // Need to recalculate maps per call? Inefficient but accurate.
+                    // For performance, BotCoach typically pre-calculates, but here we do it on demand.
+                    const scarcityMap = this.calculateScarcityMap();
+                    const existingResources = this.getExistingResources(playerID);
+                    const vertexScore = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
+
+                    // Normalize spatial score (typically 0-15) to be comparable with weight (0-1)
+                    // Let's say max score is ~20.
+                    score *= (1 + vertexScore.score / SPATIAL_SCORE_NORMALIZATION_FACTOR);
+                } catch (e) {
+                    // Ignore invalid vertices
+                }
+            }
+        }
+
+        return score;
     }
 }
 
