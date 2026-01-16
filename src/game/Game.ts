@@ -8,7 +8,7 @@ import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
-import { calculateBoardStats } from './analyst';
+import { calculateBoardStats } from './analysis/analyst';
 import { PHASES, STAGES, STAGE_MOVES } from './constants';
 import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';

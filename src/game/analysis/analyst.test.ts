@@ -1,5 +1,5 @@
 import { calculatePlayerPotentialPips } from './analyst';
-import { GameState, TerrainType } from './types';
+import { GameState, TerrainType } from '../types';
 
 describe('calculatePlayerPotentialPips', () => {
     const mockG = {

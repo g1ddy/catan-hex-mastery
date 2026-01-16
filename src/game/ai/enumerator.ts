@@ -3,8 +3,7 @@ import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
-import { getValidMovesForStage } from '../rules/validator';
-import { calculateTrade } from '../mechanics/trade';
+import { getValidMovesForStage, RuleEngine } from '../rules/validator';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = (moveName: string, args: any[]): BotMove => ({
@@ -68,9 +67,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             spots.forEach(id => moves.push(makeMove(moveName, [id])));
         } else if (moveName === 'tradeBank') {
             // Special Case: Transactional Move (0-arg but conditional)
-            // eslint-disable-next-line security/detect-object-injection
-            const player = G.players[playerID];
-            if (player && calculateTrade(player.resources).canTrade) {
+            // Delegate to RuleEngine for consistency
+            if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
                 moves.push(makeMove(moveName, []));
             }
         } else {
