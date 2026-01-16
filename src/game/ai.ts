@@ -87,12 +87,16 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             // Safety fallback: Check if the stage has exactly one move defined in constants.
             // If so, assume it's a simple state transition (like rollDice or dismissRobber) that takes no args.
             // This prevents bots from getting stuck if a new stage is added but not explicitly handled here.
-            const possibleMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
-            if (possibleMoves && possibleMoves.length === 1) {
-                console.warn(`Stage '${stage}' not explicitly handled in AI enumerate. Auto-generating move '${possibleMoves[0]}'.`);
-                moves.push(makeMove(possibleMoves[0], []));
+            if (Object.prototype.hasOwnProperty.call(STAGE_MOVES, stage)) {
+                const possibleMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
+                if (possibleMoves.length === 1) {
+                    console.warn(`Stage '${stage}' not explicitly handled in AI enumerate. Auto-generating move '${possibleMoves[0]}'.`);
+                    moves.push(makeMove(possibleMoves[0], []));
+                } else {
+                    console.error(`Stage '${stage}' is unhandled in AI enumerate and has ambiguous moves (found ${possibleMoves.length}).`);
+                }
             } else {
-                console.error(`Stage '${stage}' is unhandled in AI enumerate and has ambiguous moves.`);
+                console.error(`Stage '${stage}' is unhandled in AI enumerate and is not a recognized fallback stage.`);
             }
             break;
         }

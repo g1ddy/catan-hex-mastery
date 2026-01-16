@@ -153,4 +153,13 @@ describe('ai.enumerate', () => {
         expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_multi\' is unhandled'));
         consoleErrorSpy.mockRestore();
     });
+
+    it('should log error for unknown stage (not in STAGE_MOVES)', () => {
+        ctx.activePlayers['0'] = 'unknown_stage';
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+        const moves = enumerate(G, ctx, '0');
+        expect(moves).toEqual([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('is not a recognized fallback stage'));
+        consoleErrorSpy.mockRestore();
+    });
 });
