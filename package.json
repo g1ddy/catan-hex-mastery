@@ -11,7 +11,8 @@
     "test": "jest --config config/jest.config.cjs",
     "test:e2e": "playwright test --config config/playwright.config.ts",
     "test:debug": "playwright test --config config/playwright.debug.config.ts",
-    "test:screenshots": "playwright test -c config/playwright.screenshots.config.ts"
+    "test:screenshots": "playwright test -c config/playwright.screenshots.config.ts",
+    "generate:graph": "depcruise src --include-only \"^src\" --exclude \"(\\.test\\.ts|\\.spec\\.ts|testUtils\\.ts)$\" --no-config --output-type dot > dependency-graph.dot && dot -T svg dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png dependency-graph.dot > docs/images/dependency-graph.png && rm dependency-graph.dot"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",
@@ -37,6 +38,7 @@
     "@typescript-eslint/parser": "^8.51.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "dependency-cruiser": "^17.3.6",
     "eslint": "^8.57.1",
     "eslint-plugin-security": "^3.0.1",
     "jest": "^29.7.0",
