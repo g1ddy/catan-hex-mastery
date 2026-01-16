@@ -3,6 +3,7 @@ import { GameState } from '../types';
 import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 import { BUILD_COSTS } from '../config';
 import { isValidHexId } from '../../utils/validation';
+import { RuleEngine } from '../rules/validator';
 
 // Helper to find neighboring vertices (distance rule)
 const getVertexNeighbors = (vertexId: string): string[] => {
@@ -31,42 +32,8 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.road;
 
-    // 1. Cost Check
-    if (player.resources.wood < cost.wood || player.resources.brick < cost.brick) {
-        throw new Error("Not enough resources to build a road (requires Wood, Brick)");
-    }
-
-    // 2. Validation: Occupancy
-    // eslint-disable-next-line security/detect-object-injection
-    if (G.board.edges[edgeId]) {
-        throw new Error("This edge is already occupied");
-    }
-
-    // 3. Validation: Connection
-    const endpoints = getVerticesForEdge(edgeId);
-
-    const hasConnection = (vId: string): boolean => {
-        // eslint-disable-next-line security/detect-object-injection
-        const building = G.board.vertices[vId];
-        // Connected to own settlement/city
-        if (building && building.owner === ctx.currentPlayer) {
-            return true;
-        }
-        // Blocked by opponent's settlement/city
-        if (building && building.owner !== ctx.currentPlayer) {
-            return false;
-        }
-        // Connected to own road
-        const adjEdges = getEdgesForVertex(vId);
-        return adjEdges.some(adjEdgeId => {
-            if (adjEdgeId === edgeId) return false;
-            // eslint-disable-next-line security/detect-object-injection
-            const edge = G.board.edges[adjEdgeId];
-            return edge && edge.owner === ctx.currentPlayer;
-        });
-    };
-
-    if (!endpoints.some(hasConnection)) throw new Error("Road must connect to your existing road or settlement");
+    // 1. Delegate Validation to Rule Engine
+    RuleEngine.validateMoveOrThrow(G, ctx, 'buildRoad', [edgeId]);
 
     // Execution
     // eslint-disable-next-line security/detect-object-injection
@@ -85,38 +52,8 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.settlement;
 
-    // 1. Cost Check
-    if (player.resources.wood < cost.wood ||
-        player.resources.brick < cost.brick ||
-        player.resources.wheat < cost.wheat ||
-        player.resources.sheep < cost.sheep) {
-        throw new Error("Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)");
-    }
-
-    // 2. Validation: Occupancy
-    // eslint-disable-next-line security/detect-object-injection
-    if (G.board.vertices[vertexId]) {
-        throw new Error("This vertex is already occupied");
-    }
-
-    // 3. Validation: Distance Rule
-    const neighbors = getVertexNeighbors(vertexId);
-    for (const nId of neighbors) {
-        // eslint-disable-next-line security/detect-object-injection
-        if (G.board.vertices[nId]) {
-            throw new Error("Settlement is too close to another building (Distance Rule)");
-        }
-    }
-
-    // 4. Validation: Connection to own road
-    const adjEdges = getEdgesForVertex(vertexId);
-    const hasOwnRoad = adjEdges.some(eId => {
-        // eslint-disable-next-line security/detect-object-injection
-        const edge = G.board.edges[eId];
-        return edge && edge.owner === ctx.currentPlayer;
-    });
-
-    if (!hasOwnRoad) throw new Error("Settlement must connect to your own road");
+    // 1. Delegate Validation to Rule Engine
+    RuleEngine.validateMoveOrThrow(G, ctx, 'buildSettlement', [vertexId]);
 
     // Execution
     // eslint-disable-next-line security/detect-object-injection
@@ -138,20 +75,15 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     const player = G.players[ctx.currentPlayer];
     const cost = BUILD_COSTS.city;
 
-    // 1. Cost Check
-    if (player.resources.ore < cost.ore || player.resources.wheat < cost.wheat) {
-        throw new Error("Not enough resources to build a city (requires 3 Ore, 2 Wheat)");
-    }
-
-    // 2. Validation: Must be own settlement
-    // eslint-disable-next-line security/detect-object-injection
-    const vertex = G.board.vertices[vertexId];
-    if (!vertex || vertex.owner !== ctx.currentPlayer || vertex.type !== 'settlement') {
-        throw new Error("You can only upgrade your own settlements to cities");
-    }
+    // 1. Delegate Validation to Rule Engine
+    RuleEngine.validateMoveOrThrow(G, ctx, 'buildCity', [vertexId]);
 
     // Execution
-    vertex.type = 'city';
+    // eslint-disable-next-line security/detect-object-injection
+    const vertex = G.board.vertices[vertexId];
+    if (vertex) {
+        vertex.type = 'city';
+    }
     player.victoryPoints += 1; // 1 (settlement) -> 2 (city), so +1
     player.resources.ore -= cost.ore;
     player.resources.wheat -= cost.wheat;

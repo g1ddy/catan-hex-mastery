@@ -54,125 +54,121 @@ export class BotCoach {
 
         if (!allMoves || allMoves.length === 0) return [];
 
-        // Detect current stage based on move types
-        const isSetupSettlement = allMoves.some(m => this.getMoveName(m) === 'placeSettlement');
-        // const isSetupRoad = allMoves.some(m => this.getMoveName(m) === 'placeRoad'); // Unused for now
+        // 1. Detect Roll Dice (always prioritize)
         const isRolling = allMoves.some(m => this.getMoveName(m) === 'rollDice');
-
         if (isRolling) {
-            // Only one option usually
             return allMoves;
         }
 
+        // 2. Setup Phase Optimization (Special logic preserved)
+        // Setup Settlement needs heavy Coach lifting, better done specifically here
+        // to avoid recalculating the map 50 times in scoreAction loop.
+        const isSetupSettlement = allMoves.some(m => this.getMoveName(m) === 'placeSettlement');
         if (isSetupSettlement) {
             // Use Coach analysis to find the best spots
             const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
-
-            // Optimization: Map moves by vertexId for O(1) lookup
             const movesByVertex = new Map<string, GameAction>();
             allMoves.forEach(m => {
                 if (this.getMoveName(m) === 'placeSettlement') {
                     const args = this.getMoveArgs(m);
-                    if (args[0]) {
-                        movesByVertex.set(args[0], m);
-                    }
+                    if (args[0]) movesByVertex.set(args[0], m);
                 }
             });
-
-            // Map the best spots to the available moves
-            // bestSpots is ordered best to worst
             const rankedMoves: GameAction[] = [];
-
             bestSpots.forEach(spot => {
                 const move = movesByVertex.get(spot.vertexId);
-                if (move) {
-                    rankedMoves.push(move);
-                }
+                if (move) rankedMoves.push(move);
             });
-
-            // If we found matches, return them.
-            // If for some reason analysis fails but moves exist, fallback to random (return all)
             return rankedMoves.length > 0 ? rankedMoves : allMoves;
         }
 
-        // For setup roads and normal gameplay, use profile weights
-        // ACTING PHASE + SETUP ROAD
-        const getMoveWeight = (move: GameAction): number => {
+        // 3. General Gameplay Evaluation
+        // Combine Profile Weights + Coach Strategic Advice
+
+        // Get generic advice once
+        const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
+        const advisedMoves = new Set(strategicAdvice.recommendedMoves);
+
+        const getWeightedScore = (move: GameAction): number => {
             const name = this.getMoveName(move);
+            let weight = 0;
+
+            // Base Weight from Profile
             switch (name) {
-                case 'buildCity': return this.profile.weights.buildCity;
-                case 'buildSettlement': return this.profile.weights.buildSettlement;
-                case 'buildRoad': return this.profile.weights.buildRoad;
-                case 'placeRoad': return this.profile.weights.buildRoad; // Reuse road weight for setup
-                case 'buyDevCard': return this.profile.weights.buyDevCard;
-                case 'endTurn': return 1; // Base weight
-                default: return 0;
+                case 'buildCity': weight = this.profile.weights.buildCity; break;
+                case 'buildSettlement': weight = this.profile.weights.buildSettlement; break;
+                case 'buildRoad': weight = this.profile.weights.buildRoad; break;
+                case 'placeRoad': weight = this.profile.weights.buildRoad; break;
+                case 'buyDevCard': weight = this.profile.weights.buyDevCard; break;
+                case 'endTurn': weight = 1.0; break;
+                default: weight = 0.5; break;
             }
+
+            // Coach Strategic Multiplier
+            if (advisedMoves.has(name)) {
+                weight *= 1.5; // Boost advised moves
+            }
+
+            // Spatial Tie-Breaker (for same-type moves)
+            // If it's a settlement/city, query Coach for specific spot score?
+            // Doing this for EVERY move is expensive.
+            // We optimized Setup above. For Gameplay, we might just rely on basic weights
+            // and then do a refined sort for the top candidates below.
+
+            return weight;
         };
 
-        // Sort moves by weight
-        const sortedMoves = [...allMoves].sort((a, b) => getMoveWeight(b) - getMoveWeight(a));
+        // Initial Sort by Weight
+        const sortedMoves = [...allMoves].sort((a, b) => getWeightedScore(b) - getWeightedScore(a));
 
-        if (sortedMoves.length === 0) {
-            return [];
-        }
+        if (sortedMoves.length === 0) return [];
 
-        const maxWeight = getMoveWeight(sortedMoves[0]);
-        const topMoves = sortedMoves.filter(m => getMoveWeight(m) === maxWeight);
+        // 4. Refine Top Candidates (Spatial Logic)
+        // If top moves are settlements/cities, use detailed scoring to pick the best spot.
+        const topWeight = getWeightedScore(sortedMoves[0]);
+        // Consider moves within 10% of top weight as "Top Tier"
+        const topMoves = sortedMoves.filter(m => getWeightedScore(m) >= topWeight * 0.9);
 
-        // If the best move is to build a city, and there's more than one option,
-        // use Coach analysis to find the best one.
-        if (this.getMoveName(topMoves[0]) === 'buildCity' && topMoves.length > 1) {
-            const cityCandidates: string[] = [];
-            const movesByVertex = new Map<string, GameAction>();
-
-            topMoves.forEach(m => {
-                const args = this.getMoveArgs(m);
-                const vId = args[0];
-                if (vId && typeof vId === 'string') {
-                    cityCandidates.push(vId);
-                    movesByVertex.set(vId, m);
-                }
-            });
-
-            if (cityCandidates.length > 0) {
-                const bestCitySpots = this.coach.getBestCitySpots(playerID, ctx, cityCandidates);
-                const bestMove = movesByVertex.get(bestCitySpots[0]?.vertexId);
-                if (bestMove) {
-                    return [bestMove];
-                }
-            }
-            // Fallback: return first
-            return [topMoves[0]];
-        }
-
-        // If building a settlement is a top-weighted move and there are multiple settlement options,
-        // use the Coach to find the best one.
+        // Check if we need to refine Settlements
         const settlementMoves = topMoves.filter(m => this.getMoveName(m) === 'buildSettlement');
-
         if (settlementMoves.length > 1) {
-            const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
-            const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+             const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
+             const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
 
-            const scoredSettlements = settlementMoves
-                .map(move => {
-                    const vId = this.getMoveArgs(move)[0];
-                    if (!vId || typeof vId !== 'string') {
-                        return { move, score: -1 }; // Malformed move
-                    }
-                    const score = recommendationMap.get(vId) ?? 0;
-                    return { move, score };
-                })
-                .sort((a, b) => b.score - a.score);
+             // Sort settlement moves by specific spot score
+             settlementMoves.sort((a, b) => {
+                 const vA = this.getMoveArgs(a)[0];
+                 const vB = this.getMoveArgs(b)[0];
+                 const sA = recommendationMap.get(vA) ?? 0;
+                 const sB = recommendationMap.get(vB) ?? 0;
+                 return sB - sA;
+             });
 
-            const bestSettlement = scoredSettlements[0].move;
-            const otherTopMoves = topMoves.filter(m => this.getMoveName(m) !== 'buildSettlement');
-
-            // Return the best settlement along with other equally-weighted top moves
-            return [bestSettlement, ...otherTopMoves];
+             // Place best settlement at start of topMoves?
+             // Actually, we should return this sorted list prioritized.
+             // Let's just return the sorted settlement moves followed by others.
+             const otherMoves = sortedMoves.filter(m => !settlementMoves.includes(m));
+             return [...settlementMoves, ...otherMoves];
         }
 
+        // Check if we need to refine Cities
+        const cityMoves = topMoves.filter(m => this.getMoveName(m) === 'buildCity');
+        if (cityMoves.length > 1) {
+             // ... Similar logic for cities (using getBestCitySpots)
+             // For brevity/limit, assuming getBestCitySpots logic handles it.
+             const candidates = cityMoves.map(m => this.getMoveArgs(m)[0]);
+             const bestSpots = this.coach.getBestCitySpots(playerID, ctx, candidates);
+             const bestVId = bestSpots[0]?.vertexId;
 
-        return topMoves;
+             if (bestVId) {
+                 const bestMove = cityMoves.find(m => this.getMoveArgs(m)[0] === bestVId);
+                 if (bestMove) {
+                     const others = sortedMoves.filter(m => m !== bestMove);
+                     return [bestMove, ...others];
+                 }
+             }
+        }
+
+        return sortedMoves;
     }
 }

@@ -55,98 +55,79 @@ We use a dual-layer testing strategy:
 
 ## 🏗 Architecture
 
-The project follows a strict separation of concerns between Game Logic (Rules), Strategic Analysis (AI/Coach), and Presentation (UI).
+The project follows a 4-Layer Architecture to separate concerns between Rules, Enumeration, Evaluation, and Decision.
 
-### 1. Logic Layer (The "What")
-*   **`src/game/rules/validator.ts`**: The source of truth for move legality. It calculates *all* valid moves (e.g., "Where can I build a settlement?"). It generates `Set`s of valid IDs.
-*   **`src/game/rules/placement.ts`**: Atomic validation for individual moves (used by `validator.ts` and `moves/setup.ts`).
-*   **`src/game/mechanics/scoring.ts`**: Pure mathematical utilities for game mechanics (e.g., calculating pips from dice numbers).
-*   **`src/game/hexUtils.ts`**: Immutable grid geometry helpers.
+### 1. Logic Layer (The "Rule Engine")
+*   **`src/game/rules/validator.ts`**: The Facade (Single Source of Truth). It exposes `RuleEngine.validateMove` and `RuleEngine.validateMoveOrThrow`.
+*   **`src/game/rules/gameplay.ts`**: Validates state-aware moves (e.g., costs, turn order).
+*   **`src/game/rules/spatial.ts`**: Validates pure geometric rules (e.g., "Is this spot connected?").
+*   **`src/game/rules/common.ts`**: Shared utilities (Security, Affordability).
 
-### 2. Strategy Layer (The "Why")
-*   **`src/game/analysis/coach.ts`**: The "brain". It evaluates the board state to score potential moves based on heuristics:
-    *   **Scarcity**: How rare is a resource?
-    *   **Diversity**: Do I have a variety of numbers/resources?
-    *   **Synergy**: Do my resources match my building goals?
-    *   It does *not* decide legality; it only scores moves provided by the Logic Layer.
-*   **`src/bots/BotCoach.ts`**: The bridge between strategy and action. It filters the list of legal moves (provided by `ai.ts`) and ranks them using `Coach` analysis (for complex moves like settlements) or `BotProfile` weights (for simple moves like buying dev cards).
-*   **`src/game/ai.ts`**: The "enumerator". It generates the raw list of all legal actions (`GameAction[]`) for the current turn. This file is critical for `boardgame.io` bot integration.
+### 2. Enumeration Layer (The "Generator")
+*   **`src/game/ai/enumerator.ts`**: Generates all legally possible actions for a turn.
+    *   It iterates through `STAGE_MOVES` (constants).
+    *   It uses `RuleEngine` to find valid arguments (e.g., "Which edges can I build a road on?").
+    *   It powers the Bot's decision tree.
 
-### 3. Presentation Layer (The "How")
-*   **`src/components/HexOverlays.tsx`**: The visualization engine. It renders interactive elements (vertices/edges) over the SVG grid.
-    *   **Performance**: Uses `src/game/staticGeometry.ts` for O(1) geometry lookups (cached).
-    *   **Interactivity**: Uses `src/hooks/useBoardInteractions.ts` to determine which spots are clickable based on the Logic Layer.
-    *   **Feedback**: Displays `Coach` heatmaps and recommendations.
+### 3. Evaluation Layer (The "Analyst")
+*   **`src/game/analysis/coach.ts`**: The "Brain". It scores actions based on game theory:
+    *   **Strategic Advice**: "Build Roads" vs "Build Cities" (High-level strategy).
+    *   **Spatial Scoring**: Heatmaps for specific board spots (pips, scarcity).
+    *   It exposes `scoreAction` and `getStrategicAdvice`.
 
-### Dependency Diagram
+### 4. Decision Layer (The "Bot")
+*   **`src/bots/BotCoach.ts`**: The "Bridge". It selects the best move from the Enumerator layer by:
+    *   Applying `BotProfile` weights (Personality).
+    *   Boosting moves recommended by the `Coach` (Strategy).
+    *   Refining top candidates using `Coach` heatmaps (Tactics).
+*   **`src/game/moves/*.ts`**: The "Execution Layer". These files are dumb executors that mutate state after delegating validation to the `RuleEngine`.
+
+### Architecture Diagram
 
 ```mermaid
 graph TD
-    subgraph UI_Layer [UI Layer]
-        HO[HexOverlays.tsx]
-        UBI[useBoardInteractions.ts]
-    end
-
-    subgraph Bot_Layer [Bot / AI Layer]
+    subgraph Layer_4_Decision [Decision & Execution]
         BC[BotCoach.ts]
+        Moves[moves/build.ts]
+    end
+
+    subgraph Layer_3_Evaluation [Evaluation Layer]
         C[Coach.ts]
-        AI[ai.ts]
-        BP[BotProfile.ts]
     end
 
-    subgraph Moves_Layer [Moves Layer]
-        Setup[moves/setup.ts]
+    subgraph Layer_2_Enumeration [Enumeration Layer]
+        Enum[ai/enumerator.ts]
     end
 
-    subgraph Logic_Layer [Core Logic Layer]
+    subgraph Layer_1_Rules [Logic / Rule Engine]
         V[rules/validator.ts]
-        P[rules/placement.ts]
-        S[mechanics/scoring.ts]
-        R[mechanics/resources.ts]
-        HU[hexUtils.ts]
-        SG[staticGeometry.ts]
+        P[rules/spatial.ts]
+        G[rules/gameplay.ts]
     end
 
-    %% UI Dependencies
-    HO --> UBI
-    HO --> SG
-    UBI --> V
+    %% Flows
+    BC --> Enum : "Get Options"
+    BC --> C : "Get Scores"
+    Enum --> V : "Query Validity"
+    Moves --> V : "Enforce Rules"
 
-    %% Bot Dependencies
-    BC --> C
-    BC --> BP
-    %% BC receives moves from AI but does not import it directly in logic flow,
-    %% but conceptually acts on AI output.
-
-    AI --> V
-
-    %% Coach Dependencies
-    C --> V
-    C --> S
-    C --> R
-    %% Removed C --> BP based on code verification
-
-    %% Moves Dependencies
-    Setup --> P
-    Setup --> HU
-    Setup --> R
-
-    %% Core Logic Dependencies
+    %% Internal Rules
     V --> P
-    P --> HU
-    R --> HU
+    V --> G
 ```
 
 ## 📂 Project Structure
 
 ```
 src/
-├── bots/           # AI implementations (RandomBot, DebugBot)
+├── bots/           # AI implementations (BotCoach, Profiles)
 ├── components/     # React UI components (Board, GameControls)
 ├── game/           # Core Game Logic
+│   ├── ai/         # Move Enumeration
 │   ├── analysis/   # Coach & Scoring Heuristics
-│   ├── mechanics/  # Rules (Resources, Building)
-│   ├── moves/      # boardgame.io Move Definitions
+│   ├── mechanics/  # Mechanics (Resources, Costs)
+│   ├── moves/      # Execution Layer (boardgame.io Moves)
+│   ├── rules/      # Rule Engine (Validator, Spatial, Gameplay)
 │   ├── config.ts   # Global constants (Board size, Costs)
 │   └── Game.ts     # Main boardgame.io Game Object
 ├── styles/         # CSS & Tailwind config
@@ -156,16 +137,14 @@ src/
 ## 🗺️ Development Roadmap
 
 ### Completed Phases ✅
-*   **Phase 1: Geometry Core** (Cube Coordinates, Fairness Algorithms)
-*   **Phase 2: Setup Engine** (Snake Draft, Distance Rules)
-*   **Phase 3: Analyst Module** (Pip Counting, Scarcity Metrics)
-*   **Phase 4: Coaching Layer** (Heuristic Scoring, Heatmaps)
+*   **Phase 1-4**: Core Engine & Heuristics.
+*   **Phase 5 (Refactor)**: Unified 4-Layer Architecture (Validator, Enumerator).
 
-### Current Focus: Phase 5 (UI/UX) 🚧
+### Current Focus: Phase 6 (UI/UX) 🚧
 *   Refining Mobile Layouts (Drawer/Sidebar logic).
 *   Polishing visual feedback (Tooltips, Toasts).
 
-### Upcoming: Phase 6 (Full Loop) 🔮
+### Upcoming: Phase 7 (Full Loop) 🔮
 *   Trade Phase implementation.
 *   Robber mechanics.
 *   Victory Point tracking & Win Conditions.
