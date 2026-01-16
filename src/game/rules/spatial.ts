@@ -5,6 +5,14 @@ import { isValidHexId } from '../../utils/validation';
 /* eslint-disable security/detect-object-injection */
 
 /**
+ * Represents the result of a validation check.
+ */
+export interface ValidationResult {
+    isValid: boolean;
+    reason?: string;
+}
+
+/**
  * Checks if a settlement can be placed at the given vertex based on physical rules.
  * Enforces:
  * 1. Spot is not already occupied.
@@ -94,23 +102,23 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
  * @param G The game state.
  * @param edgeId The ID of the edge to check.
  * @param playerID The ID of the player attempting to build.
- * @returns True if valid.
+ * @returns A ValidationResult object.
  */
-export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): boolean => {
+export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
     // 0. Security Validation
     if (!isValidHexId(edgeId)) {
-        return false;
+        return { isValid: false, reason: "Invalid edge ID format" };
     }
 
     // 1. Check if occupied
     if (G.board.edges[edgeId]) {
-        return false;
+        return { isValid: false, reason: "This edge is already occupied" };
     }
 
     // 2. Connectivity & Blocking
     const endpoints = getVerticesForEdge(edgeId);
 
-    return endpoints.some(vId => {
+    const hasConnection = endpoints.some(vId => {
         const vertex = G.board.vertices[vId];
 
         // A. Direct connection to own.
@@ -128,16 +136,13 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
             return adjEdge && adjEdge.owner === playerID;
         });
     });
+
+    if (!hasConnection) {
+        return { isValid: false, reason: "Road must connect to your existing road or settlement" };
+    }
+
+    return { isValid: true };
 };
-
-
-/**
- * Represents the result of a validation check.
- */
-export interface ValidationResult {
-    isValid: boolean;
-    reason?: string;
-}
 
 /**
  * Checks if a road can be placed during the Setup Phase.

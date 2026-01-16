@@ -1,6 +1,6 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
-import { Coach } from '../game/analysis/coach';
+import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
 
@@ -35,6 +35,43 @@ export class BotCoach {
             return action.payload.args;
         }
         return (action as BotMove).args || [];
+    }
+
+    /**
+     * Helper to refine a list of top moves of a specific type using spatial scoring.
+     * Finds the single best move of that type and promotes it to the top.
+     */
+    private refineTopMoves(
+        topMoves: GameAction[],
+        sortedMoves: GameAction[],
+        moveType: string,
+        scoreFn: (candidates: string[]) => CoachRecommendation[]
+    ): GameAction[] | null {
+        const specificMoves = topMoves.filter(m => this.getMoveName(m) === moveType);
+
+        if (specificMoves.length <= 1) {
+            return null; // No refinement needed or impossible
+        }
+
+        // Extract candidate IDs (e.g. vertex IDs)
+        const candidateIds = specificMoves.map(m => this.getMoveArgs(m)[0]);
+
+        // Get scores from Coach
+        const recommendations = scoreFn(candidateIds);
+        const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+
+        // Find the single best move
+        const bestMove = specificMoves.reduce((best, current) => {
+            const vBest = this.getMoveArgs(best)[0];
+            const vCurrent = this.getMoveArgs(current)[0];
+            const sBest = recommendationMap.get(vBest) ?? 0;
+            const sCurrent = recommendationMap.get(vCurrent) ?? 0;
+            return sCurrent > sBest ? current : best;
+        });
+
+        // Promote best move to front
+        const others = sortedMoves.filter(m => m !== bestMove);
+        return [bestMove, ...others];
     }
 
     /**
@@ -126,42 +163,23 @@ export class BotCoach {
         // Consider moves within threshold of top weight as "Top Tier"
         const topMoves = sortedMoves.filter(m => getWeightedScore(m) >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
-        // Check if we need to refine Settlements
-        const settlementMoves = topMoves.filter(m => this.getMoveName(m) === 'buildSettlement');
-        if (settlementMoves.length > 1) {
-             const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
-             const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+        // Refine Settlements
+        const refinedSettlements = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'buildSettlement',
+            () => this.coach.getAllSettlementScores(playerID, ctx) // Ignore candidates arg, getAll scores all valid
+        );
+        if (refinedSettlements) return refinedSettlements;
 
-             // Find the single best settlement move from the top candidates
-             const bestSettlementMove = settlementMoves.reduce((best, current) => {
-                 const vBest = this.getMoveArgs(best)[0];
-                 const vCurrent = this.getMoveArgs(current)[0];
-                 const sBest = recommendationMap.get(vBest) ?? 0;
-                 const sCurrent = recommendationMap.get(vCurrent) ?? 0;
-                 return sCurrent > sBest ? current : best;
-             });
-
-             // Promote the best settlement to the front of the full sorted list
-             // This keeps other lower-scored settlements in the list but prioritized lower
-             const others = sortedMoves.filter(m => m !== bestSettlementMove);
-             return [bestSettlementMove, ...others];
-        }
-
-        // Check if we need to refine Cities
-        const cityMoves = topMoves.filter(m => this.getMoveName(m) === 'buildCity');
-        if (cityMoves.length > 1) {
-             const candidates = cityMoves.map(m => this.getMoveArgs(m)[0]);
-             const bestSpots = this.coach.getBestCitySpots(playerID, ctx, candidates);
-             const bestVId = bestSpots[0]?.vertexId;
-
-             if (bestVId) {
-                 const bestMove = cityMoves.find(m => this.getMoveArgs(m)[0] === bestVId);
-                 if (bestMove) {
-                     const others = sortedMoves.filter(m => m !== bestMove);
-                     return [bestMove, ...others];
-                 }
-             }
-        }
+        // Refine Cities
+        const refinedCities = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'buildCity',
+            (candidates) => this.coach.getBestCitySpots(playerID, ctx, candidates)
+        );
+        if (refinedCities) return refinedCities;
 
         return sortedMoves;
     }

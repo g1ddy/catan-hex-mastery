@@ -45,41 +45,36 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     const moves: GameAction[] = [];
 
     // Calculate valid spots once if needed (optimization)
-    // Only verify if we actually have spatial moves to process
-    const hasSpatialMoves = moveTypesList.some(m => ['placeSettlement', 'buildSettlement', 'buildCity', 'placeRoad', 'buildRoad'].includes(m));
+    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m) && m !== 'tradeBank');
     const validSpots = hasSpatialMoves
         ? getValidMovesForStage(G, ctx, playerID, true)
-        : { validSettlements: new Set(), validCities: new Set(), validRoads: new Set() }; // Empty dummy
+        : { validSettlements: new Set<string>(), validCities: new Set<string>(), validRoads: new Set<string>() };
+
+    // A mapping from parameterized move names to their corresponding valid spot sets.
+    const moveSpotMapping: Record<string, Set<string> | undefined> = {
+        'placeSettlement': validSpots.validSettlements,
+        'buildSettlement': validSpots.validSettlements,
+        'buildCity': validSpots.validCities,
+        'placeRoad': validSpots.validRoads,
+        'buildRoad': validSpots.validRoads,
+    };
 
     // Iterate through ALL potential moves for this stage
     moveTypesList.forEach(moveName => {
-        // 1. Handle Parameterized/Special Moves
-        if (PARAMETERIZED_MOVES.has(moveName)) {
-            switch (moveName) {
-                case 'placeSettlement':
-                case 'buildSettlement':
-                    validSpots.validSettlements.forEach(vId => moves.push(makeMove(moveName, [vId])));
-                    break;
-                case 'buildCity':
-                    validSpots.validCities.forEach(vId => moves.push(makeMove(moveName, [vId])));
-                    break;
-                case 'placeRoad':
-                case 'buildRoad':
-                    validSpots.validRoads.forEach(eId => moves.push(makeMove(moveName, [eId])));
-                    break;
-                case 'tradeBank': {
-                    // Check if trade is actually possible before enumerating
-                    // eslint-disable-next-line security/detect-object-injection
-                    const player = G.players[playerID];
-                    if (player && calculateTrade(player.resources).canTrade) {
-                        moves.push(makeMove(moveName, []));
-                    }
-                    break;
-                }
+        const spots = moveSpotMapping[moveName];
+
+        if (spots) {
+            // Handle Spatial Parameterized Moves
+            spots.forEach(id => moves.push(makeMove(moveName, [id])));
+        } else if (moveName === 'tradeBank') {
+            // Special Case: Transactional Move (0-arg but conditional)
+            // eslint-disable-next-line security/detect-object-injection
+            const player = G.players[playerID];
+            if (player && calculateTrade(player.resources).canTrade) {
+                moves.push(makeMove(moveName, []));
             }
-        }
-        // 2. Handle Non-Parameterized Moves (Everything else)
-        else {
+        } else {
+            // Handle Non-Parameterized Moves (Everything else)
             // Assume 0-argument validity (e.g., rollDice, endTurn, dismissRobber, regenerateBoard)
             moves.push(makeMove(moveName, []));
         }

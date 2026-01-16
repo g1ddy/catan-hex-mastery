@@ -60,7 +60,9 @@ describe('spatial rules', () => {
     describe('isValidRoadPlacement', () => {
         it('returns false if occupied', () => {
             const G = mockG({}, { '0,0,0::1,-1,0': { owner: 'p1' } });
-            expect(isValidRoadPlacement(G, '0,0,0::1,-1,0', 'p1')).toBe(false);
+            const result = isValidRoadPlacement(G, '0,0,0::1,-1,0', 'p1');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("This edge is already occupied");
         });
     });
 
@@ -91,7 +93,7 @@ describe('spatial rules', () => {
 
             it(`isValidRoadPlacement should return false for malicious input: ${input}`, () => {
                 const G = mockG();
-                expect(isValidRoadPlacement(G, input, 'p1')).toBe(false);
+                expect(isValidRoadPlacement(G, input, 'p1').isValid).toBe(false);
             });
         });
     });

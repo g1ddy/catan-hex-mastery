@@ -98,7 +98,7 @@ export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = tr
             if (checked.has(eId)) return;
             checked.add(eId);
 
-            if (isValidRoadPlacement(G, eId, playerID)) {
+            if (isValidRoadPlacement(G, eId, playerID).isValid) {
                 validSpots.add(eId);
             }
         });

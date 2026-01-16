@@ -14,15 +14,8 @@ export const validateBuildRoad = (G: GameState, playerID: string, edgeId: string
         return { isValid: false, reason: "Not enough resources to build a road (requires Wood, Brick)" };
     }
 
-    if (!isValidRoadPlacement(G, edgeId, playerID)) {
-        // eslint-disable-next-line security/detect-object-injection
-        if (G.board.edges[edgeId]) {
-            return { isValid: false, reason: "This edge is already occupied" };
-        }
-        return { isValid: false, reason: "Road must connect to your existing road or settlement" };
-    }
-
-    return { isValid: true };
+    // Uses ValidationResult from spatial directly, no need for redundant checks
+    return isValidRoadPlacement(G, edgeId, playerID);
 };
 
 /**
