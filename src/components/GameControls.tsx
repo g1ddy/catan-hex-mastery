@@ -7,7 +7,7 @@ import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { calculateTrade } from '../game/moves/trade';
+import { calculateTrade } from '../game/mechanics/trade';
 import { StrategicAdvice } from '../game/analysis/coach';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
