@@ -84,6 +84,8 @@ The project follows a 4-Layer Architecture to separate concerns between Rules, E
 
 ### Architecture Diagram
 
+![Dependency Graph](images/dependency-graph.svg)
+
 ```mermaid
 graph TD
     subgraph Layer_4_Decision [Decision & Execution]
@@ -126,6 +128,7 @@ We enforce this 4-layer architecture using `dependency-cruiser`. This ensures th
     ```
 *   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
 *   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
+*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
 
 ## 📂 Project Structure
 

@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "depcruise src --config .dependency-cruiser.cjs && tsc -b && vite build",
+    "build": "depcruise src --config config/dependency-cruiser.cjs && tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest --config config/jest.config.cjs",
     "test:e2e": "playwright test --config config/playwright.config.ts",
     "test:debug": "playwright test --config config/playwright.debug.config.ts",
     "test:screenshots": "playwright test -c config/playwright.screenshots.config.ts",
-    "check:arch": "depcruise src --config .dependency-cruiser.cjs",
-    "generate:graph": "depcruise src --include-only \"^src\" --exclude \"(\\.test\\.ts|\\.spec\\.ts|testUtils\\.ts)$\" --no-config --output-type dot > dependency-graph.dot && dot -T svg dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png dependency-graph.dot > docs/images/dependency-graph.png && rm dependency-graph.dot"
+    "check:arch": "depcruise src --config config/dependency-cruiser.cjs",
+    "generate:dot": "depcruise src --include-only \"^src\" --exclude \"(\\.test\\.ts|\\.spec\\.ts|testUtils\\.ts)$\" --no-config --output-type dot > config/dependency-graph.dot",
+    "generate:graph": "dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",

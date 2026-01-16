@@ -1,6 +1,7 @@
 import { GameState, Resources } from '../types';
+import { BUILD_COSTS } from '../config';
 import { isValidPlayer } from '../../utils/validation';
-import { canAfford as canAffordResources, getAffordableBuilds } from '../mechanics/costs';
+import { canAfford as canAffordResources } from '../mechanics/costs';
 
 /**
  * Checks if a player has enough resources for a specific build cost.
@@ -22,34 +23,26 @@ export const canAfford = (
  * Checks if a player can afford to build a road.
  */
 export const canAffordRoad = (G: GameState, playerID: string): boolean => {
-    if (!isValidPlayer(G, playerID)) return false;
-    // eslint-disable-next-line security/detect-object-injection
-    return getAffordableBuilds(G.players[playerID].resources).road;
+    return canAfford(G, playerID, BUILD_COSTS.road);
 };
 
 /**
  * Checks if a player can afford to build a settlement.
  */
 export const canAffordSettlement = (G: GameState, playerID: string): boolean => {
-    if (!isValidPlayer(G, playerID)) return false;
-    // eslint-disable-next-line security/detect-object-injection
-    return getAffordableBuilds(G.players[playerID].resources).settlement;
+    return canAfford(G, playerID, BUILD_COSTS.settlement);
 };
 
 /**
  * Checks if a player can afford to build a city.
  */
 export const canAffordCity = (G: GameState, playerID: string): boolean => {
-    if (!isValidPlayer(G, playerID)) return false;
-    // eslint-disable-next-line security/detect-object-injection
-    return getAffordableBuilds(G.players[playerID].resources).city;
+    return canAfford(G, playerID, BUILD_COSTS.city);
 };
 
 /**
  * Checks if a player can afford to buy a development card.
  */
 export const canAffordDevCard = (G: GameState, playerID: string): boolean => {
-    if (!isValidPlayer(G, playerID)) return false;
-    // eslint-disable-next-line security/detect-object-injection
-    return getAffordableBuilds(G.players[playerID].resources).devCard;
+    return canAfford(G, playerID, BUILD_COSTS.devCard);
 };
