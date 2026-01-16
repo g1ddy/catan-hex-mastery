@@ -11,8 +11,8 @@ export const tradeBank: Move<GameState> = ({ G, ctx }) => {
         throw new Error(`You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade.`);
     }
 
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'give' is a validated keyof Resources from calculateTrade
     player.resources[give] -= BANK_TRADE_GIVE_AMOUNT;
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'receive' is a validated keyof Resources from calculateTrade
     player.resources[receive] += BANK_TRADE_RECEIVE_AMOUNT;
 };
