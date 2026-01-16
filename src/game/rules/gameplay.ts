@@ -1,7 +1,7 @@
 import { GameState } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult } from './spatial';
-import { calculateTrade } from '../mechanics/trade';
+import { calculateTrade, TradeResult } from '../mechanics/trade';
 import { isValidPlayer } from '../../utils/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../config';
 
@@ -54,18 +54,18 @@ export const validateBuildCity = (G: GameState, playerID: string, vertexId: stri
  * Checks:
  * 1. Resource sufficiency for at least one trade.
  */
-export const validateTradeBank = (G: GameState, playerID: string): ValidationResult => {
+export const validateTradeBank = (G: GameState, playerID: string): ValidationResult<TradeResult> => {
     if (!isValidPlayer(G, playerID)) {
         return { isValid: false, reason: "Invalid player" };
     }
 
     // eslint-disable-next-line security/detect-object-injection
     const player = G.players[playerID];
-    const { canTrade } = calculateTrade(player.resources);
+    const tradeResult = calculateTrade(player.resources);
 
-    if (!canTrade) {
+    if (!tradeResult.canTrade) {
         return { isValid: false, reason: `You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade.` };
     }
 
-    return { isValid: true };
+    return { isValid: true, data: tradeResult };
 };

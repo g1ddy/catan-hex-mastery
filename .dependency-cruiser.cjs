@@ -1,3 +1,17 @@
+// Define Layer Paths
+const L = {
+    MECHANICS: '^src/game/mechanics',
+    RULES: '^src/game/rules',
+    AI: '^src/game/ai',
+    ANALYSIS: '^src/game/analysis',
+    MOVES: '^src/game/moves',
+    BOTS: '^src/bots',
+};
+
+// Groups of layers for easier rule definition
+const HIGHER_THAN_MECHANICS = [L.RULES, L.AI, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_RULES = [L.AI, L.ANALYSIS, L.MOVES, L.BOTS];
+
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
   options: {
@@ -24,15 +38,9 @@ module.exports = {
     {
       name: 'mechanics-layer-violation',
       severity: 'error',
-      from: { path: '^src/game/mechanics' },
+      from: { path: L.MECHANICS },
       to: {
-        path: [
-            '^src/game/rules',
-            '^src/game/ai',
-            '^src/game/analysis',
-            '^src/game/moves',
-            '^src/bots'
-        ]
+        path: HIGHER_THAN_MECHANICS
       },
       comment: 'Mechanics layer must be pure and not depend on higher layers.',
     },
@@ -40,14 +48,9 @@ module.exports = {
     {
       name: 'rules-layer-violation',
       severity: 'error',
-      from: { path: '^src/game/rules' },
+      from: { path: L.RULES },
       to: {
-        path: [
-            '^src/game/ai',
-            '^src/game/analysis',
-            '^src/game/moves',
-            '^src/bots'
-        ]
+        path: HIGHER_THAN_RULES
       },
       comment: 'Rules layer (Validator) cannot depend on AI, Analysis, or Moves.',
     },
@@ -55,12 +58,12 @@ module.exports = {
     {
         name: 'enumeration-layer-violation',
         severity: 'error',
-        from: { path: '^src/game/ai' },
+        from: { path: L.AI },
         to: {
           path: [
-              '^src/game/analysis', // Enumerator generates moves, doesn't score them
-              '^src/game/moves',
-              '^src/bots'
+              L.ANALYSIS, // Enumerator generates moves, doesn't score them
+              L.MOVES,
+              L.BOTS
           ]
         },
         comment: 'Enumeration layer is for generating moves only.',
@@ -69,12 +72,12 @@ module.exports = {
     {
         name: 'evaluation-layer-violation',
         severity: 'error',
-        from: { path: '^src/game/analysis' },
+        from: { path: L.ANALYSIS },
         to: {
           path: [
-              '^src/game/ai',
-              '^src/game/moves',
-              '^src/bots'
+              L.AI,
+              L.MOVES,
+              L.BOTS
           ]
         },
         comment: 'Evaluation layer (Coach) evaluates state, not moves or bots.',
@@ -83,9 +86,9 @@ module.exports = {
     {
         name: 'moves-layer-violation',
         severity: 'error',
-        from: { path: '^src/game/moves' },
+        from: { path: L.MOVES },
         to: {
-            path: '^src/bots'
+            path: L.BOTS
         },
         comment: 'Moves are executed by game engine, should not depend on Bots.',
     }

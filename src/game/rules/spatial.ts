@@ -7,9 +7,11 @@ import { isValidHexId } from '../../utils/validation';
 /**
  * Represents the result of a validation check.
  */
-export interface ValidationResult {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface ValidationResult<T = any> {
     isValid: boolean;
     reason?: string;
+    data?: T;
 }
 
 /**
