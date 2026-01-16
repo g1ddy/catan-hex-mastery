@@ -90,22 +90,18 @@ export const getValidSettlementSpots = (G: GameState, playerID: string, checkCos
         return validSpots;
     }
 
-    const checked = new Set<string>();
-
-    // Optimization: Instead of scanning all possible vertices, we only scan vertices adjacent
-    // to the player's existing roads. A new settlement MUST connect to an existing road.
+    // Optimization: Collect all vertices adjacent to roads (candidate spots)
+    const verticesToCheck = new Set<string>();
     const playerRoads = G.players[playerID]?.roads || [];
-    playerRoads.forEach(roadId => {
-        // 'roadId' is an edge ID. Get its endpoints (vertices).
-        const endpoints = getVerticesForEdge(roadId);
-        endpoints.forEach(vId => {
-            if (checked.has(vId)) return;
-            checked.add(vId);
 
-            if (isValidSettlementPlacement(G, vId, playerID).isValid) {
-                validSpots.add(vId);
-            }
-        });
+    playerRoads.forEach(roadId => {
+        getVerticesForEdge(roadId).forEach(vId => verticesToCheck.add(vId));
+    });
+
+    verticesToCheck.forEach(vId => {
+        if (isValidSettlementPlacement(G, vId, playerID).isValid) {
+            validSpots.add(vId);
+        }
     });
 
     return validSpots;
@@ -152,31 +148,26 @@ export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = tr
     const player = G.players[playerID];
     if (!player) return validSpots;
 
-    // 1. Check edges adjacent to existing roads
+    const networkVertices = new Set<string>();
+
+    // Collect all vertices from the player's roads
     player.roads.forEach(roadId => {
-        const endpoints = getVerticesForEdge(roadId);
-        endpoints.forEach(vId => {
-            const adjEdges = getEdgesForVertex(vId);
-            adjEdges.forEach(eId => {
-                 if (checked.has(eId)) return;
-                 checked.add(eId);
-                 if (isValidRoadPlacement(G, eId, playerID).isValid) {
-                     validSpots.add(eId);
-                 }
-            });
-        });
+        getVerticesForEdge(roadId).forEach(vId => networkVertices.add(vId));
     });
 
-    // 2. Check edges adjacent to settlements/cities (for new branches)
-    player.settlements.forEach(vId => {
-         const adjEdges = getEdgesForVertex(vId);
-         adjEdges.forEach(eId => {
-             if (checked.has(eId)) return;
-             checked.add(eId);
-             if (isValidRoadPlacement(G, eId, playerID).isValid) {
-                 validSpots.add(eId);
-             }
-         });
+    // Collect all vertices from the player's settlements/cities
+    player.settlements.forEach(vId => networkVertices.add(vId));
+
+    // For each unique vertex in the network, check adjacent edges
+    networkVertices.forEach(vId => {
+        const adjEdges = getEdgesForVertex(vId);
+        adjEdges.forEach(eId => {
+            if (checked.has(eId)) return;
+            checked.add(eId);
+            if (isValidRoadPlacement(G, eId, playerID).isValid) {
+                validSpots.add(eId);
+            }
+        });
     });
 
     return validSpots;
