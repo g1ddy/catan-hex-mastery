@@ -116,6 +116,17 @@ graph TD
     V --> G
 ```
 
+### Architecture Verification
+
+We enforce this 4-layer architecture using `dependency-cruiser`. This ensures that lower layers (like Mechanics or Rules) never accidentally import from higher layers (like AI or Moves), keeping the dependency graph clean and acyclic.
+
+*   **Command Line**: You can verify the architecture manually by running:
+    ```bash
+    npm run check:arch
+    ```
+*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
+*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
+
 ## 📂 Project Structure
 
 ```

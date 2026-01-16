@@ -6,13 +6,23 @@ import { TradeResult } from '../mechanics/trade';
 
 export const tradeBank: Move<GameState> = ({ G, ctx }) => {
     // 1. Delegate Validation and Get Execution Details
-    const { give, receive } = RuleEngine.validateMoveOrThrow<TradeResult>(G, ctx, 'tradeBank', []);
+    const result = RuleEngine.validateMoveOrThrow<TradeResult>(G, ctx, 'tradeBank', []);
 
-    // 2. Execute
-    const player = G.players[ctx.currentPlayer]; // eslint-disable-line security/detect-object-injection
+    // 2. Safety Check (TypeScript Guard)
+    // RuleEngine.validateMoveOrThrow throws if invalid, but returns T | undefined.
+    // In our specific case, validateTradeBank ALWAYS returns data if valid.
+    if (!result) {
+        throw new Error("Internal Error: Validation passed but no trade data returned.");
+    }
 
-    // eslint-disable-next-line security/detect-object-injection -- 'give' is a validated keyof Resources from calculateTrade
+    const { give, receive } = result;
+
+    // 3. Execute
+    // eslint-disable-next-line security/detect-object-injection
+    const player = G.players[ctx.currentPlayer];
+
+    // eslint-disable-next-line security/detect-object-injection
     player.resources[give] -= BANK_TRADE_GIVE_AMOUNT;
-    // eslint-disable-next-line security/detect-object-injection -- 'receive' is a validated keyof Resources from calculateTrade
+    // eslint-disable-next-line security/detect-object-injection
     player.resources[receive] += BANK_TRADE_RECEIVE_AMOUNT;
 };
