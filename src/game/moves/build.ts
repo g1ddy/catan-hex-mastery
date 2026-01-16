@@ -1,27 +1,8 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../types';
-import { getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
 import { BUILD_COSTS } from '../config';
 import { isValidHexId } from '../../utils/validation';
 import { RuleEngine } from '../rules/validator';
-
-// Helper to find neighboring vertices (distance rule)
-const getVertexNeighbors = (vertexId: string): string[] => {
-    const edges = getEdgesForVertex(vertexId);
-    // Each edge connects to 2 vertices. One is vertexId, the other is the neighbor.
-    // Use a Set to avoid duplicates if any (though structurally unlikely in hex grid).
-    const neighbors = new Set<string>();
-
-    for (const eId of edges) {
-        const vertices = getVerticesForEdge(eId);
-        for (const v of vertices) {
-            if (v !== vertexId) {
-                neighbors.add(v);
-            }
-        }
-    }
-    return Array.from(neighbors);
-};
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     // 0. Security Validation
