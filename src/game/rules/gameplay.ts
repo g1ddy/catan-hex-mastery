@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
-import { isValidRoadPlacement, isValidSettlementPlacement, isValidCityPlacement, validateSettlementLocation, ValidationResult } from './spatial';
+import { isValidRoadPlacement, isValidCityPlacement, validateSettlementLocation, ValidationResult } from './spatial';
 import { getEdgesForVertex } from '../hexUtils';
 
 /**
