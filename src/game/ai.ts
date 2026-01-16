@@ -90,7 +90,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             if (Object.prototype.hasOwnProperty.call(STAGE_MOVES, stage)) {
                 const possibleMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
                 if (possibleMoves.length === 1) {
-                    console.warn(`Stage '${stage}' not explicitly handled in AI enumerate. Auto-generating move '${possibleMoves[0]}'.`);
+                    console.warn(`Stage '${stage}' not explicitly handled in AI enumerate. Auto-generating move '${possibleMoves[0]}' (assuming no args).`);
                     moves.push(makeMove(possibleMoves[0], []));
                 } else {
                     console.error(`Stage '${stage}' is unhandled in AI enumerate and has ambiguous moves (found ${possibleMoves.length}).`);

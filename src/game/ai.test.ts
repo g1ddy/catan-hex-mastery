@@ -98,6 +98,10 @@ describe('ai.enumerate', () => {
         };
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('should return nothing if stage is unknown', () => {
         ctx.activePlayers = {};
         const moves = enumerate(G, ctx, '0');
@@ -142,7 +146,6 @@ describe('ai.enumerate', () => {
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([expectedAction('singleMove', [])]);
         expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_single\' not explicitly handled'));
-        consoleWarnSpy.mockRestore();
     });
 
     it('should log error and return empty for unhandled stage with multiple moves', () => {
@@ -151,7 +154,6 @@ describe('ai.enumerate', () => {
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Stage \'test_multi\' is unhandled'));
-        consoleErrorSpy.mockRestore();
     });
 
     it('should log error for unknown stage (not in STAGE_MOVES)', () => {
@@ -160,6 +162,5 @@ describe('ai.enumerate', () => {
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('is not a recognized fallback stage'));
-        consoleErrorSpy.mockRestore();
     });
 });
