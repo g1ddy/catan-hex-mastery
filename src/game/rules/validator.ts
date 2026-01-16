@@ -9,7 +9,7 @@ import {
     isValidRoadPlacement,
     ValidationResult
 } from './spatial';
-import { getVerticesForHex, getEdgesForHex } from '../hexUtils';
+import { getVerticesForHex, getEdgesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
 import { getAffordableBuilds } from '../mechanics/costs';
 import { PHASES, STAGES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
@@ -92,11 +92,13 @@ export const getValidSettlementSpots = (G: GameState, playerID: string, checkCos
 
     const checked = new Set<string>();
 
-    // Optimization: Instead of scanning all possible vertices, we could scan near player's roads.
-    // However, for total correctness (and because the board is small), scanning hexes is acceptable.
-    Object.values(G.board.hexes).forEach(hex => {
-        const vertices = getVerticesForHex(hex.coords);
-        vertices.forEach(vId => {
+    // Optimization: Instead of scanning all possible vertices, we only scan vertices adjacent
+    // to the player's existing roads. A new settlement MUST connect to an existing road.
+    const playerRoads = G.players[playerID]?.roads || [];
+    playerRoads.forEach(roadId => {
+        // 'roadId' is an edge ID. Get its endpoints (vertices).
+        const endpoints = getVerticesForEdge(roadId);
+        endpoints.forEach(vId => {
             if (checked.has(vId)) return;
             checked.add(vId);
 
@@ -145,16 +147,36 @@ export const getValidRoadSpots = (G: GameState, playerID: string, checkCost = tr
 
     const checked = new Set<string>();
 
-    Object.values(G.board.hexes).forEach(hex => {
-        const edges = getEdgesForHex(hex.coords);
-        edges.forEach(eId => {
-            if (checked.has(eId)) return;
-            checked.add(eId);
+    // Optimization: Instead of scanning all possible edges, we only scan edges adjacent
+    // to the player's network (roads, settlements, cities).
+    const player = G.players[playerID];
+    if (!player) return validSpots;
 
-            if (isValidRoadPlacement(G, eId, playerID).isValid) {
-                validSpots.add(eId);
-            }
+    // 1. Check edges adjacent to existing roads
+    player.roads.forEach(roadId => {
+        const endpoints = getVerticesForEdge(roadId);
+        endpoints.forEach(vId => {
+            const adjEdges = getEdgesForVertex(vId);
+            adjEdges.forEach(eId => {
+                 if (checked.has(eId)) return;
+                 checked.add(eId);
+                 if (isValidRoadPlacement(G, eId, playerID).isValid) {
+                     validSpots.add(eId);
+                 }
+            });
         });
+    });
+
+    // 2. Check edges adjacent to settlements/cities (for new branches)
+    player.settlements.forEach(vId => {
+         const adjEdges = getEdgesForVertex(vId);
+         adjEdges.forEach(eId => {
+             if (checked.has(eId)) return;
+             checked.add(eId);
+             if (isValidRoadPlacement(G, eId, playerID).isValid) {
+                 validSpots.add(eId);
+             }
+         });
     });
 
     return validSpots;
@@ -196,17 +218,19 @@ export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<stri
         return validSpots;
     }
 
-    Object.values(G.board.hexes).forEach(hex => {
-        const edges = getEdgesForHex(hex.coords);
-        edges.forEach(eId => {
-            if (checked.has(eId)) return;
-            checked.add(eId);
+    // Optimization: In Setup, a road MUST attach to the last placed settlement.
+    // So we only need to check edges adjacent to that single settlement.
+    const lastSettlementId = G.players[playerID]?.settlements.at(-1);
 
-            if (isValidSetupRoadPlacement(G, eId, playerID).isValid) {
-                validSpots.add(eId);
-            }
+    if (lastSettlementId) {
+        const adjEdges = getEdgesForVertex(lastSettlementId);
+        adjEdges.forEach(eId => {
+             // No need for 'checked' set as we iterate a small, unique list once
+             if (isValidSetupRoadPlacement(G, eId, playerID).isValid) {
+                 validSpots.add(eId);
+             }
         });
-    });
+    }
 
     return validSpots;
 };
