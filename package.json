@@ -13,8 +13,8 @@
     "test:debug": "playwright test --config config/playwright.debug.config.ts",
     "test:screenshots": "playwright test -c config/playwright.screenshots.config.ts",
     "check:arch": "depcruise src --config config/dependency-cruiser.cjs",
-    "generate:dot": "depcruise src --include-only \"^src\" --exclude \"(\\.test\\.ts|\\.spec\\.ts|testUtils\\.ts)$\" --no-config --output-type dot > config/dependency-graph.dot",
-    "generate:graph": "dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png"
+    "generate:dot": "depcruise src --include-only \"^src\" --exclude \"(\\.test\\.ts|\\.test\\.tsx|\\.spec\\.ts|testUtils\\.ts)$\" --no-config --output-type dot > config/dependency-graph.dot",
+    "generate:graph": "npm run generate:dot && dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",
