@@ -58,6 +58,11 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             moves.push(makeMove('rollDice', []));
             break;
         }
+        case STAGES.ROBBER: {
+            // Robber dismissal is mandatory if in this stage (until we add robber movement logic)
+            moves.push(makeMove('dismissRobber', []));
+            break;
+        }
         case STAGES.ACTING: {
             // 1. Settlements
             validMoves.validSettlements.forEach(vId => {

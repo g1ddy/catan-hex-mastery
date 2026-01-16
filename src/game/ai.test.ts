@@ -117,4 +117,10 @@ describe('ai.enumerate', () => {
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([expectedAction('rollDice', [])]);
     });
+
+    it('should enumerate dismissRobber', () => {
+        ctx.activePlayers['0'] = STAGES.ROBBER;
+        const moves = enumerate(G, ctx, '0');
+        expect(moves).toEqual([expectedAction('dismissRobber', [])]);
+    });
 });
