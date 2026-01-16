@@ -9,6 +9,9 @@ import { isValidPlayer } from '../utils/validation';
 import { BotMove } from '../game/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
+const STRATEGIC_ADVICE_BOOST = 1.5;
+const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
+
 export class BotCoach {
     private G: GameState;
     private coach: Coach;
@@ -106,7 +109,7 @@ export class BotCoach {
 
             // Coach Strategic Multiplier
             if (advisedMoves.has(name)) {
-                weight *= 1.5; // Boost advised moves
+                weight *= STRATEGIC_ADVICE_BOOST; // Boost advised moves
             }
 
             return weight;
@@ -120,8 +123,8 @@ export class BotCoach {
         // 4. Refine Top Candidates (Spatial Logic)
         // If top moves are settlements/cities, use detailed scoring to pick the best spot.
         const topWeight = getWeightedScore(sortedMoves[0]);
-        // Consider moves within 10% of top weight as "Top Tier"
-        const topMoves = sortedMoves.filter(m => getWeightedScore(m) >= topWeight * 0.9);
+        // Consider moves within threshold of top weight as "Top Tier"
+        const topMoves = sortedMoves.filter(m => getWeightedScore(m) >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
         // Check if we need to refine Settlements
         const settlementMoves = topMoves.filter(m => this.getMoveName(m) === 'buildSettlement');

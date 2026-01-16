@@ -1,7 +1,7 @@
 import { GameState } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
-import { isValidRoadPlacement, isValidSettlementPlacement, isValidCityPlacement } from './spatial';
-import { ValidationResult } from './spatial';
+import { isValidRoadPlacement, isValidSettlementPlacement, isValidCityPlacement, validateSettlementLocation, ValidationResult } from './spatial';
+import { getEdgesForVertex } from '../hexUtils';
 
 /**
  * Validates the "Build Road" move during the Gameplay Phase.
@@ -36,13 +36,22 @@ export const validateBuildSettlement = (G: GameState, playerID: string, vertexId
         return { isValid: false, reason: "Not enough resources to build a settlement (requires Wood, Brick, Wheat, Sheep)" };
     }
 
-    if (!isValidSettlementPlacement(G, vertexId, playerID)) {
+    // 1. Check for geometric validity (occupancy, distance rule)
+    const locationValidation = validateSettlementLocation(G, vertexId);
+    if (!locationValidation.isValid) {
+        return locationValidation;
+    }
+
+    // 2. Check for road connectivity
+    const adjEdges = getEdgesForVertex(vertexId);
+    const hasOwnRoad = adjEdges.some(eId => {
         // eslint-disable-next-line security/detect-object-injection
-        if (G.board.vertices[vertexId]) {
-             return { isValid: false, reason: "This vertex is already occupied" };
-        }
-        // Generic error as catch-all
-        return { isValid: false, reason: "Invalid settlement placement (Occupied, Too Close, or Not Connected)" };
+        const edge = G.board.edges[eId];
+        return edge && edge.owner === playerID;
+    });
+
+    if (!hasOwnRoad) {
+        return { isValid: false, reason: "Settlement must connect to your own road" };
     }
 
     return { isValid: true };

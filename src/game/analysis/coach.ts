@@ -45,6 +45,7 @@ const DEFAULT_CONFIG: CoachConfig = {
 
 const EARLY_GAME_VP_THRESHOLD = 5;
 const MID_GAME_VP_THRESHOLD = 7;
+const SPATIAL_SCORE_NORMALIZATION_FACTOR = 5;
 
 const ERROR_ADVICE_RESULT: StrategicAdvice = {
     text: STRATEGIC_ADVICE.ERROR.INVALID_PLAYER,
@@ -417,7 +418,7 @@ export class Coach {
 
                     // Normalize spatial score (typically 0-15) to be comparable with weight (0-1)
                     // Let's say max score is ~20.
-                    score *= (1 + vertexScore.score / 5);
+                    score *= (1 + vertexScore.score / SPATIAL_SCORE_NORMALIZATION_FACTOR);
                 } catch (e) {
                     // Ignore invalid vertices
                 }

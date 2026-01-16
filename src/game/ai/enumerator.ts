@@ -58,16 +58,18 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     moveTypesList.forEach(moveName => {
         // 1. Handle Parameterized Moves (Spatial)
         if (PARAMETERIZED_MOVES.has(moveName)) {
-            if (moveName === 'placeSettlement') {
-                validSpots.validSettlements.forEach(vId => moves.push(makeMove('placeSettlement', [vId])));
-            } else if (moveName === 'buildSettlement') {
-                validSpots.validSettlements.forEach(vId => moves.push(makeMove('buildSettlement', [vId])));
-            } else if (moveName === 'buildCity') {
-                validSpots.validCities.forEach(vId => moves.push(makeMove('buildCity', [vId])));
-            } else if (moveName === 'placeRoad') {
-                validSpots.validRoads.forEach(eId => moves.push(makeMove('placeRoad', [eId])));
-            } else if (moveName === 'buildRoad') {
-                validSpots.validRoads.forEach(eId => moves.push(makeMove('buildRoad', [eId])));
+            switch (moveName) {
+                case 'placeSettlement':
+                case 'buildSettlement':
+                    validSpots.validSettlements.forEach(vId => moves.push(makeMove(moveName, [vId])));
+                    break;
+                case 'buildCity':
+                    validSpots.validCities.forEach(vId => moves.push(makeMove(moveName, [vId])));
+                    break;
+                case 'placeRoad':
+                case 'buildRoad':
+                    validSpots.validRoads.forEach(eId => moves.push(makeMove(moveName, [eId])));
+                    break;
             }
         }
         // 2. Handle Non-Parameterized Moves (Everything else)
