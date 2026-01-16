@@ -65,18 +65,18 @@ classDiagram
 ```mermaid
 graph LR
     subgraph Current
-        OldBuild[moves/build.ts\n(Logic + State)]
-        OldSetup[moves/setup.ts\n(Logic + State)]
-        OldValidator[rules/validator.ts\n(Partial Logic)]
+        OldBuild["moves/build.ts<br/>(Logic + State)"]
+        OldSetup["moves/setup.ts<br/>(Logic + State)"]
+        OldValidator["rules/validator.ts<br/>(Partial Logic)"]
         OldPlacement[rules/placement.ts]
-        OldAI[ai.ts\n(Duplicated Logic)]
+        OldAI["ai.ts<br/>(Duplicated Logic)"]
     end
 
     subgraph New
-        NewBuild[moves/build.ts\n(State Only)]
-        NewSetup[moves/setup.ts\n(State Only)]
+        NewBuild["moves/build.ts<br/>(State Only)"]
+        NewSetup["moves/setup.ts<br/>(State Only)"]
 
-        Facade[rules/validator.ts\n(Facade)]
+        Facade["rules/validator.ts<br/>(Facade)"]
         RulesGame[rules/gameplay.ts]
         RulesSpace[rules/spatial.ts]
         RulesCommon[rules/common.ts]

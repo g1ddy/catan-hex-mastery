@@ -109,12 +109,6 @@ export class BotCoach {
                 weight *= 1.5; // Boost advised moves
             }
 
-            // Spatial Tie-Breaker (for same-type moves)
-            // If it's a settlement/city, query Coach for specific spot score?
-            // Doing this for EVERY move is expensive.
-            // We optimized Setup above. For Gameplay, we might just rely on basic weights
-            // and then do a refined sort for the top candidates below.
-
             return weight;
         };
 
@@ -135,27 +129,24 @@ export class BotCoach {
              const recommendations = this.coach.getAllSettlementScores(playerID, ctx);
              const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
 
-             // Sort settlement moves by specific spot score
-             settlementMoves.sort((a, b) => {
-                 const vA = this.getMoveArgs(a)[0];
-                 const vB = this.getMoveArgs(b)[0];
-                 const sA = recommendationMap.get(vA) ?? 0;
-                 const sB = recommendationMap.get(vB) ?? 0;
-                 return sB - sA;
+             // Find the single best settlement move from the top candidates
+             const bestSettlementMove = settlementMoves.reduce((best, current) => {
+                 const vBest = this.getMoveArgs(best)[0];
+                 const vCurrent = this.getMoveArgs(current)[0];
+                 const sBest = recommendationMap.get(vBest) ?? 0;
+                 const sCurrent = recommendationMap.get(vCurrent) ?? 0;
+                 return sCurrent > sBest ? current : best;
              });
 
-             // Place best settlement at start of topMoves?
-             // Actually, we should return this sorted list prioritized.
-             // Let's just return the sorted settlement moves followed by others.
-             const otherMoves = sortedMoves.filter(m => !settlementMoves.includes(m));
-             return [...settlementMoves, ...otherMoves];
+             // Promote the best settlement to the front of the full sorted list
+             // This keeps other lower-scored settlements in the list but prioritized lower
+             const others = sortedMoves.filter(m => m !== bestSettlementMove);
+             return [bestSettlementMove, ...others];
         }
 
         // Check if we need to refine Cities
         const cityMoves = topMoves.filter(m => this.getMoveName(m) === 'buildCity');
         if (cityMoves.length > 1) {
-             // ... Similar logic for cities (using getBestCitySpots)
-             // For brevity/limit, assuming getBestCitySpots logic handles it.
              const candidates = cityMoves.map(m => this.getMoveArgs(m)[0]);
              const bestSpots = this.coach.getBestCitySpots(playerID, ctx, candidates);
              const bestVId = bestSpots[0]?.vertexId;

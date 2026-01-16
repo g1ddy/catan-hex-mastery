@@ -106,10 +106,10 @@ graph TD
     end
 
     %% Flows
-    BC --> Enum : "Get Options"
-    BC --> C : "Get Scores"
-    Enum --> V : "Query Validity"
-    Moves --> V : "Enforce Rules"
+    BC -->|Get Options| Enum
+    BC -->|Get Scores| C
+    Enum -->|Query Validity| V
+    Moves -->|Enforce Rules| V
 
     %% Internal Rules
     V --> P

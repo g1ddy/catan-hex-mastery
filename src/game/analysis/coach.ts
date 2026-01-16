@@ -385,6 +385,10 @@ export class Coach {
     /**
      * Generic action scorer for BotCoach.
      * Evaluates a full action object, combining spatial scoring (for spots) and strategic scoring (for types).
+     *
+     * @experimental This method is intended for future generic Bot implementations (e.g. MCTS) that need a
+     * unified evaluation function. Currently, `BotCoach.ts` uses an optimized inline version of this logic
+     * to avoid performance overhead from repeated scarcity map calculations.
      */
     public scoreAction(playerID: string, action: GameAction, ctx: Ctx): number {
         // Handle payload vs simple format
