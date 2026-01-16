@@ -120,11 +120,11 @@ export const getValidCitySpots = (G: GameState, playerID: string, checkCost = tr
     }
 
     // Cities can only be built on existing settlements
-    G.players[playerID].settlements.forEach(vId => {
-        if (isValidCityPlacement(G, vId, playerID).isValid) {
-            validSpots.add(vId);
-        }
-    });
+(G.players[playerID]?.settlements || []).forEach(vId => {
+    if (isValidCityPlacement(G, vId, playerID).isValid) {
+        validSpots.add(vId);
+    }
+});
 
     return validSpots;
 };
