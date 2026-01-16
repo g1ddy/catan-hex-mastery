@@ -14,24 +14,17 @@ export interface TradeResult {
  * Tie-breaking: Uses fixed order (Wood, Brick, Sheep, Wheat, Ore).
  */
 export const calculateTrade = (resources: Resources): TradeResult => {
-    let maxRes: keyof Resources = RESOURCE_ORDER[0];
-    let minRes: keyof Resources = RESOURCE_ORDER[0];
-    let maxVal = -1;
-    let minVal = Infinity;
+    // eslint-disable-next-line security/detect-object-injection
+    const resourceValues = RESOURCE_ORDER.map(res => resources[res]);
+    const maxVal = Math.max(...resourceValues);
+    const minVal = Math.min(...resourceValues);
 
-    for (const res of RESOURCE_ORDER) {
-        const val = resources[res];
-
-        if (val > maxVal) {
-            maxVal = val;
-            maxRes = res;
-        }
-
-        if (val < minVal) {
-            minVal = val;
-            minRes = res;
-        }
-    }
+    // Find the first resource matching the max/min value to respect the tie-breaking rule.
+    // The ! assertion is safe because we just derived maxVal/minVal from the same list.
+    // eslint-disable-next-line security/detect-object-injection
+    const maxRes = RESOURCE_ORDER.find(res => resources[res] === maxVal)!;
+    // eslint-disable-next-line security/detect-object-injection
+    const minRes = RESOURCE_ORDER.find(res => resources[res] === minVal)!;
 
     return {
         give: maxRes,
