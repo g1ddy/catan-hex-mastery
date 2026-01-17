@@ -1,6 +1,7 @@
 import { MCTSBot } from 'boardgame.io/ai';
 import { Game, Ctx } from 'boardgame.io';
 import { GameState, GameAction } from '../game/types';
+import { WINNING_SCORE } from '../game/constants';
 
 interface BotConfig {
     game: Game;
@@ -9,8 +10,6 @@ interface BotConfig {
     playerID?: string;
     [key: string]: any;
 }
-
-const WINNING_VP = 10;
 
 export class CatanMCTSBot extends MCTSBot {
     constructor(config: BotConfig) {
@@ -25,9 +24,9 @@ export class CatanMCTSBot extends MCTSBot {
 
                 const objectives: Record<string, { checker: (G: GameState) => boolean, weight: number }> = {};
 
-                // Create cumulative objectives for Victory Points (1 to WINNING_VP)
+                // Create cumulative objectives for Victory Points (1 to WINNING_SCORE)
                 // This encourages the bot to reach higher VP thresholds.
-                for (let i = 1; i <= WINNING_VP; i++) {
+                for (let i = 1; i <= WINNING_SCORE; i++) {
                     objectives[`VP_${i}`] = {
                         checker: (gameState: GameState) => {
                             const player = Object.prototype.hasOwnProperty.call(gameState.players, playerID)

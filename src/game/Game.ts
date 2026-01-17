@@ -9,7 +9,7 @@ import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analysis/analyst';
-import { PHASES, STAGES, STAGE_MOVES } from './constants';
+import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './constants';
 import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
@@ -45,7 +45,6 @@ export const CatanGame: Game<GameState> = {
   },
 
   endIf: ({ G, ctx }) => {
-    const WINNING_SCORE = 10;
     const MAX_TURNS = 100;
 
     // 1. CHECK FOR WINNER (WINNING_SCORE Victory Points)
