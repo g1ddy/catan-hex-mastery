@@ -18,6 +18,7 @@ const ROAD_FATIGUE_PENALTY = 0.01;
 const TRADE_BOOST = 5.0;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
+const ORE_RESERVE_THRESHOLD = 6;
 
 export class BotCoach {
     private G: GameState;
@@ -89,6 +90,10 @@ export class BotCoach {
      * @returns A sorted list of optimal moves (best first)
      */
     public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
+            return [];
+        }
+
         if (playerID !== ctx.currentPlayer) {
             console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
             return [];
@@ -190,11 +195,11 @@ export class BotCoach {
                 }
 
                 // Smart Ban: Protect Ore (City bottleneck)
-                // If we are giving away Ore and have <= 5, we shouldn't trade it away.
+                // If we are giving away Ore and have <= ORE_RESERVE_THRESHOLD, we shouldn't trade it away.
                 // We need 3 Ore for a City. Trading 4 leaves us with too few.
                 // Only trade Ore if we have a massive surplus.
                 const tradeResult = calculateTrade(player.resources);
-                if (tradeResult.give === 'ore' && player.resources.ore <= 5) {
+                if (tradeResult.give === 'ore' && player.resources.ore <= ORE_RESERVE_THRESHOLD) {
                     weight = 0;
                 }
             }
