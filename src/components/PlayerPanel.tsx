@@ -40,8 +40,11 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
         <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
             P{playerNumber}
         </span>
-        <span className="hidden md:inline text-slate-100 whitespace-nowrap">
-            {player.name || `Player ${playerNumber}`}
+        <span
+          className="hidden md:inline text-slate-100 truncate"
+          title={`P${playerNumber}: ${player.name || `Player ${playerNumber}`}`}
+        >
+          P{playerNumber}: {player.name || `Player ${playerNumber}`}
         </span>
       </div>
 
