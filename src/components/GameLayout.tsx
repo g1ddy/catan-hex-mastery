@@ -165,7 +165,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   return (
     <div
       data-testid="game-layout"
-      className="relative w-full h-[100dvh] overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
+      className="relative w-full h-screen h-[100dvh] overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
     >
       <Toaster />
       <Tooltip id="resource-tooltip" place="top" style={{ zIndex: Z_INDEX_TOOLTIP }} />
