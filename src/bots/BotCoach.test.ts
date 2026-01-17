@@ -132,7 +132,7 @@ describe('BotCoach', () => {
              const flatProfile: BotProfile = {
                  name: 'Flat',
                  description: '',
-                 weights: { buildCity: 1, buildSettlement: 1, buildRoad: 1, buyDevCard: 1 },
+                 weights: { buildCity: 1, buildSettlement: 1, buildRoad: 1, buyDevCard: 1, tradeBank: 1 },
                  expansion: { aggressiveness: 0.5, diversityPreference: 0.5 }
              };
              const flatCoach = new BotCoach(G, coach, flatProfile);

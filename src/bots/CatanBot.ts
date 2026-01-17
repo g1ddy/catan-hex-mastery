@@ -4,9 +4,32 @@ import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 
+const DEFAULT_GREED_FACTOR = 0.6;
+
 export class CatanBot extends Bot {
     constructor({ enumerate, seed }: { enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[]; seed?: string | number } = { enumerate: () => [] }) {
         super({ enumerate, seed });
+    }
+
+    /**
+     * Selects an index from the list using a geometric distribution.
+     * Favors lower indices (better moves).
+     * @param count Number of candidates
+     * @param p Probability to pick the current index (0 < p <= 1). Higher p = more greedy.
+     */
+    private pickWeightedIndex(count: number, p = DEFAULT_GREED_FACTOR): number {
+        if (count <= 1) return 0;
+
+        let index = 0;
+        // Keep flipping a coin. If heads (prob p), pick current. If tails, move to next.
+        // Stop at last element.
+        while (index < count - 1) {
+            if (this.random() < p) {
+                return index;
+            }
+            index++;
+        }
+        return index;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,13 +64,13 @@ export class CatanBot extends Bot {
         }
 
         const botCoach = new BotCoach(G, coach);
-        // Note: filterOptimalMoves may return a sorted list where index 0 is best
-        // Current logic preserves "Random among Best" if filterOptimalMoves returns multiple
+        // Note: filterOptimalMoves returns a sorted list where index 0 is best
         const bestMoves = botCoach.filterOptimalMoves(allMoves as GameAction[], playerID, ctx);
         const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
 
-        // 3. Pick randomly from the candidates
-        const selectedMove = candidates[Math.floor(this.random() * candidates.length)];
+        // 3. Pick weighted randomly from the candidates (favoring top ranks)
+        const selectedIndex = this.pickWeightedIndex(candidates.length, DEFAULT_GREED_FACTOR);
+        const selectedMove = candidates[selectedIndex];
 
         // 4. Construct proper MAKE_MOVE action
         let actionPayload: { type: string, args: any[], playerID: string };

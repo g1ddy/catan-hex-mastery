@@ -3,6 +3,7 @@ import { GameState, GameAction } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
+import { getAffordableBuilds } from '../game/mechanics/costs';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
@@ -11,6 +12,11 @@ export type { BotMove };
 
 const STRATEGIC_ADVICE_BOOST = 1.5;
 const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
+const AFFORDABLE_BOOST = 10.0;
+const ROAD_FATIGUE_PENALTY = 0.01;
+const TRADE_BOOST = 5.0;
+const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
+const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
 export class BotCoach {
     private G: GameState;
@@ -129,6 +135,16 @@ export class BotCoach {
         const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
         const advisedMoves = new Set(strategicAdvice.recommendedMoves);
 
+        // Pre-calculate state for Dynamic Weights
+        // eslint-disable-next-line security/detect-object-injection
+        const player = this.G.players[playerID];
+        const affordable = getAffordableBuilds(player.resources);
+        const settlementCount = player.settlements.length;
+        // const cityCount = player.cities.length; // Not used in fatigue formula currently
+        const roadCount = player.roads.length;
+
+        const roadFatigue = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
+
         const getWeightedScore = (move: GameAction): number => {
             const name = this.getMoveName(move);
             let weight = 0;
@@ -141,6 +157,7 @@ export class BotCoach {
                 case 'placeRoad': weight = this.profile.weights.buildRoad; break;
                 case 'buyDevCard': weight = this.profile.weights.buyDevCard; break;
                 case 'endTurn': weight = 1.0; break;
+                case 'tradeBank': weight = this.profile.weights.tradeBank; break;
                 default: weight = 0.5; break;
             }
 
@@ -149,30 +166,56 @@ export class BotCoach {
                 weight *= STRATEGIC_ADVICE_BOOST; // Boost advised moves
             }
 
+            // Dynamic Logic Multipliers
+            if (name === 'buildSettlement' && affordable.settlement) {
+                weight *= AFFORDABLE_BOOST;
+            }
+            if (name === 'buildCity' && affordable.city) {
+                weight *= AFFORDABLE_BOOST;
+            }
+            if (name === 'buildRoad') {
+                if (roadFatigue) {
+                    weight *= ROAD_FATIGUE_PENALTY;
+                }
+                // Minor boost if we can afford a road but NOT a settlement, to keep expanding?
+                // Or just rely on base weight. User asked to "balance" it.
+                // If not affordable, getAffordableBuilds returns false, but 'buildRoad' won't be in list anyway
+                // because enumerator checks affordability.
+            }
+            if (name === 'tradeBank') {
+                // If we can't afford a settlement, but can trade, boost trade.
+                if (!affordable.settlement) {
+                     weight *= TRADE_BOOST;
+                }
+            }
+
             return weight;
         };
 
+        // Capture weights to handle tie-breaking/shuffling later
+        const moveWeights = new Map<GameAction, number>();
+        allMoves.forEach(m => moveWeights.set(m, getWeightedScore(m)));
+
         // Initial Sort by Weight
-        const sortedMoves = [...allMoves].sort((a, b) => getWeightedScore(b) - getWeightedScore(a));
+        const sortedMoves = [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
 
         if (sortedMoves.length === 0) return [];
 
         // 4. Refine Top Candidates (Spatial Logic)
-        // If top moves are settlements/cities, use detailed scoring to pick the best spot.
-        const topWeight = getWeightedScore(sortedMoves[0]);
+        const topWeight = moveWeights.get(sortedMoves[0])!;
         // Consider moves within threshold of top weight as "Top Tier"
-        const topMoves = sortedMoves.filter(m => getWeightedScore(m) >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
+        const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
-        // Refine Settlements
+        // Refine Settlements (pick best spot)
         const refinedSettlements = this.refineTopMoves(
             topMoves,
             sortedMoves,
             'buildSettlement',
-            (_candidates) => this.coach.getAllSettlementScores(playerID, ctx) // Ignore candidates arg, getAll scores all valid
+            (_candidates) => this.coach.getAllSettlementScores(playerID, ctx)
         );
         if (refinedSettlements) return refinedSettlements;
 
-        // Refine Cities
+        // Refine Cities (pick best spot)
         const refinedCities = this.refineTopMoves(
             topMoves,
             sortedMoves,
@@ -180,6 +223,22 @@ export class BotCoach {
             (candidates) => this.coach.getBestCitySpots(playerID, ctx, candidates)
         );
         if (refinedCities) return refinedCities;
+
+        // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
+        // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
+        const topMoveNames = topMoves.map(m => this.getMoveName(m));
+        const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
+
+        if (allAreRoads) {
+            // Shuffle topMoves in place to randomize road choice
+            for (let i = topMoves.length - 1; i > 0; i--) {
+                 const j = Math.floor(Math.random() * (i + 1));
+                 [topMoves[i], topMoves[j]] = [topMoves[j], topMoves[i]];
+             }
+             // Reconstruct sorted list: Top Shuffled + Rest
+             const rest = sortedMoves.filter(m => !topMoves.includes(m));
+             return [...topMoves, ...rest];
+        }
 
         return sortedMoves;
     }
