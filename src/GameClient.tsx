@@ -3,7 +3,6 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
-import { CatanBot } from './bots/CatanBot';
 
 interface GameClientProps {
   numPlayers: number;
@@ -41,11 +40,11 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     }
 
     // 2. Local Multiplayer (Standard / AutoPlay / VsBot)
-    // - If `bots` prop is provided (e.g., AutoPlay, VsBot), use it to configure fixed bots.
-    // - Otherwise, default to 'random' bot availability for Pass & Play.
+    // - If `bots` prop is provided, use it.
+    // - Otherwise, just use standard Local backend (no specific bots forced).
     const multiplayerConfig = bots
         ? Local({ bots })
-        : Local({ bots: { 'random': CatanBot } });
+        : Local();
 
     return {
         debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
@@ -58,14 +57,24 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
 
   // Dynamic Client Creation
   const ConfiguredClient = useMemo(() => {
+     // Inject setupData by wrapping the game object
+     // This works because Local backend runs within this client instance
+     const GameWithSetupData = {
+        ...CatanGame,
+        // Inject setupData into the setup call.
+        // We assume CatanGame.setup exists (it does).
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setup: (context: any) => CatanGame.setup!(context, setupData)
+     };
+
      return Client({
-        game: CatanGame,
+        game: GameWithSetupData,
         board: Board,
         numPlayers: numPlayers,
         debug: clientConfig.debug,
         multiplayer: clientConfig.multiplayer,
      });
-  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer]);
+  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer, setupData]);
 
   const rawPlayerID = clientConfig.playerIDOverride !== undefined
       ? clientConfig.playerIDOverride
@@ -79,8 +88,6 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     <ConfiguredClient
         {...clientProps}
         playerID={finalPlayerID}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setupData={setupData as any}
     />
   );
 };
