@@ -1,8 +1,8 @@
-import { Game, Move } from 'boardgame.io';
+import { Game } from 'boardgame.io';
 import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
-import { placeSettlement, placeRoad } from './moves/setup';
+import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
@@ -14,13 +14,6 @@ import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
-
-const regenerateBoard: Move<GameState> = ({ G }) => {
-    const boardHexes = generateBoard();
-    const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
-    G.board.hexes = hexesMap;
-    G.boardStats = calculateBoardStats(hexesMap);
-};
 
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
