@@ -31,6 +31,7 @@ describe('BotCoach Settlement Test', () => {
             players: {
                 '0': {
                     id: '0',
+                    name: 'Player 1',
                     color: 'red',
                     resources: { wood: 4, brick: 4, sheep: 4, wheat: 4, ore: 4 }, // Sufficient resources
                     victoryPoints: 2,

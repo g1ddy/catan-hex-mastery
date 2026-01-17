@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
+import { Ctx, DefaultPluginAPIs } from 'boardgame.io';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
-import { DebugBot } from './bots/DebugBot';
+import { CatanBot } from './bots/CatanBot';
+import { Bot } from 'boardgame.io/ai';
 
 interface GameClientProps {
   numPlayers: number;
@@ -16,11 +18,14 @@ interface GameClientProps {
 
   // Optional configuration for bots in 'local' mode
   // If provided, these specific bots are assigned to seats.
-  bots?: Record<string, typeof DebugBot>;
+  bots?: Record<string, typeof Bot>;
+
+  // Data passed to Game.setup
+  setupData?: { botNames?: Record<string, string> };
 }
 
 export const GameClient: React.FC<GameClientProps> = (props) => {
-  const { mode = 'local', numPlayers, bots, ...clientProps } = props;
+  const { mode = 'local', numPlayers, bots, setupData, ...clientProps } = props;
 
   // Configuration Logic
   const clientConfig = useMemo(() => {
@@ -36,11 +41,11 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     }
 
     // 2. Local Multiplayer (Standard / AutoPlay / VsBot)
-    // - If `bots` prop is provided (e.g., AutoPlay, VsBot), use it to configure fixed bots.
-    // - Otherwise, default to 'random' bot availability for Pass & Play.
+    // - If `bots` prop is provided, use it.
+    // - Otherwise, just use standard Local backend with a default bot available (Pass & Play support).
     const multiplayerConfig = bots
         ? Local({ bots })
-        : Local({ bots: { 'random': DebugBot } });
+        : Local({ bots: { 'random': CatanBot } });
 
     return {
         debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
@@ -53,14 +58,23 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
 
   // Dynamic Client Creation
   const ConfiguredClient = useMemo(() => {
+     // Inject setupData by wrapping the game object
+     // This works because Local backend runs within this client instance
+     const GameWithSetupData = {
+        ...CatanGame,
+        // Inject setupData into the setup call.
+        // We assume CatanGame.setup exists (it does).
+        setup: (context: Record<string, unknown> & DefaultPluginAPIs & { ctx: Ctx }) => CatanGame.setup!(context, setupData)
+     };
+
      return Client({
-        game: CatanGame,
+        game: GameWithSetupData,
         board: Board,
         numPlayers: numPlayers,
         debug: clientConfig.debug,
         multiplayer: clientConfig.multiplayer,
      });
-  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer]);
+  }, [numPlayers, clientConfig.debug, clientConfig.multiplayer, setupData]);
 
   const rawPlayerID = clientConfig.playerIDOverride !== undefined
       ? clientConfig.playerIDOverride

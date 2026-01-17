@@ -41,6 +41,7 @@ export interface Resources {
 
 export interface Player {
   id: string;
+  name: string;
   color: string;
   resources: Resources;
   settlements: string[]; // Array of vertex IDs

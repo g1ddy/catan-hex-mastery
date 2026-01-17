@@ -4,6 +4,7 @@ import { PLAYER_COLORS } from '../components/uiConfig';
 // Legacy exports for existing tests
 export const createTestPlayer = (id: string, overrides: Partial<Player> = {}): Player => ({
     id,
+    name: `Player ${parseInt(id) + 1}`,
     color: 'red',
     resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
     settlements: [],
@@ -42,6 +43,7 @@ export const createMockGameState = (overrides: any = {}): GameState => {
 
     const defaultPlayer: Player = {
         id: '0',
+        name: 'Player 1',
         color: PLAYER_COLORS[0],
         resources: { ...defaultResources },
         settlements: [],

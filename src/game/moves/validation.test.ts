@@ -13,6 +13,7 @@ describe('Security Validation: Input Sanitization', () => {
         players: {
             '0': {
                 id: '0',
+                name: 'Player 1',
                 color: 'red',
                 resources: { wood: 10, brick: 10, wheat: 10, sheep: 10, ore: 10 },
                 roads: [],

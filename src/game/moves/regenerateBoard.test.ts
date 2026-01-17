@@ -1,6 +1,7 @@
 import { regenerateBoard } from './setup';
-import { GameState, RollStatus, TerrainType } from '../types';
+import { GameState, TerrainType } from '../types';
 import { Ctx } from 'boardgame.io';
+import { createMockGameState } from '../testUtils';
 
 type MoveFn = (args: { G: GameState; ctx: Ctx }) => unknown;
 
@@ -15,44 +16,10 @@ const mockCtx: Ctx = {
     phase: 'setup',
 } as Ctx;
 
-const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
-    board: {
-        hexes: {},
-        vertices: {},
-        edges: {},
-    },
-    players: {
-        '0': {
-            id: '0',
-            color: 'red',
-            resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
-            settlements: [],
-            roads: [],
-            victoryPoints: 0
-        },
-        '1': {
-            id: '1',
-            color: 'blue',
-            resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
-            settlements: [],
-            roads: [],
-            victoryPoints: 0
-        }
-    },
-    setupPhase: { activeRound: 1 },
-    setupOrder: ['0', '1'],
-    lastRoll: [0, 0],
-    lastRollRewards: {},
-    boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-    rollStatus: RollStatus.IDLE,
-    robberLocation: 'original-desert-id',
-    ...overrides
-});
-
 describe('regenerateBoard Move', () => {
     it('should allow regeneration when no pieces are placed', () => {
         const G = createMockGameState();
-        // Ensure hexes are empty initially so we can see them populate
+        // Ensure hexes are empty initially so we can see them populate if they weren't
         G.board.hexes = {};
 
         const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
@@ -63,9 +30,6 @@ describe('regenerateBoard Move', () => {
 
     it('should update robberLocation to the new desert hex', () => {
         const G = createMockGameState();
-
-        // Mock generateBoard is called internally, but we can't easily spy on it without module mocking.
-        // Instead, we verify that AFTER regeneration, G.robberLocation matches the desert hex in G.board.hexes
 
         (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
 
@@ -84,11 +48,35 @@ describe('regenerateBoard Move', () => {
     });
 
     it('should REJECT regeneration if a player has placed a road', () => {
-        const G = createMockGameState();
+        // Initialize player 1 explicitly
+        const G = createMockGameState({
+            players: {
+                '1': { id: '1', color: 'blue' }
+            }
+        });
         G.players['1'].roads.push('0,0,0::1,-1,0'); // Player 1 placed a road
 
         const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
 
         expect(result).toBe('INVALID_MOVE');
+    });
+
+    it('should preserve player names/configuration after regeneration', () => {
+        const G = createMockGameState({
+            players: {
+                '0': { name: 'Bot 1' },
+                '1': { name: 'Bot 2' }
+            }
+        });
+
+        // Verify initial state
+        expect(G.players['0'].name).toBe('Bot 1');
+        expect(G.players['1'].name).toBe('Bot 2');
+
+        (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+
+        // Verify state after regeneration
+        expect(G.players['0'].name).toBe('Bot 1');
+        expect(G.players['1'].name).toBe('Bot 2');
     });
 });
