@@ -47,9 +47,9 @@ describe('CoachPanel', () => {
             />
         );
 
-        // Expectation: P1: Player One
-        expect(screen.getByText('P1: Player One')).toBeInTheDocument();
-        // Expectation: P2: Catan Bot
-        expect(screen.getByText('P2: Catan Bot')).toBeInTheDocument();
+        // Verify player names are displayed in the correct format
+        Object.values(G.players).forEach(player => {
+            expect(screen.getByText(`P${Number(player.id) + 1}: ${player.name}`)).toBeInTheDocument();
+        });
     });
 });
