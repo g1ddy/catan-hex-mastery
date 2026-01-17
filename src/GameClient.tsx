@@ -70,7 +70,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
   const finalPlayerID = rawPlayerID === null ? undefined : rawPlayerID;
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     <ConfiguredClient
         {...clientProps}
         playerID={finalPlayerID}

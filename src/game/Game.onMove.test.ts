@@ -20,7 +20,7 @@ interface MockEvents {
 }
 
 // Type for the onMove function
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 type OnMoveFn = (args: { G: GameState; ctx: MockCtx; events: MockEvents }) => void;
 
 describe('Game.onMove Logic', () => {
