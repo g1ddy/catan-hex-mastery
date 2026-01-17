@@ -4,6 +4,7 @@ import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { calculateTrade } from '../game/mechanics/trade';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
@@ -186,6 +187,15 @@ export class BotCoach {
                 // If we can't afford a settlement, but can trade, boost trade.
                 if (!affordable.settlement) {
                      weight *= TRADE_BOOST;
+                }
+
+                // Smart Ban: Protect Ore (City bottleneck)
+                // If we are giving away Ore and have <= 5, we shouldn't trade it away.
+                // We need 3 Ore for a City. Trading 4 leaves us with too few.
+                // Only trade Ore if we have a massive surplus.
+                const tradeResult = calculateTrade(player.resources);
+                if (tradeResult.give === 'ore' && player.resources.ore <= 5) {
+                    weight = 0;
                 }
             }
 

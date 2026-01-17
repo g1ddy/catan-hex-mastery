@@ -192,4 +192,46 @@ describe('BotCoach Dynamic Logic', () => {
         // With 5 candidates, checking 20 times, we should see at least 2 different winners.
         expect(results.size).toBeGreaterThan(1);
     });
+
+    it('should ban tradeBank if giving Ore and Ore <= 5', () => {
+        // Setup: Player has 5 Ore (Max) and 0 Wood (Min).
+        // calculateTrade will propose giving Ore for Wood.
+        player.resources = { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 5 };
+
+        // Ensure settlement is NOT affordable so trade gets boosted normally
+        (getAffordableBuilds as jest.Mock).mockReturnValue({
+            settlement: false, city: false, road: false, devCard: false
+        });
+
+        const moves = [
+            mockAction('endTurn'), // 1.0
+            mockAction('tradeBank') // Base 0.5 * 5 = 2.5 (Boosted) -> BUT should be banned (0)
+        ];
+
+        const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+        const actions = result as MakeMoveAction[];
+
+        // tradeBank should be penalized to 0, so endTurn (1.0) wins
+        expect(actions[0].payload.type).toBe('endTurn');
+    });
+
+    it('should ALLOW tradeBank if giving Ore and Ore > 5', () => {
+        // Setup: Player has 6 Ore.
+        player.resources = { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 6 };
+
+        (getAffordableBuilds as jest.Mock).mockReturnValue({
+            settlement: false, city: false, road: false, devCard: false
+        });
+
+        const moves = [
+            mockAction('endTurn'), // 1.0
+            mockAction('tradeBank') // Base 0.5 * 5 = 2.5. Allowed.
+        ];
+
+        const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+        const actions = result as MakeMoveAction[];
+
+        // tradeBank is allowed and boosted, so it wins
+        expect(actions[0].payload.type).toBe('tradeBank');
+    });
 });
