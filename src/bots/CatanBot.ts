@@ -4,6 +4,8 @@ import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 
+const DEFAULT_GREED_FACTOR = 0.6;
+
 export class CatanBot extends Bot {
     constructor({ enumerate, seed }: { enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[]; seed?: string | number } = { enumerate: () => [] }) {
         super({ enumerate, seed });
@@ -15,7 +17,7 @@ export class CatanBot extends Bot {
      * @param count Number of candidates
      * @param p Probability to pick the current index (0 < p <= 1). Higher p = more greedy.
      */
-    private pickWeightedIndex(count: number, p = 0.6): number {
+    private pickWeightedIndex(count: number, p = DEFAULT_GREED_FACTOR): number {
         if (count <= 1) return 0;
 
         let index = 0;
@@ -67,7 +69,7 @@ export class CatanBot extends Bot {
         const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
 
         // 3. Pick weighted randomly from the candidates (favoring top ranks)
-        const selectedIndex = this.pickWeightedIndex(candidates.length, 0.6);
+        const selectedIndex = this.pickWeightedIndex(candidates.length, DEFAULT_GREED_FACTOR);
         const selectedMove = candidates[selectedIndex];
 
         // 4. Construct proper MAKE_MOVE action

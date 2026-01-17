@@ -154,7 +154,7 @@ export class BotCoach {
                 case 'placeRoad': weight = this.profile.weights.buildRoad; break;
                 case 'buyDevCard': weight = this.profile.weights.buyDevCard; break;
                 case 'endTurn': weight = 1.0; break;
-                case 'tradeBank': weight = 0.5; break; // Explicit weight for trade
+                case 'tradeBank': weight = this.profile.weights.tradeBank; break;
                 default: weight = 0.5; break;
             }
 
@@ -232,8 +232,8 @@ export class BotCoach {
         // Or simpler: Just shuffle the `topMoves` if they are not settlements/cities.
         const topMoveName = this.getMoveName(topMoves[0]);
         if (topMoveName === 'buildRoad' || topMoveName === 'placeRoad') {
-             // Shuffle topMoves in place to randomize road choice
-             for (let i = topMoves.length - 1; i > 0; i--) {
+            // Shuffle topMoves in place to randomize road choice
+            for (let i = topMoves.length - 1; i > 0; i--) {
                  const j = Math.floor(Math.random() * (i + 1));
                  [topMoves[i], topMoves[j]] = [topMoves[j], topMoves[i]];
              }

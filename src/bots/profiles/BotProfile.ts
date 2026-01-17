@@ -8,6 +8,7 @@ export interface BotProfile {
         buildSettlement: number;
         buildRoad: number;
         buyDevCard: number;
+        tradeBank: number;
     };
 
     // Strategic Preferences
@@ -26,7 +27,8 @@ export const BALANCED_PROFILE: BotProfile = {
         buildCity: 100,
         buildSettlement: 80,
         buildRoad: 40,
-        buyDevCard: 30
+        buyDevCard: 30,
+        tradeBank: 0.5
     },
     expansion: {
         aggressiveness: 0.3,
@@ -41,7 +43,8 @@ export const AGGRESSIVE_PROFILE: BotProfile = {
         buildCity: 80,
         buildSettlement: 90,
         buildRoad: 70, // Higher priority on roads
-        buyDevCard: 20
+        buyDevCard: 20,
+        tradeBank: 0.5
     },
     expansion: {
         aggressiveness: 0.8,

@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction } from '../game/types';
+import { GameState, MakeMoveAction, Player } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
@@ -12,6 +12,7 @@ jest.mock('../game/mechanics/costs', () => ({
 }));
 
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { createMockGameState } from '../game/testUtils';
 
 // Mock getHexesForVertex to avoid crashes
 jest.mock('../game/hexUtils', () => ({
@@ -29,21 +30,25 @@ describe('BotCoach Dynamic Logic', () => {
     let coach: Coach;
     let botCoach: BotCoach;
     let mockCtx: Ctx;
-    let player: any;
+    let player: Player;
 
     beforeEach(() => {
-        player = {
-            id: '0',
-            resources: { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 0 },
-            settlements: [],
-            roads: [],
-            victoryPoints: 0,
-            color: 'red'
-        };
+        G = createMockGameState({
+            players: {
+                '0': {
+                    id: '0',
+                    name: 'Bot',
+                    resources: { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 0 },
+                    settlements: [],
+                    cities: [],
+                    roads: [],
+                    victoryPoints: 0,
+                    color: 'red'
+                }
+            }
+        });
 
-        G = {
-            players: { '0': player }
-        } as unknown as GameState;
+        player = G.players['0'];
 
         coach = new Coach(G);
         (coach.getStrategicAdvice as jest.Mock).mockReturnValue({
