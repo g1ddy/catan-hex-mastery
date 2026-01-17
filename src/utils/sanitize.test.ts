@@ -26,14 +26,19 @@ describe('stripHtml', () => {
         expect(stripHtml(input)).toEqual(expected);
     });
 
-    it('should handle script tags', () => {
+    it('should remove script tags and their content', () => {
         const input = '<script>alert("XSS")</script>';
-        const expected = 'alert("XSS")';
+        const expected = '';
         expect(stripHtml(input)).toEqual(expected);
     });
 
     it('should not corrupt strings with angle brackets', () => {
         const input = 'a < b';
         expect(stripHtml(input)).toEqual('a < b');
+    });
+
+    it('should not corrupt strings with a less-than sign', () => {
+        const input = 'Player <3';
+        expect(stripHtml(input)).toEqual('Player <3');
     });
 });
