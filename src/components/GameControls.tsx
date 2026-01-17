@@ -85,7 +85,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
         if (uiMode === 'viewing') {
              return (
-                <div className={`flex-grow flex pointer-events-auto ${className}`}>
+                <div data-testid="game-controls" className={`flex-grow flex pointer-events-auto ${className}`}>
                     <BeginPlacementButton
                         onClick={handleClick}
         className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse motion-reduce:animate-none"
@@ -95,7 +95,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         }
 
         return (
-             <div className={`flex-grow flex pointer-events-auto ${className}`}>
+             <div data-testid="game-controls" className={`flex-grow flex pointer-events-auto ${className}`}>
                  <button
                     onClick={() => setUiMode('viewing')}
                     className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-red-600 hover:bg-red-500 backdrop-blur-md border border-red-500/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring"
@@ -206,7 +206,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         const showRollButton = isMoveAllowed('rollDice') || isRollingStage; // Keep visible during transition/check
 
         return (
-             <div className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
+             <div data-testid="game-controls" className={`flex-grow flex items-center justify-between gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-lg ${className}`}>
 
                  {/* 1. Build Buttons */}
                 <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
