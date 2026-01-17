@@ -15,20 +15,12 @@ export interface ValidationResult<T = any> {
 }
 
 /**
- * Helper to check if an edge is on the board.
- * An edge is valid if it borders at least one valid hex.
+ * Helper to check if a board piece (edge or vertex) is on the board.
+ * A piece is valid if it's adjacent to at least one valid hex.
  */
-const isEdgeOnBoard = (G: GameState, edgeId: string): boolean => {
-    const hexIds = getHexesForEdge(edgeId);
-    return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
-};
-
-/**
- * Helper to check if a vertex is on the board.
- * A vertex is valid if it touches at least one valid hex.
- */
-const isVertexOnBoard = (G: GameState, vertexId: string): boolean => {
-    const hexIds = getHexesForVertex(vertexId);
+const isPieceOnBoard = (G: GameState, pieceId: string): boolean => {
+    // Both edge and vertex IDs are '::' delimited hex IDs.
+    const hexIds = pieceId.split('::');
     return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
 };
 
