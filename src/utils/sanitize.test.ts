@@ -31,4 +31,9 @@ describe('stripHtml', () => {
         const expected = 'alert("XSS")';
         expect(stripHtml(input)).toEqual(expected);
     });
+
+    it('should not corrupt strings with angle brackets', () => {
+        const input = 'a < b';
+        expect(stripHtml(input)).toEqual('a < b');
+    });
 });

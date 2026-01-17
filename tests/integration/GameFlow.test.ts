@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from '../../src/game/Game';
 import { getVertexId, getEdgeId } from '../../src/game/hexUtils';

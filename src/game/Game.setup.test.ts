@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { CatanGame } from './Game';
 import { Ctx } from 'boardgame.io';
 

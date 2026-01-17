@@ -1,8 +1,10 @@
 /**
- * Removes HTML tags from a string.
+ * Removes HTML tags from a string using a DOM-based approach.
  * @param str The string to sanitize.
  * @returns The sanitized string.
  */
 export const stripHtml = (str: string): string => {
-    return str.replace(/<[^>]*>?/gm, '');
+    const el = document.createElement('div');
+    el.innerHTML = str;
+    return el.textContent || '';
 };
