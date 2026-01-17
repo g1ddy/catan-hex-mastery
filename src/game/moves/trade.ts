@@ -18,7 +18,7 @@ export const tradeBank: Move<GameState> = ({ G, ctx }) => {
     const { give, receive } = result;
 
     // 3. Execute
-    // eslint-disable-next-line security/detect-object-injection
+
     const player = G.players[ctx.currentPlayer];
 
     // eslint-disable-next-line security/detect-object-injection -- 'give' is a validated keyof Resources from calculateTrade
