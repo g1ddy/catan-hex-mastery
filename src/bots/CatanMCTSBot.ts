@@ -4,7 +4,7 @@ import { GameState } from '../game/types';
 
 interface BotConfig {
     game: Game;
-    enumerate: Function;
+    enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
     seed?: string | number;
     playerID?: string;
     [key: string]: any;
@@ -28,7 +28,7 @@ export class CatanMCTSBot extends MCTSBot {
                 for (let i = 1; i <= 10; i++) {
                     objectives[`VP_${i}`] = {
                         checker: (gameState: GameState) => {
-                            const player = gameState.players[playerID];
+                            const player = Object.prototype.hasOwnProperty.call(gameState.players, playerID) ? gameState.players[playerID] : undefined;
                             return !!player && player.victoryPoints >= i;
                         },
                         weight: 10.0,
