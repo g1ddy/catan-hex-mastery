@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
-import { enumerate } from './ai/enumerator';
-import { GameState } from './types';
-import { STAGES } from './constants';
+import { enumerate } from './enumerator';
+import { GameState } from '../types';
+import { STAGES } from '../constants';
 
 // Mock validator functions
-jest.mock('./rules/validator', () => {
+jest.mock('../rules/validator', () => {
     return {
         getValidSetupSettlementSpots: jest.fn(() => new Set(['1_1_1'])),
         getValidSetupRoadSpots: jest.fn(() => new Set(['edge_1'])),
@@ -42,12 +42,15 @@ jest.mock('./rules/validator', () => {
                 validCities: new Set(),
                 validRoads: new Set()
             };
-        })
+        }),
+        RuleEngine: {
+            validateMove: jest.fn(() => ({ isValid: true }))
+        }
     };
 });
 
 // Mock costs
-jest.mock('./mechanics/costs', () => ({
+jest.mock('../mechanics/costs', () => ({
     getAffordableBuilds: jest.fn(() => ({
         settlement: true,
         city: true,
@@ -56,8 +59,8 @@ jest.mock('./mechanics/costs', () => ({
     }))
 }));
 
-jest.mock('./constants', () => {
-    const original = jest.requireActual('./constants');
+jest.mock('../constants', () => {
+    const original = jest.requireActual('../constants');
     return {
         ...original,
         STAGE_MOVES: {
@@ -125,6 +128,7 @@ describe('ai.enumerate', () => {
         expect(moves).toContainEqual(expectedAction('buildSettlement', ['2_2_2']));
         expect(moves).toContainEqual(expectedAction('buildCity', ['3_3_3']));
         expect(moves).toContainEqual(expectedAction('buildRoad', ['edge_2']));
+        expect(moves).toContainEqual(expectedAction('tradeBank', []));
         expect(moves).toContainEqual(expectedAction('endTurn', []));
     });
 

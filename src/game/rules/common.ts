@@ -1,6 +1,7 @@
-import { GameState } from '../types';
+import { GameState, Resources } from '../types';
 import { BUILD_COSTS } from '../config';
 import { isValidPlayer } from '../../utils/validation';
+import { canAfford as canAffordResources } from '../mechanics/costs';
 
 /**
  * Checks if a player has enough resources for a specific build cost.
@@ -8,21 +9,14 @@ import { isValidPlayer } from '../../utils/validation';
 export const canAfford = (
     G: GameState,
     playerID: string,
-    cost: { wood?: number; brick?: number; sheep?: number; wheat?: number; ore?: number }
+    cost: Partial<Resources>
 ): boolean => {
     // Security check: Invalid player cannot afford anything
     if (!isValidPlayer(G, playerID)) return false;
 
     // eslint-disable-next-line security/detect-object-injection
     const resources = G.players[playerID].resources;
-
-    // Cast to any to iterate keys, or type strictly if we export ResourceType
-    for (const [res, amount] of Object.entries(cost)) {
-        if (amount && resources[res as keyof typeof resources] < amount) {
-            return false;
-        }
-    }
-    return true;
+    return canAffordResources(resources, cost);
 };
 
 /**

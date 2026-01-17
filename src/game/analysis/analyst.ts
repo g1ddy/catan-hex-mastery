@@ -1,6 +1,6 @@
-import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from './types';
-import { PIP_MAP } from './config';
-import { getHexesForVertex } from './hexUtils';
+import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from '../types';
+import { PIP_MAP } from '../config';
+import { getHexesForVertex } from '../hexUtils';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;

@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity } from './gameplay';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank } from './gameplay';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -33,6 +33,8 @@ export const RuleEngine = {
                 return validateBuildSettlement(G, playerID, args[0]);
             case 'buildCity':
                 return validateBuildCity(G, playerID, args[0]);
+            case 'tradeBank':
+                return validateTradeBank(G, playerID);
 
             // Setup Moves
             case 'placeSettlement':
@@ -50,12 +52,15 @@ export const RuleEngine = {
     /**
      * Validates a move and throws an error if invalid.
      * Used by move handlers to abort execution.
+     * @returns The data payload from the validation result if valid (and if present).
      */
-    validateMoveOrThrow: (G: GameState, ctx: Ctx, moveName: string, args: any[]): void => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    validateMoveOrThrow: <T = any>(G: GameState, ctx: Ctx, moveName: string, args: any[]): T | undefined => {
         const result = RuleEngine.validateMove(G, ctx, moveName, args);
         if (!result.isValid) {
             throw new Error(result.reason || "Invalid move");
         }
+        return result.data as T;
     }
 };
 

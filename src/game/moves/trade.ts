@@ -1,15 +1,25 @@
 import { Move } from 'boardgame.io';
 import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../config';
 import { GameState } from '../types';
-import { calculateTrade } from '../mechanics/trade';
+import { RuleEngine } from '../rules/validator';
+import { TradeResult } from '../mechanics/trade';
 
 export const tradeBank: Move<GameState> = ({ G, ctx }) => {
-    const player = G.players[ctx.currentPlayer];
-    const { give, receive, canTrade } = calculateTrade(player.resources);
+    // 1. Delegate Validation and Get Execution Details
+    const result = RuleEngine.validateMoveOrThrow<TradeResult>(G, ctx, 'tradeBank', []);
 
-    if (!canTrade) {
-        throw new Error(`You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade.`);
+    // 2. Safety Check (TypeScript Guard)
+    // RuleEngine.validateMoveOrThrow throws if invalid, but returns T | undefined.
+    // In our specific case, validateTradeBank ALWAYS returns data if valid.
+    if (!result) {
+        throw new Error("Internal Error: Validation passed but no trade data returned.");
     }
+
+    const { give, receive } = result;
+
+    // 3. Execute
+    // eslint-disable-next-line security/detect-object-injection
+    const player = G.players[ctx.currentPlayer];
 
     // eslint-disable-next-line security/detect-object-injection -- 'give' is a validated keyof Resources from calculateTrade
     player.resources[give] -= BANK_TRADE_GIVE_AMOUNT;
