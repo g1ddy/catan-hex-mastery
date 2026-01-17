@@ -1,5 +1,5 @@
 import { GameState } from '../types';
-import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge } from '../hexUtils';
+import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
 
 /* eslint-disable security/detect-object-injection */
@@ -13,6 +13,24 @@ export interface ValidationResult<T = any> {
     reason?: string;
     data?: T;
 }
+
+/**
+ * Helper to check if an edge is on the board.
+ * An edge is valid if it borders at least one valid hex.
+ */
+const isEdgeOnBoard = (G: GameState, edgeId: string): boolean => {
+    const hexIds = getHexesForEdge(edgeId);
+    return hexIds.some(id => G.board.hexes[id] !== undefined);
+};
+
+/**
+ * Helper to check if a vertex is on the board.
+ * A vertex is valid if it touches at least one valid hex.
+ */
+const isVertexOnBoard = (G: GameState, vertexId: string): boolean => {
+    const hexIds = getHexesForVertex(vertexId);
+    return hexIds.some(id => G.board.hexes[id] !== undefined);
+};
 
 /**
  * Checks if a settlement can be placed at the given vertex based on physical rules.
@@ -30,6 +48,11 @@ export const validateSettlementLocation = (G: GameState, vertexId: string): Vali
     // 0. Security Validation
     if (!isValidHexId(vertexId)) {
         return { isValid: false, reason: "Invalid vertex ID format" };
+    }
+
+    // 0.5 Check if on board
+    if (!isVertexOnBoard(G, vertexId)) {
+        return { isValid: false, reason: "This location is off the board" };
     }
 
     // 1. Check if occupied
@@ -127,6 +150,11 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
         return { isValid: false, reason: "Invalid edge ID format" };
     }
 
+    // 0.5 Check if on board
+    if (!isEdgeOnBoard(G, edgeId)) {
+        return { isValid: false, reason: "This edge is off the board" };
+    }
+
     // 1. Check if occupied
     if (G.board.edges[edgeId]) {
         return { isValid: false, reason: "This edge is already occupied" };
@@ -174,6 +202,11 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
     // 0. Security Validation
     if (!isValidHexId(edgeId)) {
         return { isValid: false, reason: "Invalid edge ID format" };
+    }
+
+    // 0.5 Check if on board
+    if (!isEdgeOnBoard(G, edgeId)) {
+        return { isValid: false, reason: "This edge is off the board" };
     }
 
     // Check Occupancy

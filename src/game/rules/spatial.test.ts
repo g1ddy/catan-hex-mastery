@@ -13,11 +13,23 @@ describe('spatial rules', () => {
         board: {
             vertices,
             edges,
-            hexes: {}
+            hexes: {
+                // Central Hex
+                '0,0,0': { id: '0,0,0', coords: {q:0,r:0,s:0}, terrain: 'Forest', tokenValue: 6 } as any,
+                // Neighbors
+                '1,-1,0': { id: '1,-1,0', coords: {q:1,r:-1,s:0}, terrain: 'Hills', tokenValue: 5 } as any,
+                '1,0,-1': { id: '1,0,-1', coords: {q:1,r:0,s:-1}, terrain: 'Pasture', tokenValue: 9 } as any,
+                '0,1,-1': { id: '0,1,-1', coords: {q:0,r:1,s:-1}, terrain: 'Fields', tokenValue: 4 } as any,
+                '-1,1,0': { id: '-1,1,0', coords: {q:-1,r:1,s:0}, terrain: 'Mountains', tokenValue: 8 } as any,
+                '-1,0,1': { id: '-1,0,1', coords: {q:-1,r:0,s:1}, terrain: 'Forest', tokenValue: 3 } as any,
+                '0,-1,1': { id: '0,-1,1', coords: {q:0,r:-1,s:1}, terrain: 'Hills', tokenValue: 10 } as any,
+            }
         },
         players: {
             '0': { settlements: [], roads: [] },
-            '1': { settlements: [], roads: [] }
+            '1': { settlements: [], roads: [] },
+            'p1': { settlements: [], roads: [] },
+            'p2': { settlements: [], roads: [] }
         },
         setupPhase: { activeRound: 1 },
         setupOrder: [],
@@ -44,6 +56,14 @@ describe('spatial rules', () => {
             const G = mockG();
             const targetVertex = '0,0,0::1,-1,0::1,0,-1';
             expect(isValidSettlementLocation(G, targetVertex)).toBe(true);
+        });
+
+        it('returns false if off-board', () => {
+            const G = mockG();
+            // A vertex composed entirely of off-board hexes
+            const offBoardVertex = '10,10,-20::11,10,-21::10,11,-21';
+            const result = isValidSettlementLocation(G, offBoardVertex);
+            expect(result).toBe(false);
         });
     });
 
@@ -101,6 +121,15 @@ describe('spatial rules', () => {
             expect(result.isValid).toBe(false);
             expect(result.reason).toBe("This edge is already occupied");
         });
+
+        it('returns false if off-board', () => {
+            const G = mockG();
+            // Edge between two hexes not in G.board.hexes
+            const offBoardEdge = '10,10,-20::11,10,-21';
+            const result = isValidRoadPlacement(G, offBoardEdge, 'p1');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("This edge is off the board");
+        });
     });
 
     describe('isValidSetupRoadPlacement', () => {
@@ -111,6 +140,40 @@ describe('spatial rules', () => {
             G.players['0'].settlements = ['some_other_settlement', settlementId];
             const result = isValidSetupRoadPlacement(G, connectedEdge, '0');
             expect(result.isValid).toBe(true);
+        });
+
+        it('returns false if off-board', () => {
+            const G = mockG();
+            const settlementId = '0,0,0::1,-1,0::1,0,-1'; // Valid settlement
+            G.players['0'].settlements = [settlementId];
+
+            // Edge radiating out from 0,0,0 but not on board?
+            // Wait, we need to construct an edge that connects to the settlement but is off board.
+            // Settlement is at intersection of (0,0,0), (1,-1,0), (1,0,-1). All are on board.
+            // So all edges connected to it are between valid hexes.
+
+            // Let's pick a settlement on the edge of the board.
+            // Hex (0,0,0) is on board. (10,10,-20) is NOT.
+            // Imagine a vertex at boundary.
+            // Since we mocked a cluster around 0,0,0, let's find a boundary vertex.
+            // (1,-1,0) is in board.
+            // (2,-2,0) is NOT in board.
+            // (2,-1,-1) is NOT in board.
+            // Vertex V = (1,-1,0), (2,-2,0), (2,-1,-1).
+            // This vertex is on the corner of (1,-1,0).
+            // Edge E = (2,-2,0)::(2,-1,-1) is incident to V but touches NO valid hexes.
+
+            const boundaryVertex = '1,-1,0::2,-2,0::2,-1,-1';
+            const offBoardEdge = '2,-2,0::2,-1,-1';
+
+            // We need to validly place the settlement there first.
+            // Is boundaryVertex valid? It touches (1,-1,0) which is on board. Yes.
+
+            G.players['0'].settlements = [boundaryVertex];
+
+            const result = isValidSetupRoadPlacement(G, offBoardEdge, '0');
+            expect(result.isValid).toBe(false);
+            expect(result.reason).toBe("This edge is off the board");
         });
     });
 
