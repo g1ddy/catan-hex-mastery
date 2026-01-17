@@ -24,7 +24,7 @@ describe('CatanGame.setup', () => {
     } as Ctx;
 
     it('should initialize with default player names if no setupData provided', () => {
-        const G = CatanGame.setup(createMockSetupContext(mockCtx));
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx));
 
         expect(G.players['0'].name).toBe('Player 1');
         expect(G.players['1'].name).toBe('Player 2');
@@ -40,7 +40,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup(createMockSetupContext(mockCtx), setupData);
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData);
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Bob (Bot)');
@@ -56,7 +56,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup(createMockSetupContext(mockCtx), setupData);
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData);
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Player 2'); // Fallback
@@ -65,6 +65,6 @@ describe('CatanGame.setup', () => {
 
     it('should throw error if numPlayers is invalid', () => {
         const invalidCtx = { ...mockCtx, numPlayers: 1 };
-        expect(() => CatanGame.setup(createMockSetupContext(invalidCtx))).toThrow("Number of players must be between 2 and 4");
+        expect(() => CatanGame.setup!(createMockSetupContext(invalidCtx))).toThrow("Number of players must be between 2 and 4");
     });
 });
