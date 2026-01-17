@@ -144,24 +144,6 @@ describe('spatial rules', () => {
 
         it('returns false if off-board', () => {
             const G = mockG();
-            const settlementId = '0,0,0::1,-1,0::1,0,-1'; // Valid settlement
-            G.players['0'].settlements = [settlementId];
-
-            // Edge radiating out from 0,0,0 but not on board?
-            // Wait, we need to construct an edge that connects to the settlement but is off board.
-            // Settlement is at intersection of (0,0,0), (1,-1,0), (1,0,-1). All are on board.
-            // So all edges connected to it are between valid hexes.
-
-            // Let's pick a settlement on the edge of the board.
-            // Hex (0,0,0) is on board. (10,10,-20) is NOT.
-            // Imagine a vertex at boundary.
-            // Since we mocked a cluster around 0,0,0, let's find a boundary vertex.
-            // (1,-1,0) is in board.
-            // (2,-2,0) is NOT in board.
-            // (2,-1,-1) is NOT in board.
-            // Vertex V = (1,-1,0), (2,-2,0), (2,-1,-1).
-            // This vertex is on the corner of (1,-1,0).
-            // Edge E = (2,-2,0)::(2,-1,-1) is incident to V but touches NO valid hexes.
 
             const boundaryVertex = '1,-1,0::2,-2,0::2,-1,-1';
             const offBoardEdge = '2,-2,0::2,-1,-1';

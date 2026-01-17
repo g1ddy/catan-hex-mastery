@@ -20,7 +20,7 @@ export interface ValidationResult<T = any> {
  */
 const isEdgeOnBoard = (G: GameState, edgeId: string): boolean => {
     const hexIds = getHexesForEdge(edgeId);
-    return hexIds.some(id => G.board.hexes[id] !== undefined);
+    return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
 };
 
 /**
@@ -29,7 +29,7 @@ const isEdgeOnBoard = (G: GameState, edgeId: string): boolean => {
  */
 const isVertexOnBoard = (G: GameState, vertexId: string): boolean => {
     const hexIds = getHexesForVertex(vertexId);
-    return hexIds.some(id => G.board.hexes[id] !== undefined);
+    return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
 };
 
 /**
