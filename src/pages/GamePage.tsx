@@ -64,6 +64,8 @@ export function GamePage() {
     return { bots: botsResult, botNames: botNamesResult };
   }, [numBots, numPlayers]);
 
+  const setupData = useMemo(() => ({ botNames }), [botNames]);
+
   if (!numPlayers) {
     return <Navigate to="/" replace />;
   }
@@ -77,7 +79,7 @@ export function GamePage() {
         onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}
         bots={bots}
-        setupData={{ botNames }}
+        setupData={setupData}
       />
     </div>
   );

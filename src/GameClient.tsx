@@ -3,6 +3,7 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
+import { CatanBot } from './bots/CatanBot';
 
 interface GameClientProps {
   numPlayers: number;
@@ -41,10 +42,10 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
 
     // 2. Local Multiplayer (Standard / AutoPlay / VsBot)
     // - If `bots` prop is provided, use it.
-    // - Otherwise, just use standard Local backend (no specific bots forced).
+    // - Otherwise, just use standard Local backend with a default bot available (Pass & Play support).
     const multiplayerConfig = bots
         ? Local({ bots })
-        : Local();
+        : Local({ bots: { 'random': CatanBot } });
 
     return {
         debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
