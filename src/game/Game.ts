@@ -1,4 +1,4 @@
-import { Game, Move } from 'boardgame.io';
+import { Game } from 'boardgame.io';
 import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
