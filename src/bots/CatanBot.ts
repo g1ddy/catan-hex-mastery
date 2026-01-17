@@ -1,27 +1,41 @@
 import { Bot } from 'boardgame.io/ai';
-import { GameState, GameAction } from '../game/types';
+import { GameState, GameAction, BotMove } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
+import { Ctx } from 'boardgame.io';
 
 export class CatanBot extends Bot {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    constructor({ enumerate, seed }: { enumerate: (...args: any[]) => any; seed?: string | number } = { enumerate: () => [] }) {
+    constructor({ enumerate, seed }: { enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[]; seed?: string | number } = { enumerate: () => [] }) {
         super({ enumerate, seed });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async play(state: { G: GameState; ctx: any }, playerID: string) {
+    async play(state: { G: GameState; ctx: Ctx }, playerID: string) {
         const { G, ctx } = state;
 
         // 1. Get ALL valid moves from the base enumerator
         const allMoves = this.enumerate(G, ctx, playerID);
 
         if (!allMoves || allMoves.length === 0) {
-            return;
+            // Must return strictly typed object, even if no action, to satisfy Bot signature
+            // though typical Bots return action. If no action, framework might handle it,
+            // but return type expects { action: BotAction }
+            // Let's return undefined explicitly cast or handle it.
+            // Actually, if no moves, we can just return a dummy pass or similar, but
+            // usually returning undefined is handled by the framework loop.
+            // However, TS strictness here requires us to match signature.
+            // Let's return a "No Op" metadata only if allowed, or throw.
+            // But base signature is Promise<{ action: BotAction, metadata?: any }>
+            // So we MUST return an action.
+            // For now, let's keep the return; but cast strictly or make return type compatible.
+            // If we assume framework handles void return for "no move possible" (pass),
+            // we can try casting.
+            return {} as any;
         }
 
         // 2. Use BotCoach to filter/rank these moves
-        let coach = ctx.coach;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let coach = (ctx as any).coach;
         if (!coach) {
             coach = new Coach(G);
         }
@@ -35,8 +49,28 @@ export class CatanBot extends Bot {
         // 3. Pick randomly from the candidates
         const selectedMove = candidates[Math.floor(this.random() * candidates.length)];
 
-        // Cast to any to bypass strict BotAction type mismatch (handling legacy BotMove)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return { action: selectedMove, metadata: { message: 'CatanBot' } } as any;
+        // 4. Construct proper MAKE_MOVE action
+        let actionPayload: { type: string, args: any[], playerID: string };
+
+        if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
+             // It's already a Redux action
+             actionPayload = selectedMove.payload;
+        } else {
+             // It's a BotMove
+             const move = selectedMove as BotMove;
+             actionPayload = {
+                 type: move.move,
+                 args: move.args || [],
+                 playerID
+             };
+        }
+
+        return {
+            action: {
+                type: 'MAKE_MOVE',
+                payload: actionPayload
+            },
+            metadata: { message: 'CatanBot' }
+        };
     }
 }

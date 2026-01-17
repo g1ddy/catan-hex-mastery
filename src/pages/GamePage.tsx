@@ -4,12 +4,12 @@ import { GameClient } from '../GameClient';
 import { CatanBot } from '../bots/CatanBot';
 import { ConfiguredMCTSBot } from '../bots/ConfiguredBots';
 import { RandomBot } from 'boardgame.io/ai';
+import { Bot } from 'boardgame.io/ai';
 
 const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 
 // Bot Cycling Order: CatanBot -> RandomBot -> MCTSBot
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const BOT_CYCLE: Array<{ class: any, name: string }> = [
+const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
     { class: CatanBot, name: 'Catan Bot' },
     { class: RandomBot, name: 'Random Bot' },
     { class: ConfiguredMCTSBot, name: 'MCTS Bot' }
@@ -45,8 +45,7 @@ export function GamePage() {
       return { bots: undefined, botNames: undefined };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const botsResult: Record<string, any> = {};
+    const botsResult: Record<string, typeof Bot> = {};
     const botNamesResult: Record<string, string> = {};
 
     const startBotIndex = numPlayers - numBots;

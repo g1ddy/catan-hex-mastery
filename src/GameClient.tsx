@@ -4,6 +4,7 @@ import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
 import { CatanBot } from './bots/CatanBot';
+import { Bot } from 'boardgame.io/ai';
 
 interface GameClientProps {
   numPlayers: number;
@@ -16,12 +17,10 @@ interface GameClientProps {
 
   // Optional configuration for bots in 'local' mode
   // If provided, these specific bots are assigned to seats.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bots?: Record<string, any>;
+  bots?: Record<string, typeof Bot>;
 
   // Data passed to Game.setup
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setupData?: any;
+  setupData?: { botNames?: Record<string, string> };
 }
 
 export const GameClient: React.FC<GameClientProps> = (props) => {
