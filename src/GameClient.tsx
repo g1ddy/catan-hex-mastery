@@ -64,7 +64,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
         ...CatanGame,
         // Inject setupData into the setup call.
         // We assume CatanGame.setup exists (it does).
-        setup: (context: Record<string, unknown> & DefaultPluginAPIs & { ctx: Ctx }) => CatanGame.setup!(context, setupData)
+        setup: (context: DefaultPluginAPIs & { ctx: Ctx }) => CatanGame.setup!(context, setupData)
      };
 
      return Client({
