@@ -64,7 +64,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
         // Inject setupData into the setup call.
         // We assume CatanGame.setup exists (it does).
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setup: (context: any) => CatanGame.setup!(context, setupData)
+        setup: (context: { ctx: Ctx }) => CatanGame.setup!(context, setupData)
      };
 
      return Client({
