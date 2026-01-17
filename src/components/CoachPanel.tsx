@@ -70,7 +70,7 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
                             <div key={player.id} className="bg-slate-800 p-2 rounded border border-slate-700">
                                 <div className="flex items-center gap-2 font-bold text-sm mb-1">
                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: player.color }}></div>
-                                    Player {Number(player.id) + 1}
+                                    <span className="truncate" title={`P${Number(player.id) + 1}: ${player.name}`}>P{Number(player.id) + 1}: {player.name}</span>
                                 </div>
                                 <ResourceIconRow resources={playerPotentials[player.id]} size="sm" />
                             </div>
