@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
+import { Ctx, DefaultPluginAPIs } from 'boardgame.io';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
 import { CatanBot } from './bots/CatanBot';
@@ -63,8 +64,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
         ...CatanGame,
         // Inject setupData into the setup call.
         // We assume CatanGame.setup exists (it does).
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setup: (context: { ctx: Ctx }) => CatanGame.setup!(context, setupData)
+        setup: (context: Record<string, unknown> & DefaultPluginAPIs & { ctx: Ctx }) => CatanGame.setup!(context, setupData)
      };
 
      return Client({
