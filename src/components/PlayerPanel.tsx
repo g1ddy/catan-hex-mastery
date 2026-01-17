@@ -52,6 +52,13 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
 
       {/* Resources & Mobile Summary */}
       <div className="flex items-center md:block">
+        {/* Active Mobile VP */}
+        {isActive && (
+            <span className="md:hidden text-xs text-slate-300 font-normal mr-1 whitespace-nowrap">
+                VP: {player.victoryPoints}
+            </span>
+        )}
+
         {/* Mobile Divider (Only if active) */}
         <div className={`md:hidden h-4 w-px bg-slate-600 mx-1 ${isActive ? 'block' : 'hidden'}`}></div>
 
