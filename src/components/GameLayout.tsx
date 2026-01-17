@@ -163,18 +163,20 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   ) : null;
 
   // Use JS-calculated height to handle inconsistent vh/dvh across mobile/tablet browsers
-  const [viewportHeight, setViewportHeight] = useState('100vh');
+  const [viewportHeight, setViewportHeight] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return `${window.innerHeight}px`;
+    }
+    return '100vh'; // Fallback for SSR
+  });
 
   useEffect(() => {
-    const updateHeight = () => {
-        if (typeof window !== 'undefined') {
-            setViewportHeight(`${window.innerHeight}px`);
-        }
+    const handleResize = () => {
+      setViewportHeight(`${window.innerHeight}px`);
     };
 
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    return () => window.removeEventListener('resize', updateHeight);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
