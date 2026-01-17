@@ -15,6 +15,8 @@ const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
 const AFFORDABLE_BOOST = 10.0;
 const ROAD_FATIGUE_PENALTY = 0.01;
 const TRADE_BOOST = 5.0;
+const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
+const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
 export class BotCoach {
     private G: GameState;
@@ -134,13 +136,14 @@ export class BotCoach {
         const advisedMoves = new Set(strategicAdvice.recommendedMoves);
 
         // Pre-calculate state for Dynamic Weights
+        // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
         const affordable = getAffordableBuilds(player.resources);
         const settlementCount = player.settlements.length;
         // const cityCount = player.cities.length; // Not used in fatigue formula currently
         const roadCount = player.roads.length;
 
-        const roadFatigue = roadCount > (settlementCount * 2 + 2);
+        const roadFatigue = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
 
         const getWeightedScore = (move: GameAction): number => {
             const name = this.getMoveName(move);
@@ -222,16 +225,11 @@ export class BotCoach {
         if (refinedCities) return refinedCities;
 
         // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
-        // This ensures "Road placement should be random for now"
-        // We only shuffle the `topMoves` relative to each other if they have strictly equal scores?
-        // Or just return the list.
-        // `sortedMoves` is already sorted.
-        // To implement "random placement" for roads:
-        // If we have multiple `buildRoad` moves at the top, their order is stable-sort or insertion order.
-        // We should shuffle moves that share the same Score group.
-        // Or simpler: Just shuffle the `topMoves` if they are not settlements/cities.
-        const topMoveName = this.getMoveName(topMoves[0]);
-        if (topMoveName === 'buildRoad' || topMoveName === 'placeRoad') {
+        // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
+        const topMoveNames = topMoves.map(m => this.getMoveName(m));
+        const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
+
+        if (allAreRoads) {
             // Shuffle topMoves in place to randomize road choice
             for (let i = topMoves.length - 1; i > 0; i--) {
                  const j = Math.floor(Math.random() * (i + 1));
