@@ -171,12 +171,20 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   });
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
     const handleResize = () => {
-      setViewportHeight(`${window.innerHeight}px`);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setViewportHeight(`${window.innerHeight}px`);
+      }, 150); // Debounce resize events for 150ms
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (
