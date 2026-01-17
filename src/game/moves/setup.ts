@@ -83,7 +83,8 @@ export const regenerateBoard: Move<GameState> = ({ G }) => {
 
     // Fix: Update Robber location to new Desert
     const desertHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
-    if (desertHex) {
-        G.robberLocation = desertHex.id;
+    if (!desertHex) {
+        throw new Error('Board generation failed: Desert hex not found.');
     }
+    G.robberLocation = desertHex.id;
 };
