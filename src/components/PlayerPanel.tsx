@@ -55,7 +55,7 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
         {/* Active Mobile VP */}
         {isActive && (
             <span className="md:hidden text-xs text-slate-300 font-normal mr-1 whitespace-nowrap">
-                VP {player.victoryPoints}
+                VP: {player.victoryPoints}
             </span>
         )}
 
