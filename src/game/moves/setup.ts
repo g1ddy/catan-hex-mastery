@@ -1,10 +1,12 @@
 import { Move } from 'boardgame.io';
-import { GameState } from '../types';
+import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { RuleEngine } from '../rules/validator';
+import { generateBoard } from '../boardGen';
+import { calculateBoardStats } from '../analysis/analyst';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
@@ -65,4 +67,24 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   if (events && events.endTurn) {
       events.endTurn();
   }
+};
+
+export const regenerateBoard: Move<GameState> = ({ G }) => {
+    // SECURITY: Prevent board regeneration if any pieces have been placed
+    const anyPiecePlaced = Object.values(G.players).some(p => p.settlements.length > 0 || p.roads.length > 0);
+    if (anyPiecePlaced) {
+        return 'INVALID_MOVE';
+    }
+
+    const boardHexes = generateBoard();
+    const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+    G.board.hexes = hexesMap;
+    G.boardStats = calculateBoardStats(hexesMap);
+
+    // Fix: Update Robber location to new Desert
+    const desertHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
+    if (!desertHex) {
+        throw new Error('Board generation failed: Desert hex not found.');
+    }
+    G.robberLocation = desertHex.id;
 };
