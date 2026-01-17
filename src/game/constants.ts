@@ -22,3 +22,5 @@ export const STAGE_MOVES = {
     [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard'],
     [STAGES.PLACE_ROAD]: ['placeRoad'],
 } as const;
+
+export const WINNING_SCORE = 10;

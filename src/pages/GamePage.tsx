@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
 import { CatanBot } from '../bots/CatanBot';
-import { ConfiguredMCTSBot } from '../bots/ConfiguredBots';
+import { CatanMCTSBot } from '../bots/CatanMCTSBot';
 import { RandomBot } from 'boardgame.io/ai';
 import { Bot } from 'boardgame.io/ai';
 
@@ -12,7 +12,7 @@ const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
     { class: CatanBot, name: 'Catan Bot' },
     { class: RandomBot, name: 'Random Bot' },
-    { class: ConfiguredMCTSBot, name: 'MCTS Bot' }
+    { class: CatanMCTSBot, name: 'MCTS Bot' }
 ];
 
 export function GamePage() {
