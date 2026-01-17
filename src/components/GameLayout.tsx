@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
 import {
     Z_INDEX_BOARD,
@@ -162,10 +162,26 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
     </button>
   ) : null;
 
+  // Use JS-calculated height to handle inconsistent vh/dvh across mobile/tablet browsers
+  const [viewportHeight, setViewportHeight] = useState('100vh');
+
+  useEffect(() => {
+    const updateHeight = () => {
+        if (typeof window !== 'undefined') {
+            setViewportHeight(`${window.innerHeight}px`);
+        }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
   return (
     <div
       data-testid="game-layout"
-      className="relative w-full h-[100dvh] md:h-screen overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
+      className="relative w-full overflow-hidden bg-slate-900 text-slate-100 flex flex-col md:flex-row"
+      style={{ height: viewportHeight }}
     >
       <Toaster />
       <Tooltip id="resource-tooltip" place="top" style={{ zIndex: Z_INDEX_TOOLTIP }} />
