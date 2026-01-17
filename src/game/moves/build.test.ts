@@ -1,5 +1,5 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
-import { GameState } from '../types';
+import { GameState, TerrainType } from '../types';
 import { BUILD_COSTS } from '../config';
 import { Ctx } from 'boardgame.io';
 
@@ -9,10 +9,17 @@ describe('Gameplay Moves', () => {
     let G: GameState;
     let ctx: { currentPlayer: string };
 
+    const mockHexes = {
+        '0,0,0': { id: '0,0,0', coords: {q:0,r:0,s:0}, terrain: TerrainType.Forest, tokenValue: 6 },
+        '1,-1,0': { id: '1,-1,0', coords: {q:1,r:-1,s:0}, terrain: TerrainType.Fields, tokenValue: 5 },
+        '0,-1,1': { id: '0,-1,1', coords: {q:0,r:-1,s:1}, terrain: TerrainType.Pasture, tokenValue: 4 },
+        '1,0,-1': { id: '1,0,-1', coords: {q:1,r:0,s:-1}, terrain: TerrainType.Mountains, tokenValue: 10 },
+    };
+
     beforeEach(() => {
         G = {
             board: {
-                hexes: {},
+                hexes: mockHexes,
                 vertices: {},
                 edges: {},
             },
