@@ -15,12 +15,10 @@ export interface ValidationResult<T = any> {
 }
 
 /**
- * Helper to check if a board piece (edge or vertex) is on the board.
- * A piece is valid if it's adjacent to at least one valid hex.
+ * Generic helper to check if a set of hex IDs contains at least one valid board hex.
+ * Used for both edges and vertices.
  */
-const isPieceOnBoard = (G: GameState, pieceId: string): boolean => {
-    // Both edge and vertex IDs are '::' delimited hex IDs.
-    const hexIds = pieceId.split('::');
+const hasValidHex = (G: GameState, hexIds: string[]): boolean => {
     return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
 };
 
@@ -43,7 +41,7 @@ export const validateSettlementLocation = (G: GameState, vertexId: string): Vali
     }
 
     // 0.5 Check if on board
-    if (!isVertexOnBoard(G, vertexId)) {
+    if (!hasValidHex(G, getHexesForVertex(vertexId))) {
         return { isValid: false, reason: "This location is off the board" };
     }
 
@@ -143,7 +141,7 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
     }
 
     // 0.5 Check if on board
-    if (!isEdgeOnBoard(G, edgeId)) {
+    if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
 
@@ -197,7 +195,7 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
     }
 
     // 0.5 Check if on board
-    if (!isEdgeOnBoard(G, edgeId)) {
+    if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
 
