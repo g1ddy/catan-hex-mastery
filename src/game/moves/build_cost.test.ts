@@ -14,6 +14,7 @@ describe('Unit Test: Resource Costs', () => {
         players: {
             '0': {
                 id: '0',
+                name: 'Player 1',
                 color: 'red',
                 resources: { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 0 },
                 roads: [],

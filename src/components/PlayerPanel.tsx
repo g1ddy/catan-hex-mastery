@@ -41,7 +41,7 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
             P{playerNumber}
         </span>
         <span className="hidden md:inline text-slate-100 whitespace-nowrap">
-            Player {playerNumber}
+            {player.name || `Player ${playerNumber}`}
         </span>
       </div>
 

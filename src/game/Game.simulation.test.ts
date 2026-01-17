@@ -1,10 +1,10 @@
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from './Game';
-import { DebugBot } from '../bots/DebugBot';
+import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
 
-describe('Game Simulation with DebugBot', () => {
+describe('Game Simulation with CatanBot', () => {
   it('should run a 2-player game without crashing', async () => {
     const client = Client({
       game: CatanGame,
@@ -18,8 +18,8 @@ describe('Game Simulation with DebugBot', () => {
 
     // Create bot instances for each player
     const bots = {
-      '0': new DebugBot({ enumerate }),
-      '1': new DebugBot({ enumerate }),
+      '0': new CatanBot({ enumerate }),
+      '1': new CatanBot({ enumerate }),
     };
 
     const MAX_STEPS = 200; // Reduced for unit test speed
@@ -45,28 +45,36 @@ describe('Game Simulation with DebugBot', () => {
           ...state.ctx,
           coach: CoachPlugin.api({ G: state.G, ctx: state.ctx })
       };
-      const enhancedState = { ...state, ctx: enhancedCtx };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const enhancedState = { ...state, ctx: enhancedCtx } as any;
 
       // Bot plays
       const result = await bot.play(enhancedState, playerID);
+
+      if (!result || !result.action) {
+         // Bot is passive (no moves enumerated), so we break to avoid infinite loop.
+        console.log(`Bot for player ${playerID} returned no action (Passive Mode).`);
+        break;
+      }
+
       const { action } = result;
 
       if (action) {
-        const moveName = action.payload?.type || (action as any).move;
-        const args = action.payload?.args || (action as any).args || [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const moveName = (action as any).payload?.type || (action as any).move;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const args = (action as any).payload?.args || (action as any).args || [];
 
         if (moveName && moveName in client.moves) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const move = moveName as keyof typeof client.moves;
-          client.moves[move](...args);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (client.moves[move] as any)(...args);
         } else {
           // Bot suggested an invalid move or one not exposed on client.moves
           console.warn(`Bot for player ${playerID} suggested an invalid move: ${moveName}`);
           break;
         }
-      } else {
-        // Bot is passive (no moves enumerated), so we break to avoid infinite loop.
-        console.log(`Bot for player ${playerID} returned no action (Passive Mode).`);
-        break;
       }
 
       steps++;

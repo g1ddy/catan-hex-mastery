@@ -70,7 +70,7 @@ export const CatanGame: Game<GameState> = {
     }
   },
 
-  setup: ({ ctx }, _setupData?: unknown): GameState => {
+  setup: ({ ctx }, setupData?: { botNames?: Record<string, string> }): GameState => {
     if (!ctx.numPlayers) {
       throw new Error("Number of players must be provided");
     }
@@ -102,8 +102,10 @@ export const CatanGame: Game<GameState> = {
     const players: Record<string, Player> = {};
 
     for (let i = 0; i < numPlayers; i++) {
-      players[i.toString()] = {
-        id: i.toString(),
+      const playerId = i.toString();
+      players[playerId] = {
+        id: playerId,
+        name: setupData?.botNames?.[playerId] || `Player ${i + 1}`,
         color: PLAYER_COLORS[i % PLAYER_COLORS.length],
         resources: { ...initialResources },
         settlements: [],

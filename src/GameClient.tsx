@@ -3,7 +3,7 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { CatanGame } from './game/Game';
 import { Board } from './components/Board';
-import { DebugBot } from './bots/DebugBot';
+import { CatanBot } from './bots/CatanBot';
 
 interface GameClientProps {
   numPlayers: number;
@@ -16,11 +16,16 @@ interface GameClientProps {
 
   // Optional configuration for bots in 'local' mode
   // If provided, these specific bots are assigned to seats.
-  bots?: Record<string, typeof DebugBot>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bots?: Record<string, any>;
+
+  // Data passed to Game.setup
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setupData?: any;
 }
 
 export const GameClient: React.FC<GameClientProps> = (props) => {
-  const { mode = 'local', numPlayers, bots, ...clientProps } = props;
+  const { mode = 'local', numPlayers, bots, setupData, ...clientProps } = props;
 
   // Configuration Logic
   const clientConfig = useMemo(() => {
@@ -40,7 +45,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     // - Otherwise, default to 'random' bot availability for Pass & Play.
     const multiplayerConfig = bots
         ? Local({ bots })
-        : Local({ bots: { 'random': DebugBot } });
+        : Local({ bots: { 'random': CatanBot } });
 
     return {
         debug: import.meta.env.DEV ? { collapseOnLoad: true } : false,
@@ -74,6 +79,8 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     <ConfiguredClient
         {...clientProps}
         playerID={finalPlayerID}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setupData={setupData as any}
     />
   );
 };

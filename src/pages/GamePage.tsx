@@ -1,9 +1,19 @@
 import { useState, useMemo } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
-import { DebugBot } from '../bots/DebugBot';
+import { CatanBot } from '../bots/CatanBot';
+import { ConfiguredMCTSBot } from '../bots/ConfiguredBots';
+import { RandomBot } from 'boardgame.io/ai';
 
 const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
+
+// Bot Cycling Order: CatanBot -> RandomBot -> MCTSBot
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const BOT_CYCLE: Array<{ class: any, name: string }> = [
+    { class: CatanBot, name: 'Catan Bot' },
+    { class: RandomBot, name: 'Random Bot' },
+    { class: ConfiguredMCTSBot, name: 'MCTS Bot' }
+];
 
 export function GamePage() {
   const location = useLocation();
@@ -30,19 +40,28 @@ export function GamePage() {
   // Bots fill seats starting from the last player index backwards.
   // Example: 3 Players, 2 Bots -> Bots are Player 1 and Player 2. (Indices 1, 2)
   // Example: 4 Players, 4 Bots -> Bots are 0, 1, 2, 3.
-  const bots = useMemo(() => {
+  const { bots, botNames } = useMemo(() => {
     if (!numBots || numBots <= 0 || !numPlayers) {
-      return undefined;
+      return { bots: undefined, botNames: undefined };
     }
 
-    const result: Record<string, typeof DebugBot> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const botsResult: Record<string, any> = {};
+    const botNamesResult: Record<string, string> = {};
+
     const startBotIndex = numPlayers - numBots;
+    let botTypeIndex = 0;
 
     for (let i = startBotIndex; i < numPlayers; i++) {
-      result[i.toString()] = DebugBot;
+        const botConfig = BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
+
+        botsResult[i.toString()] = botConfig.class;
+        botNamesResult[i.toString()] = botConfig.name;
+
+        botTypeIndex++;
     }
 
-    return result;
+    return { bots: botsResult, botNames: botNamesResult };
   }, [numBots, numPlayers]);
 
   if (!numPlayers) {
@@ -58,6 +77,7 @@ export function GamePage() {
         onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}
         bots={bots}
+        setupData={{ botNames }}
       />
     </div>
   );
