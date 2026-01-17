@@ -17,7 +17,7 @@ export class CatanMCTSBot extends MCTSBot {
             ...config,
             iterations: 100,
             playoutDepth: 10,
-            objectives: (_G: GameState, _ctx: any, playerID: string | undefined) => {
+            objectives: (_G: GameState, _ctx: Ctx, playerID: string | undefined) => {
                 if (!playerID) {
                     return {};
                 }
@@ -29,9 +29,7 @@ export class CatanMCTSBot extends MCTSBot {
                 for (let i = 1; i <= WINNING_SCORE; i++) {
                     objectives[`VP_${i}`] = {
                         checker: (gameState: GameState) => {
-                            const player = Object.prototype.hasOwnProperty.call(gameState.players, playerID)
-                                ? gameState.players[playerID]
-                                : undefined;
+                            const player = gameState.players[playerID];
                             return !!player && player.victoryPoints >= i;
                         },
                         // Increase weight as we get closer to winning to prioritize closing out the game
