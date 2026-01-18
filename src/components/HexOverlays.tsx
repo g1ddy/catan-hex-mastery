@@ -10,6 +10,7 @@ import { PHASES, STAGES } from '../game/constants';
 import { useBoardInteractions } from '../hooks/useBoardInteractions';
 import { OverlayVertex } from './board/OverlayVertex';
 import { OverlayEdge } from './board/OverlayEdge';
+import { Port } from './board/Port';
 
 export interface CoachData {
     recommendations: Record<string, CoachRecommendation>;
@@ -174,6 +175,38 @@ export const HexOverlays = React.memo(({
                 const ownerColor = (edge && G.players[edge.owner]?.color) || null;
                 const angle = Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI;
 
+                // Check for Port
+                // eslint-disable-next-line security/detect-object-injection
+                const port = G.board.ports && G.board.ports[eId];
+                let portElement = null;
+
+                if (port) {
+                    let portOwnerColor = null;
+                    // eslint-disable-next-line security/detect-object-injection
+                    const v1 = G.board.vertices[port.vertices[0]];
+                    // eslint-disable-next-line security/detect-object-injection
+                    const v2 = G.board.vertices[port.vertices[1]];
+
+                    if (v1 && v1.owner) {
+                        // eslint-disable-next-line security/detect-object-injection
+                        portOwnerColor = G.players[v1.owner]?.color;
+                    } else if (v2 && v2.owner) {
+                        // eslint-disable-next-line security/detect-object-injection
+                        portOwnerColor = G.players[v2.owner]?.color;
+                    }
+
+                    portElement = (
+                        <Port
+                            key={`port-${eId}`}
+                            cx={midX}
+                            cy={midY}
+                            angle={angle}
+                            type={port.type}
+                            ownerColor={portOwnerColor}
+                        />
+                    );
+                }
+
                 const isSetup = ctx.phase === PHASES.SETUP;
                 const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
                 const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
@@ -207,17 +240,19 @@ export const HexOverlays = React.memo(({
                 }
 
                 return (
-                    <OverlayEdge
-                        key={eId}
-                        cx={midX}
-                        cy={midY}
-                        angle={angle}
-                        isOccupied={isOccupied}
-                        ownerColor={ownerColor}
-                        isClickable={isClickable}
-                        isGhost={isGhost}
-                        onClick={clickAction}
-                    />
+                    <React.Fragment key={eId}>
+                        <OverlayEdge
+                            cx={midX}
+                            cy={midY}
+                            angle={angle}
+                            isOccupied={isOccupied}
+                            ownerColor={ownerColor}
+                            isClickable={isClickable}
+                            isGhost={isGhost}
+                            onClick={clickAction}
+                        />
+                        {portElement}
+                    </React.Fragment>
                 );
             })}
         </Hexagon>

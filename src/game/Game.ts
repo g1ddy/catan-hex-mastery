@@ -72,7 +72,7 @@ export const CatanGame: Game<GameState> = {
       throw new Error("Number of players must be between 2 and 4");
     }
 
-    const boardHexes = generateBoard();
+    const { hexes: boardHexes, ports } = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
 
     // Find initial robber location (Standard Rules: Desert)
@@ -111,6 +111,7 @@ export const CatanGame: Game<GameState> = {
     return {
       board: {
         hexes: hexesMap,
+        ports,
         vertices: {},
         edges: {},
       },
