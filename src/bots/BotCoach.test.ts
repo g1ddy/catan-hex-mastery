@@ -92,7 +92,7 @@ describe('BotCoach', () => {
             const actions = result as MakeMoveAction[];
             const args = actions.map(m => {
                 if (m.payload.type === 'placeSettlement') {
-                    return (m.payload.args as [string])[0];
+                    return m.payload.args[0];
                 }
                 return null;
             });
