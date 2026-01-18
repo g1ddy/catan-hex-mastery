@@ -18,14 +18,14 @@ This file contains context and strict guidelines for AI assistants (Cursor, Copi
 *   **Vertex ID:** A hash of the 3 adjacent hex coordinates (e.g., specific string format).
 *   **Edge ID:** A hash of the 2 adjacent hex coordinates.
 
-## 🚧 Current Task: Phase 5 (UI/UX Polish) & Prep for Phase 6
+## 🚧 Current Task: Phase 7 (Full Game Loop)
 
-We are currently finalizing **Phase 5: UI/UX Polish** and preparing for **Phase 6: Full Game Loop**.
+We are working on **Phase 7: Full Game Loop**, which involves implementing complex game mechanics like Trading, Robber interactions, and Development Cards.
 
 **Completed Features (Do Not Regress):**
+*   **UI/UX (Phase 6)**: Mobile-responsive layouts, Tooltips, Toasts, and stable drawer/sidebar navigation.
 *   **Analyst Module**: Real-time stats (Pips, Fairness, Scarcity) are fully implemented.
 *   **Coach**: The heuristic engine correctly scores settlements based on Pips, Scarcity, Diversity, and Synergy. Recommendations are visualized on the board.
-*   **Mobile Layout**: The "Vertical Stack" layout and docked controls are stable.
 
 **Priorities:**
 1.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
