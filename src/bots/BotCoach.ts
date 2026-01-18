@@ -4,6 +4,7 @@ import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { calculateTrade } from '../game/mechanics/trade';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
@@ -17,6 +18,7 @@ const ROAD_FATIGUE_PENALTY = 0.01;
 const TRADE_BOOST = 5.0;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
+const ORE_RESERVE_THRESHOLD = 6;
 
 export class BotCoach {
     private G: GameState;
@@ -88,6 +90,10 @@ export class BotCoach {
      * @returns A sorted list of optimal moves (best first)
      */
     public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
+            return [];
+        }
+
         if (playerID !== ctx.currentPlayer) {
             console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
             return [];
@@ -186,6 +192,15 @@ export class BotCoach {
                 // If we can't afford a settlement, but can trade, boost trade.
                 if (!affordable.settlement) {
                      weight *= TRADE_BOOST;
+                }
+
+                // Smart Ban: Protect Ore (City bottleneck)
+                // If we are giving away Ore and have <= ORE_RESERVE_THRESHOLD, we shouldn't trade it away.
+                // We need 3 Ore for a City. Trading 4 leaves us with too few.
+                // Only trade Ore if we have a massive surplus.
+                const tradeResult = calculateTrade(player.resources);
+                if (tradeResult.give === 'ore' && player.resources.ore <= ORE_RESERVE_THRESHOLD) {
+                    weight = 0;
                 }
             }
 
