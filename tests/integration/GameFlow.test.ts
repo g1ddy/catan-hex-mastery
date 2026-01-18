@@ -21,7 +21,12 @@ describe('Game Integration', () => {
              if (state.ctx.currentPlayer !== playerID) {
                  throw new Error(`Expected current player ${playerID}, got ${state.ctx.currentPlayer}`);
              }
-             client.moves[moveName](...args);
+            if (moveName && moveName in client.moves) {
+                const moveFn = client.moves[moveName as keyof typeof client.moves];
+                if (typeof moveFn === 'function') {
+                    moveFn(...args);
+                }
+            }
         };
 
         // Vertices for P0
