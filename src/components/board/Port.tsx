@@ -1,5 +1,7 @@
 import React from 'react';
-import { PortType } from '../../game/types';
+import { CircleHelp } from 'lucide-react';
+import { PortType, TerrainType } from '../../game/types';
+import { RESOURCE_META, TERRAIN_COLORS } from '../uiConfig';
 
 interface PortProps {
     cx: number;
@@ -9,31 +11,13 @@ interface PortProps {
     ownerColor: string | null;
 }
 
-const RESOURCE_LABELS: Record<string, string> = {
-    'wood': '🌲',
-    'brick': '🧱',
-    'sheep': '🐑',
-    'wheat': '🌾',
-    'ore': '🗻',
-    '3:1': '?'
-};
-
-const RESOURCE_TEXT: Record<string, string> = {
-    'wood': 'W',
-    'brick': 'B',
-    'sheep': 'S',
-    'wheat': 'Wh',
-    'ore': 'O',
-    '3:1': '3:1'
-};
-
-const PORT_COLORS: Record<string, string> = {
-    'wood': '#228B22',
-    'brick': '#CD5C5C',
-    'sheep': '#90EE90',
-    'wheat': '#FFD700',
-    'ore': '#A9A9A9',
-    '3:1': '#F0F8FF'
+// Map PortType (Resource) to TerrainType to reuse colors
+const RESOURCE_TO_TERRAIN: Partial<Record<PortType, TerrainType>> = {
+    'wood': TerrainType.Forest,
+    'brick': TerrainType.Hills,
+    'sheep': TerrainType.Pasture,
+    'wheat': TerrainType.Fields,
+    'ore': TerrainType.Mountains,
 };
 
 export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
@@ -50,36 +34,54 @@ export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
     const px = cx * scale;
     const py = cy * scale;
 
-    const label = RESOURCE_LABELS[type] || RESOURCE_TEXT[type] || type;
-    const baseColor = PORT_COLORS[type] || 'white';
+    const meta = RESOURCE_META.find(m => m.name === type);
 
-    // If owned, show owner color ring. If not, thin grey ring.
-    const strokeColor = ownerColor || '#666';
-    const strokeWidth = ownerColor ? 0.8 : 0.3;
+    // Reuse terrain colors for resources, fallback for 3:1
+    const color = (type === '3:1')
+        ? '#F0F8FF'
+        : (RESOURCE_TO_TERRAIN[type] ? TERRAIN_COLORS[RESOURCE_TO_TERRAIN[type]!] : '#CCCCCC');
+
+    const Icon = meta ? meta.Icon : (type === '3:1' ? CircleHelp : null);
 
     return (
         <g transform={`translate(${px}, ${py})`}>
-             {/* Dashed line to edge? */}
-             <line x1={0} y1={0} x2={cx - px} y2={cy - py} stroke={strokeColor} strokeWidth={0.3} strokeDasharray="1,1" />
-
-            {/* Port Circle */}
+            {/* Port Background Circle */}
             <circle
                 r={2.5}
-                fill={baseColor}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth}
+                fill={color}
+                stroke={ownerColor || "#666"}
+                strokeWidth={ownerColor ? 0.8 : 0.3}
+                className="drop-shadow-sm"
             />
 
-            {/* Label */}
-            <text
-                textAnchor="middle"
-                dy=".35em"
-                fontSize={type === '3:1' ? "1.8" : "2.5"}
-                fill="black"
-                style={{ pointerEvents: 'none', fontWeight: 'bold' }}
-            >
-                {type === '3:1' ? '3:1' : label}
-            </text>
+            {/* Port Icon or Text */}
+            {Icon ? (
+                <Icon
+                    x={-1.5}
+                    y={-1.5}
+                    width={3}
+                    height={3}
+                    color="#000"
+                    opacity={0.7}
+                />
+            ) : (
+                <text
+                    y={0.8}
+                    textAnchor="middle"
+                    fontSize={1.5}
+                    fill="#333"
+                    fontWeight="bold"
+                >
+                    ?
+                </text>
+            )}
+
+            {/* If it's a 3:1 port, we might want to show "3:1" text specifically instead of a generic icon?
+                The previous code used '?', which CircleHelp matches.
+                Standard Catan often puts "3:1".
+                Let's stick to the Icon approach for consistency unless 3:1 text is preferred.
+                But the user asked for icons.
+            */}
         </g>
     );
 };

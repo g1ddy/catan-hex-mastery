@@ -182,17 +182,14 @@ export const HexOverlays = React.memo(({
 
                 if (port) {
                     let portOwnerColor = null;
-                    // eslint-disable-next-line security/detect-object-injection
-                    const v1 = G.board.vertices[port.vertices[0]];
-                    // eslint-disable-next-line security/detect-object-injection
-                    const v2 = G.board.vertices[port.vertices[1]];
-
-                    if (v1 && v1.owner) {
+                    for (const vId of port.vertices) {
                         // eslint-disable-next-line security/detect-object-injection
-                        portOwnerColor = G.players[v1.owner]?.color;
-                    } else if (v2 && v2.owner) {
-                        // eslint-disable-next-line security/detect-object-injection
-                        portOwnerColor = G.players[v2.owner]?.color;
+                        const vertex = G.board.vertices[vId];
+                        if (vertex && vertex.owner) {
+                            // eslint-disable-next-line security/detect-object-injection
+                            portOwnerColor = G.players[vertex.owner]?.color;
+                            break;
+                        }
                     }
 
                     portElement = (

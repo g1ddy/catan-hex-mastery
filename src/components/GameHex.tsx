@@ -1,8 +1,9 @@
 import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { Skull } from 'lucide-react';
-import { Hex, TerrainType } from '../game/types';
+import { Hex } from '../game/types';
 import { NumberToken } from './NumberToken';
+import { TERRAIN_COLORS } from './uiConfig';
 
 interface GameHexProps {
   hex: Hex;
@@ -11,16 +12,6 @@ interface GameHexProps {
   hasRobber?: boolean;
   isPendingRobber?: boolean;
 }
-
-const TERRAIN_COLORS: Record<TerrainType, string> = {
-  [TerrainType.Forest]: '#228B22',
-  [TerrainType.Hills]: '#CD5C5C',
-  [TerrainType.Pasture]: '#90EE90',
-  [TerrainType.Fields]: '#FFD700',
-  [TerrainType.Mountains]: '#A9A9A9',
-  [TerrainType.Desert]: '#F4A460',
-  [TerrainType.Sea]: '#87CEEB'
-};
 
 const PIPS_MAP: Record<number, number> = {
   2: 1, 12: 1,

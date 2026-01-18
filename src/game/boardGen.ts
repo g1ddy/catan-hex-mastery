@@ -115,7 +115,7 @@ export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
     const terrainList: TerrainType[] = [];
     Object.keys(TERRAIN_COUNTS).forEach((key) => {
         const t = key as TerrainType;
-        const count = TERRAIN_COUNTS[t]; // eslint-disable-line security/detect-object-injection
+        const count = TERRAIN_COUNTS[t];
         for(let i=0; i<count; i++) terrainList.push(t);
     });
 
