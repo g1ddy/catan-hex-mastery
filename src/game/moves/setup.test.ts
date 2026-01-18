@@ -1,5 +1,5 @@
 import { placeSettlement, placeRoad } from './setup';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus, TerrainType } from '../types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 
@@ -32,10 +32,20 @@ const createMockCtx = (overrides?: Partial<Ctx>): Ctx => ({
     ...overrides
 });
 
+// We need these for "on board" validation
+const mockHexes = {
+    '0,0,0': { id: '0,0,0', coords: {q:0,r:0,s:0}, terrain: TerrainType.Forest, tokenValue: 6 },
+    '1,-1,0': { id: '1,-1,0', coords: {q:1,r:-1,s:0}, terrain: TerrainType.Fields, tokenValue: 5 },
+    '0,-1,1': { id: '0,-1,1', coords: {q:0,r:-1,s:1}, terrain: TerrainType.Pasture, tokenValue: 4 },
+    '-1,1,0': { id: '-1,1,0', coords: {q:-1,r:1,s:0}, terrain: TerrainType.Hills, tokenValue: 8 },
+    '-1,0,1': { id: '-1,0,1', coords: {q:-1,r:0,s:1}, terrain: TerrainType.Mountains, tokenValue: 10 },
+    '1,0,-1': { id: '1,0,-1', coords: {q:1,r:0,s:-1}, terrain: TerrainType.Forest, tokenValue: 3 },
+};
+
 // Create a safe Mock GameState object with defaults
 const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     board: {
-        hexes: {},
+        hexes: mockHexes, // Injected valid hexes
         vertices: {},
         edges: {},
     },
@@ -109,7 +119,13 @@ describe('Setup Phase Moves', () => {
             // Place a settlement to establish the connection point
             G.players['0'].settlements.push("0,0,0::-1,1,0::-1,0,1");
 
-            const disconnectedEdgeId = "1,0,-1::2,-1,-1"; // An edge not touching the settlement
+            const disconnectedEdgeId = "1,0,-1::2,-1,-1"; // An edge not touching the settlement (and potentially invalid if hexes mismatch, but mainly checking connectivity here)
+            // Wait, we need to ensure this edge is technically "on board" for the validation to reach the "connected" check?
+            // "1,0,-1" is in mockHexes. "2,-1,-1" is NOT.
+            // If "2,-1,-1" is not in mockHexes, then "1,0,-1::2,-1,-1" is valid IF at least one hex is valid.
+            // 1,0,-1 is valid. So this edge is "on board" (it's a coastal edge).
+            // So validation proceeds to connectivity check.
+
             const move = () => placeRoadFn({ G, ctx, events }, disconnectedEdgeId);
 
             expect(move).toThrow("Road must connect to your just-placed settlement");
