@@ -12,6 +12,7 @@ describe('Game Integration', () => {
         const client = Client({
             game: CatanGame,
             numPlayers: 2,
+            debug: false,
         });
 
         client.start();
