@@ -401,7 +401,7 @@ export class Coach {
 
         // 1. Strategic Boost: If the move type is recommended by Coach, boost it.
         // Cast moveName to string to match advice.recommendedMoves signature
-        if (advice.recommendedMoves.includes(moveName as string)) {
+        if (advice.recommendedMoves.includes(moveName)) {
             score *= 1.5; // 50% boost for following advice
         }
 
