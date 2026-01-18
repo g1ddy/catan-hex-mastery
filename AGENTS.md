@@ -18,19 +18,19 @@ This file contains context and strict guidelines for AI assistants (Cursor, Copi
 *   **Vertex ID:** A hash of the 3 adjacent hex coordinates (e.g., specific string format).
 *   **Edge ID:** A hash of the 2 adjacent hex coordinates.
 
-## 🚧 Current Task: Phase 5 (UI/UX Polish) & Prep for Phase 6
+## 🚧 Current Task: Phase 7 (Full Game Loop)
 
-We are currently finalizing **Phase 5: UI/UX Polish** and preparing for **Phase 6: Full Game Loop**.
+We are working on **Phase 7: Full Game Loop**, which involves implementing complex game mechanics like Trading, Robber interactions, Development Cards, special awards, and win conditions.
 
 **Completed Features (Do Not Regress):**
+*   **UI/UX (Phase 6)**: Mobile-responsive layouts, Tooltips, Toasts, and stable drawer/sidebar navigation.
 *   **Analyst Module**: Real-time stats (Pips, Fairness, Scarcity) are fully implemented.
 *   **Coach**: The heuristic engine correctly scores settlements based on Pips, Scarcity, Diversity, and Synergy. Recommendations are visualized on the board.
-*   **Mobile Layout**: The "Vertical Stack" layout and docked controls are stable.
 
 **Priorities:**
 1.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
 2.  **Code Cleanup**: Verify no unused CSS or "magic strings" remain before starting complex game logic.
-3.  **Phase 6 Readiness**: Ensure the state machine in `Game.ts` is ready to handle Trade phases and Win conditions.
+3.  **Phase 7 Execution**: Implement Trading, Robber mechanics (stealing/discarding), and Development Cards as defined in `DEVELOPMENT.md`.
 
 ## 🚫 Constraints
 *   **No Class Components:** Use React Functional Components + Hooks only.
