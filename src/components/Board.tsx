@@ -14,11 +14,12 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
-import { PHASES, STAGE_MOVES } from '../game/constants';
+import { PHASES, STAGE_MOVES, STAGES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { isValidRobberPlacement } from '../game/rules/spatial';
+import { Hex } from '../game/types';
 
-const NO_OP = () => {};
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 
 export interface CatanBoardProps extends BoardProps<GameState> {
@@ -47,6 +48,21 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   const [showResourceHeatmap, setShowResourceHeatmap] = useState<boolean>(false);
   const [isCoachModeEnabled, setIsCoachModeEnabled] = useState<boolean>(true);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
+  const [pendingRobberHex, setPendingRobberHex] = useState<string | null>(null);
+
+  // Reset pending robber hex on turn/stage change
+  useEffect(() => {
+    setPendingRobberHex(null);
+  }, [ctx.currentPlayer, ctx.activePlayers]);
+
+  const handleHexClick = (hex: Hex) => {
+    const stage = ctx.activePlayers?.[ctx.currentPlayer];
+    if (ctx.phase === PHASES.GAMEPLAY && stage === STAGES.ROBBER) {
+        if (isValidRobberPlacement(G, hex.id).isValid) {
+            setPendingRobberHex(hex.id);
+        }
+    }
+  };
 
   // Active Panel State (Lifted from GameLayout)
   // Default to Analyst on desktop, unless handled by effect
@@ -199,9 +215,10 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
               <GameHex
                 key={hex.id}
                 hex={hex}
-                onClick={NO_OP}
+                onClick={handleHexClick}
                 isProducing={producingHexIds.includes(hex.id)}
-                hasRobber={G.robberLocation === hex.id}
+                hasRobber={G.robberLocation === hex.id && pendingRobberHex === null}
+                isPendingRobber={pendingRobberHex === hex.id}
               />
             ))}
           </g>
@@ -258,6 +275,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
           setUiMode={setUiMode}
           isCoachModeEnabled={isCoachModeEnabled}
           advice={strategicAdvice}
+          pendingRobberHex={pendingRobberHex}
         />
       }
       dashboard={

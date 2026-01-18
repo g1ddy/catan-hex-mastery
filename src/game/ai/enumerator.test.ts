@@ -138,10 +138,20 @@ describe('ai.enumerate', () => {
         expect(moves).toEqual([expectedAction('rollDice', [])]);
     });
 
-    it('should enumerate dismissRobber', () => {
+    it('should enumerate dismissRobber with valid targets', () => {
         ctx.activePlayers['0'] = STAGES.ROBBER;
+        // Mock board with hexes A, B, C
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        G.board = { hexes: { 'A': {}, 'B': {}, 'C': {} }, vertices: {}, edges: {} } as any;
+        G.robberLocation = 'A';
+
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toEqual([expectedAction('dismissRobber', [])]);
+
+        // Should contain B and C, but NOT A
+        expect(moves).toHaveLength(2);
+        expect(moves).toContainEqual(expectedAction('dismissRobber', ['B']));
+        expect(moves).toContainEqual(expectedAction('dismissRobber', ['C']));
+        expect(moves).not.toContainEqual(expectedAction('dismissRobber', ['A']));
     });
 
     it('should correctly enumerate single moves from custom stages', () => {

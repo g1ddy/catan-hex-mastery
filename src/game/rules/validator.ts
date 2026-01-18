@@ -7,6 +7,7 @@ import {
     isValidSettlementPlacement,
     isValidCityPlacement,
     isValidRoadPlacement,
+    isValidRobberPlacement,
     ValidationResult
 } from './spatial';
 import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
@@ -43,6 +44,9 @@ export const RuleEngine = {
             case 'placeRoad':
                 // In Setup, "placeRoad" must connect to the just-placed settlement
                 return isValidSetupRoadPlacement(G, args[0], playerID);
+
+            case 'dismissRobber':
+                return isValidRobberPlacement(G, args[0]);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };
