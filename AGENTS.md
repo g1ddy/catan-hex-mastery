@@ -20,7 +20,7 @@ This file contains context and strict guidelines for AI assistants (Cursor, Copi
 
 ## 🚧 Current Task: Phase 7 (Full Game Loop)
 
-We are working on **Phase 7: Full Game Loop**, which involves implementing complex game mechanics like Trading, Robber interactions, and Development Cards.
+We are working on **Phase 7: Full Game Loop**, which involves implementing complex game mechanics like Trading, Robber interactions, Development Cards, special awards, and win conditions.
 
 **Completed Features (Do Not Regress):**
 *   **UI/UX (Phase 6)**: Mobile-responsive layouts, Tooltips, Toasts, and stable drawer/sidebar navigation.

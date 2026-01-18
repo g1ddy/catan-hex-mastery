@@ -165,7 +165,7 @@ src/
 *   **Development Cards**:
     *   Deck management & random shuffling.
     *   "Buy Dev Card" move.
-    *   Card effects: Knight (Move Robber), Road Building, Year of Plenty, Monopoly, Victory Point.
+    *   Cards include: Knight (Move Robber), Road Building, Year of Plenty, Monopoly, Victory Point.
 *   **Special Awards**:
     *   **Longest Road**: Dynamic pathfinding algorithm to track continuous road segments.
     *   **Largest Army**: Tracking played Knight cards.
