@@ -1,5 +1,5 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus, TerrainType } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
@@ -9,6 +9,13 @@ describe('Unit Test: Resource Costs', () => {
     const mockContext: Ctx = { currentPlayer: '0' } as Ctx;
     const validEdgeId = "0,0,0::1,-1,0"; // Valid edge ID
     const validVertexId = "0,0,0::1,-1,0::1,0,-1"; // Valid vertex ID
+
+    // We need to populate hexes so spatial validation passes
+    const mockHexes = {
+        '0,0,0': { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 },
+        '1,-1,0': { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Fields, tokenValue: 5 },
+        '1,0,-1': { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Pasture, tokenValue: 9 }
+    };
 
     const baseG: GameState = {
         players: {
@@ -22,7 +29,7 @@ describe('Unit Test: Resource Costs', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: {}, vertices: {}, hexes: {} },
+        board: { edges: {}, vertices: {}, hexes: mockHexes },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
