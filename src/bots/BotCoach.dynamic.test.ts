@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction, Player } from '../game/types';
+import { GameState, MakeMoveAction, Player, MoveArguments } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
@@ -20,9 +20,9 @@ jest.mock('../game/hexUtils', () => ({
 }));
 
 // Helper to create mock Redux actions
-const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
+const mockAction = <K extends keyof MoveArguments>(moveType: K, args: MoveArguments[K] = [] as any): MakeMoveAction => ({
     type: 'MAKE_MOVE',
-    payload: { type: moveType, args, playerID: '0' }
+    payload: { type: moveType, args, playerID: '0' } as any
 });
 
 describe('BotCoach Dynamic Logic', () => {
@@ -40,7 +40,6 @@ describe('BotCoach Dynamic Logic', () => {
                     name: 'Bot',
                     resources: { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 0 },
                     settlements: [],
-                    cities: [],
                     roads: [],
                     victoryPoints: 0,
                     color: 'red'
@@ -186,7 +185,10 @@ describe('BotCoach Dynamic Logic', () => {
         for (let i = 0; i < 20; i++) {
             const res = aggroCoach.filterOptimalMoves([...moves], '0', mockCtx) as MakeMoveAction[];
             // Capture the first move arg
-            results.add(res[0].payload.args[0]);
+            if (res[0].payload.type === 'buildRoad') {
+                const args = res[0].payload.args as [string];
+                results.add(args[0]);
+            }
         }
 
         // With 5 candidates, checking 20 times, we should see at least 2 different winners.

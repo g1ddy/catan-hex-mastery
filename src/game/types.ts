@@ -83,23 +83,42 @@ export interface GameState {
   robberLocation: string; // Hex ID
 }
 
-// Legacy format: { move: 'name', args: [] }
-export interface BotMove {
-  move: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args?: any[];
+// Map of Move Names to their Argument Tuples
+export interface MoveArguments {
+  buildRoad: [string];
+  buildSettlement: [string];
+  buildCity: [string];
+  tradeBank: [];
+  rollDice: [];
+  endTurn: [];
+  placeSettlement: [string];
+  placeRoad: [string];
+  regenerateBoard: [];
+  dismissRobber: [string];
+  buyDevCard: []; // Included for forward compatibility/BotCoach references
 }
 
-// Redux-style action format: { type: 'MAKE_MOVE', payload: { type: 'name', args: [] } }
-export interface MakeMoveAction {
-  type: 'MAKE_MOVE';
-  payload: {
-    type: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args: any[];
+// Strict Discriminated Union for Bot Moves
+export type BotMove = {
+  [K in keyof MoveArguments]: {
+    move: K;
+    args: MoveArguments[K];
+  }
+}[keyof MoveArguments];
+
+// Strict Discriminated Union for Redux-style payloads
+export type MakeMovePayload = {
+  [K in keyof MoveArguments]: {
+    type: K;
+    args: MoveArguments[K];
     playerID: string;
     credentials?: string;
-  };
+  }
+}[keyof MoveArguments];
+
+export interface MakeMoveAction {
+  type: 'MAKE_MOVE';
+  payload: MakeMovePayload;
 }
 
 // Union type to handle both formats

@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction } from '../game/types';
+import { GameState, GameAction, MoveArguments } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
@@ -31,18 +31,18 @@ export class BotCoach {
         this.profile = profile;
     }
 
-    private getMoveName(action: GameAction): string {
+    private getMoveName(action: GameAction): keyof MoveArguments {
         if ('payload' in action) {
             return action.payload.type;
         }
         return (action as BotMove).move;
     }
 
-    private getMoveArgs(action: GameAction): any[] {
+    private getMoveArgs(action: GameAction): MoveArguments[keyof MoveArguments] {
         if ('payload' in action) {
             return action.payload.args;
         }
-        return (action as BotMove).args || [];
+        return (action as BotMove).args;
     }
 
     /**
@@ -62,7 +62,10 @@ export class BotCoach {
         }
 
         // Extract candidate IDs (e.g. vertex IDs)
-        const candidateIds = specificMoves.map(m => this.getMoveArgs(m)[0]);
+        // We filter out undefined values to ensure type safety, assuming spatial moves always have 1 arg (the ID)
+        const candidateIds = specificMoves
+            .map(m => this.getMoveArgs(m)[0])
+            .filter((id): id is string => typeof id === 'string');
 
         // Get scores from Coach
         const recommendations = scoreFn(candidateIds);
@@ -72,6 +75,10 @@ export class BotCoach {
         const bestMove = specificMoves.reduce((best, current) => {
             const vBest = this.getMoveArgs(best)[0];
             const vCurrent = this.getMoveArgs(current)[0];
+
+            // Safety check for indices
+            if (typeof vBest !== 'string' || typeof vCurrent !== 'string') return best;
+
             const sBest = recommendationMap.get(vBest) ?? 0;
             const sCurrent = recommendationMap.get(vCurrent) ?? 0;
             return sCurrent > sBest ? current : best;
@@ -123,7 +130,11 @@ export class BotCoach {
             allMoves.forEach(m => {
                 if (this.getMoveName(m) === 'placeSettlement') {
                     const args = this.getMoveArgs(m);
-                    if (args[0]) movesByVertex.set(args[0], m);
+                    // Safely access first argument (vertexID)
+                    const vId = args[0];
+                    if (typeof vId === 'string') {
+                        movesByVertex.set(vId, m);
+                    }
                 }
             });
             const rankedMoves: GameAction[] = [];

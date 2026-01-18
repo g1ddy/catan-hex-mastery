@@ -1,5 +1,5 @@
 import { Bot } from 'boardgame.io/ai';
-import { GameState, GameAction, BotMove } from '../game/types';
+import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
@@ -41,19 +41,8 @@ export class CatanBot extends Bot {
 
         if (!allMoves || allMoves.length === 0) {
             // Must return strictly typed object, even if no action, to satisfy Bot signature
-            // though typical Bots return action. If no action, framework might handle it,
-            // but return type expects { action: BotAction }
-            // Let's return undefined explicitly cast or handle it.
-            // Actually, if no moves, we can just return a dummy pass or similar, but
-            // usually returning undefined is handled by the framework loop.
-            // However, TS strictness here requires us to match signature.
-            // Let's return a "No Op" metadata only if allowed, or throw.
-            // But base signature is Promise<{ action: BotAction, metadata?: any }>
-            // So we MUST return an action.
-            // For now, let's keep the return; but cast strictly or make return type compatible.
-            // If we assume framework handles void return for "no move possible" (pass),
-            // we can try casting.
-            return {} as any;
+            // return undefined to indicate no move possible (pass)
+            return undefined as any;
         }
 
         // 2. Use BotCoach to filter/rank these moves
@@ -73,7 +62,7 @@ export class CatanBot extends Bot {
         const selectedMove = candidates[selectedIndex];
 
         // 4. Construct proper MAKE_MOVE action
-        let actionPayload: { type: string, args: any[], playerID: string };
+        let actionPayload: MakeMoveAction['payload'];
 
         if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
              // It's already a Redux action
@@ -83,9 +72,9 @@ export class CatanBot extends Bot {
              const move = selectedMove as BotMove;
              actionPayload = {
                  type: move.move,
-                 args: move.args || [],
+                 args: move.args,
                  playerID
-             };
+             } as MakeMoveAction['payload'];
         }
 
         return {

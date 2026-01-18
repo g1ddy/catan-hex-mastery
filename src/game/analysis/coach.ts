@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, TerrainType, GameAction, BotMove } from '../types';
+import { GameState, TerrainType, GameAction, BotMove, MoveArguments } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
@@ -400,13 +400,16 @@ export class Coach {
         let score = 1.0;
 
         // 1. Strategic Boost: If the move type is recommended by Coach, boost it.
-        if (advice.recommendedMoves.includes(moveName)) {
+        // Cast moveName to string to match advice.recommendedMoves signature
+        if (advice.recommendedMoves.includes(moveName as string)) {
             score *= 1.5; // 50% boost for following advice
         }
 
         // 2. Spatial Scoring: If it's a placement move, use the spatial score.
         if (moveName === 'placeSettlement' || moveName === 'buildSettlement') {
-            const vId = args && args[0];
+            const arg0 = args[0];
+            const vId = typeof arg0 === 'string' ? arg0 : undefined;
+
             if (vId) {
                 try {
                     // Reuse scoreVertex
