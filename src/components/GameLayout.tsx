@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
 import {
     Z_INDEX_BOARD,
@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useViewportDvh } from '../hooks/useViewportDvh';
 import { Resources } from '../game/types';
 import { RESOURCE_META } from './uiConfig';
 import { AnalystShell } from './AnalystShell';
@@ -163,29 +164,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   ) : null;
 
   // Use JS-calculated height to handle inconsistent vh/dvh across mobile/tablet browsers
-  const [viewportHeight, setViewportHeight] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return `${window.innerHeight}px`;
-    }
-    return '100vh'; // Fallback for SSR
-  });
-
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setViewportHeight(`${window.innerHeight}px`);
-      }, 150); // Debounce resize events for 150ms
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const viewportHeight = useViewportDvh();
 
   return (
     <div
