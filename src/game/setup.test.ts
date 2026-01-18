@@ -13,6 +13,7 @@ describe('Setup Phase Logic', () => {
     client = Client({
       game: CatanGame,
       numPlayers: 4,
+      debug: false,
     });
     client.start();
   });

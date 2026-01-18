@@ -59,12 +59,17 @@ function generatePorts(hexes: Hex[]): Record<string, Port> {
     // Count edges
     const edgeCounts: Record<string, number> = {};
     allEdges.forEach(e => {
-        // eslint-disable-next-line security/detect-object-injection
-        edgeCounts[e] = (edgeCounts[e] || 0) + 1;
+        if (Object.prototype.hasOwnProperty.call(edgeCounts, e)) {
+            edgeCounts[e]++;
+        } else {
+            edgeCounts[e] = 1;
+        }
     });
 
     // Filter boundary edges (count === 1)
-    const boundaryEdges = Object.keys(edgeCounts).filter(e => edgeCounts[e] === 1); // eslint-disable-line security/detect-object-injection
+    const boundaryEdges = Object.keys(edgeCounts).filter(e =>
+        Object.prototype.hasOwnProperty.call(edgeCounts, e) && edgeCounts[e] === 1
+    );
 
     const getEdgeAngle = (eId: string) => {
         const [h1, h2] = parseEdgeId(eId);

@@ -12,6 +12,7 @@ describe('Game Simulation with CatanBot', () => {
     const client = Client({
       game: CatanGame,
       numPlayers: 2,
+      debug: false,
     });
 
     client.start();

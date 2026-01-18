@@ -12,6 +12,7 @@ describe('Game Integration', () => {
         const client = Client({
             game: CatanGame,
             numPlayers: 2,
+            debug: false,
         });
 
         client.start();
@@ -25,7 +26,13 @@ describe('Game Integration', () => {
                 const moveFn = client.moves[moveName as keyof typeof client.moves];
                 if (typeof moveFn === 'function') {
                     moveFn(...args);
+                } else {
+                    // This path is unlikely given the `boardgame.io` client structure, but good for robustness.
+                    throw new Error(`Move '${moveName}' on client.moves is not a function.`);
                 }
+            } else {
+                const availableMoves = Object.keys(client.moves).join(', ');
+                throw new Error(`Invalid move: '${moveName}'. Available moves: [${availableMoves}]`);
             }
         };
 
