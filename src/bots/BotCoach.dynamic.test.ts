@@ -186,8 +186,7 @@ describe('BotCoach Dynamic Logic', () => {
             const res = aggroCoach.filterOptimalMoves([...moves], '0', mockCtx) as MakeMoveAction[];
             // Capture the first move arg
             if (res[0].payload.type === 'buildRoad') {
-                const args = res[0].payload.args as [string];
-                results.add(args[0]);
+                results.add(res[0].payload.args[0]);
             }
         }
 
