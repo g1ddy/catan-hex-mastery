@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';

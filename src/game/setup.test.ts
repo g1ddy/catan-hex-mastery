@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
 import { getSnakeDraftOrder } from './turnOrder';

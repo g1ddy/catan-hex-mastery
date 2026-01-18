@@ -14,6 +14,7 @@ import { distributeResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
+import { stripHtml } from '../utils/sanitize';
 
 // Map string names to move functions for use in definition
 const MOVE_MAP = {
@@ -95,9 +96,10 @@ export const CatanGame: Game<GameState> = {
 
     for (let i = 0; i < numPlayers; i++) {
       const playerId = i.toString();
+      const rawName = setupData?.botNames?.[playerId] || `Player ${i + 1}`;
       players[playerId] = {
         id: playerId,
-        name: setupData?.botNames?.[playerId] || `Player ${i + 1}`,
+        name: stripHtml(rawName),
         color: PLAYER_COLORS[i % PLAYER_COLORS.length],
         resources: { ...initialResources },
         settlements: [],
