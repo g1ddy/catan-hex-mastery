@@ -20,7 +20,6 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { isValidRobberPlacement } from '../game/rules/spatial';
 import { Hex } from '../game/types';
 
-const NO_OP = () => {};
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 
 export interface CatanBoardProps extends BoardProps<GameState> {
