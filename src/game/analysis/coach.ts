@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, TerrainType, GameAction, BotMove, MoveArguments } from '../types';
+import { GameState, TerrainType, GameAction, BotMove } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
@@ -186,7 +186,7 @@ export class Coach {
     }
 
     private calculateScarcityScore(uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
-        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
+        const scarceResources = Array.from(uniqueResources).filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
             return {
                 multiplier: this.config.scarcityMultiplier,

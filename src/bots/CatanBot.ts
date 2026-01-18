@@ -66,15 +66,18 @@ export class CatanBot extends Bot {
 
         if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
              // It's already a Redux action
-             actionPayload = selectedMove.payload;
+             // Explicit cast to satisfy strict union matching against potential generic widening
+             actionPayload = selectedMove.payload as MakeMoveAction['payload'];
         } else {
              // It's a BotMove
              const move = selectedMove as BotMove;
+             // TypeScript can't easily infer that { type: K, args: Args[K] } matches the union when K is generic/dynamic
+             // so we cast to 'any' before casting to the final union type to bypass the "not assignable" error.
              actionPayload = {
                  type: move.move,
                  args: move.args,
                  playerID
-             } as MakeMoveAction['payload'];
+             } as any as MakeMoveAction['payload'];
         }
 
         return {
