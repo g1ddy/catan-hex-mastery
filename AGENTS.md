@@ -30,7 +30,7 @@ We are working on **Phase 7: Full Game Loop**, which involves implementing compl
 **Priorities:**
 1.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
 2.  **Code Cleanup**: Verify no unused CSS or "magic strings" remain before starting complex game logic.
-3.  **Phase 6 Readiness**: Ensure the state machine in `Game.ts` is ready to handle Trade phases and Win conditions.
+3.  **Phase 7 Execution**: Implement Trading, Robber mechanics (stealing/discarding), and Development Cards as defined in `DEVELOPMENT.md`.
 
 ## 🚫 Constraints
 *   **No Class Components:** Use React Functional Components + Hooks only.
