@@ -48,6 +48,7 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
         hexes: mockHexes, // Injected valid hexes
         vertices: {},
         edges: {},
+        ports: {},
     },
     players: {
         '0': {

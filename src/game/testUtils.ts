@@ -14,7 +14,7 @@ export const createTestPlayer = (id: string, overrides: Partial<Player> = {}): P
 });
 
 export const createTestGameState = (overrides: Partial<GameState> = {}): GameState => ({
-    board: { hexes: {}, vertices: {}, edges: {} },
+    board: { hexes: {}, vertices: {}, edges: {}, ports: {} },
     players: {},
     setupPhase: { activeRound: 1 },
     setupOrder: [],
@@ -56,6 +56,7 @@ export const createMockGameState = (overrides: any = {}): GameState => {
             hexes: {},
             vertices: {},
             edges: {},
+            ports: {},
         },
         players: {
             '0': defaultPlayer,

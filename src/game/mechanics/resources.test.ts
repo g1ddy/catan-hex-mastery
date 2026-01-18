@@ -36,7 +36,8 @@ describe('distributeResources', () => {
                     '0,0,0': { owner: '0', type: 'settlement' },
                     '1,0,-1': { owner: '1', type: 'city' }
                 },
-                edges: {}
+                edges: {},
+                ports: {}
             },
             players: {
                 '0': createTestPlayer('0', { resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),
