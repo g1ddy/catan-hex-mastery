@@ -65,8 +65,8 @@ jest.mock('../constants', () => {
         ...original,
         STAGE_MOVES: {
             ...original.STAGE_MOVES,
-            'test_single': ['singleMove'],
-            'test_multi': ['move1', 'move2']
+            'test_single': ['rollDice'],
+            'test_multi': ['endTurn', 'rollDice']
         }
     };
 });
@@ -157,7 +157,7 @@ describe('ai.enumerate', () => {
     it('should correctly enumerate single moves from custom stages', () => {
         ctx.activePlayers['0'] = 'test_single';
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toEqual([expectedAction('singleMove', [])]);
+        expect(moves).toEqual([expectedAction('rollDice', [])]);
     });
 
     it('should correctly enumerate multiple moves from custom stages', () => {
@@ -166,8 +166,8 @@ describe('ai.enumerate', () => {
 
         // Should contain both moves
         expect(moves).toHaveLength(2);
-        expect(moves).toContainEqual(expectedAction('move1', []));
-        expect(moves).toContainEqual(expectedAction('move2', []));
+        expect(moves).toContainEqual(expectedAction('endTurn', []));
+        expect(moves).toContainEqual(expectedAction('rollDice', []));
     });
 
     it('should log error for unknown stage (not in STAGE_MOVES)', () => {

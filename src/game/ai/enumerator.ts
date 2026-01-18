@@ -1,4 +1,4 @@
-import { GameState, GameAction, BotMove } from '../types';
+import { GameState, GameAction, BotMove, MoveArguments } from '../types';
 import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
@@ -6,10 +6,10 @@ import { isValidPlayer } from '../../utils/validation';
 import { getValidMovesForStage, RuleEngine } from '../rules/validator';
 
 // Helper to construct boardgame.io action objects.
-const makeMove = (moveName: string, args: any[]): BotMove => ({
+const makeMove = <K extends keyof MoveArguments>(moveName: K, args: MoveArguments[K]): BotMove => ({
     move: moveName,
     args
-});
+} as BotMove);
 
 // Explicit list of moves that require arguments OR specific validation logic
 const PARAMETERIZED_MOVES = new Set([
@@ -74,17 +74,23 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
 
         if (spots) {
             // Handle Spatial Parameterized Moves
-            spots.forEach(id => moves.push(makeMove(moveName, [id])));
+            // Explicitly guard for TypeScript
+            if (moveName === 'placeSettlement' || moveName === 'buildSettlement' || moveName === 'buildCity' ||
+                moveName === 'placeRoad' || moveName === 'buildRoad' || moveName === 'dismissRobber') {
+                spots.forEach(id => moves.push(makeMove(moveName, [id])));
+            }
         } else if (moveName === 'tradeBank') {
             // Special Case: Transactional Move (0-arg but conditional)
             // Delegate to RuleEngine for consistency
             if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
-                moves.push(makeMove(moveName, []));
+                moves.push(makeMove('tradeBank', []));
             }
         } else {
             // Handle Non-Parameterized Moves (Everything else)
             // Assume 0-argument validity (e.g., rollDice, endTurn, regenerateBoard)
-            moves.push(makeMove(moveName, []));
+            if (moveName === 'rollDice' || moveName === 'endTurn' || moveName === 'regenerateBoard') {
+                 moves.push(makeMove(moveName, []));
+            }
         }
     });
 

@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction } from '../game/types';
+import { GameState, MakeMoveAction, MoveArguments } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
@@ -27,9 +27,9 @@ jest.mock('../game/hexUtils', () => ({
 }));
 
 // Helper to create mock Redux actions (simplified)
-const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
+const mockAction = <K extends keyof MoveArguments>(moveType: K, args: MoveArguments[K] = [] as any): MakeMoveAction => ({
     type: 'MAKE_MOVE',
-    payload: { type: moveType, args, playerID: '0' }
+    payload: { type: moveType, args, playerID: '0' } as any
 });
 
 describe('BotCoach', () => {
@@ -90,7 +90,13 @@ describe('BotCoach', () => {
 
             // Verify args extraction - Cast to MakeMoveAction since we know the input
             const actions = result as MakeMoveAction[];
-            expect(actions.map(m => m.payload.args[0])).toEqual(['v1', 'v3']);
+            const args = actions.map(m => {
+                if (m.payload.type === 'placeSettlement') {
+                    return m.payload.args[0];
+                }
+                return null;
+            });
+            expect(args).toEqual(['v1', 'v3']);
         });
 
         it('should filter acting moves based on weights', () => {
@@ -115,7 +121,6 @@ describe('BotCoach', () => {
              // Since v2 and v3 are both buildCity (top weight), and v2 is better, it should be first.
              // The old test expected length 1, but the new logic returns "top move and others".
              // Actually, the new logic returns: [BestMove, ...OtherTypes].
-             // Wait, the logic is: "return [bestMove, ...others]".
              // So if both are cities, it returns the best city, then non-city moves?
              // Let's check logic:
              // const bestMove = cityMoves.find...;
@@ -124,7 +129,9 @@ describe('BotCoach', () => {
 
              expect(actions.length).toBeGreaterThanOrEqual(1);
              expect(actions[0].payload.type).toBe('buildCity');
-             expect(actions[0].payload.args[0]).toBe('v2');
+             if (actions[0].payload.type === 'buildCity') {
+                  expect(actions[0].payload.args[0]).toBe('v2');
+             }
         });
 
         it('should return all moves if weights are equal', () => {
@@ -163,7 +170,9 @@ describe('BotCoach', () => {
             expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
             expect(action.payload.type).toBe('buildCity');
-            expect(action.payload.args[0]).toBe('v1');
+            if (action.payload.type === 'buildCity') {
+                expect(action.payload.args[0]).toBe('v1');
+            }
 
             // Verify coach was called correctly
             expect(coach.getBestCitySpots).toHaveBeenCalledWith('0', mockCtx, ['v2', 'v1']);
@@ -187,7 +196,9 @@ describe('BotCoach', () => {
             expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
             expect(action.payload.type).toBe('buildSettlement');
-            expect(action.payload.args[0]).toBe('v1');
+            if (action.payload.type === 'buildSettlement') {
+                expect(action.payload.args[0]).toBe('v1');
+            }
         });
 
         it('should handle invalid player ID gracefully', () => {

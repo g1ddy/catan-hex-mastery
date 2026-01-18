@@ -186,7 +186,7 @@ export class Coach {
     }
 
     private calculateScarcityScore(uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
-        const scarceResources = [...uniqueResources].filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
+        const scarceResources = Array.from(uniqueResources).filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
         if (scarceResources.length > 0) {
             return {
                 multiplier: this.config.scarcityMultiplier,
@@ -400,13 +400,16 @@ export class Coach {
         let score = 1.0;
 
         // 1. Strategic Boost: If the move type is recommended by Coach, boost it.
+        // Cast moveName to string to match advice.recommendedMoves signature
         if (advice.recommendedMoves.includes(moveName)) {
             score *= 1.5; // 50% boost for following advice
         }
 
         // 2. Spatial Scoring: If it's a placement move, use the spatial score.
         if (moveName === 'placeSettlement' || moveName === 'buildSettlement') {
-            const vId = args && args[0];
+            const arg0 = args[0];
+            const vId = typeof arg0 === 'string' ? arg0 : undefined;
+
             if (vId) {
                 try {
                     // Reuse scoreVertex
