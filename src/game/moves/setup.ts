@@ -76,9 +76,10 @@ export const regenerateBoard: Move<GameState> = ({ G }) => {
         return 'INVALID_MOVE';
     }
 
-    const boardHexes = generateBoard();
+    const { hexes: boardHexes, ports } = generateBoard();
     const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
     G.board.hexes = hexesMap;
+    G.board.ports = ports;
     G.boardStats = calculateBoardStats(hexesMap);
 
     // Fix: Update Robber location to new Desert

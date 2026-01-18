@@ -29,7 +29,7 @@ describe('Unit Test: Resource Costs', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: {}, vertices: {}, hexes: mockHexes },
+        board: { edges: {}, vertices: {}, hexes: mockHexes, ports: {} },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],

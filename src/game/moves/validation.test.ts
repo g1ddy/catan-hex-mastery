@@ -21,7 +21,7 @@ describe('Security Validation: Input Sanitization', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: {}, vertices: {}, hexes: {} },
+        board: { edges: {}, vertices: {}, hexes: {}, ports: {} },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],

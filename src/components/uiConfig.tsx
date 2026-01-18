@@ -1,4 +1,5 @@
 import { Trees, BrickWall, Cloud, Wheat, Mountain, MapPin, Home, Castle, LucideIcon } from 'lucide-react';
+import { TerrainType } from '../game/types';
 
 export interface ResourceMeta {
   name: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';
@@ -36,3 +37,13 @@ export const PLAYER_COLORS = [
   '#8E24AA', // Purple
   '#43A047', // Green
 ];
+
+export const TERRAIN_COLORS: Record<TerrainType, string> = {
+  [TerrainType.Forest]: '#228B22',
+  [TerrainType.Hills]: '#CD5C5C',
+  [TerrainType.Pasture]: '#90EE90',
+  [TerrainType.Fields]: '#FFD700',
+  [TerrainType.Mountains]: '#A9A9A9',
+  [TerrainType.Desert]: '#F4A460',
+  [TerrainType.Sea]: '#87CEEB'
+};

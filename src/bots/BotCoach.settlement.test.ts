@@ -27,6 +27,7 @@ describe('BotCoach Settlement Test', () => {
                 hexes: {},
                 vertices: {},
                 edges: {},
+                ports: {},
             },
             players: {
                 '0': {

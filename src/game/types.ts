@@ -39,6 +39,14 @@ export interface Resources {
   ore: number;
 }
 
+export type PortType = '3:1' | keyof Resources;
+
+export interface Port {
+  type: PortType;
+  edgeId: string;
+  vertices: string[]; // The two vertex IDs that have access to this port
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -55,6 +63,7 @@ export interface SetupPhaseState {
 
 export interface BoardState {
   hexes: Record<string, Hex>;
+  ports: Record<string, Port>;
   vertices: Record<string, { owner: string; type: 'settlement' | 'city' }>; // owner is player ID
   edges: Record<string, { owner: string }>; // owner is player ID
 }

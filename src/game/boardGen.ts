@@ -1,5 +1,5 @@
-import { Hex, TerrainType, CubeCoordinates } from './types';
-import { getNeighbors } from './hexUtils';
+import { Hex, TerrainType, CubeCoordinates, Port, PortType } from './types';
+import { getNeighbors, getEdgesForHex, parseEdgeId, getVerticesForEdge } from './hexUtils';
 import { shuffle } from 'lodash';
 
 const TERRAIN_COUNTS: Record<TerrainType, number> = {
@@ -47,7 +47,69 @@ function generateSpiralCoords(): CubeCoordinates[] {
     return results;
 }
 
-export function generateBoard(): Hex[] {
+function generatePorts(hexes: Hex[]): Record<string, Port> {
+    const ports: Record<string, Port> = {};
+    const allEdges: string[] = [];
+
+    hexes.forEach(h => {
+        const edges = getEdgesForHex(h.coords);
+        allEdges.push(...edges);
+    });
+
+    // Count edges
+    const edgeCounts: Record<string, number> = {};
+    allEdges.forEach(e => {
+        // eslint-disable-next-line security/detect-object-injection
+        edgeCounts[e] = (edgeCounts[e] || 0) + 1;
+    });
+
+    // Filter boundary edges (count === 1)
+    const boundaryEdges = Object.keys(edgeCounts).filter(e => edgeCounts[e] === 1); // eslint-disable-line security/detect-object-injection
+
+    const getEdgeAngle = (eId: string) => {
+        const [h1, h2] = parseEdgeId(eId);
+        // Midpoint in cube coords
+        const midQ = (h1.q + h2.q) / 2;
+        const midR = (h1.r + h2.r) / 2;
+
+        // Convert to Cartesian (axial to pixel)
+        // x = size * (3/2 * q)
+        // y = size * (sqrt(3)/2 * q + sqrt(3) * r)
+        // size doesn't matter for angle
+        const x = (3/2) * midQ;
+        const y = (Math.sqrt(3)/2) * midQ + Math.sqrt(3) * midR;
+        return Math.atan2(y, x);
+    };
+
+    boundaryEdges.sort((a, b) => getEdgeAngle(a) - getEdgeAngle(b));
+
+    const portTypes: PortType[] = [
+        '3:1', '3:1', '3:1', '3:1',
+        'wood', 'brick', 'sheep', 'wheat', 'ore'
+    ];
+    // Shuffle types
+    const shuffledTypes = shuffle(portTypes);
+
+    for (let i = 0; i < shuffledTypes.length; i++) {
+        // Distribute evenly
+        // We have ~30 boundary edges. 9 ports.
+        const edgeIndex = Math.floor(i * boundaryEdges.length / shuffledTypes.length);
+        // eslint-disable-next-line security/detect-object-injection
+        const edgeId = boundaryEdges[edgeIndex];
+        const vertices = getVerticesForEdge(edgeId);
+
+        // eslint-disable-next-line security/detect-object-injection
+        ports[edgeId] = {
+            type: shuffledTypes[i], // eslint-disable-line security/detect-object-injection
+            edgeId,
+            vertices
+        };
+    }
+
+    return ports;
+}
+
+export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
     const coords = generateSpiralCoords();
 
     const terrainList: TerrainType[] = [];
@@ -68,12 +130,12 @@ export function generateBoard(): Hex[] {
         let tokenIdx = 0;
 
         for (let i = 0; i < coords.length; i++) {
-            const coord = coords[i];
-            const terrain = shuffledTerrains[i];
+            const coord = coords[i]; // eslint-disable-line security/detect-object-injection
+            const terrain = shuffledTerrains[i]; // eslint-disable-line security/detect-object-injection
             let token: number | null = null;
 
             if (terrain !== TerrainType.Desert && tokenIdx < STANDARD_TOKEN_ORDER.length) {
-                token = STANDARD_TOKEN_ORDER[tokenIdx++];
+                token = STANDARD_TOKEN_ORDER[tokenIdx++]; // eslint-disable-line security/detect-object-injection
             }
 
             tempHexes.push({
@@ -94,7 +156,9 @@ export function generateBoard(): Hex[] {
         console.warn("Failed to generate valid board after 1000 attempts");
     }
 
-    return hexes;
+    const ports = generatePorts(hexes);
+
+    return { hexes, ports };
 }
 
 function isValidBoard(hexes: Hex[]): boolean {
