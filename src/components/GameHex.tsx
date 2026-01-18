@@ -9,6 +9,7 @@ interface GameHexProps {
   onClick: (hex: Hex) => void;
   isProducing?: boolean;
   hasRobber?: boolean;
+  isPendingRobber?: boolean;
 }
 
 const TERRAIN_COLORS: Record<TerrainType, string> = {
@@ -33,7 +34,7 @@ const getPipsCount = (num: number): number => {
   return PIPS_MAP[num] || 0;
 };
 
-const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, hasRobber }) => {
+const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, hasRobber, isPendingRobber }) => {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 
@@ -53,13 +54,13 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, h
         {hex.tokenValue && (
             <NumberToken value={hex.tokenValue} pips={pips} />
         )}
-        {hasRobber && (
+        {(hasRobber || isPendingRobber) && (
             <Skull
                 x={-4}
                 y={-4}
                 width={8}
                 height={8}
-                className="text-slate-800 drop-shadow-md fill-slate-400"
+                className={`text-slate-800 drop-shadow-md ${isPendingRobber ? 'fill-red-500 opacity-80' : 'fill-slate-400'}`}
                 strokeWidth={1.5}
             />
         )}

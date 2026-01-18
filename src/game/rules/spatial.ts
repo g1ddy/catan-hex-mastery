@@ -218,3 +218,33 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
 
     return { isValid: true };
 };
+
+/**
+ * Checks if the robber can be moved to the given hex.
+ * Enforces:
+ * 1. Hex must exist on the board.
+ * 2. Hex must not be the current robber location.
+ *
+ * @param G The game state
+ * @param hexId The hex ID
+ * @returns A ValidationResult object.
+ */
+export const isValidRobberPlacement = (G: GameState, hexId: string): ValidationResult => {
+    // 0. Security Validation
+    if (!isValidHexId(hexId)) {
+        return { isValid: false, reason: "Invalid hex ID format" };
+    }
+
+    // 1. Check if hex exists
+    // Use hasOwnProperty to avoid prototype pollution per Guidelines
+    if (!Object.prototype.hasOwnProperty.call(G.board.hexes, hexId)) {
+         return { isValid: false, reason: "Invalid hex location" };
+    }
+
+    // 2. Check if moving to same spot
+    if (G.robberLocation === hexId) {
+        return { isValid: false, reason: "You must move the robber to a new location" };
+    }
+
+    return { isValid: true };
+};

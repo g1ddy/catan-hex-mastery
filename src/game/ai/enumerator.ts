@@ -16,7 +16,8 @@ const PARAMETERIZED_MOVES = new Set([
     'placeSettlement', 'buildSettlement',
     'buildCity',
     'placeRoad', 'buildRoad',
-    'tradeBank' // Requires validation even if 0-arg
+    'tradeBank', // Requires validation even if 0-arg
+    'dismissRobber' // Requires target hex
 ]);
 
 /**
@@ -44,10 +45,18 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     const moves: GameAction[] = [];
 
     // Calculate valid spots once if needed (optimization)
-    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m) && m !== 'tradeBank');
+    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m) && m !== 'tradeBank' && m !== 'dismissRobber');
     const validSpots = hasSpatialMoves
         ? getValidMovesForStage(G, ctx, playerID, true)
         : { validSettlements: new Set<string>(), validCities: new Set<string>(), validRoads: new Set<string>() };
+
+    // Calculate robber spots if needed
+    let validRobberSpots: Set<string> | undefined;
+    if (moveTypesList.includes('dismissRobber')) {
+        validRobberSpots = new Set(
+             Object.keys(G.board.hexes).filter(id => id !== G.robberLocation)
+        );
+    }
 
     // A mapping from parameterized move names to their corresponding valid spot sets.
     const moveSpotMapping: Record<string, Set<string> | undefined> = {
@@ -56,6 +65,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         'buildCity': validSpots.validCities,
         'placeRoad': validSpots.validRoads,
         'buildRoad': validSpots.validRoads,
+        'dismissRobber': validRobberSpots
     };
 
     // Iterate through ALL potential moves for this stage
@@ -73,7 +83,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             }
         } else {
             // Handle Non-Parameterized Moves (Everything else)
-            // Assume 0-argument validity (e.g., rollDice, endTurn, dismissRobber, regenerateBoard)
+            // Assume 0-argument validity (e.g., rollDice, endTurn, regenerateBoard)
             moves.push(makeMove(moveName, []));
         }
     });
