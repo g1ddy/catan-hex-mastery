@@ -78,7 +78,7 @@ test.describe('Player Panel Tests', () => {
     await expect(playerPanel.locator('h3:has-text("Players")')).toBeHidden();
 
     // "Player 1" full text should be hidden, "P1" should be visible
-    const p1Label = playerPanel.locator('text=P1');
+    const p1Label = playerPanel.locator('span.md\\:hidden:has-text("P1")');
     await expect(p1Label).toBeVisible();
     // In mobile, the active player's VP count is visible in the mobile-only container.
     const mobileVPLocator = playerPanel.locator('.md\\:hidden').locator('text=/VP:? \\d+/');
