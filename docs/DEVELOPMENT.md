@@ -153,15 +153,24 @@ src/
 ### Completed Phases ✅
 *   **Phase 1-4**: Core Engine & Heuristics.
 *   **Phase 5 (Refactor)**: Unified 4-Layer Architecture (Validator, Enumerator).
+*   **Phase 6 (UI/UX)**: Mobile Layouts (Drawers), Visual Feedback (Tooltips, Toasts), Responsive Dashboard.
 
-### Current Focus: Phase 6 (UI/UX) 🚧
-*   Refining Mobile Layouts (Drawer/Sidebar logic).
-*   Polishing visual feedback (Tooltips, Toasts).
-
-### Upcoming: Phase 7 (Full Loop) 🔮
-*   Trade Phase implementation.
-*   Robber mechanics.
-*   Victory Point tracking & Win Conditions.
+### Current Focus: Phase 7 (Full Game Loop) 🚧
+*   **Trade System**:
+    *   Player-to-Player trading (Offer, Counter-Offer, Accept/Reject).
+    *   Trade interface and notification system.
+*   **Robber Mechanics**:
+    *   Resource Discarding (Players with >7 cards must discard half on roll of 7).
+    *   Stealing (Active player steals 1 random resource from a player on the target hex).
+*   **Development Cards**:
+    *   Deck management & random shuffling.
+    *   "Buy Dev Card" move.
+    *   Cards include: Knight (Move Robber), Road Building, Year of Plenty, Monopoly, Victory Point.
+*   **Special Awards**:
+    *   **Longest Road**: Dynamic pathfinding algorithm to track continuous road segments.
+    *   **Largest Army**: Tracking played Knight cards.
+*   **Win Conditions**:
+    *   Integrate Special Awards into VP calculation.
 
 ## 🤝 Contributing
 
