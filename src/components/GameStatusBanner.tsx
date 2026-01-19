@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react';
-import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { PHASES, STAGES } from '../game/constants';
