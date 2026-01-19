@@ -3,6 +3,7 @@ import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
+import { RobberToast } from './RobberToast';
 import { PHASES, STAGES } from '../game/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
@@ -33,6 +34,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     customMessageDuration = 3000
 }) => {
     const [showRollResult, setShowRollResult] = useState(false);
+    const [showStealResult, setShowStealResult] = useState(false);
 
     // Auto-clear custom message
     useEffect(() => {
@@ -57,6 +59,19 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         }
     }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
 
+    // Watch for new steals
+    useEffect(() => {
+        if (G.lastSteal) {
+            setShowStealResult(true);
+            // Hide roll result if steal happens (Robber phase follows Roll phase)
+            setShowRollResult(false);
+            const timer = setTimeout(() => setShowStealResult(false), 5000);
+            return () => clearTimeout(timer);
+        } else {
+            setShowStealResult(false);
+        }
+    }, [G.lastSteal]);
+
     // Dismiss toast on turn change
     const isFirstRun = useRef(true);
 
@@ -66,6 +81,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
             return;
         }
         setShowRollResult(false);
+        setShowStealResult(false);
     }, [ctx.currentPlayer]);
 
     // Memoize Game Over Emoji
@@ -87,6 +103,11 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
 
         return null;
     }, [ctx.gameover, playerID]);
+
+    // If showing steal result, render RobberToast
+    if (showStealResult) {
+        return <RobberToast G={G} visible={true} />;
+    }
 
     // If showing roll result, render ProductionToast (reused)
     if (showRollResult) {

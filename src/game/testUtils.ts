@@ -24,6 +24,7 @@ export const createTestGameState = (overrides: Partial<GameState> = {}): GameSta
     rollStatus: RollStatus.IDLE,
     robberLocation: '0',
     playersToDiscard: [],
+    lastSteal: null,
     ...overrides
 });
 
@@ -76,6 +77,7 @@ export const createMockGameState = (overrides: any = {}): GameState => {
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
+        lastSteal: null,
     };
 
     const mergedState = { ...defaults, ...overrides };
