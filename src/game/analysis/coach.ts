@@ -4,9 +4,12 @@ import { getValidSetupSettlementSpots } from '../rules/validator';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
+import { calculateTrade } from '../mechanics/trade';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
 import { STRATEGIC_ADVICE } from './adviceConstants';
+
+export const ORE_RESERVE_THRESHOLD = 6;
 
 export interface CoachRecommendation {
     vertexId: string;
@@ -59,6 +62,32 @@ export class Coach {
     constructor(G: GameState, config: Partial<CoachConfig> = {}) {
         this.G = G;
         this.config = { ...DEFAULT_CONFIG, ...config };
+    }
+
+    /**
+     * Evaluates if a Bank Trade is safe or advisable for the player.
+     * Enforces "Smart Ban" logic (e.g., don't trade Ore if low).
+     */
+    public evaluateTrade(playerID: string): { isSafe: boolean, reason?: string } {
+        if (!isValidPlayer(this.G, playerID)) {
+            return { isSafe: false, reason: "Invalid Player" };
+        }
+
+        // eslint-disable-next-line security/detect-object-injection
+        const player = this.G.players[playerID];
+        const tradeResult = calculateTrade(player.resources);
+
+        if (!tradeResult.canTrade) {
+            return { isSafe: false, reason: "Cannot Afford Trade" };
+        }
+
+        // Smart Ban: Protect Ore (City bottleneck)
+        // If we are giving away Ore and have <= ORE_RESERVE_THRESHOLD, we shouldn't trade it away.
+        if (tradeResult.give === 'ore' && player.resources.ore <= ORE_RESERVE_THRESHOLD) {
+            return { isSafe: false, reason: "Ore Reserve Low" };
+        }
+
+        return { isSafe: true };
     }
 
     private getVertexData(hexIds: string[]): { resources: string[], pips: number } {

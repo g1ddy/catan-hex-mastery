@@ -131,6 +131,7 @@ export const HexOverlays = React.memo(({
                                   safeMove(() => moves.buildCity(vId));
                                   setBuildMode(null);
                              }
+                             applyCoachRecommendation();
                         }
                     }
                 }

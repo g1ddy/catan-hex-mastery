@@ -57,6 +57,7 @@ describe('BotCoach Dynamic Logic', () => {
         // Default Coach behavior
         (coach.getAllSettlementScores as jest.Mock).mockReturnValue([]);
         (coach.getBestCitySpots as jest.Mock).mockReturnValue([]);
+        (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
 
         botCoach = new BotCoach(G, coach, BALANCED_PROFILE);
         mockCtx = { currentPlayer: '0' } as Ctx;
@@ -194,11 +195,8 @@ describe('BotCoach Dynamic Logic', () => {
         expect(results.size).toBeGreaterThan(1);
     });
 
-    it('should ban tradeBank if giving Ore and Ore <= 6 (ORE_RESERVE_THRESHOLD)', () => {
-        // Setup: Player has 6 Ore (Max) and 0 Wood (Min).
-        // calculateTrade will propose giving Ore for Wood.
-        // Threshold is 6, so 6 should be banned.
-        player.resources = { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 6 };
+    it('should ban tradeBank if coach evaluates unsafe', () => {
+        (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: false, reason: 'Unsafe' });
 
         // Ensure settlement is NOT affordable so trade gets boosted normally
         (getAffordableBuilds as jest.Mock).mockReturnValue({
@@ -217,9 +215,8 @@ describe('BotCoach Dynamic Logic', () => {
         expect(actions[0].payload.type).toBe('endTurn');
     });
 
-    it('should ALLOW tradeBank if giving Ore and Ore > 6 (ORE_RESERVE_THRESHOLD)', () => {
-        // Setup: Player has 7 Ore.
-        player.resources = { wood: 0, brick: 0, wheat: 0, sheep: 0, ore: 7 };
+    it('should ALLOW tradeBank if coach evaluates safe', () => {
+        (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
 
         (getAffordableBuilds as jest.Mock).mockReturnValue({
             settlement: false, city: false, road: false, devCard: false
