@@ -203,10 +203,16 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
                 <div className="h-6 w-px bg-slate-600/50" />
 
                 {/* Content Section */}
-                {displayNotification.type === 'production'
-                    ? renderProductionContent(displayNotification)
-                    : renderRobberContent(displayNotification as RobberEvent)
-                }
+                {(() => {
+                    switch (displayNotification.type) {
+                        case 'production':
+                            return renderProductionContent(displayNotification);
+                        case 'robber':
+                            return renderRobberContent(displayNotification);
+                        default:
+                            return null;
+                    }
+                })()}
             </div>
         </div>
     );
