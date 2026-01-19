@@ -165,12 +165,8 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
             // If the player is on the hex but not in potentialVictims, it must be because they have no resources.
             return { isValid: false, reason: "The chosen victim has no resources to steal." };
         }
-    } else {
-        // No victim selected. Ensure no victims were available.
-        if (potentialVictims.size > 0) {
-            return { isValid: false, reason: "You must choose a player to steal from." };
-        }
     }
+    // If no victimID provided, we allow it (game will pick randomly if victims exist)
 
     return { isValid: true };
 };

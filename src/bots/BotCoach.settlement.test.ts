@@ -52,6 +52,7 @@ describe('BotCoach Settlement Test', () => {
             },
             robberLocation: '0',
             playersToDiscard: [],
+            lastSteal: null,
         };
 
         // A valid Ctx mock

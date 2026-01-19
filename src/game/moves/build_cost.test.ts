@@ -38,6 +38,7 @@ describe('Unit Test: Resource Costs', () => {
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
+        lastSteal: null,
     };
 
     let G: GameState;

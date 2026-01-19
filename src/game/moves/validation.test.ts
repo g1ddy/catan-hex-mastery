@@ -30,6 +30,7 @@ describe('Security Validation: Input Sanitization', () => {
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
+        lastSteal: null,
     };
 
     let G: GameState;
