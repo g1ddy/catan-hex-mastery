@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { GameState, Resources, ProductionEvent, RobberEvent } from '../game/types';
 import {
     Trees, BrickWall, Wheat, Mountain, Cloud, Dices, Ghost, ArrowRight

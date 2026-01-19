@@ -22,7 +22,6 @@ interface GameStatusBannerProps {
 }
 
 export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
-    G,
     ctx,
     playerID,
     uiMode,
