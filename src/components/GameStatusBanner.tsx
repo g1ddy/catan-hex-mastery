@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
-import { ProductionToast } from './ProductionToast';
 import { PHASES, STAGES } from '../game/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
@@ -32,9 +31,6 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     onCustomMessageClear,
     customMessageDuration = 3000
 }) => {
-    const [showRollResult, setShowRollResult] = useState(false);
-    const [showStealResult, setShowStealResult] = useState(false);
-
     // Auto-clear custom message
     useEffect(() => {
         if (customMessage && onCustomMessageClear) {
@@ -45,46 +41,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         }
     }, [customMessage, onCustomMessageClear, customMessageDuration]);
 
-    // Calculate roll sum once
-    const [d1, d2] = G.lastRoll;
-    const sum = d1 + d2;
-
-    // Watch for new rolls
-    useEffect(() => {
-        if (sum > 0) {
-            setShowRollResult(true);
-            const timer = setTimeout(() => setShowRollResult(false), 4000);
-            return () => clearTimeout(timer);
-        }
-    }, [G.lastRoll, sum]); // Depend on G.lastRoll and derived sum
-
-    // Watch for new steals
-    useEffect(() => {
-        if (G.lastSteal) {
-            setShowStealResult(true);
-            // Hide roll result if steal happens (Robber phase follows Roll phase)
-            setShowRollResult(false);
-            const timer = setTimeout(() => setShowStealResult(false), 5000);
-            return () => clearTimeout(timer);
-        } else {
-            setShowStealResult(false);
-        }
-    }, [G.lastSteal]);
-
-    // Dismiss toast on turn change
-    const isFirstRun = useRef(true);
-
-    useEffect(() => {
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
-        }
-        setShowRollResult(false);
-        setShowStealResult(false);
-    }, [ctx.currentPlayer]);
-
     // Memoize Game Over Emoji
-    // We want this to be stable once the game is over.
     const gameOverEmoji = useMemo(() => {
         if (!ctx.gameover) return null;
 
@@ -102,16 +59,6 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
 
         return null;
     }, [ctx.gameover, playerID]);
-
-    // If showing steal result, render ProductionToast in robber mode
-    if (showStealResult) {
-        return <ProductionToast G={G} visible={true} variant="robber" />;
-    }
-
-    // If showing roll result, render ProductionToast (reused)
-    if (showRollResult) {
-        return <ProductionToast G={G} visible={true} variant="production" />;
-    }
 
     let message = "";
     let colorClass = "text-amber-400"; // Default color

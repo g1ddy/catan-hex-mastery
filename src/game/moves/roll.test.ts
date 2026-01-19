@@ -36,7 +36,7 @@ describe('rollDice', () => {
         G = createTestGameState({
             lastRoll: [0, 0],
             rollStatus: RollStatus.IDLE,
-            lastRollRewards: { '0': { wood: 5 } } // Pre-existing
+            notification: { type: 'production', rewards: { '0': { wood: 5 } }, rollValue: 10 } // Pre-existing
         });
 
         mockRandom.Die.mockReturnValue(3);
@@ -52,7 +52,7 @@ describe('rollDice', () => {
 
         expect(G.lastRoll).toEqual([3, 4]);
         expect(G.rollStatus).toBe(RollStatus.ROLLING);
-        expect(G.lastRollRewards).toEqual({}); // Cleared
+        expect(G.notification).toBeNull(); // Cleared
 
         // rollDice itself does NOT handle stage transitions or resource distribution anymore.
         // That is handled by Game.ts:onMove.

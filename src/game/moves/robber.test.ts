@@ -76,7 +76,8 @@ describe('Robber Moves', () => {
          expect(G.players[thiefID].resources.wheat).toBe(1);
 
          // Verify Record
-         expect(G.lastSteal).toEqual({
+         expect(G.notification).toEqual({
+             type: 'robber',
              thief: thiefID,
              victim: victimID,
              resource: 'wheat'

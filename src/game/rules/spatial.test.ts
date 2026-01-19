@@ -34,9 +34,9 @@ describe('spatial rules', () => {
         setupPhase: { activeRound: 1 },
         setupOrder: [],
         lastRoll: [0, 0],
-        lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
-        hasRolled: false
+        hasRolled: false,
+        notification: null
     } as unknown as GameState);
 
     describe('isValidSettlementLocation', () => {

@@ -45,7 +45,8 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
             thief.resources[stolenRes]++;
 
             // Record the steal event
-            G.lastSteal = {
+            G.notification = {
+                type: 'robber',
                 thief: ctx.currentPlayer,
                 victim: targetVictimID,
                 resource: stolenRes

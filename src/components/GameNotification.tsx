@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { GameState, Resources } from '../game/types';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { GameState, Resources, ProductionEvent, RobberEvent } from '../game/types';
 import {
     Trees, BrickWall, Wheat, Mountain, Cloud, Dices, Ghost, ArrowRight
 } from 'lucide-react';
@@ -7,10 +7,8 @@ import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 import { DiceIcons } from './DiceIcons';
 import { RESOURCE_META } from './uiConfig';
 
-interface ProductionToastProps {
+interface GameNotificationProps {
     G: GameState;
-    visible: boolean;
-    variant?: 'production' | 'robber';
 }
 
 const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
@@ -21,44 +19,70 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     sheep: <Cloud size={14} className="text-blue-300" />
 };
 
-export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, variant = 'production' }) => {
-    const [isRolling, setIsRolling] = useState(true);
-    const rewards = G.lastRollRewards;
-    const [d1Val, d2Val] = G.lastRoll;
+export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
+    const [visible, setVisible] = useState(false);
+    const [isRolling, setIsRolling] = useState(false);
+
+    const notification = G.notification;
+    // We use a ref to track the "active" notification data to display even during exit animation
+    // But since we control 'visible', we can just use G.notification.
+    // Wait, if G.notification becomes null, we want to hide.
+    // But if we want to fade out, we need the data to remain?
+    // Current CSS 'animate-leave' handles opacity.
+    // If we set visible=false, we still render the component but with 'animate-leave'?
+    // Or we unmount?
+    // The previous code: className={`${visible ? 'animate-enter' : 'animate-leave'} ...`}
+    // So it stays mounted.
+    // But if G.notification is null, we can't render content.
+    // Solution: Keep a local state 'displayNotification' that updates only when notification is non-null.
+
+    const [displayNotification, setDisplayNotification] = useState(notification);
 
     useEffect(() => {
-        if (!visible || variant !== 'production') {
+        if (notification) {
+            setDisplayNotification(notification);
+            setVisible(true);
+
+            if (notification.type === 'production') {
+                setIsRolling(true);
+                const t1 = setTimeout(() => setIsRolling(false), 1000);
+                const t2 = setTimeout(() => setVisible(false), 5000);
+                return () => { clearTimeout(t1); clearTimeout(t2); };
+            } else {
+                setIsRolling(false);
+                const t = setTimeout(() => setVisible(false), 5000);
+                return () => clearTimeout(t);
+            }
+        } else {
+            // If notification cleared (e.g. new roll started), hide immediately
+            setVisible(false);
             setIsRolling(false);
-            return;
         }
+    }, [notification]);
 
-        setIsRolling(true);
-        const timer = setTimeout(() => {
-            setIsRolling(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [visible, G.lastRoll, variant]); // Restart animation on new roll only for production
-
+    // Derived state from displayNotification
     const hasAnyResources = useMemo(() => {
-        return Object.values(rewards).some(res =>
+        if (!displayNotification || displayNotification.type !== 'production') return false;
+        return Object.values(displayNotification.rewards).some(res =>
             Object.values(res).some(amount => amount > 0)
         );
-    }, [rewards]);
+    }, [displayNotification]);
 
     const randomEmoji = useMemo(() => {
         if (hasAnyResources) return null;
         return getRandomEmoji(NO_YIELD_EMOJIS);
-    }, [hasAnyResources, G.lastRoll]);
+    }, [hasAnyResources, displayNotification]);
 
-    const renderProductionContent = () => (
+    if (!displayNotification) return null;
+
+    const renderProductionContent = (evt: ProductionEvent) => (
         <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${isRolling ? 'opacity-0' : 'opacity-100'}`}>
             {!hasAnyResources ? (
                 <div className="text-2xl animate-pulse motion-reduce:animate-none" role="img" aria-label="No resources">
                     {randomEmoji}
                 </div>
             ) : (
-                Object.entries(rewards).map(([pid, res]) => {
+                Object.entries(evt.rewards).map(([pid, res]) => {
                     const player = G.players[pid];
                     const hasResources = Object.values(res).some(v => v > 0);
 
@@ -95,18 +119,15 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
         </div>
     );
 
-    const renderRobberContent = () => {
-        const steal = G.lastSteal;
-        if (!steal) return null;
-
+    const renderRobberContent = (evt: RobberEvent) => {
         // eslint-disable-next-line security/detect-object-injection
-        const thief = G.players[steal.thief];
+        const thief = G.players[evt.thief];
         // eslint-disable-next-line security/detect-object-injection
-        const victim = G.players[steal.victim];
+        const victim = G.players[evt.victim];
 
         if (!thief || !victim) return null;
 
-        const resourceMeta = steal.resource ? RESOURCE_META.find(r => r.name === steal.resource) : null;
+        const resourceMeta = evt.resource ? RESOURCE_META.find(r => r.name === evt.resource) : null;
 
         return (
             <div className="flex items-center gap-3">
@@ -147,6 +168,14 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
         );
     };
 
+    // Roll Value for Icon (Production only)
+    const [d1, d2] = (displayNotification.type === 'production')
+        ? G.lastRoll // Use G.lastRoll to match board state, or derive from event? Event has rollValue but not split d1/d2.
+        // Actually, G.lastRoll is [d1, d2].
+        // If event.rollValue != G.lastRoll sum, that would be weird.
+        // We'll trust G.lastRoll as it's the source of truth for dice display.
+        : [0, 0];
+
     return (
         <div
             role="status"
@@ -156,14 +185,14 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
             <div className="flex items-center gap-4 text-slate-100">
                 {/* Icon Section */}
                 <div className="flex items-center gap-2">
-                    {variant === 'production' ? (
+                    {displayNotification.type === 'production' ? (
                         isRolling ? (
                             <>
                                 <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
                                 <span className="font-bold text-lg text-amber-400">Rolling...</span>
                             </>
                         ) : (
-                            <DiceIcons d1={d1Val} d2={d2Val} size={20} className="text-amber-400" />
+                            <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" />
                         )
                     ) : (
                         <Ghost size={24} className="text-purple-400" />
@@ -174,7 +203,10 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
                 <div className="h-6 w-px bg-slate-600/50" />
 
                 {/* Content Section */}
-                {variant === 'production' ? renderProductionContent() : renderRobberContent()}
+                {displayNotification.type === 'production'
+                    ? renderProductionContent(displayNotification)
+                    : renderRobberContent(displayNotification as RobberEvent)
+                }
             </div>
         </div>
     );

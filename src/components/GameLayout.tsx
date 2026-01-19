@@ -24,6 +24,7 @@ interface GameLayoutProps {
   playerPanel: React.ReactNode;
   gameControls: React.ReactNode;
   gameStatus?: React.ReactNode;
+  gameNotification?: React.ReactNode;
   coachPanel: React.ReactNode;
   activePanel: 'analyst' | 'coach' | null;
   onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
@@ -112,6 +113,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   playerPanel,
   gameControls,
   gameStatus,
+  gameNotification,
   coachPanel,
   activePanel,
   onPanelChange
@@ -208,6 +210,16 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
                   style={{ zIndex: Z_INDEX_FLOATING_UI + 10 }} // Ensure it's above everything
               >
                   {gameStatus}
+              </div>
+          )}
+
+          {/* Notifications (Toast) */}
+          {gameNotification && (
+              <div
+                  className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none"
+                  style={{ zIndex: Z_INDEX_FLOATING_UI + 20 }} // Above status banner
+              >
+                  {gameNotification}
               </div>
           )}
 

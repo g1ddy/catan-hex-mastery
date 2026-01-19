@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { render, screen, act } from '@testing-library/react';
-import { ProductionToast } from './ProductionToast';
+import { GameNotification } from './GameNotification';
 import { GameState } from '../game/types';
 import '@testing-library/jest-dom';
 
@@ -31,24 +31,37 @@ const mockG = {
         '1': { color: '#0000ff', resources: {}, id: '1', name: 'Player 1' }
     },
     lastRoll: [1, 1], // sum 2
-    lastRollRewards: {
-        '0': { wood: 0, brick: 0, wheat: 0, ore: 0, sheep: 0 },
-        '1': { wood: 0, brick: 0, wheat: 0, ore: 0, sheep: 0 }
-    },
-    lastSteal: null
+    notification: null
 } as unknown as GameState;
 
 const GWithRewards = {
     ...mockG,
-    lastRollRewards: {
-        '0': { wood: 1, brick: 0, wheat: 0, ore: 0, sheep: 0 },
-        '1': { wood: 0, brick: 0, wheat: 0, ore: 0, sheep: 0 }
+    notification: {
+        type: 'production',
+        rollValue: 2,
+        rewards: {
+            '0': { wood: 1, brick: 0, wheat: 0, ore: 0, sheep: 0 },
+            '1': { wood: 0, brick: 0, wheat: 0, ore: 0, sheep: 0 }
+        }
+    }
+} as unknown as GameState;
+
+const GNoRewards = {
+    ...mockG,
+    notification: {
+        type: 'production',
+        rollValue: 2,
+        rewards: {
+            '0': { wood: 0 },
+            '1': { wood: 0 }
+        }
     }
 } as unknown as GameState;
 
 const GWithSteal = {
     ...mockG,
-    lastSteal: {
+    notification: {
+        type: 'robber',
         thief: '0',
         victim: '1',
         resource: 'wood'
@@ -57,21 +70,22 @@ const GWithSteal = {
 
 jest.useFakeTimers();
 
-describe('ProductionToast', () => {
+describe('GameNotification', () => {
     test('renders resources when present after animation', () => {
-        render(<ProductionToast G={GWithRewards} visible={true} />);
+        render(<GameNotification G={GWithRewards} />);
+
+        // Initially rolling (Production only)
+        expect(screen.getByText('Rolling...')).toBeInTheDocument();
 
         act(() => {
             jest.advanceTimersByTime(1000);
         });
 
         expect(screen.getByText('P1')).toBeInTheDocument();
-        // Check for "1" (amount) or finding by icon logic could be complex,
-        // but verifying the player label is sufficient to know the block rendered.
     });
 
     test('renders emoji when no rewards', () => {
-        render(<ProductionToast G={mockG} visible={true} />);
+        render(<GameNotification G={GNoRewards} />);
 
         act(() => {
             jest.advanceTimersByTime(1000);
@@ -81,7 +95,7 @@ describe('ProductionToast', () => {
     });
 
     test('renders robber variant correctly', () => {
-        render(<ProductionToast G={GWithSteal} visible={true} variant="robber" />);
+        render(<GameNotification G={GWithSteal} />);
 
         // Should show Ghost icon immediately (no animation delay logic for robber)
         expect(screen.getByTestId('icon-ghost')).toBeInTheDocument();
@@ -92,11 +106,5 @@ describe('ProductionToast', () => {
 
         // Should show Resource icon
         expect(screen.getByTestId('icon-trees')).toBeInTheDocument(); // Wood -> Trees icon
-    });
-
-    test('renders nothing for robber variant if steal data is missing', () => {
-        render(<ProductionToast G={mockG} visible={true} variant="robber" />);
-        // Should not render content section
-        expect(screen.queryByText('Player 0')).not.toBeInTheDocument();
     });
 });

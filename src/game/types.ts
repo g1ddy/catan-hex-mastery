@@ -80,22 +80,32 @@ export enum RollStatus {
   RESOLVED = 'resolved'
 }
 
+export interface ProductionEvent {
+  type: 'production';
+  rewards: Record<string, Partial<Resources>>;
+  rollValue: number;
+}
+
+export interface RobberEvent {
+  type: 'robber';
+  thief: string;
+  victim: string;
+  resource: keyof Resources | null;
+}
+
+export type GameEvent = ProductionEvent | RobberEvent;
+
 export interface GameState {
   board: BoardState;
   players: Record<string, Player>;
   setupPhase: SetupPhaseState;
   setupOrder: string[];
   lastRoll: [number, number];
-  lastRollRewards: Record<string, Partial<Resources>>; // PlayerID -> Resources Gained
   boardStats: BoardStats;
   rollStatus: RollStatus;
   robberLocation: string; // Hex ID
   playersToDiscard: string[]; // List of player IDs who need to discard
-  lastSteal: {
-    thief: string;
-    victim: string;
-    resource: keyof Resources | null;
-  } | null;
+  notification: GameEvent | null;
 }
 
 // Map of Move Names to their Argument Tuples

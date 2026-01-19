@@ -33,12 +33,11 @@ describe('Unit Test: Resource Costs', () => {
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
-        lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
-        lastSteal: null,
+        notification: null,
     };
 
     let G: GameState;

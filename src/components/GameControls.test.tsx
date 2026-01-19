@@ -50,10 +50,9 @@ describe('GameControls Accessibility', () => {
         setupPhase: { activeRound: 1, activeSettlement: null },
         setupOrder: ['0'],
         lastRoll: [0, 0],
-        lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.RESOLVED,
-        lastSteal: null,
+        notification: null,
     } as unknown as GameState;
 
     const mockCtx = {
