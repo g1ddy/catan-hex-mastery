@@ -27,7 +27,7 @@ describe('Coach Trade Logic', () => {
         coach = new Coach(G);
     });
 
-    it('should allow trade if player cannot afford any trade (fallback)', () => {
+    it('should return unsafe if player cannot afford any trade', () => {
         // This case returns { isSafe: false, reason: "Cannot Afford" }
         // The implementation: if (!canTrade) return { isSafe: false ... }
 
