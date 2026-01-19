@@ -186,10 +186,7 @@ export const CatanGame: Game<GameState> = {
                              // But boardgame.io activePlayers replaces the set.
                              // We set the active players to those who need to discard.
                              // The turn does not advance until they are done.
-                             const activePlayersConfig = playersToDiscard.reduce((acc, pid) => {
-                                 acc[pid] = STAGES.DISCARD;
-                                 return acc;
-                             }, {} as Record<string, string>);
+                             const activePlayersConfig = Object.fromEntries(playersToDiscard.map(pid => [pid, STAGES.DISCARD]));
 
                              events.setActivePlayers({ value: activePlayersConfig });
                          } else {

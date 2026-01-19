@@ -20,11 +20,9 @@ export const discardResources: Move<GameState> = ({ G, ctx, events }, resources:
     const player = G.players[playerID];
 
     // Remove resources
-    player.resources.wood -= resources.wood;
-    player.resources.brick -= resources.brick;
-    player.resources.sheep -= resources.sheep;
-    player.resources.wheat -= resources.wheat;
-    player.resources.ore -= resources.ore;
+    for (const [resource, amount] of Object.entries(resources)) {
+        player.resources[resource as keyof Resources] -= amount;
+    }
 
     // 3. Update State
     G.playersToDiscard = G.playersToDiscard.filter(id => id !== playerID);
