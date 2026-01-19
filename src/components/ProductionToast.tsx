@@ -27,15 +27,17 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
     const [d1Val, d2Val] = G.lastRoll;
 
     useEffect(() => {
-        if (visible && variant === 'production') {
-            setIsRolling(true);
-            const timer = setTimeout(() => {
-                setIsRolling(false);
-            }, 1000);
-            return () => clearTimeout(timer);
-        } else {
+        if (!visible || variant !== 'production') {
             setIsRolling(false);
+            return;
         }
+
+        setIsRolling(true);
+        const timer = setTimeout(() => {
+            setIsRolling(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
     }, [visible, G.lastRoll, variant]); // Restart animation on new roll only for production
 
     const hasAnyResources = useMemo(() => {
