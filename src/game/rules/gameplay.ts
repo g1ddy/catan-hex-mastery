@@ -80,6 +80,13 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
  * 3. Player actually has the resources they are trying to discard.
  */
 export const validateDiscardResources = (G: GameState, playerID: string, resources: Resources): ValidationResult => {
+    // 0. Security Check: Prevent negative resource discard (exploit)
+    for (const resource of Object.values(resources)) {
+        if (resource < 0) {
+            return { isValid: false, reason: "Cannot discard negative amounts of resources." };
+        }
+    }
+
     if (!isValidPlayer(G, playerID)) {
         return { isValid: false, reason: "Invalid player" };
     }
@@ -100,13 +107,7 @@ export const validateDiscardResources = (G: GameState, playerID: string, resourc
     }
 
     // Check if player has the specific resources
-    const hasEnough = (
-        player.resources.wood >= resources.wood &&
-        player.resources.brick >= resources.brick &&
-        player.resources.sheep >= resources.sheep &&
-        player.resources.wheat >= resources.wheat &&
-        player.resources.ore >= resources.ore
-    );
+    const hasEnough = (Object.keys(resources) as (keyof Resources)[]).every(r => player.resources[r] >= resources[r]);
 
     if (!hasEnough) {
         return { isValid: false, reason: "You do not have these resources to discard." };

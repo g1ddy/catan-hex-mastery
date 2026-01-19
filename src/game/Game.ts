@@ -173,12 +173,9 @@ export const CatanGame: Game<GameState> = {
 
                 if (rollValue === 7) {
                     // Robber Trigger: Check for discards
-                    const playersToDiscard: string[] = [];
-                    Object.values(G.players).forEach(p => {
-                        if (countResources(p.resources) > 7) {
-                            playersToDiscard.push(p.id);
-                        }
-                    });
+                    const playersToDiscard = Object.values(G.players)
+                        .filter(p => countResources(p.resources) > 7)
+                        .map(p => p.id);
 
                     G.playersToDiscard = playersToDiscard;
 
