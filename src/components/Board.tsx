@@ -264,7 +264,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       }
       gameStatus={
         <GameStatusBanner
-            G={G}
             ctx={ctx}
             playerID={playerID}
             uiMode={uiMode}

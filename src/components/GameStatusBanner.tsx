@@ -11,7 +11,6 @@ export interface CustomMessage {
 }
 
 interface GameStatusBannerProps {
-    G: GameState;
     ctx: Ctx;
     playerID: string | null;
     uiMode: UiMode;

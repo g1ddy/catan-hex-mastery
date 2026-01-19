@@ -43,16 +43,18 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
             setDisplayNotification(notification);
             setVisible(true);
 
-            if (notification.type === 'production') {
-                setIsRolling(true);
-                const t1 = setTimeout(() => setIsRolling(false), 1000);
-                const t2 = setTimeout(() => setVisible(false), 5000);
-                return () => { clearTimeout(t1); clearTimeout(t2); };
-            } else {
-                setIsRolling(false);
-                const t = setTimeout(() => setVisible(false), 5000);
-                return () => clearTimeout(t);
+            const isProduction = notification.type === 'production';
+            setIsRolling(isProduction);
+
+            const timers: NodeJS.Timeout[] = [];
+            if (isProduction) {
+                timers.push(setTimeout(() => setIsRolling(false), 1000));
             }
+            timers.push(setTimeout(() => setVisible(false), 5000));
+
+            return () => {
+                timers.forEach(clearTimeout);
+            };
         } else {
             // If notification cleared (e.g. new roll started), hide immediately
             setVisible(false);
