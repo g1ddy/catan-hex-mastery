@@ -14,6 +14,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
+import { GameNotification } from './GameNotification';
 import { PHASES, STAGE_MOVES, STAGES } from '../game/constants';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -263,7 +264,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       }
       gameStatus={
         <GameStatusBanner
-            G={G}
             ctx={ctx}
             playerID={playerID}
             uiMode={uiMode}
@@ -272,6 +272,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             onCustomMessageClear={() => setCustomBannerMessage(null)}
         />
       }
+      gameNotification={<GameNotification G={G} />}
       gameControls={
         <GameControls
           G={G}

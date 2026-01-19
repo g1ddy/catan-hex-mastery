@@ -64,12 +64,11 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     setupPhase: { activeRound: 1 },
     setupOrder: ['0'],
     lastRoll: [0, 0],
-    lastRollRewards: {},
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
     rollStatus: RollStatus.IDLE,
     robberLocation: '0',
     playersToDiscard: [],
-    lastSteal: null,
+    notification: null,
     ...overrides
 });
 

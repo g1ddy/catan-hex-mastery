@@ -12,7 +12,6 @@ export const rollDice: Move<GameState> = ({ G, random }) => {
 
     G.lastRoll = [d1, d2];
     G.rollStatus = RollStatus.ROLLING;
-    G.lastRollRewards = {}; // Clear previous rewards
-    G.lastSteal = null; // Clear previous steal event
+    G.notification = null; // Clear previous event
     // RollStatus update is handled implicitly by stage transition or onMove
 };

@@ -123,12 +123,11 @@ export const CatanGame: Game<GameState> = {
       },
       setupOrder: getSnakeDraftOrder(numPlayers),
       lastRoll: [0, 0],
-      lastRollRewards: {},
       boardStats,
       rollStatus: RollStatus.IDLE,
       robberLocation,
       playersToDiscard: [],
-      lastSteal: null
+      notification: null
     };
   },
 
@@ -169,7 +168,11 @@ export const CatanGame: Game<GameState> = {
                 const rollValue = d1 + d2;
 
                 // Distribute Resources
-                G.lastRollRewards = distributeResources(G, rollValue);
+                G.notification = {
+                    type: 'production',
+                    rewards: distributeResources(G, rollValue),
+                    rollValue
+                };
                 G.rollStatus = RollStatus.RESOLVED;
 
                 if (rollValue === 7) {

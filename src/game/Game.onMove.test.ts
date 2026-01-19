@@ -53,7 +53,7 @@ describe('Game.onMove Logic', () => {
 
         // Verify resource distribution
         expect(distributeResources).toHaveBeenCalledWith(G, 8);
-        expect(G.lastRollRewards).toEqual({ '0': { wood: 1 } });
+        expect(G.notification).toEqual({ type: 'production', rewards: { '0': { wood: 1 } }, rollValue: 8 });
         expect(G.rollStatus).toBe(RollStatus.RESOLVED);
 
         // Verify transition

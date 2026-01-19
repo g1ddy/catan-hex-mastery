@@ -1,4 +1,3 @@
-
 /** @jest-environment jsdom */
 import { render, screen, act } from '@testing-library/react';
 import { GameStatusBanner } from './GameStatusBanner';
@@ -7,38 +6,18 @@ import { PHASES, STAGES } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 
-// Mock Lucide icons for ProductionToast
-jest.mock('lucide-react', () => ({
-    Loader2: () => <div data-testid="icon-loader" />,
-    Trees: () => <div data-testid="icon-trees" />,
-    BrickWall: () => <div data-testid="icon-brick" />,
-    Wheat: () => <div data-testid="icon-wheat" />,
-    Mountain: () => <div data-testid="icon-mountain" />,
-    Cloud: () => <div data-testid="icon-cloud" />,
-    Dice1: () => <div data-testid="icon-dice-1" />,
-    Dice2: () => <div data-testid="icon-dice-2" />,
-    Dice3: () => <div data-testid="icon-dice-3" />,
-    Dice4: () => <div data-testid="icon-dice-4" />,
-    Dice5: () => <div data-testid="icon-dice-5" />,
-    Dice6: () => <div data-testid="icon-dice-6" />,
-    Dices: () => <div data-testid="icon-dices" />,
-    Ghost: () => <div data-testid="icon-ghost" />,
-    ArrowRight: () => <div data-testid="icon-arrow-right" />,
-}));
-
 describe('GameStatusBanner', () => {
     const mockG: GameState = {
         board: { hexes: {}, vertices: {}, edges: {} },
         players: {
             '0': { id: '0', color: 'red', resources: {}, settlements: [], roads: [], victoryPoints: 0 }
         },
-        setupPhase: { activeRound: 1, activeSettlement: null },
+        setupPhase: { activeRound: 1 },
         setupOrder: ['0'],
         lastRoll: [0, 0],
-        lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.IDLE,
-        lastSteal: null,
+        notification: null,
     } as unknown as GameState;
 
     const mockCtx = {
@@ -73,59 +52,6 @@ describe('GameStatusBanner', () => {
          const gameplayProps = { ...props, ctx: gameplayCtx, buildMode: 'road' as const };
          render(<GameStatusBanner {...gameplayProps} />);
          expect(screen.getByText('Place Road')).toBeInTheDocument();
-    });
-
-    test('renders roll result temporarily', () => {
-        jest.useFakeTimers();
-        // Initially no roll
-        const { rerender } = render(<GameStatusBanner {...props} />);
-        expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
-
-        // Simulate roll
-        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
-        rerender(<GameStatusBanner {...props} G={rolledG} />);
-
-        // Should initially show rolling state
-        expect(screen.getByText('Rolling...')).toBeInTheDocument();
-
-        // Advance time to finish rolling animation (1s)
-        act(() => {
-            jest.advanceTimersByTime(1000);
-        });
-
-        // Now shows result (dice icons)
-        // We mocked 3 and 4
-        expect(screen.getByTestId('icon-dice-3')).toBeInTheDocument();
-        expect(screen.getByTestId('icon-dice-4')).toBeInTheDocument();
-
-        // Fast-forward time to check it disappears (4s total duration)
-        act(() => {
-            jest.advanceTimersByTime(3000);
-        });
-
-        expect(screen.queryByTestId('icon-dice-3')).not.toBeInTheDocument();
-        jest.useRealTimers();
-    });
-
-    test('dismisses roll result when turn ends (player changes)', () => {
-        jest.useFakeTimers();
-        // Start with a roll active
-        const rolledG = { ...mockG, lastRoll: [3, 4] as [number, number], lastRollRewards: { '0': { wood: 1 } } };
-        const { rerender } = render(<GameStatusBanner {...props} G={rolledG} />);
-
-        // Verify toast is present
-        expect(screen.getByText('Rolling...')).toBeInTheDocument();
-
-        // Change Player (End Turn)
-        const nextPlayerCtx = { ...mockCtx, currentPlayer: '1' };
-        rerender(<GameStatusBanner {...props} G={rolledG} ctx={nextPlayerCtx} />);
-
-        // Verify toast is gone immediately
-        expect(screen.queryByText('Rolling...')).not.toBeInTheDocument();
-        // Should show waiting message for player 0 (since it's player 1's turn now)
-        expect(screen.getByText('Wait for your turn...')).toBeInTheDocument();
-
-        jest.useRealTimers();
     });
 
     test('renders Win message', () => {
@@ -188,33 +114,5 @@ describe('GameStatusBanner', () => {
         const message = screen.getByText('Error Occurred');
         expect(message).toBeInTheDocument();
         expect(message).toHaveClass('text-red-400');
-    });
-
-    test('renders steal result temporarily', () => {
-        jest.useFakeTimers();
-        const stealG = {
-             ...mockG,
-             lastSteal: { thief: '0', victim: '1', resource: 'wheat' },
-             players: {
-                 '0': { id: '0', name: 'Thief', color: 'red' },
-                 '1': { id: '1', name: 'Victim', color: 'blue' }
-             }
-        } as unknown as GameState;
-
-        render(<GameStatusBanner {...props} G={stealG} />);
-
-        // Should find RobberToast content
-        expect(screen.getByTestId('icon-ghost')).toBeInTheDocument();
-        expect(screen.getByText('Thief')).toBeInTheDocument();
-        expect(screen.getByText('Victim')).toBeInTheDocument();
-        expect(screen.getByTestId('icon-wheat')).toBeInTheDocument();
-
-        // Fast-forward
-        act(() => {
-            jest.advanceTimersByTime(5000);
-        });
-
-        expect(screen.queryByTestId('icon-ghost')).not.toBeInTheDocument();
-        jest.useRealTimers();
     });
 });

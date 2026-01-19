@@ -43,7 +43,6 @@ describe('BotCoach Settlement Test', () => {
             setupPhase: { activeRound: 1 },
             setupOrder: ['0'],
             lastRoll: [1, 1], // Corrected to be a valid tuple
-            lastRollRewards: {},
             rollStatus: RollStatus.IDLE,
             boardStats: {
                 totalPips: { wood: 10, brick: 10, sheep: 10, wheat: 10, ore: 10 },
@@ -52,7 +51,7 @@ describe('BotCoach Settlement Test', () => {
             },
             robberLocation: '0',
             playersToDiscard: [],
-            lastSteal: null,
+            notification: null,
         };
 
         // A valid Ctx mock
