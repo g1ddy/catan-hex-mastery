@@ -24,6 +24,7 @@ We are working on **Phase 7: Full Game Loop**, which involves implementing compl
 
 **Completed Features (Do Not Regress):**
 *   **UI/UX (Phase 6)**: Mobile-responsive layouts, Tooltips, Toasts, and stable drawer/sidebar navigation.
+*   **Code Refactor (Phase 5)**: Unified 4-Layer Architecture (Validator, Enumerator).
 *   **Analyst Module**: Real-time stats (Pips, Fairness, Scarcity) are fully implemented.
 *   **Coach**: The heuristic engine correctly scores settlements based on Pips, Scarcity, Diversity, and Synergy. Recommendations are visualized on the board.
 
