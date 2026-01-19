@@ -7,7 +7,6 @@ import {
     isValidSettlementPlacement,
     isValidCityPlacement,
     isValidRoadPlacement,
-    isValidRobberPlacement,
     ValidationResult
 } from './spatial';
 import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
