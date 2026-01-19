@@ -18,6 +18,8 @@ export const RobberToast: React.FC<RobberToastProps> = ({ G, visible }) => {
     // eslint-disable-next-line security/detect-object-injection
     const victim = G.players[steal.victim];
 
+    if (!thief || !victim) return null;
+
     // Find resource meta
     const resourceMeta = steal.resource ? RESOURCE_META.find(r => r.name === steal.resource) : null;
 
