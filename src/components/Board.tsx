@@ -110,24 +110,32 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
             return EMPTY_COACH_DATA;
         }
 
-        // Active when placing settlement in Setup OR Gameplay
+        // Active when placing settlement in Setup OR Gameplay, OR City in Gameplay
         const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
-        const isGamePlacing = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
+        const isGameSettlement = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
+        const isGameCity = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'city';
 
-        if (!isSetupPlacing && !isGamePlacing) {
+        if (!isSetupPlacing && !isGameSettlement && !isGameCity) {
             return EMPTY_COACH_DATA;
         }
 
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
         // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
         const coach = (ctx as any).coach as Coach;
+        // eslint-disable-next-line security/detect-object-injection
+        const coachInstance = coach || new Coach(G);
 
         let allScores: CoachRecommendation[] = [];
-        if (coach && typeof coach.getAllSettlementScores === 'function') {
-            allScores = coach.getAllSettlementScores(ctx.currentPlayer, ctx);
+
+        if (isGameCity) {
+            const candidates = G.players[ctx.currentPlayer]?.settlements || [];
+            if (typeof coachInstance.getBestCitySpots === 'function') {
+                allScores = coachInstance.getBestCitySpots(ctx.currentPlayer, ctx, candidates);
+            }
         } else {
-             // Fallback if plugin not loaded or visible
-             allScores = new Coach(G).getAllSettlementScores(ctx.currentPlayer, ctx);
+            if (typeof coachInstance.getAllSettlementScores === 'function') {
+                allScores = coachInstance.getAllSettlementScores(ctx.currentPlayer, ctx);
+            }
         }
 
         if (allScores.length === 0) {
