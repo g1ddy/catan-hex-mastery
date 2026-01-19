@@ -6,7 +6,6 @@ import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
-import { STAGES } from './constants';
 
 describe('Game Simulation with CatanBot', () => {
   it('should run a 2-player game without crashing', async () => {
