@@ -57,11 +57,12 @@ export const ProductionToast: React.FC<ProductionToastProps> = ({ G, visible, va
                 </div>
             ) : (
                 Object.entries(rewards).map(([pid, res]) => {
-                    // eslint-disable-next-line security/detect-object-injection
-                    const playerColor = G.players[pid].color;
+                    const player = G.players[pid];
                     const hasResources = Object.values(res).some(v => v > 0);
 
-                    if (!hasResources) return null;
+                    if (!player || !hasResources) return null;
+
+                    const playerColor = player.color;
 
                     return (
                         <div key={pid} className="flex items-center gap-2 bg-slate-700/50 rounded-full px-2 py-0.5">
