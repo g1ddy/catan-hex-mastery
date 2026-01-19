@@ -201,7 +201,7 @@ describe('GameStatusBanner', () => {
              }
         } as unknown as GameState;
 
-        const { rerender } = render(<GameStatusBanner {...props} G={stealG} />);
+        render(<GameStatusBanner {...props} G={stealG} />);
 
         // Should find RobberToast content
         expect(screen.getByTestId('icon-ghost')).toBeInTheDocument();
