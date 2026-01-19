@@ -7,10 +7,11 @@ import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
+import { discardResources } from './moves/discard';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analysis/analyst';
 import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './constants';
-import { distributeResources } from './mechanics/resources';
+import { distributeResources, countResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
@@ -27,7 +28,8 @@ const MOVE_MAP = {
     placeSettlement,
     placeRoad,
     regenerateBoard,
-    dismissRobber
+    dismissRobber,
+    discardResources
 };
 
 // Helper to pick moves from STAGE_MOVES
@@ -124,7 +126,8 @@ export const CatanGame: Game<GameState> = {
       lastRollRewards: {},
       boardStats,
       rollStatus: RollStatus.IDLE,
-      robberLocation
+      robberLocation,
+      playersToDiscard: []
     };
   },
 
@@ -168,11 +171,40 @@ export const CatanGame: Game<GameState> = {
                 G.lastRollRewards = distributeResources(G, rollValue);
                 G.rollStatus = RollStatus.RESOLVED;
 
-                // Check for Robber Trigger (Standard Rules: 7)
-                const nextStage = rollValue === 7 ? STAGES.ROBBER : STAGES.ACTING;
+                if (rollValue === 7) {
+                    // Robber Trigger: Check for discards
+                    const playersToDiscard: string[] = [];
+                    Object.values(G.players).forEach(p => {
+                        if (countResources(p.resources) > 7) {
+                            playersToDiscard.push(p.id);
+                        }
+                    });
 
-                if (events && events.setActivePlayers) {
-                    events.setActivePlayers({ currentPlayer: nextStage });
+                    G.playersToDiscard = playersToDiscard;
+
+                    if (events && events.setActivePlayers) {
+                         if (playersToDiscard.length > 0) {
+                             // Transition to DISCARD stage for all affected players
+                             // The current player also needs to wait if they are not discarding
+                             // But boardgame.io activePlayers replaces the set.
+                             // We set the active players to those who need to discard.
+                             // The turn does not advance until they are done.
+                             const activePlayersConfig = playersToDiscard.reduce((acc, pid) => {
+                                 acc[pid] = STAGES.DISCARD;
+                                 return acc;
+                             }, {} as Record<string, string>);
+
+                             events.setActivePlayers({ value: activePlayersConfig });
+                         } else {
+                             // No one needs to discard, proceed to Robber Placement
+                             events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
+                         }
+                    }
+                } else {
+                    // Normal Roll
+                    if (events && events.setActivePlayers) {
+                        events.setActivePlayers({ currentPlayer: STAGES.ACTING });
+                    }
                 }
             }
         },
@@ -185,6 +217,9 @@ export const CatanGame: Game<GameState> = {
            },
            [STAGES.ROBBER]: {
               moves: getMovesForStage(STAGES.ROBBER)
+           },
+           [STAGES.DISCARD]: {
+              moves: getMovesForStage(STAGES.DISCARD)
            }
         }
       }

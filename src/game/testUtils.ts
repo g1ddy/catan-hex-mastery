@@ -23,6 +23,7 @@ export const createTestGameState = (overrides: Partial<GameState> = {}): GameSta
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
     rollStatus: RollStatus.IDLE,
     robberLocation: '0',
+    playersToDiscard: [],
     ...overrides
 });
 
@@ -74,6 +75,7 @@ export const createMockGameState = (overrides: any = {}): GameState => {
         },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
+        playersToDiscard: [],
     };
 
     const mergedState = { ...defaults, ...overrides };

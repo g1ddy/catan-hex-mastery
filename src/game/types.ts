@@ -90,6 +90,7 @@ export interface GameState {
   boardStats: BoardStats;
   rollStatus: RollStatus;
   robberLocation: string; // Hex ID
+  playersToDiscard: string[]; // List of player IDs who need to discard
 }
 
 // Map of Move Names to their Argument Tuples
@@ -103,7 +104,8 @@ export interface MoveArguments {
   placeSettlement: [string];
   placeRoad: [string];
   regenerateBoard: [];
-  dismissRobber: [string];
+  dismissRobber: [string, string?]; // hexID, victimID (optional)
+  discardResources: [Resources];
   buyDevCard: []; // Included for forward compatibility/BotCoach references
 }
 

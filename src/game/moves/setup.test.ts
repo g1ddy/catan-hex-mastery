@@ -68,6 +68,7 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
     rollStatus: RollStatus.IDLE,
     robberLocation: '0',
+    playersToDiscard: [],
     ...overrides
 });
 

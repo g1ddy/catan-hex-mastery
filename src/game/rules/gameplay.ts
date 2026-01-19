@@ -1,9 +1,11 @@
-import { GameState } from '../types';
+import { GameState, Resources } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
-import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult } from './spatial';
+import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult } from '../mechanics/trade';
 import { isValidPlayer } from '../../utils/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../config';
+import { countResources } from '../mechanics/resources';
+import { getVerticesForHex } from '../hexUtils';
 
 /**
  * Validates the "Build Road" move during the Gameplay Phase.
@@ -68,4 +70,95 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
     }
 
     return { isValid: true, data: tradeResult };
+};
+
+/**
+ * Validates the "Discard Resources" move.
+ * Checks:
+ * 1. Player is in the discard list.
+ * 2. Discard amount is correct (half rounded down).
+ * 3. Player actually has the resources they are trying to discard.
+ */
+export const validateDiscardResources = (G: GameState, playerID: string, resources: Resources): ValidationResult => {
+    if (!isValidPlayer(G, playerID)) {
+        return { isValid: false, reason: "Invalid player" };
+    }
+
+    if (!G.playersToDiscard.includes(playerID)) {
+         return { isValid: false, reason: "You do not need to discard resources." };
+    }
+
+    // eslint-disable-next-line security/detect-object-injection
+    const player = G.players[playerID];
+    const totalResources = countResources(player.resources);
+    const requiredDiscard = Math.floor(totalResources / 2);
+
+    const discardAmount = countResources(resources);
+
+    if (discardAmount !== requiredDiscard) {
+        return { isValid: false, reason: `You must discard exactly ${requiredDiscard} resources.` };
+    }
+
+    // Check if player has the specific resources
+    const hasEnough = (
+        player.resources.wood >= resources.wood &&
+        player.resources.brick >= resources.brick &&
+        player.resources.sheep >= resources.sheep &&
+        player.resources.wheat >= resources.wheat &&
+        player.resources.ore >= resources.ore
+    );
+
+    if (!hasEnough) {
+        return { isValid: false, reason: "You do not have these resources to discard." };
+    }
+
+    return { isValid: true };
+};
+
+/**
+ * Validates the "Dismiss Robber" move (Move Robber + Steal).
+ */
+export const validateRobberMove = (G: GameState, playerID: string, hexID: string, victimID?: string): ValidationResult => {
+    // 1. Validate Geometric Placement
+    const spatialCheck = isValidRobberPlacement(G, hexID);
+    if (!spatialCheck.isValid) {
+        return spatialCheck;
+    }
+
+    // 2. Identify Potential Victims on the Target Hex
+    const potentialVictims = new Set<string>();
+    const vertices = getVerticesForHex(G.board.hexes[hexID].coords);
+
+    vertices.forEach(vId => {
+        const vertex = G.board.vertices[vId];
+        if (vertex && vertex.owner !== playerID) {
+            // Only consider victims with resources
+            if (countResources(G.players[vertex.owner].resources) > 0) {
+                 potentialVictims.add(vertex.owner);
+            }
+        }
+    });
+
+    // 3. Validate Victim Choice
+    if (victimID) {
+        if (!potentialVictims.has(victimID)) {
+            // Distinguish between "Not on hex" and "No resources" is nice but strict
+            // Simple check: Is this player a valid target?
+            const vertex = vertices.find(vId => G.board.vertices[vId]?.owner === victimID);
+            if (!vertex) {
+                 return { isValid: false, reason: "The chosen victim does not have a settlement on this hex." };
+            }
+            if (countResources(G.players[victimID].resources) === 0) {
+                return { isValid: false, reason: "The chosen victim has no resources to steal." };
+            }
+            return { isValid: false, reason: "Invalid victim selected." }; // Should not happen if logic is sound
+        }
+    } else {
+        // No victim selected. Ensure no victims were available.
+        if (potentialVictims.size > 0) {
+            return { isValid: false, reason: "You must choose a player to steal from." };
+        }
+    }
+
+    return { isValid: true };
 };

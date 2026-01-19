@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank } from './gameplay';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateDiscardResources, validateRobberMove } from './gameplay';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -46,7 +46,10 @@ export const RuleEngine = {
                 return isValidSetupRoadPlacement(G, args[0], playerID);
 
             case 'dismissRobber':
-                return isValidRobberPlacement(G, args[0]);
+                return validateRobberMove(G, playerID, args[0], args[1]);
+
+            case 'discardResources':
+                return validateDiscardResources(G, playerID, args[0]);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };

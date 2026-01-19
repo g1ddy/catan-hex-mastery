@@ -37,6 +37,7 @@ describe('Unit Test: Resource Costs', () => {
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
+        playersToDiscard: [],
     };
 
     let G: GameState;
