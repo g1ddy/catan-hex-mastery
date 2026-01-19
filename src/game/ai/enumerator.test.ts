@@ -142,7 +142,15 @@ describe('ai.enumerate', () => {
         ctx.activePlayers['0'] = STAGES.ROBBER;
         // Mock board with hexes A, B, C
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        G.board = { hexes: { 'A': {}, 'B': {}, 'C': {} }, vertices: {}, edges: {} } as any;
+        G.board = {
+            hexes: {
+                'A': { coords: { q: 0, r: 0, s: 0 } },
+                'B': { coords: { q: 1, r: -1, s: 0 } },
+                'C': { coords: { q: -1, r: 1, s: 0 } }
+            },
+            vertices: {},
+            edges: {}
+        } as any;
         G.robberLocation = 'A';
 
         const moves = enumerate(G, ctx, '0');

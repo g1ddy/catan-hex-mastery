@@ -14,6 +14,13 @@ export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, string>> = Object.
 }, {} as Partial<Record<TerrainType, string>>);
 
 /**
+ * Helper to count total resources in a bundle.
+ */
+export function countResources(resources: Resources): number {
+    return resources.wood + resources.brick + resources.sheep + resources.wheat + resources.ore;
+}
+
+/**
  * Distributes resources based on the current dice roll.
  * Modifies G in place and returns the rewards map for logging/UI.
  */
