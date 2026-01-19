@@ -127,7 +127,8 @@ export const CatanGame: Game<GameState> = {
       boardStats,
       rollStatus: RollStatus.IDLE,
       robberLocation,
-      playersToDiscard: []
+      playersToDiscard: [],
+      lastSteal: null
     };
   },
 

@@ -53,6 +53,7 @@ describe('GameControls Accessibility', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.RESOLVED,
+        lastSteal: null,
     } as unknown as GameState;
 
     const mockCtx = {

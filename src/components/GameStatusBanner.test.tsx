@@ -22,6 +22,8 @@ jest.mock('lucide-react', () => ({
     Dice5: () => <div data-testid="icon-dice-5" />,
     Dice6: () => <div data-testid="icon-dice-6" />,
     Dices: () => <div data-testid="icon-dices" />,
+    Ghost: () => <div data-testid="icon-ghost" />,
+    ArrowRight: () => <div data-testid="icon-arrow-right" />,
 }));
 
 describe('GameStatusBanner', () => {
@@ -36,6 +38,7 @@ describe('GameStatusBanner', () => {
         lastRollRewards: {},
         boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.IDLE,
+        lastSteal: null,
     } as unknown as GameState;
 
     const mockCtx = {
@@ -185,5 +188,33 @@ describe('GameStatusBanner', () => {
         const message = screen.getByText('Error Occurred');
         expect(message).toBeInTheDocument();
         expect(message).toHaveClass('text-red-400');
+    });
+
+    test('renders steal result temporarily', () => {
+        jest.useFakeTimers();
+        const stealG = {
+             ...mockG,
+             lastSteal: { thief: '0', victim: '1', resource: 'wheat' },
+             players: {
+                 '0': { id: '0', name: 'Thief', color: 'red' },
+                 '1': { id: '1', name: 'Victim', color: 'blue' }
+             }
+        } as unknown as GameState;
+
+        render(<GameStatusBanner {...props} G={stealG} />);
+
+        // Should find RobberToast content (via ProductionToast)
+        expect(screen.getByTestId('icon-ghost')).toBeInTheDocument();
+        expect(screen.queryByText('Thief')).not.toBeInTheDocument(); // Thief not shown anymore
+        expect(screen.getByText('Victim')).toBeInTheDocument();
+        expect(screen.getByTestId('icon-wheat')).toBeInTheDocument();
+
+        // Fast-forward
+        act(() => {
+            jest.advanceTimersByTime(5000);
+        });
+
+        expect(screen.queryByTestId('icon-ghost')).not.toBeInTheDocument();
+        jest.useRealTimers();
     });
 });

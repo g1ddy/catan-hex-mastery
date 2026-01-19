@@ -2,6 +2,7 @@ import { Move } from 'boardgame.io';
 import { GameState, Resources } from '../types';
 import { STAGES } from '../constants';
 import { RuleEngine } from '../rules/validator';
+import { getPotentialVictims } from '../rules/gameplay';
 
 export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID: string, victimID?: string) => {
     // 1. Validate the move (including victim choice)
@@ -10,9 +11,18 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
     // 2. Update Robber Location
     G.robberLocation = hexID;
 
-    // 3. Execute Steal (if victim provided)
-    if (victimID) {
-        const victim = G.players[victimID];
+    // 3. Resolve Victim (if not provided, pick random from potential victims)
+    let targetVictimID = victimID;
+    if (!targetVictimID) {
+        const potentialVictims = getPotentialVictims(G, hexID, ctx.currentPlayer);
+        if (potentialVictims.size > 0) {
+            targetVictimID = random.Shuffle(Array.from(potentialVictims))[0];
+        }
+    }
+
+    // 4. Execute Steal
+    if (targetVictimID) {
+        const victim = G.players[targetVictimID];
         const thief = G.players[ctx.currentPlayer];
 
         // Collect victim's resources
@@ -33,10 +43,24 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
             // Execute transfer
             victim.resources[stolenRes]--;
             thief.resources[stolenRes]++;
+
+            // Record the steal event
+            G.lastSteal = {
+                thief: ctx.currentPlayer,
+                victim: targetVictimID,
+                resource: stolenRes
+            };
+        } else {
+            // Nothing to steal
+            G.lastSteal = {
+                thief: ctx.currentPlayer,
+                victim: targetVictimID,
+                resource: null
+            };
         }
     }
 
-    // 4. Transition to Acting Stage
+    // 5. Transition to Acting Stage
     if (events && events.setActivePlayers) {
         events.setActivePlayers({ currentPlayer: STAGES.ACTING });
     }

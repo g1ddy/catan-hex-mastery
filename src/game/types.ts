@@ -91,6 +91,11 @@ export interface GameState {
   rollStatus: RollStatus;
   robberLocation: string; // Hex ID
   playersToDiscard: string[]; // List of player IDs who need to discard
+  lastSteal: {
+    thief: string;
+    victim: string;
+    resource: keyof Resources | null;
+  } | null;
 }
 
 // Map of Move Names to their Argument Tuples
