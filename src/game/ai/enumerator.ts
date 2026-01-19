@@ -4,7 +4,7 @@ import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { getValidMovesForStage, RuleEngine } from '../rules/validator';
-import { getVerticesForHex } from '../hexUtils';
+import { getPotentialVictims } from '../rules/gameplay';
 import { countResources } from '../mechanics/resources';
 
 // Helper to construct boardgame.io action objects.
@@ -77,19 +77,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
              const validRobberSpots = Object.keys(G.board.hexes).filter(id => id !== G.robberLocation);
 
              validRobberSpots.forEach(hexID => {
-                 // Find potential victims on this hex
-                 const potentialVictims = new Set<string>();
-                 const vertices = getVerticesForHex(G.board.hexes[hexID].coords);
-
-                 vertices.forEach(vId => {
-                     const vertex = G.board.vertices[vId];
-                     if (vertex && vertex.owner !== playerID) {
-                         // Only consider victims with resources
-                         if (countResources(G.players[vertex.owner].resources) > 0) {
-                              potentialVictims.add(vertex.owner);
-                         }
-                     }
-                 });
+                 const potentialVictims = getPotentialVictims(G, hexID, playerID);
 
                  if (potentialVictims.size > 0) {
                      // Must choose a victim
@@ -105,6 +93,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         } else if (moveName === 'discardResources') {
             // Handle Discard: Generate ONE valid discard option to prevent bot lock-up.
             // (Enumerating all combinations is too expensive and unnecessary for MCTS in this phase usually)
+            // eslint-disable-next-line security/detect-object-injection
             const player = G.players[playerID];
             const total = countResources(player.resources);
             if (total > 7) {

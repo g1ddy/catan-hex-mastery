@@ -117,18 +117,16 @@ export const validateDiscardResources = (G: GameState, playerID: string, resourc
 };
 
 /**
- * Validates the "Dismiss Robber" move (Move Robber + Steal).
+ * Helper to identify valid victims on a target hex.
+ * A valid victim is an opponent with a settlement/city on the hex AND resources > 0.
  */
-export const validateRobberMove = (G: GameState, playerID: string, hexID: string, victimID?: string): ValidationResult => {
-    // 1. Validate Geometric Placement
-    const spatialCheck = isValidRobberPlacement(G, hexID);
-    if (!spatialCheck.isValid) {
-        return spatialCheck;
-    }
-
-    // 2. Identify Potential Victims on the Target Hex
+export const getPotentialVictims = (G: GameState, hexID: string, playerID: string): Set<string> => {
     const potentialVictims = new Set<string>();
-    const vertices = getVerticesForHex(G.board.hexes[hexID].coords);
+    // eslint-disable-next-line security/detect-object-injection
+    const hex = G.board.hexes[hexID];
+    if (!hex) return potentialVictims;
+
+    const vertices = getVerticesForHex(hex.coords);
 
     vertices.forEach(vId => {
         const vertex = G.board.vertices[vId];
@@ -140,19 +138,32 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
         }
     });
 
+    return potentialVictims;
+};
+
+/**
+ * Validates the "Dismiss Robber" move (Move Robber + Steal).
+ */
+export const validateRobberMove = (G: GameState, playerID: string, hexID: string, victimID?: string): ValidationResult => {
+    // 1. Validate Geometric Placement
+    const spatialCheck = isValidRobberPlacement(G, hexID);
+    if (!spatialCheck.isValid) {
+        return spatialCheck;
+    }
+
+    // 2. Identify Potential Victims on the Target Hex
+    const potentialVictims = getPotentialVictims(G, hexID, playerID);
+
     // 3. Validate Victim Choice
     if (victimID) {
         if (!potentialVictims.has(victimID)) {
-            // Distinguish between "Not on hex" and "No resources" is nice but strict
-            // Simple check: Is this player a valid target?
-            const vertex = vertices.find(vId => G.board.vertices[vId]?.owner === victimID);
-            if (!vertex) {
+            const vertices = getVerticesForHex(G.board.hexes[hexID].coords);
+            const isOnHex = vertices.some(vId => G.board.vertices[vId]?.owner === victimID);
+            if (!isOnHex) {
                  return { isValid: false, reason: "The chosen victim does not have a settlement on this hex." };
             }
-            if (countResources(G.players[victimID].resources) === 0) {
-                return { isValid: false, reason: "The chosen victim has no resources to steal." };
-            }
-            return { isValid: false, reason: "Invalid victim selected." }; // Should not happen if logic is sound
+            // If the player is on the hex but not in potentialVictims, it must be because they have no resources.
+            return { isValid: false, reason: "The chosen victim has no resources to steal." };
         }
     } else {
         // No victim selected. Ensure no victims were available.
