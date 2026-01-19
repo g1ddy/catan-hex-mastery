@@ -3,7 +3,6 @@ import { GameState } from '../game/types';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
 import { ProductionToast } from './ProductionToast';
-import { RobberToast } from './RobberToast';
 import { PHASES, STAGES } from '../game/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
@@ -104,14 +103,14 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
         return null;
     }, [ctx.gameover, playerID]);
 
-    // If showing steal result, render RobberToast
+    // If showing steal result, render ProductionToast in robber mode
     if (showStealResult) {
-        return <RobberToast G={G} visible={true} />;
+        return <ProductionToast G={G} visible={true} variant="robber" />;
     }
 
     // If showing roll result, render ProductionToast (reused)
     if (showRollResult) {
-        return <ProductionToast G={G} visible={true} />;
+        return <ProductionToast G={G} visible={true} variant="production" />;
     }
 
     let message = "";
