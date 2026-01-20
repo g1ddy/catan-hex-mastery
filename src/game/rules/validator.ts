@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateDiscardResources, validateRobberMove } from './gameplay';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove } from './gameplay';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -46,11 +46,6 @@ export const RuleEngine = {
 
             case 'dismissRobber':
                 return validateRobberMove(G, playerID, args[0], args[1]);
-
-            case 'discardResources':
-                // discardResources can be called by any player in the DISCARD stage,
-                // so we allow an explicit playerID override from args[1].
-                return validateDiscardResources(G, args[1] || playerID, args[0]);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };

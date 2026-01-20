@@ -117,13 +117,6 @@ describe('Game Simulation with CatanBot', () => {
           console.log(`No active bot returned a move at step ${steps}. GAME STUCK?`);
 
           // Dump resources if stuck in discard
-          if (activePlayers.some(p => state.ctx.activePlayers?.[p] === STAGES.DISCARD)) {
-              activePlayers.forEach(pid => {
-                 const p = state.G.players[pid];
-                 const total = Object.values(p.resources).reduce((a,b) => a+b, 0);
-                 console.log(`  > Player ${pid} Resources: ${JSON.stringify(p.resources)} (Total: ${total})`);
-              });
-          }
 
           break;
       }

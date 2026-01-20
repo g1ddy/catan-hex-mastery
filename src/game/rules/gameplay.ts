@@ -72,49 +72,6 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
     return { isValid: true, data: tradeResult };
 };
 
-/**
- * Validates the "Discard Resources" move.
- * Checks:
- * 1. Player is in the discard list.
- * 2. Discard amount is correct (half rounded down).
- * 3. Player actually has the resources they are trying to discard.
- */
-export const validateDiscardResources = (G: GameState, playerID: string, resources: Resources): ValidationResult => {
-    // 0. Security Check: Prevent negative resource discard (exploit)
-    for (const resource of Object.values(resources)) {
-        if (resource < 0) {
-            return { isValid: false, reason: "Cannot discard negative amounts of resources." };
-        }
-    }
-
-    if (!isValidPlayer(G, playerID)) {
-        return { isValid: false, reason: "Invalid player" };
-    }
-
-    if (!G.playersToDiscard.includes(playerID)) {
-         return { isValid: false, reason: "You do not need to discard resources." };
-    }
-
-    // eslint-disable-next-line security/detect-object-injection
-    const player = G.players[playerID];
-    const totalResources = countResources(player.resources);
-    const requiredDiscard = Math.floor(totalResources / 2);
-
-    const discardAmount = countResources(resources);
-
-    if (discardAmount !== requiredDiscard) {
-        return { isValid: false, reason: `You must discard exactly ${requiredDiscard} resources.` };
-    }
-
-    // Check if player has the specific resources
-    const hasEnough = (Object.keys(resources) as (keyof Resources)[]).every(r => player.resources[r] >= resources[r]);
-
-    if (!hasEnough) {
-        return { isValid: false, reason: "You do not have these resources to discard." };
-    }
-
-    return { isValid: true };
-};
 
 /**
  * Helper to identify valid victims on a target hex.

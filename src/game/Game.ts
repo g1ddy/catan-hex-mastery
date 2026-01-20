@@ -7,7 +7,6 @@ import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
 import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
-import { discardResources } from './moves/discard';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analysis/analyst';
 import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './constants';
@@ -28,8 +27,7 @@ const MOVE_MAP = {
     placeSettlement,
     placeRoad,
     regenerateBoard,
-    dismissRobber,
-    discardResources
+    dismissRobber
 };
 
 // Helper to pick moves from STAGE_MOVES
@@ -161,7 +159,7 @@ export const CatanGame: Game<GameState> = {
         onBegin: ({ G }) => {
            G.rollStatus = RollStatus.IDLE;
         },
-        onMove: ({ G, ctx, events }) => {
+        onMove: ({ G, ctx, events, random }) => {
             const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
             if (activeStage === STAGES.ROLLING) {
                 const [d1, d2] = G.lastRoll;
@@ -177,26 +175,36 @@ export const CatanGame: Game<GameState> = {
 
                 if (rollValue === 7) {
                     // Robber Trigger: Check for discards
-                    const playersToDiscard = Object.values(G.players)
-                        .filter(p => countResources(p.resources) > 7)
-                        .map(p => p.id);
+                    // Automatically discard half of resources (rounded down) for players with > 7 cards
+                    Object.values(G.players).forEach(player => {
+                        const total = countResources(player.resources);
+                        if (total > 7) {
+                            const countToDiscard = Math.floor(total / 2);
 
-                    G.playersToDiscard = playersToDiscard;
+                            // Expand resources to an array of keys
+                            const allResources: (keyof Resources)[] = [];
+                            (Object.entries(player.resources) as [keyof Resources, number][]).forEach(([res, amount]) => {
+                                for(let i=0; i<amount; i++) {
+                                    allResources.push(res as keyof Resources);
+                                }
+                            });
+
+                            // Shuffle and pick resources to discard
+                            const discarded = random.Shuffle(allResources).slice(0, countToDiscard);
+
+                            // Remove discarded resources
+                            discarded.forEach(res => {
+                                player.resources[res]--;
+                            });
+                        }
+                    });
+
+                    // Clear any playersToDiscard data as it's processed immediately
+                    G.playersToDiscard = [];
 
                     if (events && events.setActivePlayers) {
-                         if (playersToDiscard.length > 0) {
-                             // Transition to DISCARD stage for all affected players
-                             // The current player also needs to wait if they are not discarding
-                             // But boardgame.io activePlayers replaces the set.
-                             // We set the active players to those who need to discard.
-                             // The turn does not advance until they are done.
-                             const activePlayersConfig = Object.fromEntries(playersToDiscard.map(pid => [pid, STAGES.DISCARD]));
-
-                             events.setActivePlayers({ value: activePlayersConfig });
-                         } else {
-                             // No one needs to discard, proceed to Robber Placement
-                             events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
-                         }
+                         // Proceed directly to Robber Placement
+                         events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
                     }
                 } else {
                     // Normal Roll
@@ -215,9 +223,6 @@ export const CatanGame: Game<GameState> = {
            },
            [STAGES.ROBBER]: {
               moves: getMovesForStage(STAGES.ROBBER)
-           },
-           [STAGES.DISCARD]: {
-              moves: getMovesForStage(STAGES.DISCARD)
            }
         }
       }
