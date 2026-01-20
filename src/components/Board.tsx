@@ -57,21 +57,18 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
   }, [ctx.currentPlayer, ctx.activePlayers]);
 
   // Ref to access latest state in callback without triggering re-creation
-  const stateRef = useRef({ G, ctx, setPendingRobberHex });
-
-  useEffect(() => {
-    stateRef.current = { G, ctx, setPendingRobberHex };
-  });
+  const stateRef = useRef({ G, ctx });
+  stateRef.current = { G, ctx };
 
   const handleHexClick = useCallback((hex: Hex) => {
-    const { G, ctx, setPendingRobberHex } = stateRef.current;
+    const { G, ctx } = stateRef.current;
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
     if (ctx.phase === PHASES.GAMEPLAY && stage === STAGES.ROBBER) {
         if (isValidRobberPlacement(G, hex.id).isValid) {
             setPendingRobberHex(hex.id);
         }
     }
-  }, []);
+  }, [setPendingRobberHex]);
 
   // Active Panel State (Lifted from GameLayout)
   // Default to Analyst on desktop, unless handled by effect
