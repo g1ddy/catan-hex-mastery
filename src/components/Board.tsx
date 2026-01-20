@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState } from '../game/types';
@@ -56,14 +56,19 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
     setPendingRobberHex(null);
   }, [ctx.currentPlayer, ctx.activePlayers]);
 
-  const handleHexClick = (hex: Hex) => {
+  // Ref to access latest state in callback without triggering re-creation
+  const stateRef = useRef({ G, ctx });
+  stateRef.current = { G, ctx };
+
+  const handleHexClick = useCallback((hex: Hex) => {
+    const { G, ctx } = stateRef.current;
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
     if (ctx.phase === PHASES.GAMEPLAY && stage === STAGES.ROBBER) {
         if (isValidRobberPlacement(G, hex.id).isValid) {
             setPendingRobberHex(hex.id);
         }
     }
-  };
+  }, [setPendingRobberHex]);
 
   // Active Panel State (Lifted from GameLayout)
   // Default to Analyst on desktop, unless handled by effect
