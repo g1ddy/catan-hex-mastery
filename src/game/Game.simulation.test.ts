@@ -71,7 +71,7 @@ describe('Game Simulation with CatanBot', () => {
           if (!bot) continue;
 
           // Check current stage for this player
-          const stage = state.ctx.activePlayers ? state.ctx.activePlayers[playerID] : 'default';
+          // const stage = state.ctx.activePlayers ? state.ctx.activePlayers[playerID] : 'default';
           // console.log(`  > Querying Bot ${playerID} (Stage: ${stage})...`);
 
           // Inject Coach Plugin
