@@ -5,24 +5,18 @@ import { ExpansiveBot } from './ExpansiveBot';
 import { BALANCED_PROFILE, AGGRESSIVE_PROFILE, DEFENSIVE_PROFILE, EXPANSIVE_PROFILE } from './profiles/BotProfile';
 
 describe('Bot Profiles', () => {
-    it('BalancedBot should have BALANCED_PROFILE', () => {
-        const bot = new BalancedBot();
-        // Accessing protected member via 'any' for testing
-        expect((bot as any).profile).toEqual(BALANCED_PROFILE);
-    });
+    const testCases = [
+        { Bot: BalancedBot, profile: BALANCED_PROFILE, name: 'BalancedBot' },
+        { Bot: AggressiveBot, profile: AGGRESSIVE_PROFILE, name: 'AggressiveBot' },
+        { Bot: DefensiveBot, profile: DEFENSIVE_PROFILE, name: 'DefensiveBot' },
+        { Bot: ExpansiveBot, profile: EXPANSIVE_PROFILE, name: 'ExpansiveBot' },
+    ];
 
-    it('AggressiveBot should have AGGRESSIVE_PROFILE', () => {
-        const bot = new AggressiveBot();
-        expect((bot as any).profile).toEqual(AGGRESSIVE_PROFILE);
-    });
-
-    it('DefensiveBot should have DEFENSIVE_PROFILE', () => {
-        const bot = new DefensiveBot();
-        expect((bot as any).profile).toEqual(DEFENSIVE_PROFILE);
-    });
-
-    it('ExpansiveBot should have EXPANSIVE_PROFILE', () => {
-        const bot = new ExpansiveBot();
-        expect((bot as any).profile).toEqual(EXPANSIVE_PROFILE);
+    testCases.forEach(({ Bot, profile, name }) => {
+        it(`${name} should have the correct profile`, () => {
+            const bot = new Bot();
+            // Accessing protected member via 'any' for testing
+            expect((bot as any).profile).toEqual(profile);
+        });
     });
 });

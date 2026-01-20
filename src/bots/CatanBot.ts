@@ -7,11 +7,16 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 const DEFAULT_GREED_FACTOR = 0.6;
 
+export type CatanBotConfig = {
+    enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
+    seed?: string | number;
+};
+
 export class CatanBot extends Bot {
     protected profile: BotProfile;
 
-    constructor({ enumerate, seed }: { enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[]; seed?: string | number } = { enumerate: () => [] }, profile: BotProfile = BALANCED_PROFILE) {
-        super({ enumerate, seed });
+    constructor(config: CatanBotConfig = { enumerate: () => [] }, profile: BotProfile = BALANCED_PROFILE) {
+        super(config);
         this.profile = profile;
     }
 
