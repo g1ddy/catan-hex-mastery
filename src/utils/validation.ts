@@ -41,13 +41,15 @@ export const isValidHexId = (id: string): boolean => {
 };
 
 /**
- * Validates that a playerID exists in the current GameState.
- * Prevents prototype pollution and access to undefined players.
+ * Validates a player ID against the game state to prevent object injection.
+ * @param pid The player ID to validate.
+ * @param G The boardgame.io game state object.
+ * @returns `true` if the player ID is a valid, own property of G.players.
  */
-export const isValidPlayer = (G: GameState, playerID: string): boolean => {
-    if (typeof playerID !== 'string') return false;
-    // Basic safety checks against prototype pollution keys
-    if (['__proto__', 'constructor', 'prototype'].includes(playerID)) return false;
-
-    return Object.prototype.hasOwnProperty.call(G.players, playerID);
+export const isValidPlayer = (pid: string, G: GameState): boolean => {
+  if (!pid || typeof pid !== 'string') {
+    return false;
+  }
+  // Use hasOwnProperty to protect against prototype pollution
+  return Object.prototype.hasOwnProperty.call(G.players, pid);
 };

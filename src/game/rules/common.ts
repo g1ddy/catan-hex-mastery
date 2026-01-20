@@ -12,7 +12,7 @@ export const canAfford = (
     cost: Partial<Resources>
 ): boolean => {
     // Security check: Invalid player cannot afford anything
-    if (!isValidPlayer(G, playerID)) return false;
+    if (!isValidPlayer(playerID, G)) return false;
 
     // eslint-disable-next-line security/detect-object-injection
     const resources = G.players[playerID].resources;

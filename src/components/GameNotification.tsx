@@ -6,6 +6,7 @@ import {
 import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 import { DiceIcons } from './DiceIcons';
 import { RESOURCE_META } from './uiConfig';
+import { isValidPlayer } from '../utils/validation';
 
 interface GameNotificationProps {
     G: GameState;
@@ -85,10 +86,11 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
                 </div>
             ) : (
                 Object.entries(evt.rewards).map(([pid, res]) => {
+                    if (!isValidPlayer(pid, G)) return null;
                     const player = G.players[pid];
                     const hasResources = Object.values(res).some(v => v > 0);
 
-                    if (!player || !hasResources) return null;
+                    if (!hasResources) return null;
 
                     const playerColor = player.color;
 
@@ -122,12 +124,11 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
     );
 
     const renderRobberContent = (evt: RobberEvent) => {
-        // eslint-disable-next-line security/detect-object-injection
+        if (!isValidPlayer(evt.thief, G) || !isValidPlayer(evt.victim, G)) {
+            return null;
+        }
         const thief = G.players[evt.thief];
-        // eslint-disable-next-line security/detect-object-injection
         const victim = G.players[evt.victim];
-
-        if (!thief || !victim) return null;
 
         const resourceMeta = evt.resource ? RESOURCE_META.find(r => r.name === evt.resource) : null;
 
@@ -186,6 +187,8 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
             case 'robber':
                 return renderRobberContent(displayNotification);
             default:
+                // @ts-ignore
+                const _exhaustiveCheck: never = displayNotification;
                 return null;
         }
     };

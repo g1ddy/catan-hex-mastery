@@ -26,7 +26,7 @@ const PARAMETERIZED_MOVES = new Set([
  * Uses the RuleEngine to check validity of potential moves.
  */
 export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[] => {
-    if (!isValidPlayer(G, playerID)) {
+    if (!isValidPlayer(playerID, G)) {
         return [];
     }
 
