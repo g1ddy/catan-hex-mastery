@@ -1,4 +1,4 @@
-import { GameState, Resources } from '../types';
+import { GameState } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult } from '../mechanics/trade';

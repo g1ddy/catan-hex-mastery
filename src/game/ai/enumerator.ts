@@ -1,11 +1,10 @@
-import { GameState, GameAction, BotMove, MoveArguments, Resources } from '../types';
+import { GameState, GameAction, BotMove, MoveArguments } from '../types';
 import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { getValidMovesForStage, RuleEngine } from '../rules/validator';
 import { getPotentialVictims } from '../rules/gameplay';
-import { countResources } from '../mechanics/resources';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = <K extends keyof MoveArguments>(moveName: K, args: MoveArguments[K]): BotMove => ({
