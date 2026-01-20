@@ -178,6 +178,18 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
         // We'll trust G.lastRoll as it's the source of truth for dice display.
         : [0, 0];
 
+    const renderNotificationContent = () => {
+        // The null check at the top of the component body ensures displayNotification is not null here.
+        switch (displayNotification.type) {
+            case 'production':
+                return renderProductionContent(displayNotification);
+            case 'robber':
+                return renderRobberContent(displayNotification);
+            default:
+                return null;
+        }
+    };
+
     return (
         <div
             role="status"
@@ -205,16 +217,7 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
                 <div className="h-6 w-px bg-slate-600/50" />
 
                 {/* Content Section */}
-                {(() => {
-                    switch (displayNotification.type) {
-                        case 'production':
-                            return renderProductionContent(displayNotification);
-                        case 'robber':
-                            return renderRobberContent(displayNotification);
-                        default:
-                            return null;
-                    }
-                })()}
+                {renderNotificationContent()}
             </div>
         </div>
     );
