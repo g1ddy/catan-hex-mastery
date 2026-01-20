@@ -7,7 +7,6 @@ import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
-import { STAGES } from './constants';
 
 describe('Game Simulation with CatanBot', () => {
   it('should run a 2-player game without crashing', async () => {
@@ -117,13 +116,6 @@ describe('Game Simulation with CatanBot', () => {
           console.log(`No active bot returned a move at step ${steps}. GAME STUCK?`);
 
           // Dump resources if stuck in discard
-          if (activePlayers.some(p => state.ctx.activePlayers?.[p] === STAGES.DISCARD)) {
-              activePlayers.forEach(pid => {
-                 const p = state.G.players[pid];
-                 const total = Object.values(p.resources).reduce((a,b) => a+b, 0);
-                 console.log(`  > Player ${pid} Resources: ${JSON.stringify(p.resources)} (Total: ${total})`);
-              });
-          }
 
           break;
       }
