@@ -51,3 +51,35 @@ export const AGGRESSIVE_PROFILE: BotProfile = {
         diversityPreference: 0.4
     }
 };
+
+export const DEFENSIVE_PROFILE: BotProfile = {
+    name: "Defensive",
+    description: "Focuses on vertical growth (Cities) and security (Dev Cards). Avoids conflict.",
+    weights: {
+        buildCity: 100,
+        buildSettlement: 60,
+        buildRoad: 20,
+        buyDevCard: 90,
+        tradeBank: 0.5
+    },
+    expansion: {
+        aggressiveness: 0.1,
+        diversityPreference: 0.8
+    }
+};
+
+export const EXPANSIVE_PROFILE: BotProfile = {
+    name: "Expansive",
+    description: "Prioritizes rapid land grab with Roads and Settlements.",
+    weights: {
+        buildCity: 50,
+        buildSettlement: 90,
+        buildRoad: 80,
+        buyDevCard: 10,
+        tradeBank: 0.5
+    },
+    expansion: {
+        aggressiveness: 0.3,
+        diversityPreference: 0.5
+    }
+};
