@@ -1,11 +1,10 @@
-import { GameState, GameAction, BotMove, MoveArguments, Resources } from '../types';
+import { GameState, GameAction, BotMove, MoveArguments } from '../types';
 import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { getValidMovesForStage, RuleEngine } from '../rules/validator';
 import { getPotentialVictims } from '../rules/gameplay';
-import { countResources } from '../mechanics/resources';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = <K extends keyof MoveArguments>(moveName: K, args: MoveArguments[K]): BotMove => ({
@@ -19,8 +18,7 @@ const PARAMETERIZED_MOVES = new Set([
     'buildCity',
     'placeRoad', 'buildRoad',
     'tradeBank', // Requires validation even if 0-arg
-    'dismissRobber', // Requires target hex AND victim
-    'discardResources'
+    'dismissRobber' // Requires target hex AND victim
 ]);
 
 /**
@@ -48,7 +46,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     const moves: GameAction[] = [];
 
     // Calculate valid spots once if needed (optimization)
-    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m) && m !== 'tradeBank' && m !== 'dismissRobber' && m !== 'discardResources');
+    const hasSpatialMoves = moveTypesList.some(m => PARAMETERIZED_MOVES.has(m) && m !== 'tradeBank' && m !== 'dismissRobber');
     const validSpots = hasSpatialMoves
         ? getValidMovesForStage(G, ctx, playerID, true)
         : { validSettlements: new Set<string>(), validCities: new Set<string>(), validRoads: new Set<string>() };
@@ -89,36 +87,6 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
                      moves.push(makeMove('dismissRobber', [hexID]));
                  }
              });
-
-        } else if (moveName === 'discardResources') {
-            // Handle Discard: Generate ONE valid discard option to prevent bot lock-up.
-            // (Enumerating all combinations is too expensive and unnecessary for MCTS in this phase usually)
-            // eslint-disable-next-line security/detect-object-injection
-            const player = G.players[playerID];
-            const total = countResources(player.resources);
-            if (total > 7) {
-                const toDiscardCount = Math.floor(total / 2);
-
-                // Simple greedy strategy: Discard from largest piles first
-                const resourcesToDiscard: Resources = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
-                let remaining = toDiscardCount;
-                const tempRes = { ...player.resources };
-
-                // Sort resource types by amount descending
-                const sortedTypes = (Object.keys(tempRes) as (keyof Resources)[])
-                    .sort((a, b) => tempRes[b] - tempRes[a]);
-
-                for (const type of sortedTypes) {
-                    const take = Math.min(remaining, tempRes[type]);
-                    resourcesToDiscard[type] += take;
-                    remaining -= take;
-                    if (remaining === 0) break;
-                }
-
-                if (remaining === 0) {
-                     moves.push(makeMove('discardResources', [resourcesToDiscard]));
-                }
-            }
 
         } else if (moveName === 'tradeBank') {
             // Special Case: Transactional Move (0-arg but conditional)
