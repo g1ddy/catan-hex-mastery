@@ -57,7 +57,7 @@ export const validateBuildCity = (G: GameState, playerID: string, vertexId: stri
  * 1. Resource sufficiency for at least one trade.
  */
 export const validateTradeBank = (G: GameState, playerID: string): ValidationResult<TradeResult> => {
-    if (!isValidPlayer(G, playerID)) {
+    if (!isValidPlayer(playerID, G)) {
         return { isValid: false, reason: "Invalid player" };
     }
 

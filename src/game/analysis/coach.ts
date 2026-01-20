@@ -69,7 +69,7 @@ export class Coach {
      * Enforces "Smart Ban" logic (e.g., don't trade Ore if low).
      */
     public evaluateTrade(playerID: string): { isSafe: boolean, reason?: string } {
-        if (!isValidPlayer(this.G, playerID)) {
+        if (!isValidPlayer(playerID, this.G)) {
             return { isSafe: false, reason: "Invalid Player" };
         }
 
@@ -197,7 +197,7 @@ export class Coach {
 
     private getExistingResources(playerID: string): Set<string> {
         // Security: Validate playerID exists to prevent prototype pollution
-        if (!isValidPlayer(this.G, playerID)) {
+        if (!isValidPlayer(playerID, this.G)) {
             return new Set<string>();
         }
 
@@ -290,7 +290,7 @@ export class Coach {
         existingResources: Set<string>
     ): CoachRecommendation {
         // Security check for playerID
-        if (!isValidPlayer(this.G, playerID)) {
+        if (!isValidPlayer(playerID, this.G)) {
              throw new Error(`Player ${playerID} not found`);
         }
 
@@ -350,7 +350,7 @@ export class Coach {
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
         // Security check: Validate playerID before use
-        if (!isValidPlayer(this.G, playerID)) {
+        if (!isValidPlayer(playerID, this.G)) {
             return ERROR_ADVICE_RESULT;
         }
 

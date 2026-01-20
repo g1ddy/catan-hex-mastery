@@ -72,7 +72,7 @@ export const RuleEngine = {
  * Returns true if the player is valid AND (if checkCost is true) can afford the build type.
  */
 const _canBuild = (G: GameState, playerID: string, type: 'settlement' | 'city' | 'road', checkCost: boolean): boolean => {
-    if (!isValidPlayer(G, playerID)) {
+    if (!isValidPlayer(playerID, G)) {
         return false;
     }
 
@@ -212,7 +212,7 @@ export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<stri
     const validSpots = new Set<string>();
 
     // This function also accesses G.players, so we should valid the playerID
-    if (!isValidPlayer(G, playerID)) {
+    if (!isValidPlayer(playerID, G)) {
         return validSpots;
     }
 
@@ -251,7 +251,7 @@ const EMPTY_VALID_MOVES: ValidMoves = {
  */
 export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, checkCost = true): ValidMoves => {
     // Validate playerID before any other checks
-    if (!isValidPlayer(G, playerID)) {
+    if (!isValidPlayer(playerID, G)) {
         return EMPTY_VALID_MOVES;
     }
 

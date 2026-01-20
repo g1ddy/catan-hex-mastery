@@ -104,7 +104,7 @@ export class BotCoach {
             return [];
         }
 
-        if (!isValidPlayer(this.G, playerID)) {
+        if (!isValidPlayer(playerID, this.G)) {
             console.warn('Invalid playerID:', playerID);
             return [];
         }
