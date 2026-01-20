@@ -3,12 +3,21 @@ import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/types';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
+import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 const DEFAULT_GREED_FACTOR = 0.6;
 
+export type CatanBotConfig = {
+    enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
+    seed?: string | number;
+};
+
 export class CatanBot extends Bot {
-    constructor({ enumerate, seed }: { enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[]; seed?: string | number } = { enumerate: () => [] }) {
-        super({ enumerate, seed });
+    protected profile: BotProfile;
+
+    constructor(config: CatanBotConfig = { enumerate: () => [] }, profile: BotProfile = BALANCED_PROFILE) {
+        super(config);
+        this.profile = profile;
     }
 
     /**
@@ -52,7 +61,7 @@ export class CatanBot extends Bot {
             coach = new Coach(G);
         }
 
-        const botCoach = new BotCoach(G, coach);
+        const botCoach = new BotCoach(G, coach, this.profile);
         // Note: filterOptimalMoves returns a sorted list where index 0 is best
         const bestMoves = botCoach.filterOptimalMoves(allMoves as GameAction[], playerID, ctx);
         const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
@@ -85,7 +94,7 @@ export class CatanBot extends Bot {
                 type: 'MAKE_MOVE',
                 payload: actionPayload
             },
-            metadata: { message: 'CatanBot' }
+            metadata: { message: `CatanBot (${this.profile.name})` }
         };
     }
 }
