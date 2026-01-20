@@ -1,7 +1,7 @@
 import { CatanGame } from './Game';
 import { GameState, RollStatus } from './types';
 import { STAGES, PHASES } from './constants';
-import { createTestGameState, createTestPlayer } from './testUtils';
+import { createTestGameState, createTestPlayer } from '../testUtils';
 
 // Mock distributeResources to verify it's called, but keep countResources actual
 jest.mock('./mechanics/resources', () => {
