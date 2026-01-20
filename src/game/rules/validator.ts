@@ -48,7 +48,9 @@ export const RuleEngine = {
                 return validateRobberMove(G, playerID, args[0], args[1]);
 
             case 'discardResources':
-                return validateDiscardResources(G, playerID, args[0]);
+                // discardResources can be called by any player in the DISCARD stage,
+                // so we allow an explicit playerID override from args[1].
+                return validateDiscardResources(G, args[1] || playerID, args[0]);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };

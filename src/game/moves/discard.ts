@@ -3,21 +3,31 @@ import { GameState, Resources } from '../types';
 import { RuleEngine } from '../rules/validator';
 import { STAGES } from '../constants';
 
-export const discardResources: Move<GameState> = ({ G, ctx, events }, resources: Resources) => {
-    // 1. Delegate Validation
-    RuleEngine.validateMoveOrThrow(G, ctx, 'discardResources', [resources]);
-
-    // 2. Execute
-    // ctx.playerID is available when a move is made by a player.
-    // Typescript definition for Ctx might be missing it in some versions or configurations.
+export const discardResources: Move<GameState> = ({ G, ctx, events }, resources: Resources, playerIDArg?: string) => {
+    // 1. Resolve Actor
+    // ctx.playerID is available when a move is made by a player via the client.
+    // However, in some Local/Bot contexts, it might be missing.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const playerID = (ctx as any).playerID;
+    let playerID = (ctx as any).playerID;
 
-    if (!playerID) {
-        throw new Error('discardResources move was called without a valid playerID in the context.');
+    // Fallback if missing (e.g. Local Bots) and explicit argument provided
+    if (!playerID && playerIDArg) {
+        playerID = playerIDArg;
     }
 
+    if (!playerID) {
+         // If we are in a context where we expect ctx.playerID but it's missing, this is a fatal error.
+         console.error('discardResources: ctx.playerID is missing and no argument provided!', Object.keys(ctx));
+         throw new Error('discardResources move was called without a valid playerID.');
+    }
+
+    // 2. Delegate Validation (Now with resolved playerID)
+    RuleEngine.validateMoveOrThrow(G, ctx, 'discardResources', [resources, playerID]);
+
     const player = G.players[playerID];
+    if (!player) {
+        throw new Error(`discardResources: Player ${playerID} not found.`);
+    }
 
     // Remove resources
     for (const [resource, amount] of Object.entries(resources)) {

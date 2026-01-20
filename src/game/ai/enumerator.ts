@@ -116,7 +116,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
                 }
 
                 if (remaining === 0) {
-                     moves.push(makeMove('discardResources', [resourcesToDiscard]));
+                     // Pass playerID explicitly to handle cases where ctx.playerID is missing (e.g. Local Bots)
+                     moves.push(makeMove('discardResources', [resourcesToDiscard, playerID]));
                 }
             }
 

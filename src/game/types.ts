@@ -120,7 +120,7 @@ export interface MoveArguments {
   placeRoad: [string];
   regenerateBoard: [];
   dismissRobber: [string, string?]; // hexID, victimID (optional)
-  discardResources: [Resources];
+  discardResources: [Resources, string?]; // resources, playerID (optional fallback for bots)
   buyDevCard: []; // Included for forward compatibility/BotCoach references
 }
 
