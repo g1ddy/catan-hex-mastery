@@ -7,7 +7,7 @@ const ABUNDANCE_THRESHOLD = 0.30;
 const SCARCITY_PENALTY = 20;
 const ABUNDANCE_PENALTY = 10;
 
-export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
+export function calculateBoardStats(hexes: Map<string, Hex>): BoardStats {
   const totalPips: Record<string, number> = {
     wood: 0,
     brick: 0,
@@ -18,7 +18,7 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
 
   let totalBoardPips = 0;
 
-  Object.values(hexes).forEach(hex => {
+  hexes.forEach(hex => {
     const resource = TERRAIN_CONFIG[hex.terrain];
     if (resource && hex.tokenValue) {
       const pips = PIP_MAP[hex.tokenValue] || 0;
@@ -29,11 +29,6 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
 
   const warnings: string[] = [];
   let fairnessScore = 100;
-
-  // Analysis
-  // Expected roughly equal distribution.
-  // 5 resources. 100% / 5 = 20%.
-  // Warning if < 10% or > 30%.
 
   if (totalBoardPips > 0) {
       Object.entries(totalPips).forEach(([resource, pips]) => {
@@ -62,25 +57,15 @@ export function calculatePlayerPotentialPips(G: GameState): Record<string, Recor
     const result: Record<string, Record<string, number>> = {};
 
     Object.values(G.players).forEach(player => {
-        const playerPips: Record<string, number> = {
-            wood: 0,
-            brick: 0,
-            sheep: 0,
-            wheat: 0,
-            ore: 0
-        };
+        const playerPips: Record<string, number> = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
 
-        // Find all vertices owned by player
-        Object.entries(G.board.vertices).forEach(([vId, vertex]) => {
+        G.board.vertices.forEach((vertex, vId) => {
             if (vertex.owner === player.id) {
-                // Determine multiplier
                 const multiplier = vertex.type === 'city' ? 2 : 1;
-
-                // Get adjacent hexes using the geometry-aware helper
                 const adjacentHexIds = getHexesForVertex(vId);
 
                 adjacentHexIds.forEach(hexId => {
-                    const hex = G.board.hexes[hexId];
+                    const hex = G.board.hexes.get(hexId);
 
                     if (hex && hex.tokenValue && hex.terrain) {
                         const resource = TERRAIN_CONFIG[hex.terrain];

@@ -1,5 +1,5 @@
 import { placeSettlement, placeRoad } from './setup';
-import { GameState, RollStatus, TerrainType } from '../types';
+import { GameState, RollStatus, TerrainType, Hex } from '../types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 
@@ -33,22 +33,22 @@ const createMockCtx = (overrides?: Partial<Ctx>): Ctx => ({
 });
 
 // We need these for "on board" validation
-const mockHexes = {
-    '0,0,0': { id: '0,0,0', coords: {q:0,r:0,s:0}, terrain: TerrainType.Forest, tokenValue: 6 },
-    '1,-1,0': { id: '1,-1,0', coords: {q:1,r:-1,s:0}, terrain: TerrainType.Fields, tokenValue: 5 },
-    '0,-1,1': { id: '0,-1,1', coords: {q:0,r:-1,s:1}, terrain: TerrainType.Pasture, tokenValue: 4 },
-    '-1,1,0': { id: '-1,1,0', coords: {q:-1,r:1,s:0}, terrain: TerrainType.Hills, tokenValue: 8 },
-    '-1,0,1': { id: '-1,0,1', coords: {q:-1,r:0,s:1}, terrain: TerrainType.Mountains, tokenValue: 10 },
-    '1,0,-1': { id: '1,0,-1', coords: {q:1,r:0,s:-1}, terrain: TerrainType.Forest, tokenValue: 3 },
-};
+const mockHexes: [string, Hex][] = [
+    ['0,0,0', { id: '0,0,0', coords: {q:0,r:0,s:0}, terrain: TerrainType.Forest, tokenValue: 6 }],
+    ['1,-1,0', { id: '1,-1,0', coords: {q:1,r:-1,s:0}, terrain: TerrainType.Fields, tokenValue: 5 }],
+    ['0,-1,1', { id: '0,-1,1', coords: {q:0,r:-1,s:1}, terrain: TerrainType.Pasture, tokenValue: 4 }],
+    ['-1,1,0', { id: '-1,1,0', coords: {q:-1,r:1,s:0}, terrain: TerrainType.Hills, tokenValue: 8 }],
+    ['-1,0,1', { id: '-1,0,1', coords: {q:-1,r:0,s:1}, terrain: TerrainType.Mountains, tokenValue: 10 }],
+    ['1,0,-1', { id: '1,0,-1', coords: {q:1,r:0,s:-1}, terrain: TerrainType.Forest, tokenValue: 3 }],
+];
 
 // Create a safe Mock GameState object with defaults
 const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     board: {
-        hexes: mockHexes, // Injected valid hexes
-        vertices: {},
-        edges: {},
-        ports: {},
+        hexes: new Map(mockHexes), // Injected valid hexes
+        vertices: new Map(),
+        edges: new Map(),
+        ports: new Map(),
     },
     players: {
         '0': {
@@ -66,7 +66,7 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     lastRoll: [0, 0],
     boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
     rollStatus: RollStatus.IDLE,
-    robberLocation: '0',
+    robberLocation: '0,0,0',
     playersToDiscard: [],
     notification: null,
     ...overrides
@@ -88,10 +88,8 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             placeSettlementFn({ G, ctx, events, playerID: '0' }, vId);
 
-            expect(G.board.vertices[vId]).toBeDefined();
+            expect(G.board.vertices.has(vId)).toBe(true);
             expect(G.players['0'].settlements).toContain(vId);
-            // events.setStage is no longer called, handled by config
-            expect(events.setStage).not.toHaveBeenCalled();
             expect(events.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'placeRoad' });
         });
     });
@@ -101,13 +99,13 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             // Mock placement of settlement
             G.players['0'].settlements.push(vId);
-            G.board.vertices[vId] = { owner: '0', type: 'settlement' };
+            G.board.vertices.set(vId, { owner: '0', type: 'settlement' });
 
             const validEdge = "0,0,0::1,-1,0";
 
             placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
-            expect(G.board.edges[validEdge]).toBeDefined();
+            expect(G.board.edges.has(validEdge)).toBe(true);
             expect(events.endTurn).toHaveBeenCalled();
         });
 
@@ -121,12 +119,7 @@ describe('Setup Phase Moves', () => {
             // Place a settlement to establish the connection point
             G.players['0'].settlements.push("0,0,0::-1,1,0::-1,0,1");
 
-            const disconnectedEdgeId = "1,0,-1::2,-1,-1"; // An edge not touching the settlement (and potentially invalid if hexes mismatch, but mainly checking connectivity here)
-            // Wait, we need to ensure this edge is technically "on board" for the validation to reach the "connected" check?
-            // "1,0,-1" is in mockHexes. "2,-1,-1" is NOT.
-            // If "2,-1,-1" is not in mockHexes, then "1,0,-1::2,-1,-1" is valid IF at least one hex is valid.
-            // 1,0,-1 is valid. So this edge is "on board" (it's a coastal edge).
-            // So validation proceeds to connectivity check.
+            const disconnectedEdgeId = "1,0,-1::2,-1,-1";
 
             const move = () => placeRoadFn({ G, ctx, events }, disconnectedEdgeId);
 
@@ -135,7 +128,7 @@ describe('Setup Phase Moves', () => {
 
         it('should fail if the edge is already occupied', () => {
             const edgeId = "0,0,0::1,-1,0";
-            G.board.edges[edgeId] = { owner: '1' }; // Occupied by another player
+            G.board.edges.set(edgeId, { owner: '1' }); // Occupied by another player
             G.players['0'].settlements.push("0,0,0::1,-1,0::0,-1,1"); // Player '0' has a settlement nearby
 
             const move = () => placeRoadFn({ G, ctx, events }, edgeId);

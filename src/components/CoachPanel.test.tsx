@@ -7,6 +7,7 @@ import { createMockGameState } from '../game/testUtils';
 import { Ctx } from 'boardgame.io';
 import * as analyst from '../game/analysis/analyst';
 import '@testing-library/jest-dom';
+import { Player } from '../game/types';
 
 // Mock the analyst module
 jest.mock('../game/analysis/analyst');
@@ -19,15 +20,13 @@ describe('CoachPanel', () => {
     });
 
     it('displays player names in P{ID}: {Name} format in Production Potential section', () => {
-        // Setup State with custom names
         const G = createMockGameState({
             players: {
-                '0': { id: '0', name: 'Player One', color: 'red' },
-                '1': { id: '1', name: 'Catan Bot', color: 'blue' }
+                '0': { id: '0', name: 'Player One', color: 'red' } as Player,
+                '1': { id: '1', name: 'Catan Bot', color: 'blue' } as Player,
             }
         });
 
-        // Mock potentials to ensure the section renders
         mockCalculatePlayerPotentialPips.mockReturnValue({
             '0': { wood: 1, brick: 0, sheep: 0, wheat: 0, ore: 0 },
             '1': { wood: 0, brick: 1, sheep: 0, wheat: 0, ore: 0 }
@@ -47,7 +46,6 @@ describe('CoachPanel', () => {
             />
         );
 
-        // Verify player names are displayed in the correct format
         Object.values(G.players).forEach(player => {
             expect(screen.getByText(`P${Number(player.id) + 1}: ${player.name}`)).toBeInTheDocument();
         });

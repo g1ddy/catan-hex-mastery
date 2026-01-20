@@ -73,7 +73,6 @@ export class Coach {
             return { isSafe: false, reason: "Invalid Player" };
         }
 
-        // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
         const tradeResult = calculateTrade(player.resources);
 
@@ -82,7 +81,6 @@ export class Coach {
         }
 
         // Smart Ban: Protect Ore (City bottleneck)
-        // If we are giving away Ore and have <= ORE_RESERVE_THRESHOLD, we shouldn't trade it away.
         if (tradeResult.give === 'ore' && player.resources.ore <= ORE_RESERVE_THRESHOLD) {
             return { isSafe: false, reason: "Ore Reserve Low" };
         }
@@ -92,12 +90,7 @@ export class Coach {
 
     private getVertexData(hexIds: string[]): { resources: string[], pips: number } {
         return hexIds.reduce((acc, hId) => {
-            // Validate hex ID exists before accessing
-            if (!Object.prototype.hasOwnProperty.call(this.G.board.hexes, hId)) {
-                return acc;
-            }
-            // eslint-disable-next-line security/detect-object-injection
-            const hex = this.G.board.hexes[hId];
+            const hex = this.G.board.hexes.get(hId);
             if (!hex) return acc;
 
             if (hex.terrain) {
@@ -119,63 +112,39 @@ export class Coach {
      * Calculates scores for all valid settlement spots on the board.
      */
     public getAllSettlementScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
-        // Security: Only return recommendations for the current player.
         if (playerID !== ctx.currentPlayer) {
             return [];
         }
 
-        const recommendations: CoachRecommendation[] = [];
-
-        // 1. Calculate Scarcity Map
         const scarcityMap = this.calculateScarcityMap();
-
-        // 2. Identify Existing Resources
         const existingResources = this.getExistingResources(playerID);
-
-        // 3. Identify all candidates (physically valid spots)
         const candidates = getValidSetupSettlementSpots(this.G);
 
-        // 4. Score candidates
-        candidates.forEach(vId => {
-            const score = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
-            recommendations.push(score);
-        });
-
-        return recommendations;
+        return Array.from(candidates).map(vId => this.scoreVertex(vId, playerID, scarcityMap, existingResources));
     }
 
     /**
      * Scores a list of specific vertices for City placement.
      */
     public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
-        // Security: Only return recommendations for the current player.
         if (playerID !== ctx.currentPlayer) {
             return [];
         }
 
-        const recommendations: CoachRecommendation[] = [];
-
-        // 1. Calculate Scarcity Map
         const scarcityMap = this.calculateScarcityMap();
-
-        // 2. Identify Existing Resources
         const existingResources = this.getExistingResources(playerID);
 
-        // 3. Score candidates
-        candidates.forEach(vId => {
-            // Basic input sanitization for vertex ID
-            if (typeof vId !== 'string' || vId.includes('__proto__') || vId.includes('constructor')) {
-                return;
-            }
-
-            try {
-                const score = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
-                recommendations.push(score);
-            } catch (error) {
-                console.error(`Error scoring vertex ${vId}:`, error);
-                // Skip invalid vertices
-            }
-        });
+        const recommendations = candidates
+            .map(vId => {
+                if (typeof vId !== 'string' || vId.includes('__proto__')) return null;
+                try {
+                    return this.scoreVertex(vId, playerID, scarcityMap, existingResources);
+                } catch (error) {
+                    console.error(`Error scoring vertex ${vId}:`, error);
+                    return null;
+                }
+            })
+            .filter((r): r is CoachRecommendation => r !== null);
 
         return recommendations.sort((a, b) => b.score - a.score);
     }
@@ -188,7 +157,7 @@ export class Coach {
         if (totalBoardPips > 0) {
             Object.entries(totalPips).forEach(([resource, pips]) => {
                 if (pips / totalBoardPips < this.config.scarcityThreshold) {
-                    scarcityMap[resource] = true; // eslint-disable-line security/detect-object-injection
+                    scarcityMap[resource] = true;
                 }
             });
         }
@@ -196,46 +165,40 @@ export class Coach {
     }
 
     private getExistingResources(playerID: string): Set<string> {
-        // Security: Validate playerID exists to prevent prototype pollution
         if (!isValidPlayer(playerID, this.G)) {
             return new Set<string>();
         }
 
-        const player = this.G.players[playerID]; // eslint-disable-line security/detect-object-injection
+        const player = this.G.players[playerID];
         const existingResources = new Set<string>();
 
-        if (player.settlements.length >= 1) {
-            player.settlements.forEach(sVId => {
-                const hexIds = getHexesForVertex(sVId);
-                const { resources } = this.getVertexData(hexIds);
-                resources.forEach(r => existingResources.add(r));
-            });
-        }
+        player.settlements.forEach(sVId => {
+            const hexIds = getHexesForVertex(sVId);
+            const { resources } = this.getVertexData(hexIds);
+            resources.forEach(r => existingResources.add(r));
+        });
+
         return existingResources;
     }
 
     private calculateScarcityScore(uniqueResources: Set<string>, scarcityMap: Record<string, boolean>) {
-        const scarceResources = Array.from(uniqueResources).filter(r => scarcityMap[r]); // eslint-disable-line security/detect-object-injection
-        if (scarceResources.length > 0) {
-            return {
-                multiplier: this.config.scarcityMultiplier,
-                bonus: true,
-                resources: scarceResources,
-                reason: 'Scarcity Bonus'
-            };
-        }
-        return { multiplier: 1, bonus: false, resources: [], reason: '' };
+        const scarceResources = Array.from(uniqueResources).filter(r => scarcityMap[r]);
+        const bonus = scarceResources.length > 0;
+        return {
+            multiplier: bonus ? this.config.scarcityMultiplier : 1,
+            bonus,
+            resources: scarceResources,
+            reason: bonus ? 'Scarcity Bonus' : ''
+        };
     }
 
     private calculateDiversityScore(resources: string[], uniqueResources: Set<string>) {
-        if (uniqueResources.size === 3 && resources.length === 3) {
-            return {
-                multiplier: this.config.diversityMultiplier,
-                bonus: true,
-                reason: 'Diversity Bonus'
-            };
-        }
-        return { multiplier: 1, bonus: false, reason: '' };
+        const bonus = uniqueResources.size === 3 && resources.length === 3;
+        return {
+            multiplier: bonus ? this.config.diversityMultiplier : 1,
+            bonus,
+            reason: bonus ? 'Diversity Bonus' : ''
+        };
     }
 
     private calculateSynergyScore(
@@ -246,41 +209,26 @@ export class Coach {
     ) {
         let score = 0;
         let synergyBonus = false;
-        let neededResources: string[] = [];
+        const neededResources: string[] = [];
         const reasons: string[] = [];
 
         if (settlementCount === 0) {
-            const hasWood = resources.includes('wood');
-            const hasBrick = resources.includes('brick');
-            const hasOre = resources.includes('ore');
-            const hasWheat = resources.includes('wheat');
-
-            if ((hasWood && hasBrick) || (hasOre && hasWheat)) {
+            if ((resources.includes('wood') && resources.includes('brick')) ||
+                (resources.includes('ore') && resources.includes('wheat'))) {
                 score += this.config.synergyBonus;
                 synergyBonus = true;
                 reasons.push('Synergy');
             }
-        } else if (settlementCount >= 1) {
-            const newResources: string[] = [];
-            uniqueResources.forEach(r => {
-                if (!existingResources.has(r)) {
-                    score += this.config.needBonus;
-                    newResources.push(r);
-                }
-            });
-
+        } else {
+            const newResources = Array.from(uniqueResources).filter(r => !existingResources.has(r));
             if (newResources.length > 0) {
-                neededResources = newResources.sort();
+                score += this.config.needBonus * newResources.length;
+                neededResources.push(...newResources.sort());
                 reasons.push(`Balances Economy (Added ${newResources.join(', ')})`);
             }
         }
 
-        return {
-            score,
-            synergyBonus,
-            neededResources,
-            reasons
-        };
+        return { score, synergyBonus, neededResources, reasons };
     }
 
     private scoreVertex(
@@ -289,51 +237,40 @@ export class Coach {
         scarcityMap: Record<string, boolean>,
         existingResources: Set<string>
     ): CoachRecommendation {
-        // Security check for playerID
         if (!isValidPlayer(playerID, this.G)) {
              throw new Error(`Player ${playerID} not found`);
         }
 
-        // OPTIMIZATION: Parse vertexId once and pass to helpers
-        // Previously: getResourcesForVertex and calculatePipsForVertex both split the string
         const hexIds = getHexesForVertex(vertexId);
-
         const { resources, pips } = this.getVertexData(hexIds);
         const uniqueResources = new Set(resources);
-        const settlementCount = this.G.players[playerID].settlements.length; // eslint-disable-line security/detect-object-injection
+        const settlementCount = this.G.players[playerID].settlements.length;
 
         let score = pips;
         const reasons: string[] = [`${pips} Pips`];
 
-        // 1. Scarcity
         const scarcity = this.calculateScarcityScore(uniqueResources, scarcityMap);
         if (scarcity.bonus) {
             score *= scarcity.multiplier;
             reasons.push(scarcity.reason);
         }
 
-        // 2. Diversity
         const diversity = this.calculateDiversityScore(resources, uniqueResources);
         if (diversity.bonus) {
             score *= diversity.multiplier;
             reasons.push(diversity.reason);
         }
 
-        // 3. Synergy / Needs
         const synergy = this.calculateSynergyScore(resources, uniqueResources, settlementCount, existingResources);
-        if (synergy.score > 0) {
-            score += synergy.score;
-        }
-        if (synergy.reasons.length > 0) {
-            reasons.push(...synergy.reasons);
-        }
+        score += synergy.score;
+        reasons.push(...synergy.reasons);
 
         return {
-            vertexId: vertexId,
+            vertexId,
             score: Math.round(score * 10) / 10,
-            reason: reasons.join(', '),
+            reason: reasons.filter(Boolean).join(', '),
             details: {
-                pips: pips,
+                pips,
                 scarcityBonus: scarcity.bonus,
                 scarceResources: scarcity.resources,
                 diversityBonus: diversity.bonus,
@@ -344,117 +281,51 @@ export class Coach {
     }
 
     public getBestSettlementSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
-        const allScores = this.getAllSettlementScores(playerID, ctx);
-        return allScores.sort((a, b) => b.score - a.score).slice(0, 3);
+        return this.getAllSettlementScores(playerID, ctx)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
-        // Security check: Validate playerID before use
-        if (!isValidPlayer(playerID, this.G)) {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return ERROR_ADVICE_RESULT;
         }
 
-        // Security check: Only provide advice to the current player.
-        if (playerID !== ctx.currentPlayer) {
-            return ERROR_ADVICE_RESULT;
-        }
-
-        // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
         const stage = ctx.activePlayers?.[playerID] ?? ctx.phase;
 
-        // 1. Setup Phase
-        if (stage === STAGES.PLACE_SETTLEMENT) {
-            return {
-                text: STRATEGIC_ADVICE.SETUP.SETTLEMENT,
-                recommendedMoves: []
-            };
-        }
-        if (stage === STAGES.PLACE_ROAD) {
-            return {
-                text: STRATEGIC_ADVICE.SETUP.ROAD,
-                recommendedMoves: []
-            };
-        }
+        if (stage === STAGES.PLACE_SETTLEMENT) return { text: STRATEGIC_ADVICE.SETUP.SETTLEMENT, recommendedMoves: [] };
+        if (stage === STAGES.PLACE_ROAD) return { text: STRATEGIC_ADVICE.SETUP.ROAD, recommendedMoves: [] };
 
-        // 2. Gameplay Phase (Acting)
         if (stage === STAGES.ACTING || stage === STAGES.ROLLING) {
             const vp = player.victoryPoints;
-
-            // Early Game
-            if (vp < EARLY_GAME_VP_THRESHOLD) {
-                return {
-                    text: STRATEGIC_ADVICE.GAMEPLAY.EARLY,
-                    recommendedMoves: ['buildRoad', 'buildSettlement']
-                };
-            }
-            // Mid Game
-            else if (vp <= MID_GAME_VP_THRESHOLD) {
-                return {
-                    text: STRATEGIC_ADVICE.GAMEPLAY.MID,
-                    recommendedMoves: ['buildCity']
-                };
-            }
-            // Late Game
-            else {
-                return {
-                    text: STRATEGIC_ADVICE.GAMEPLAY.LATE,
-                    // Advice says "Buy Dev Cards... connect roads".
-                    // Since Dev Cards aren't implemented, we recommend Roads.
-                    recommendedMoves: ['buildRoad']
-                };
-            }
+            if (vp < EARLY_GAME_VP_THRESHOLD) return { text: STRATEGIC_ADVICE.GAMEPLAY.EARLY, recommendedMoves: ['buildRoad', 'buildSettlement'] };
+            if (vp <= MID_GAME_VP_THRESHOLD) return { text: STRATEGIC_ADVICE.GAMEPLAY.MID, recommendedMoves: ['buildCity'] };
+            return { text: STRATEGIC_ADVICE.GAMEPLAY.LATE, recommendedMoves: ['buildRoad'] };
         }
 
-        return {
-            text: STRATEGIC_ADVICE.DEFAULT,
-            recommendedMoves: []
-        };
+        return { text: STRATEGIC_ADVICE.DEFAULT, recommendedMoves: [] };
     }
 
-    /**
-     * Generic action scorer for BotCoach.
-     * Evaluates a full action object, combining spatial scoring (for spots) and strategic scoring (for types).
-     *
-     * @experimental This method is intended for future generic Bot implementations (e.g. MCTS) that need a
-     * unified evaluation function. Currently, `BotCoach.ts` uses an optimized inline version of this logic
-     * to avoid performance overhead from repeated scarcity map calculations.
-     */
     public scoreAction(playerID: string, action: GameAction, ctx: Ctx): number {
-        // Handle payload vs simple format
         const moveName = 'payload' in action ? action.payload.type : (action as BotMove).move;
         const args = 'payload' in action ? action.payload.args : (action as BotMove).args;
 
         const advice = this.getStrategicAdvice(playerID, ctx);
         let score = 1.0;
 
-        // 1. Strategic Boost: If the move type is recommended by Coach, boost it.
-        // Cast moveName to string to match advice.recommendedMoves signature
         if (advice.recommendedMoves.includes(moveName)) {
-            score *= 1.5; // 50% boost for following advice
+            score *= 1.5;
         }
 
-        // 2. Spatial Scoring: If it's a placement move, use the spatial score.
-        if (moveName === 'placeSettlement' || moveName === 'buildSettlement') {
-            const arg0 = args[0];
-            const vId = typeof arg0 === 'string' ? arg0 : undefined;
-
-            if (vId) {
-                try {
-                    // Reuse scoreVertex
-                    // Need to recalculate maps per call? Inefficient but accurate.
-                    // For performance, BotCoach typically pre-calculates, but here we do it on demand.
-                    const scarcityMap = this.calculateScarcityMap();
-                    const existingResources = this.getExistingResources(playerID);
-                    const vertexScore = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
-
-                    // Normalize spatial score (typically 0-15) to be comparable with weight (0-1)
-                    // Let's say max score is ~20.
-                    score *= (1 + vertexScore.score / SPATIAL_SCORE_NORMALIZATION_FACTOR);
-                } catch (e) {
-                    // Ignore invalid vertices
-                }
-            }
+        if ((moveName === 'placeSettlement' || moveName === 'buildSettlement') && typeof args[0] === 'string') {
+            const vId = args[0];
+            try {
+                const scarcityMap = this.calculateScarcityMap();
+                const existingResources = this.getExistingResources(playerID);
+                const vertexScore = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
+                score *= (1 + vertexScore.score / SPATIAL_SCORE_NORMALIZATION_FACTOR);
+            } catch (e) { /* Ignore invalid vertices */ }
         }
 
         return score;
@@ -476,9 +347,7 @@ export function getBestSettlementSpots(G: GameState, playerID: string, ctx: Ctx)
 export function getHeatmapColor(score: number, min: number, max: number): string {
     if (min === max) return 'hsl(120, 100%, 50%)';
 
-    let ratio = (score - min) / (max - min);
-    ratio = Math.max(0, Math.min(1, ratio));
-
+    const ratio = Math.max(0, Math.min(1, (score - min) / (max - min)));
     const hue = ratio * 120;
     return `hsl(${hue}, 100%, 50%)`;
 }

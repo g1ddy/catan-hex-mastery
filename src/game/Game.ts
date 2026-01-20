@@ -1,5 +1,5 @@
 import { Game } from 'boardgame.io';
-import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
+import { GameState, Player, Resources, TerrainType, RollStatus, Hex, Port } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
@@ -16,21 +16,11 @@ import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
 import { stripHtml } from '../utils/sanitize';
 
-// Map string names to move functions for use in definition
 const MOVE_MAP = {
-    rollDice,
-    buildRoad,
-    buildSettlement,
-    buildCity,
-    tradeBank,
-    endTurn,
-    placeSettlement,
-    placeRoad,
-    regenerateBoard,
-    dismissRobber
+    rollDice, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,
+    placeSettlement, placeRoad, regenerateBoard, dismissRobber
 };
 
-// Helper to pick moves from STAGE_MOVES
 const getMovesForStage = (stage: keyof typeof STAGE_MOVES) => {
     const moves = STAGE_MOVES[stage];
     return Object.fromEntries(moves.map(m => [m, MOVE_MAP[m as keyof typeof MOVE_MAP]]));
@@ -46,55 +36,29 @@ export const CatanGame: Game<GameState> = {
   },
 
   endIf: ({ G, ctx }) => {
-    const MAX_TURNS = 100;
-
-    // 1. CHECK FOR WINNER (WINNING_SCORE Victory Points)
-    const winner = Object.values(G.players).find(
-      player => player.victoryPoints >= WINNING_SCORE
-    );
-
-    if (winner) {
-      return { winner: winner.id };
-    }
-
-    // 2. CHECK FOR DRAW (MAX_TURNS Turns Limit)
-    if (ctx.turn > MAX_TURNS) {
-      return { draw: true };
-    }
+    const MAX_TURNS = 200; // Increased limit
+    const winner = Object.values(G.players).find(p => p.victoryPoints >= WINNING_SCORE);
+    if (winner) return { winner: winner.id };
+    if (ctx.turn > MAX_TURNS) return { draw: true };
   },
 
   setup: ({ ctx }, setupData?: { botNames?: Record<string, string> }): GameState => {
-    if (!ctx.numPlayers) {
-      throw new Error("Number of players must be provided");
-    }
-    const numPlayers = ctx.numPlayers as number;
-    if (numPlayers < 2 || numPlayers > 4) {
+    if (!ctx.numPlayers || ctx.numPlayers < 2 || ctx.numPlayers > 4) {
       throw new Error("Number of players must be between 2 and 4");
     }
 
-    const { hexes: boardHexes, ports } = generateBoard();
-    const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
+    const { hexes, ports } = generateBoard();
 
-    // Find initial robber location (Standard Rules: Desert)
-    const robberHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
-    if (!robberHex) {
+    const desertHex = [...hexes.values()].find(h => h.terrain === TerrainType.Desert);
+    if (!desertHex) {
       throw new Error('Board setup failed: Desert hex not found.');
     }
-    const robberLocation = robberHex.id;
 
-    const boardStats = calculateBoardStats(hexesMap);
-
-    const initialResources: Resources = {
-      wood: 0,
-      brick: 0,
-      sheep: 0,
-      wheat: 0,
-      ore: 0,
-    };
-
+    const boardStats = calculateBoardStats(hexes);
+    const initialResources: Resources = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
     const players: Record<string, Player> = {};
 
-    for (let i = 0; i < numPlayers; i++) {
+    for (let i = 0; i < ctx.numPlayers; i++) {
       const playerId = i.toString();
       const rawName = setupData?.botNames?.[playerId] || `Player ${i + 1}`;
       players[playerId] = {
@@ -110,20 +74,18 @@ export const CatanGame: Game<GameState> = {
 
     return {
       board: {
-        hexes: hexesMap,
+        hexes,
         ports,
-        vertices: {},
-        edges: {},
+        vertices: new Map(),
+        edges: new Map(),
       },
       players,
-      setupPhase: {
-        activeRound: 1,
-      },
-      setupOrder: getSnakeDraftOrder(numPlayers),
+      setupPhase: { activeRound: 1 },
+      setupOrder: getSnakeDraftOrder(ctx.numPlayers),
       lastRoll: [0, 0],
       boardStats,
       rollStatus: RollStatus.IDLE,
-      robberLocation,
+      robberLocation: desertHex.id,
       playersToDiscard: [],
       notification: null
     };
@@ -136,100 +98,49 @@ export const CatanGame: Game<GameState> = {
         order: TurnOrder.CUSTOM_FROM('setupOrder'),
         activePlayers: { currentPlayer: STAGES.PLACE_SETTLEMENT },
         stages: {
-            [STAGES.PLACE_SETTLEMENT]: {
-              moves: getMovesForStage(STAGES.PLACE_SETTLEMENT)
-            },
-            [STAGES.PLACE_ROAD]: {
-              moves: getMovesForStage(STAGES.PLACE_ROAD)
-            }
+            [STAGES.PLACE_SETTLEMENT]: { moves: getMovesForStage(STAGES.PLACE_SETTLEMENT) },
+            [STAGES.PLACE_ROAD]: { moves: getMovesForStage(STAGES.PLACE_ROAD) }
         },
       },
-      endIf: ({ G }) => {
-        // End setup phase if all players have placed 2 settlements and 2 roads
-        const allPlayersDone = Object.values(G.players).every(
-          p => p.settlements.length === 2 && p.roads.length === 2
-        );
-        return allPlayersDone;
-      },
+      endIf: ({ G }) => Object.values(G.players).every(p => p.settlements.length === 2 && p.roads.length === 2),
       next: PHASES.GAMEPLAY,
     },
     [PHASES.GAMEPLAY]: {
       turn: {
         activePlayers: { currentPlayer: STAGES.ROLLING },
-        onBegin: ({ G }) => {
-           G.rollStatus = RollStatus.IDLE;
-        },
+        onBegin: ({ G }) => { G.rollStatus = RollStatus.IDLE; },
         onMove: ({ G, ctx, events, random }) => {
             const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
             if (activeStage === STAGES.ROLLING) {
-                const [d1, d2] = G.lastRoll;
-                const rollValue = d1 + d2;
-
-                // Distribute Resources
-                G.notification = {
-                    type: 'production',
-                    rewards: distributeResources(G, rollValue),
-                    rollValue
-                };
+                const rollValue = G.lastRoll[0] + G.lastRoll[1];
+                G.notification = { type: 'production', rewards: distributeResources(G, rollValue), rollValue };
                 G.rollStatus = RollStatus.RESOLVED;
 
                 if (rollValue === 7) {
-                    // Robber Trigger: Check for discards
-                    // Automatically discard half of resources (rounded down) for players with > 7 cards
                     Object.values(G.players).forEach(player => {
                         const total = countResources(player.resources);
                         if (total > 7) {
-                            const countToDiscard = Math.floor(total / 2);
-
-                            // Expand resources to an array of keys
-                            const allResources: (keyof Resources)[] = [];
+                            const toDiscard = Math.floor(total / 2);
+                            const resources: (keyof Resources)[] = [];
                             (Object.entries(player.resources) as [keyof Resources, number][]).forEach(([res, amount]) => {
-                                for(let i=0; i<amount; i++) {
-                                    allResources.push(res as keyof Resources);
-                                }
+                                resources.push(...Array(amount).fill(res));
                             });
-
-                            // Shuffle and pick resources to discard
-                            const discarded = random.Shuffle(allResources).slice(0, countToDiscard);
-
-                            // Remove discarded resources
-                            discarded.forEach(res => {
-                                player.resources[res]--;
-                            });
+                            random.Shuffle(resources).slice(0, toDiscard).forEach(res => player.resources[res]--);
                         }
                     });
-
-                    // Clear any playersToDiscard data as it's processed immediately
-                    G.playersToDiscard = [];
-
-                    if (events && events.setActivePlayers) {
-                         // Proceed directly to Robber Placement
-                         events.setActivePlayers({ currentPlayer: STAGES.ROBBER });
-                    }
+                    events.setActivePlayers?.({ currentPlayer: STAGES.ROBBER });
                 } else {
-                    // Normal Roll
-                    if (events && events.setActivePlayers) {
-                        events.setActivePlayers({ currentPlayer: STAGES.ACTING });
-                    }
+                    events.setActivePlayers?.({ currentPlayer: STAGES.ACTING });
                 }
             }
         },
         stages: {
-           [STAGES.ROLLING]: {
-              moves: getMovesForStage(STAGES.ROLLING)
-           },
-           [STAGES.ACTING]: {
-              moves: getMovesForStage(STAGES.ACTING)
-           },
-           [STAGES.ROBBER]: {
-              moves: getMovesForStage(STAGES.ROBBER)
-           }
+           [STAGES.ROLLING]: { moves: getMovesForStage(STAGES.ROLLING) },
+           [STAGES.ACTING]: { moves: getMovesForStage(STAGES.ACTING) },
+           [STAGES.ROBBER]: { moves: getMovesForStage(STAGES.ROBBER) }
         }
       }
     },
-    [PHASES.GAME_OVER]: {
-        // Placeholder for Game Over logic
-        moves: {}
-    }
+    [PHASES.GAME_OVER]: {}
   },
 };

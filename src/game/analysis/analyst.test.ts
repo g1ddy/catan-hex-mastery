@@ -1,31 +1,33 @@
 import { calculatePlayerPotentialPips } from './analyst';
-import { GameState, TerrainType } from '../types';
+import { GameState, TerrainType, Hex } from '../types';
 
 describe('calculatePlayerPotentialPips', () => {
-    const mockG = {
+    const createMockGameState = (): GameState => ({
         players: {
-            '0': { id: '0', color: 'red', resources: {}, settlements: [], roads: [], victoryPoints: 0 },
-            '1': { id: '1', color: 'blue', resources: {}, settlements: [], roads: [], victoryPoints: 0 }
+            '0': { id: '0', name: 'P0', color: 'red', resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 },
+            '1': { id: '1', name: 'P1', color: 'blue', resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 }
         },
         board: {
-            hexes: {
-                '0,0,0': { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 }, // 5 pips (Wood)
-                '1,-1,0': { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Hills, tokenValue: 5 }, // 4 pips (Brick)
-                '1,0,-1': { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Desert, tokenValue: null } // 0 pips
-            },
-            vertices: {},
-            edges: {}
+            hexes: new Map<string, Hex>([
+                ['0,0,0', { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 }], // 5 pips (Wood)
+                ['1,-1,0', { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Hills, tokenValue: 5 }], // 4 pips (Brick)
+                ['1,0,-1', { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Desert, tokenValue: null }] // 0 pips
+            ]),
+            vertices: new Map(),
+            edges: new Map(),
+            ports: new Map()
         }
-    } as unknown as GameState;
+    } as unknown as GameState);
 
-    // Helper to add vertex
-    const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
-        mockG.board.vertices[id] = { owner, type };
-    };
+    let mockG: GameState;
 
     beforeEach(() => {
-        mockG.board.vertices = {};
+        mockG = createMockGameState();
     });
+
+    const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
+        mockG.board.vertices.set(id, { owner, type });
+    };
 
     test('should return 0 pips for no settlements', () => {
         const result = calculatePlayerPotentialPips(mockG);

@@ -1,4 +1,4 @@
-import { GameState, Player, Resources, RollStatus } from './types';
+import { GameState, Player, Resources, RollStatus, Hex, Port } from './types';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
 // Legacy exports for existing tests
@@ -14,7 +14,7 @@ export const createTestPlayer = (id: string, overrides: Partial<Player> = {}): P
 });
 
 export const createTestGameState = (overrides: Partial<GameState> = {}): GameState => ({
-    board: { hexes: {}, vertices: {}, edges: {}, ports: {} },
+    board: { hexes: new Map(), vertices: new Map(), edges: new Map(), ports: new Map() },
     players: {},
     setupPhase: { activeRound: 1 },
     setupOrder: [],
@@ -32,14 +32,9 @@ export const createTestGameState = (overrides: Partial<GameState> = {}): GameSta
  * @param overrides Partial GameState to override defaults.
  * @returns A complete GameState object
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createMockGameState = (overrides: any = {}): GameState => {
+export const createMockGameState = (overrides: Partial<GameState> = {}): GameState => {
     const defaultResources: Resources = {
-        wood: 0,
-        brick: 0,
-        sheep: 0,
-        wheat: 0,
-        ore: 0,
+        wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0,
     };
 
     const defaultPlayer: Player = {
@@ -54,46 +49,48 @@ export const createMockGameState = (overrides: any = {}): GameState => {
 
     const defaults: GameState = {
         board: {
-            hexes: {},
-            vertices: {},
-            edges: {},
-            ports: {},
+            hexes: new Map<string, Hex>(),
+            vertices: new Map(),
+            edges: new Map(),
+            ports: new Map<string, Port>(),
         },
         players: {
             '0': defaultPlayer,
         },
-        setupPhase: {
-            activeRound: 1,
-        },
+        setupPhase: { activeRound: 1 },
         setupOrder: ['0'],
         lastRoll: [0, 0],
-        boardStats: {
-            totalPips: {},
-            fairnessScore: 0,
-            warnings: [],
-        },
+        boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
         notification: null,
     };
 
-    const mergedState = { ...defaults, ...overrides };
+    // Deep merge overrides
+    const mergedState = {
+        ...defaults,
+        ...overrides,
+        board: { ...defaults.board, ...overrides.board },
+        players: { ...defaults.players, ...overrides.players },
+    };
 
+    // Ensure nested player resources are merged correctly
     if (overrides.players) {
-        // Ensure player defaults are preserved if only partial player data is provided
-        const mergedPlayers: Record<string, Player> = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        for (const [id, p] of Object.entries(overrides.players as Record<string, any>)) {
-            mergedPlayers[id] = {
-                ...defaultPlayer,
-                id, // Ensure ID matches key if not provided
-                ...p,
-                resources: { ...defaultResources, ...(p?.resources || {}) }
-            } as Player;
-        }
-        mergedState.players = mergedPlayers;
+        Object.keys(overrides.players).forEach(pId => {
+            if (mergedState.players[pId]) {
+                mergedState.players[pId] = {
+                    ...defaultPlayer,
+                    id: pId,
+                    ...overrides.players?.[pId],
+                    resources: {
+                        ...defaultResources,
+                        ...overrides.players?.[pId]?.resources,
+                    },
+                };
+            }
+        });
     }
 
-    return mergedState as GameState;
+    return mergedState;
 };

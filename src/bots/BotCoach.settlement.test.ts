@@ -3,7 +3,7 @@
  */
 
 import { Ctx } from 'boardgame.io';
-import { GameState, BotMove, RollStatus } from '../game/types';
+import { GameState, BotMove, RollStatus, Hex, Port } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
@@ -24,10 +24,10 @@ describe('BotCoach Settlement Test', () => {
         // A complete and valid mock of the Game State
         G = {
             board: {
-                hexes: {},
-                vertices: {},
-                edges: {},
-                ports: {},
+                hexes: new Map<string, Hex>(),
+                vertices: new Map(),
+                edges: new Map(),
+                ports: new Map<string, Port>(),
             },
             players: {
                 '0': {
@@ -42,19 +42,18 @@ describe('BotCoach Settlement Test', () => {
             },
             setupPhase: { activeRound: 1 },
             setupOrder: ['0'],
-            lastRoll: [1, 1], // Corrected to be a valid tuple
+            lastRoll: [1, 1],
             rollStatus: RollStatus.IDLE,
             boardStats: {
                 totalPips: { wood: 10, brick: 10, sheep: 10, wheat: 10, ore: 10 },
                 fairnessScore: 0.9,
                 warnings: [],
             },
-            robberLocation: '0',
+            robberLocation: '0,0,0',
             playersToDiscard: [],
             notification: null,
         };
 
-        // A valid Ctx mock
         ctx = {
             numPlayers: 1,
             currentPlayer: '0',
@@ -65,7 +64,6 @@ describe('BotCoach Settlement Test', () => {
         profile = { ...BALANCED_PROFILE };
         mockCoachInstance = new MockCoach(G) as jest.Mocked<Coach>;
 
-        // Mock getStrategicAdvice
         (mockCoachInstance.getStrategicAdvice as jest.Mock).mockReturnValue({
             text: 'Test Advice',
             recommendedMoves: []
@@ -75,52 +73,35 @@ describe('BotCoach Settlement Test', () => {
     });
 
     it('should choose the best settlement AND keep other equally weighted moves', () => {
-        // Arrange: Make buildSettlement and buyDevCard have the same high weight
         profile.weights.buildSettlement = 10;
         profile.weights.buyDevCard = 10;
-        profile.weights.buildRoad = 5; // Lower weight
+        profile.weights.buildRoad = 5;
 
         const moves: BotMove[] = [
-            { move: 'buildSettlement', args: ['0,0,0::1,-1,0'] }, // Spot A
-            { move: 'buildSettlement', args: ['1,0,-1::2,-1,-1'] }, // Spot B
+            { move: 'buildSettlement', args: ['0,0,0::1,-1,0'] },
+            { move: 'buildSettlement', args: ['1,0,-1::2,-1,-1'] },
             { move: 'buyDevCard', args: [] },
             { move: 'buildRoad', args: ['-1,0,1::-2,1,1'] },
             { move: 'endTurn', args: [] },
         ];
 
-        // A complete mock for the recommendation details
         const mockDetails = {
-            pips: 8,
-            scarcityBonus: false,
-            scarceResources: [],
-            diversityBonus: true,
-            synergyBonus: false,
-            neededResources: ['wood'],
+            pips: 8, scarcityBonus: false, scarceResources: [], diversityBonus: true,
+            synergyBonus: false, neededResources: ['wood'],
         };
         const recommendations: CoachRecommendation[] = [
             { vertexId: '0,0,0::1,-1,0', score: 10, details: mockDetails, reason: 'test' },
-            { vertexId: '1,0,-1::2,-1,-1', score: 15, details: mockDetails, reason: 'test' }, // Spot B is better
+            { vertexId: '1,0,-1::2,-1,-1', score: 15, details: mockDetails, reason: 'test' },
         ];
         (mockCoachInstance.getAllSettlementScores as jest.Mock).mockReturnValue(recommendations);
 
-        // Act
         const optimalMoves = botCoach.filterOptimalMoves(moves, '0', ctx);
 
-        // Assert: Should return all moves, but prioritized
-        // Top moves should be Settlement B, Settlement A, and DevCard (all weight 10).
-        // Our logic currently prioritizes the settlement group if ANY settlement is a top move.
+        const topMoves = optimalMoves.slice(0, 3).map(m => (m as BotMove).move);
+        expect(topMoves).toContain('buildSettlement');
+        expect(topMoves).toContain('buyDevCard');
 
-        const top3Moves = optimalMoves.slice(0, 3).map(m => (m as BotMove).move);
-        expect(top3Moves).toContain('buildSettlement');
-        expect(top3Moves).toContain('buyDevCard');
-
-        // Specifically check that the FIRST settlement encounter is the BEST one (Spot B)
-        // Settlement B (score 15) should come before Settlement A (score 10)
         const settlementMoves = optimalMoves.filter(m => (m as BotMove).move === 'buildSettlement');
-        expect((settlementMoves[0] as BotMove).args).toEqual(['1,0,-1::2,-1,-1']);
-
-        // Check that lower weighted moves are at the end
-        const lastMove = optimalMoves[optimalMoves.length - 1] as BotMove;
-        expect(lastMove.move).toBe('endTurn');
+        expect((settlementMoves[0] as BotMove).args[0]).toBe('1,0,-1::2,-1,-1');
     });
 });

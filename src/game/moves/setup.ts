@@ -19,8 +19,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeSettlement', [vertexId]);
 
   // Execution
-  // eslint-disable-next-line security/detect-object-injection
-  G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
+  G.board.vertices.set(vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
 
@@ -30,8 +29,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     // Grant resources
     const touchingHexes = getHexesForVertex(vertexId);
     touchingHexes.forEach(hId => {
-      // eslint-disable-next-line security/detect-object-injection
-      const hex = G.board.hexes[hId];
+      const hex = G.board.hexes.get(hId);
       if (hex) {
           const res = TERRAIN_TO_RESOURCE[hex.terrain];
           if (res) {
@@ -59,8 +57,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeRoad', [edgeId]);
 
   // Execution
-  // eslint-disable-next-line security/detect-object-injection
-  G.board.edges[edgeId] = { owner: ctx.currentPlayer };
+  G.board.edges.set(edgeId, { owner: ctx.currentPlayer });
   G.players[ctx.currentPlayer].roads.push(edgeId);
 
   // State Transition
@@ -76,14 +73,13 @@ export const regenerateBoard: Move<GameState> = ({ G }) => {
         return 'INVALID_MOVE';
     }
 
-    const { hexes: boardHexes, ports } = generateBoard();
-    const hexesMap = Object.fromEntries(boardHexes.map(h => [h.id, h]));
-    G.board.hexes = hexesMap;
+    const { hexes, ports } = generateBoard();
+    G.board.hexes = hexes;
     G.board.ports = ports;
-    G.boardStats = calculateBoardStats(hexesMap);
+    G.boardStats = calculateBoardStats(hexes);
 
     // Fix: Update Robber location to new Desert
-    const desertHex = boardHexes.find(h => h.terrain === TerrainType.Desert);
+    const desertHex = [...hexes.values()].find(h => h.terrain === TerrainType.Desert);
     if (!desertHex) {
         throw new Error('Board generation failed: Desert hex not found.');
     }
