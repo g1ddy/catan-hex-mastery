@@ -124,7 +124,7 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
     );
 
     const renderRobberContent = (evt: RobberEvent) => {
-        if (!isValidPlayer(evt.thief, G) || !isValidPlayer(evt.victim, G)) {
+        if (evt.thief === evt.victim || !isValidPlayer(evt.thief, G) || !isValidPlayer(evt.victim, G)) {
             return null;
         }
         const thief = G.players[evt.thief];
