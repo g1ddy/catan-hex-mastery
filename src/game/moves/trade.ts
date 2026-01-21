@@ -6,7 +6,7 @@ import { TradeResult } from '../mechanics/trade';
 
 export const tradeBank: Move<GameState> = ({ G, ctx }) => {
     // 1. Delegate Validation and Get Execution Details
-    const result = RuleEngine.validateMoveOrThrow<TradeResult>(G, ctx, 'tradeBank', []);
+    const result = RuleEngine.validateMoveOrThrow<'tradeBank', TradeResult>(G, ctx, 'tradeBank', []);
 
     // 2. Safety Check (TypeScript Guard)
     // RuleEngine.validateMoveOrThrow throws if invalid, but returns T | undefined.
