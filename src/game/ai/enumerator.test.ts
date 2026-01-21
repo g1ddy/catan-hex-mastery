@@ -13,6 +13,12 @@ jest.mock('../rules/validator', () => {
         getValidRoadSpots: jest.fn(() => new Set(['edge_2'])),
         getEdgesForHex: jest.fn(() => []),
         getVerticesForHex: jest.fn(() => []),
+        getValidRobberSpots: jest.fn((G) => {
+             // Mimic logic for test: return keys of hexes excluding robberLocation
+             if (!G.board || !G.board.hexes) return new Set();
+             return new Set(Object.keys(G.board.hexes).filter(id => id !== G.robberLocation));
+        }),
+        getValidRobberVictims: jest.fn(() => new Set()),
         // Mock the new consolidated function
         getValidMovesForStage: jest.fn((_G, ctx, playerID) => {
             const stage = ctx.activePlayers?.[playerID];

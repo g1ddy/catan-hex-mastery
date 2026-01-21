@@ -16,6 +16,13 @@ interface MockCtx {
     currentPlayer: string;
 }
 
+// Mock RuleEngine to isolate rollDice logic
+jest.mock('../rules/validator', () => ({
+    RuleEngine: {
+        validateMoveOrThrow: jest.fn()
+    }
+}));
+
 // Type definitions for move calls
 type RollDiceMove = (args: { G: GameState; random: MockRandom; events: MockEvents; ctx: MockCtx }) => void | 'INVALID_MOVE';
 

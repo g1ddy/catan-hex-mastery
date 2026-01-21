@@ -1,6 +1,6 @@
 import { GameState } from '../types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove } from './gameplay';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll, getValidRobberLocations, getPotentialVictims } from './gameplay';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -46,6 +46,9 @@ export const RuleEngine = {
 
             case 'dismissRobber':
                 return validateRobberMove(G, playerID, args[0], args[1]);
+
+            case 'rollDice':
+                return validateRoll(G, playerID);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };
@@ -282,4 +285,18 @@ export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, 
     }
 
     return EMPTY_VALID_MOVES;
+};
+
+/**
+ * Returns a set of all valid Robber destinations (Hex IDs).
+ */
+export const getValidRobberSpots = (G: GameState): Set<string> => {
+    return getValidRobberLocations(G);
+};
+
+/**
+ * Returns a set of all valid victims for a given robber hex.
+ */
+export const getValidRobberVictims = (G: GameState, hexID: string, playerID: string): Set<string> => {
+    return getPotentialVictims(G, hexID, playerID);
 };
