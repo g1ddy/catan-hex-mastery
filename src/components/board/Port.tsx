@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircleHelp } from 'lucide-react';
 import { PortType, TerrainType } from '../../game/types';
-import { RESOURCE_META, TERRAIN_COLORS } from '../uiConfig';
+import { RESOURCE_META, TERRAIN_COLORS, PORT_HIGHLIGHT_RADIUS, PORT_HIGHLIGHT_COLOR, PORT_HIGHLIGHT_WIDTH } from '../uiConfig';
 
 interface PortProps {
     cx: number;
@@ -9,6 +9,7 @@ interface PortProps {
     angle: number; // Angle of the edge (unused for now, maybe for rotation later)
     type: PortType;
     ownerColor: string | null;
+    isActive?: boolean;
 }
 
 // Map PortType (Resource) to TerrainType to reuse colors
@@ -20,7 +21,7 @@ const RESOURCE_TO_TERRAIN: Partial<Record<PortType, TerrainType>> = {
     'ore': TerrainType.Mountains,
 };
 
-export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
+export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor, isActive }) => {
     // Position port slightly outside the edge
     // Since (cx, cy) is relative to hex center (0,0), we can just scale the vector.
     const dist = Math.sqrt(cx*cx + cy*cy);
@@ -45,6 +46,17 @@ export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
 
     return (
         <g transform={`translate(${px}, ${py})`}>
+            {/* Active Glow/Ring */}
+            {isActive && (
+                <circle
+                    r={PORT_HIGHLIGHT_RADIUS}
+                    fill="none"
+                    stroke={PORT_HIGHLIGHT_COLOR}
+                    strokeWidth={PORT_HIGHLIGHT_WIDTH}
+                    className="animate-pulse"
+                />
+            )}
+
             {/* Port Background Circle */}
             <circle
                 r={2.5}

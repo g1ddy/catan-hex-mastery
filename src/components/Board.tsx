@@ -16,6 +16,7 @@ import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { GameNotification } from './GameNotification';
 import { PHASES, STAGE_MOVES, STAGES } from '../game/constants';
+import { useTradeLogic } from '../hooks/useTradeLogic';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { isValidRobberPlacement } from '../game/rules/spatial';
@@ -170,6 +171,9 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       }
   };
 
+  // Calculate active port for highlighting
+  const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
+
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
         {/* Tooltip for Coach Mode */}
@@ -250,6 +254,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 setUiMode={setUiMode}
                 showResourceHeatmap={showResourceHeatmap}
                 coachData={coachData}
+                highlightedPortEdgeId={highlightedPortEdgeId}
               />
             ))}
           </g>

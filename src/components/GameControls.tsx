@@ -7,8 +7,8 @@ import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { calculateTrade } from '../game/mechanics/trade';
 import { StrategicAdvice } from '../game/analysis/coach';
+import { useTradeLogic } from '../hooks/useTradeLogic';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -67,6 +67,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
     useEffect(() => {
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
+
+    // Trade Logic (Hoisted Hook)
+    const { tradeResult, canTrade } = useTradeLogic(G, ctx);
 
     // Setup Phase
     if (isSetup) {
@@ -172,19 +175,18 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
 
         // Trade Logic
-        const tradeResult = calculateTrade(resources);
-        const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
-        const tradeTooltip = canTrade
+        const canTradeAllowed = canTrade && isMoveAllowed('tradeBank');
+        const tradeTooltip = canTradeAllowed
             ? JSON.stringify({
                 give: tradeResult.give,
                 receive: tradeResult.receive,
-                giveAmount: BANK_TRADE_GIVE_AMOUNT,
+                giveAmount: tradeResult.giveAmount,
                 receiveAmount: BANK_TRADE_RECEIVE_AMOUNT
             })
-            : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade`;
+            : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade`;
 
         const handleTrade = () => {
-            if (canTrade) {
+            if (canTradeAllowed) {
                 safeMove(() => moves.tradeBank());
             }
         };
@@ -249,7 +251,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
 
                         // Enable button if it is affordable OR if it is currently selected (to allow deselection)
                         // But strictly only if the move is allowed in the current stage.
-                        const isEnabled = moveAllowed && (affordable || buildMode === type);
+                        const isEnabled = !!moveAllowed && (affordable || buildMode === type);
 
                         // Coach Highlight Logic
                         // Highlight if:

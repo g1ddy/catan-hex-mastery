@@ -31,6 +31,7 @@ interface HexOverlaysProps {
     setUiMode: (mode: UiMode) => void;
     showResourceHeatmap: boolean;
     coachData: CoachData;
+    highlightedPortEdgeId?: string;
 }
 
 // Custom memoization to prevent re-renders when board state changes unnecessarily
@@ -39,6 +40,7 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
         prev.uiMode !== next.uiMode ||
         prev.showResourceHeatmap !== next.showResourceHeatmap ||
         prev.coachData !== next.coachData ||
+        prev.highlightedPortEdgeId !== next.highlightedPortEdgeId ||
         prev.ctx.phase !== next.ctx.phase ||
         prev.ctx.currentPlayer !== next.ctx.currentPlayer ||
         prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) {
@@ -60,7 +62,7 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
 }
 
 export const HexOverlays = React.memo(({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData, highlightedPortEdgeId
 }: HexOverlaysProps) => {
     const { vertices, edges, currentHexIdStr } = useMemo(() => getHexGeometry(hex), [hex]);
     const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
@@ -150,7 +152,8 @@ export const HexOverlays = React.memo(({
                     const portOwner = port.vertices.map(vId => safeGet(G.board.vertices, vId)?.owner).find(Boolean);
                     portElement = (
                         <Port key={`port-${eId}`} cx={midX} cy={midY} angle={angle} type={port.type}
-                              ownerColor={portOwner ? G.players[portOwner]?.color : null} />
+                              ownerColor={portOwner ? G.players[portOwner]?.color : null}
+                              isActive={eId === highlightedPortEdgeId} />
                     );
                 }
 
