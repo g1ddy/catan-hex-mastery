@@ -1,5 +1,5 @@
 import { Resources } from '../types';
-import { BUILD_COSTS } from '../config';
+import { BUILD_COSTS } from '../constants';
 
 export type BuildType = keyof typeof BUILD_COSTS;
 

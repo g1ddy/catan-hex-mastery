@@ -1,6 +1,7 @@
 import { GameState, MoveArguments } from '../types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll, getValidRobberLocations, getPotentialVictims } from './gameplay';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateRobberMove, validateRoll, getValidRobberLocations, getPotentialVictims } from './gameplay';
+import { validateTradeBank } from './trade';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -10,7 +11,7 @@ import {
     ValidationResult
 } from './spatial';
 import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
-import { getAffordableBuilds } from '../mechanics/costs';
+import { getAffordableBuilds } from './costs';
 import { PHASES, STAGES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 
@@ -84,7 +85,7 @@ const _canBuild = (G: GameState, playerID: string, type: 'settlement' | 'city' |
     }
 
     if (checkCost) {
-        const affordable = getAffordableBuilds(G.players[playerID].resources);
+        const affordable = getAffordableBuilds(G, playerID);
         if (!affordable[type]) {
             return false;
         }

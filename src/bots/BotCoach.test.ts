@@ -14,7 +14,7 @@ jest.mock('../game/rules/validator', () => ({
     getValidSetupRoadSpots: jest.fn(() => new Set(['edge_1'])),
     getValidSetupSettlementSpots: jest.fn(() => new Set(['1_1_1'])),
 }));
-jest.mock('../game/mechanics/costs', () => ({
+jest.mock('../game/rules/costs', () => ({
     getAffordableBuilds: jest.fn(() => ({
         settlement: true,
         city: true,

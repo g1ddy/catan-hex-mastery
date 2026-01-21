@@ -3,7 +3,7 @@ import { GameState, GameAction, MoveArguments } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
-import { getAffordableBuilds } from '../game/mechanics/costs';
+import { getAffordableBuilds } from '../game/rules/costs';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
@@ -153,7 +153,7 @@ export class BotCoach {
         // Pre-calculate state for Dynamic Weights
         // eslint-disable-next-line security/detect-object-injection
         const player = this.G.players[playerID];
-        const affordable = getAffordableBuilds(player.resources);
+        const affordable = getAffordableBuilds(this.G, playerID);
         const settlementCount = player.settlements.length;
         // const cityCount = player.cities.length; // Not used in fatigue formula currently
         const roadCount = player.roads.length;

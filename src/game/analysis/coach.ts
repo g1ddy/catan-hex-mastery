@@ -3,7 +3,7 @@ import { GameState, TerrainType, GameAction, BotMove } from '../types';
 import { getValidSetupSettlementSpots } from '../rules/validator';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
-import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
+import { TERRAIN_TO_RESOURCE } from '../constants';
 import { calculateTrade } from '../mechanics/trade';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';

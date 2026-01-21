@@ -1,7 +1,9 @@
 import { GameState, Resources } from '../types';
-import { BUILD_COSTS } from '../config';
+import { BUILD_COSTS } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 import { canAfford as canAffordResources } from '../mechanics/costs';
+
+export type BuildType = keyof typeof BUILD_COSTS;
 
 /**
  * Checks if a player has enough resources for a specific build cost.
@@ -45,4 +47,17 @@ export const canAffordCity = (G: GameState, playerID: string): boolean => {
  */
 export const canAffordDevCard = (G: GameState, playerID: string): boolean => {
     return canAfford(G, playerID, BUILD_COSTS.devCard);
+};
+
+/**
+ * Returns a map of all build types and whether the player can afford them.
+ * This is the primary facade for UI and Bots to check affordability.
+ */
+export const getAffordableBuilds = (G: GameState, playerID: string): Record<BuildType, boolean> => {
+    return {
+        road: canAffordRoad(G, playerID),
+        settlement: canAffordSettlement(G, playerID),
+        city: canAffordCity(G, playerID),
+        devCard: canAffordDevCard(G, playerID)
+    };
 };

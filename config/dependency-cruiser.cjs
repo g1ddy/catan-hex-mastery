@@ -104,6 +104,14 @@ module.exports = {
             pathNot: '^src/game/rules/validator.ts'
         },
         comment: 'Moves and AI must access rules via the RuleEngine facade (validator.ts), not internal rule modules.'
+    },
+    /* 7. UI/Bots cannot import from Mechanics (Must use Rules Facades) */
+    {
+      name: 'bypass-rules-layer',
+      severity: 'error',
+      from: { path: ['^src/components', '^src/bots', '^src/hooks'] },
+      to: { path: '^src/game/mechanics' },
+      comment: 'UI, Bots, and Hooks must access game logic through Rules facades, not Mechanics directly.',
     }
   ],
 };

@@ -1,4 +1,4 @@
-import { BANK_TRADE_GIVE_AMOUNT } from '../config';
+import { BANK_TRADE_GIVE_AMOUNT } from '../constants';
 import { GameState, Resources } from '../types';
 import { safeGet } from '../../utils/objectUtils';
 

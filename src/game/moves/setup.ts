@@ -3,7 +3,7 @@ import { GameState, TerrainType } from '../types';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
-import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
+import { TERRAIN_TO_RESOURCE } from '../constants';
 import { RuleEngine } from '../rules/validator';
 import { generateBoard } from '../boardGen';
 import { calculateBoardStats } from '../analysis/analyst';

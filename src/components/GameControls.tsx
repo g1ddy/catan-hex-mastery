@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { GameState, RollStatus } from '../game/types';
-import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
+import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/constants';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
-import { getAffordableBuilds } from '../game/mechanics/costs';
+import { getAffordableBuilds } from '../game/rules/costs';
 import { StrategicAdvice } from '../game/analysis/coach';
 import { useTradeLogic } from '../hooks/useTradeLogic';
 
@@ -144,7 +144,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
 
         // Build Button Logic
-        const affordMap = getAffordableBuilds(resources);
+        const affordMap = getAffordableBuilds(G, ctx.currentPlayer);
 
         const moveNameMap: Record<string, string> = {
             road: 'buildRoad',

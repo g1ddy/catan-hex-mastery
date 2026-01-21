@@ -7,11 +7,11 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Mock dependencies
 jest.mock('../game/analysis/coach');
-jest.mock('../game/mechanics/costs', () => ({
+jest.mock('../game/rules/costs', () => ({
     getAffordableBuilds: jest.fn()
 }));
 
-import { getAffordableBuilds } from '../game/mechanics/costs';
+import { getAffordableBuilds } from '../game/rules/costs';
 import { createMockGameState } from '../game/testUtils';
 
 // Mock getHexesForVertex to avoid crashes

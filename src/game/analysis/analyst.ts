@@ -1,5 +1,5 @@
 import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from '../types';
-import { PIP_MAP } from '../config';
+import { PIP_MAP } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
 import { safeGet } from '../../utils/objectUtils';
 

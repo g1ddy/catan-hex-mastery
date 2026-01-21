@@ -34,22 +34,3 @@ export const COLORS = {
 export const GAME_CONFIG = {
   mode: 'local' as const,
 };
-
-export const BUILD_COSTS = {
-  road: { wood: 1, brick: 1 },
-  settlement: { wood: 1, brick: 1, wheat: 1, sheep: 1 },
-  city: { wheat: 2, ore: 3 },
-  devCard: { ore: 1, wheat: 1, sheep: 1 },
-};
-
-export const PIP_MAP: Record<number, number> = {
-  2: 1, 12: 1,
-  3: 2, 11: 2,
-  4: 3, 10: 3,
-  5: 4, 9: 4,
-  6: 5, 8: 5,
-  7: 0
-};
-
-export const BANK_TRADE_GIVE_AMOUNT = 4;
-export const BANK_TRADE_RECEIVE_AMOUNT = 1;

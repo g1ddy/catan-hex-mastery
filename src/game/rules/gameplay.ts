@@ -1,9 +1,7 @@
 import { GameState } from '../types';
-import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
+import { canAffordRoad, canAffordSettlement, canAffordCity } from './costs';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
-import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
 import { isValidPlayer } from '../../utils/validation';
-import { BANK_TRADE_GIVE_AMOUNT } from '../config';
 import { countResources } from '../mechanics/resources';
 import { getVerticesForHex } from '../hexUtils';
 import { safeGet } from '../../utils/objectUtils';
@@ -36,25 +34,6 @@ export const validateBuildCity = (G: GameState, playerID: string, vertexId: stri
         return { isValid: false, reason: "Not enough resources to build a city (requires 3 Ore, 2 Wheat)" };
     }
     return isValidCityPlacement(G, vertexId, playerID);
-};
-
-/**
- * Validates the "Trade Bank" move.
- */
-export const validateTradeBank = (G: GameState, playerID: string): ValidationResult<TradeResult> => {
-    if (!isValidPlayer(playerID, G)) {
-        return { isValid: false, reason: "Invalid player" };
-    }
-
-    const player = G.players[playerID];
-    const { rates, portEdges } = getExchangeRates(G, playerID);
-    const tradeResult = calculateTrade(player.resources, rates, portEdges);
-
-    if (!tradeResult.canTrade) {
-        return { isValid: false, reason: `You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade.` };
-    }
-
-    return { isValid: true, data: tradeResult };
 };
 
 /**

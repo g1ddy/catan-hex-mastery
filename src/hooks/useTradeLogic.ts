@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { GameState } from '../game/types';
-import { calculateTrade, getExchangeRates, TradeResult, ExchangeRates } from '../game/mechanics/trade';
+import { calculateTrade, getTradeRates, TradeResult, ExchangeRates } from '../game/rules/trade';
 import { STAGE_MOVES } from '../game/constants';
 import { Ctx } from 'boardgame.io';
 
@@ -18,10 +18,8 @@ export const useTradeLogic = (G: GameState, ctx: Ctx): UseTradeLogicResult => {
         const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
         const canTradeBank = allowedMoves && (allowedMoves as readonly string[]).includes('tradeBank');
 
-        const { rates, portEdges } = getExchangeRates(G, ctx.currentPlayer);
-        const resources = G.players[ctx.currentPlayer]?.resources || { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
-
-        const tradeResult = calculateTrade(resources, rates, portEdges);
+        const { rates, portEdges } = getTradeRates(G, ctx.currentPlayer);
+        const tradeResult = calculateTrade(G, ctx.currentPlayer);
 
         const canTrade = tradeResult.canTrade && !!canTradeBank;
         const highlightedPortEdgeId = canTrade ? tradeResult.usedPortEdgeId : undefined;

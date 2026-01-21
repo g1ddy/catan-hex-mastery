@@ -1,6 +1,6 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState, TerrainType, Hex } from '../types';
-import { BUILD_COSTS } from '../config';
+import { BUILD_COSTS } from '../constants';
 import { Ctx } from 'boardgame.io';
 import { safeSet, safeGet } from '../../utils/objectUtils';
 

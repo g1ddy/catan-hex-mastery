@@ -1,16 +1,7 @@
-import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
+import { GameState, Resources } from '../types';
 import { getVerticesForHex } from '../hexUtils';
 import { safeGet } from '../../utils/objectUtils';
-
-/**
- * Mapping of TerrainType to Resource string.
- */
-export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, keyof Resources>> = Object.entries(TERRAIN_CONFIG).reduce((acc, [terrain, resource]) => {
-    if (resource) {
-        acc[terrain as TerrainType] = resource as keyof Resources;
-    }
-    return acc;
-}, {} as Partial<Record<TerrainType, keyof Resources>>);
+import { TERRAIN_TO_RESOURCE } from '../constants';
 
 /**
  * Helper to count total resources in a bundle.
