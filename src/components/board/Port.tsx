@@ -9,6 +9,7 @@ interface PortProps {
     angle: number; // Angle of the edge (unused for now, maybe for rotation later)
     type: PortType;
     ownerColor: string | null;
+    isActive?: boolean;
 }
 
 // Map PortType (Resource) to TerrainType to reuse colors
@@ -45,6 +46,17 @@ export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
 
     return (
         <g transform={`translate(${px}, ${py})`}>
+            {/* Active Glow/Ring */}
+            {isActive && (
+                <circle
+                    r={3.5}
+                    fill="none"
+                    stroke="#FBBF24" // Amber-400
+                    strokeWidth={0.8}
+                    className="animate-pulse"
+                />
+            )}
+
             {/* Port Background Circle */}
             <circle
                 r={2.5}

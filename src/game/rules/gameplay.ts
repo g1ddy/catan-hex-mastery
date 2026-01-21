@@ -1,7 +1,7 @@
 import { GameState } from '../types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
-import { calculateTrade, TradeResult } from '../mechanics/trade';
+import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
 import { isValidPlayer } from '../../utils/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../config';
 import { countResources } from '../mechanics/resources';
@@ -47,10 +47,11 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
     }
 
     const player = G.players[playerID];
-    const tradeResult = calculateTrade(player.resources);
+    const { rates, portEdges } = getExchangeRates(G, playerID);
+    const tradeResult = calculateTrade(player.resources, rates, portEdges);
 
     if (!tradeResult.canTrade) {
-        return { isValid: false, reason: `You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade.` };
+        return { isValid: false, reason: `You need at least ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade.` };
     }
 
     return { isValid: true, data: tradeResult };

@@ -36,7 +36,7 @@ jest.mock('../utils/moveUtils', () => ({
 
 describe('GameControls Accessibility', () => {
     const mockG: GameState = {
-        board: { hexes: {}, vertices: {}, edges: {} },
+        board: { hexes: {}, vertices: {}, edges: {}, ports: {} },
         players: {
             '0': {
                 id: '0',
@@ -154,7 +154,7 @@ describe('GameControls Accessibility', () => {
 
         const tradeButtonContainer = screen.getByTestId('trade-button-container');
 
-        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource to trade');
+        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource (or less with ports) to trade');
     });
 
     test('Roll button shows "Rolling..." when status is ROLLING', () => {

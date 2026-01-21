@@ -16,6 +16,7 @@ import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { GameNotification } from './GameNotification';
 import { PHASES, STAGE_MOVES, STAGES } from '../game/constants';
+import { getExchangeRates, calculateTrade } from '../game/mechanics/trade';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { isValidRobberPlacement } from '../game/rules/spatial';
@@ -170,6 +171,23 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
       }
   };
 
+  // Calculate active port for highlighting
+  let highlightedPortEdgeId: string | undefined;
+  if (ctx.phase === PHASES.GAMEPLAY) {
+      const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+      const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
+      const canTradeBank = allowedMoves && (allowedMoves as readonly string[]).includes('tradeBank');
+
+      if (canTradeBank) {
+          const { rates, portEdges } = getExchangeRates(G, ctx.currentPlayer);
+          const resources = G.players[ctx.currentPlayer].resources;
+          const tradeResult = calculateTrade(resources, rates, portEdges);
+          if (tradeResult.canTrade) {
+              highlightedPortEdgeId = tradeResult.usedPortEdgeId;
+          }
+      }
+  }
+
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
         {/* Tooltip for Coach Mode */}
@@ -250,6 +268,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 setUiMode={setUiMode}
                 showResourceHeatmap={showResourceHeatmap}
                 coachData={coachData}
+                highlightedPortEdgeId={highlightedPortEdgeId}
               />
             ))}
           </g>

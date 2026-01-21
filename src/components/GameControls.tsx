@@ -7,7 +7,7 @@ import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
-import { calculateTrade } from '../game/mechanics/trade';
+import { calculateTrade, getExchangeRates } from '../game/mechanics/trade';
 import { StrategicAdvice } from '../game/analysis/coach';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
@@ -172,16 +172,17 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
 
         // Trade Logic
-        const tradeResult = calculateTrade(resources);
+        const { rates, portEdges } = getExchangeRates(G, ctx.currentPlayer);
+        const tradeResult = calculateTrade(resources, rates, portEdges);
         const canTrade = tradeResult.canTrade && isMoveAllowed('tradeBank');
         const tradeTooltip = canTrade
             ? JSON.stringify({
                 give: tradeResult.give,
                 receive: tradeResult.receive,
-                giveAmount: BANK_TRADE_GIVE_AMOUNT,
+                giveAmount: tradeResult.giveAmount,
                 receiveAmount: BANK_TRADE_RECEIVE_AMOUNT
             })
-            : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource to trade`;
+            : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade`;
 
         const handleTrade = () => {
             if (canTrade) {
