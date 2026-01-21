@@ -55,13 +55,24 @@ We use a dual-layer testing strategy:
 
 ## 🏗 Architecture
 
-The project follows a 4-Layer Architecture to separate concerns between Rules, Enumeration, Evaluation, and Decision.
+The project follows a **5-Layer Architecture** (Layers 0-4) to separate concerns between Foundation, Validation, Enumeration, Evaluation, and Decision.
 
-### 1. Logic Layer (The "Rule Engine")
-*   **`src/game/rules/validator.ts`**: The Facade (Single Source of Truth). It exposes `RuleEngine.validateMove` and `RuleEngine.validateMoveOrThrow`.
-*   **`src/game/rules/gameplay.ts`**: Validates state-aware moves (e.g., costs, turn order).
-*   **`src/game/rules/spatial.ts`**: Validates pure geometric rules (e.g., "Is this spot connected?").
-*   **`src/game/rules/common.ts`**: Shared utilities (Security, Affordability).
+### 0. Foundation Layer (Mechanics & Geometry)
+*   **`src/game/mechanics/*.ts`**: Pure logic and static data.
+    *   `resources.ts`, `costs.ts`, `scoring.ts`.
+    *   Provides primitives like "What does a road cost?" or "Is this trade valid?".
+*   **`src/game/geometry/*.ts`** (Proposed): Math and spatial utilities.
+    *   `hexUtils.ts`, `geometry.ts`.
+    *   Provides "Get neighbors", "Calculate distance".
+*   **Access:** Can be imported by **any** higher layer.
+
+### 1. Rules Layer (The "Validator")
+*   **`src/game/rules/validator.ts`**: The Facade (Single Source of Truth) for **Validation**.
+    *   It exposes `RuleEngine.validateMove` and `RuleEngine.validateMoveOrThrow`.
+*   **Internal Rules**:
+    *   `gameplay.ts`: Validates state-aware moves (e.g., turn order).
+    *   `spatial.ts`: Validates geometric rules using Foundation (e.g., "Is this spot connected?").
+*   **Responsibility**: Enforce the rules of the game. It uses Layer 0 for data but adds the "Permission" logic.
 
 ### 2. Enumeration Layer (The "Generator")
 *   **`src/game/ai/enumerator.ts`**: Generates all legally possible actions for a turn.
@@ -107,6 +118,11 @@ graph TD
         G[rules/gameplay.ts]
     end
 
+    subgraph Layer_0_Foundation [Foundation Layer]
+        Mech[mechanics/costs.ts]
+        Geo[geometry/*.ts]
+    end
+
     %% Flows
     BC -->|Get Options| Enum
     BC -->|Get Scores| C
@@ -116,11 +132,17 @@ graph TD
     %% Internal Rules
     V --> P
     V --> G
+
+    %% Foundation Usage
+    V --> Mech
+    P --> Geo
+    BC --> Mech
+    C --> Mech
 ```
 
 ### Architecture Verification
 
-We enforce this 4-layer architecture using `dependency-cruiser`. This ensures that lower layers (like Mechanics or Rules) never accidentally import from higher layers (like AI or Moves), keeping the dependency graph clean and acyclic.
+We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
 
 *   **Command Line**: You can verify the architecture manually by running:
     ```bash
@@ -130,30 +152,50 @@ We enforce this 4-layer architecture using `dependency-cruiser`. This ensures th
 *   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
 *   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
 
-## 📂 Project Structure
+## 📂 Project Structure & Namespace Best Practices
+
+### Ideal Structure
+
+We aim for small, focused classes with specific responsibilities.
 
 ```
 src/
-├── bots/           # AI implementations (BotCoach, Profiles)
-├── components/     # React UI components (Board, GameControls)
-├── game/           # Core Game Logic
-│   ├── ai/         # Move Enumeration
-│   ├── analysis/   # Coach & Scoring Heuristics
-│   ├── mechanics/  # Mechanics (Resources, Costs)
-│   ├── moves/      # Execution Layer (boardgame.io Moves)
-│   ├── rules/      # Rule Engine (Validator, Spatial, Gameplay)
-│   ├── config.ts   # Global constants (Board size, Costs)
-│   └── Game.ts     # Main boardgame.io Game Object
-├── styles/         # CSS & Tailwind config
-└── App.tsx         # Main entry point
+├── game/
+│   ├── core/           # (Proposed) Constants, Types, Config
+│   ├── geometry/       # (Proposed) Pure Math: geometry.ts, hexUtils.ts
+│   ├── generation/     # (Proposed) Setup: boardGen.ts
+│   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts
+│   ├── rules/          # Validation: validator.ts (Facade), spatial.ts
+│   ├── ai/             # Enumeration: enumerator.ts
+│   ├── analysis/       # Evaluation: coach.ts, analyst.ts
+│   ├── moves/          # Execution: build.ts, trade.ts
+│   └── Game.ts         # Main Entry Point
 ```
+
+### Namespace Guidelines
+1.  **Keep Root Clean**: `src/game/` should only contain the main `Game.ts`. Auxiliaries like `types.ts` or `constants.ts` should live in `src/game/core/`.
+2.  **Group by Domain**:
+    *   **Math** goes to `geometry/`.
+    *   **Setup Logic** goes to `generation/`.
+    *   **Game Rules** (Costs, Etc) go to `mechanics/`.
+3.  **No Monoliths**: Avoid "Utils" folders that become dumping grounds. `hexUtils` is acceptable because it is specific to the Hexagonal Grid domain, but `gameUtils` would be an anti-pattern.
 
 ## 🗺️ Development Roadmap
 
-### Completed Phases ✅
-*   **Phase 1-4**: Core Engine & Heuristics.
-*   **Phase 5 (Refactor)**: Unified 4-Layer Architecture (Validator, Enumerator).
-*   **Phase 6 (UI/UX)**: Mobile Layouts (Drawers), Visual Feedback (Tooltips, Toasts), Responsive Dashboard.
+### Refactoring Roadmap (To-Do) 🛠️
+To align with the Ideal Structure, we plan the following moves:
+
+- [ ] **Geometry Cleanup**:
+    - Move `src/game/geometry.ts` -> `src/game/geometry/index.ts` (or `math.ts`)
+    - Move `src/game/staticGeometry.ts` -> `src/game/geometry/static.ts`
+    - Move `src/game/hexUtils.ts` -> `src/game/geometry/hexUtils.ts`
+- [ ] **Generation Cleanup**:
+    - Move `src/game/boardGen.ts` -> `src/game/generation/boardGen.ts`
+- [ ] **Core Cleanup**:
+    - Move `src/game/types.ts` -> `src/game/core/types.ts`
+    - Move `src/game/constants.ts` -> `src/game/core/constants.ts`
+    - Move `src/game/config.ts` -> `src/game/core/config.ts`
+- [ ] **Dependency Cruiser**: Update `config/dependency-cruiser.cjs` aliases to reflect these new paths.
 
 ### Current Focus: Phase 7 (Full Game Loop) 🚧
 - [x] **Robber Mechanics**:
