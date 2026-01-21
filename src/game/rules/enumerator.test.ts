@@ -4,15 +4,21 @@ import { GameState } from '../types';
 import { STAGES } from '../constants';
 
 // Mock validator functions
-jest.mock('../rules/validator', () => {
+jest.mock('./validator', () => {
+    return {
+        RuleEngine: {
+            validateMove: jest.fn(() => ({ isValid: true }))
+        }
+    };
+});
+
+jest.mock('./queries', () => {
     return {
         getValidSetupSettlementSpots: jest.fn(() => new Set(['1_1_1'])),
         getValidSetupRoadSpots: jest.fn(() => new Set(['edge_1'])),
         getValidSettlementSpots: jest.fn(() => new Set(['2_2_2'])),
         getValidCitySpots: jest.fn(() => new Set(['3_3_3'])),
         getValidRoadSpots: jest.fn(() => new Set(['edge_2'])),
-        getEdgesForHex: jest.fn(() => []),
-        getVerticesForHex: jest.fn(() => []),
         getValidRobberSpots: jest.fn((G) => {
              // Mimic logic for test: return keys of hexes excluding robberLocation
              if (!G.board || !G.board.hexes) return new Set();
@@ -49,9 +55,6 @@ jest.mock('../rules/validator', () => {
                 validRoads: new Set()
             };
         }),
-        RuleEngine: {
-            validateMove: jest.fn(() => ({ isValid: true }))
-        }
     };
 });
 

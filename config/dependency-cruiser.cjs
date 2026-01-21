@@ -2,15 +2,14 @@
 const L = {
     MECHANICS: '^src/game/mechanics',
     RULES: '^src/game/rules',
-    AI: '^src/game/ai',
     ANALYSIS: '^src/game/analysis',
     MOVES: '^src/game/moves',
     BOTS: '^src/bots',
 };
 
 // Groups of layers for easier rule definition
-const HIGHER_THAN_MECHANICS = [L.RULES, L.AI, L.ANALYSIS, L.MOVES, L.BOTS];
-const HIGHER_THAN_RULES = [L.AI, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_MECHANICS = [L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_RULES = [L.ANALYSIS, L.MOVES, L.BOTS];
 
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
@@ -52,37 +51,22 @@ module.exports = {
       to: {
         path: HIGHER_THAN_RULES
       },
-      comment: 'Rules layer (Validator) cannot depend on AI, Analysis, or Moves.',
+      comment: 'Rules layer (Validator/Enumerator) cannot depend on Analysis, Moves, or Bots.',
     },
-    /* 3. Enumeration Layer cannot import from Decision or Evaluation layers */
-    {
-        name: 'enumeration-layer-violation',
-        severity: 'error',
-        from: { path: L.AI },
-        to: {
-          path: [
-              L.ANALYSIS, // Enumerator generates moves, doesn't score them
-              L.MOVES,
-              L.BOTS
-          ]
-        },
-        comment: 'Enumeration layer is for generating moves only.',
-    },
-    /* 4. Evaluation Layer cannot import from Decision or Enumeration layers */
+    /* 3. Evaluation Layer cannot import from Decision layers */
     {
         name: 'evaluation-layer-violation',
         severity: 'error',
         from: { path: L.ANALYSIS },
         to: {
           path: [
-              L.AI,
               L.MOVES,
               L.BOTS
           ]
         },
         comment: 'Evaluation layer (Coach) evaluates state, not moves or bots.',
     },
-    /* 5. Decision Layer (Moves) cannot import from Bots (circular) */
+    /* 4. Decision Layer (Moves) cannot import from Bots (circular) */
     {
         name: 'moves-layer-violation',
         severity: 'error',
@@ -92,18 +76,21 @@ module.exports = {
         },
         comment: 'Moves are executed by game engine, should not depend on Bots.',
     },
-    /* 6. Chain of Command: Moves/AI must use RuleEngine Facade */
+    /* 5. Chain of Command: Moves must use RuleEngine Facade */
     {
         name: 'bypass-rule-facade',
         severity: 'error',
         from: {
-            path: [L.MOVES, L.AI]
+            path: [L.MOVES]
         },
         to: {
             path: L.RULES,
-            pathNot: '^src/game/rules/validator.ts'
+            pathNot: [
+                '^src/game/rules/validator.ts',
+                '^src/game/rules/queries.ts' // Allow Moves to access Queries directly if needed? Or restrict?
+            ]
         },
-        comment: 'Moves and AI must access rules via the RuleEngine facade (validator.ts), not internal rule modules.'
+        comment: 'Moves must access rules via the RuleEngine facade (validator.ts) or Query facade (queries.ts).'
     }
   ],
 };

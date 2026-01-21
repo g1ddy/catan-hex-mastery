@@ -1,6 +1,6 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, TerrainType, GameAction, BotMove } from '../types';
-import { getValidSetupSettlementSpots } from '../rules/validator';
+import { getValidSetupSettlementSpots } from '../rules/queries';
 import { isValidPlayer } from '../../utils/validation';
 import { getPips } from '../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';

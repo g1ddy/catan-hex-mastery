@@ -1,7 +1,8 @@
 import { Move } from 'boardgame.io';
 import { GameState, Resources } from '../types';
 import { STAGES } from '../constants';
-import { RuleEngine, getValidRobberVictims } from '../rules/validator';
+import { RuleEngine } from '../rules/validator';
+import { getValidRobberVictims } from '../rules/queries';
 
 export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID: string, victimID?: string) => {
     // 1. Validate the move (including victim choice)
@@ -16,7 +17,8 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
         // Use facade to get victims
         const potentialVictims = getValidRobberVictims(G, hexID, ctx.currentPlayer);
         if (potentialVictims.size > 0) {
-            targetVictimID = random.Shuffle(Array.from(potentialVictims))[0];
+            const victims = Array.from(potentialVictims);
+            targetVictimID = random.Shuffle(victims)[0] as string;
         }
     }
 

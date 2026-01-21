@@ -7,7 +7,7 @@ import { Ctx } from 'boardgame.io';
 import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
-import { enumerate } from './ai/enumerator';
+import { enumerate } from './rules/enumerator';
 import { GameState } from './types';
 
 interface SimulationState {

@@ -3,7 +3,8 @@ import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
-import { getValidMovesForStage, RuleEngine, getValidRobberSpots, getValidRobberVictims } from '../rules/validator';
+import { RuleEngine } from './validator';
+import { getValidMovesForStage, getValidRobberSpots, getValidRobberVictims } from './queries';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = <K extends keyof MoveArguments>(moveName: K, args: MoveArguments[K]): BotMove => ({
