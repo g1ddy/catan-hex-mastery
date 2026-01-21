@@ -8,6 +8,7 @@ import { calculateTrade } from '../mechanics/trade';
 import { STAGES } from '../constants';
 import { getHexesForVertex } from '../hexUtils';
 import { STRATEGIC_ADVICE } from './adviceConstants';
+import { safeGet } from '../../utils/objectUtils';
 
 export const ORE_RESERVE_THRESHOLD = 6;
 
@@ -90,7 +91,7 @@ export class Coach {
 
     private getVertexData(hexIds: string[]): { resources: string[], pips: number } {
         return hexIds.reduce((acc, hId) => {
-            const hex = this.G.board.hexes.get(hId);
+            const hex = safeGet(this.G.board.hexes, hId);
             if (!hex) return acc;
 
             if (hex.terrain) {

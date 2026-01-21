@@ -6,6 +6,7 @@ import { isValidPlayer } from '../../utils/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../config';
 import { countResources } from '../mechanics/resources';
 import { getVerticesForHex } from '../hexUtils';
+import { safeGet } from '../../utils/objectUtils';
 
 /**
  * Validates the "Build Road" move during the Gameplay Phase.
@@ -60,13 +61,13 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
  */
 export const getPotentialVictims = (G: GameState, hexID: string, playerID: string): Set<string> => {
     const potentialVictims = new Set<string>();
-    const hex = G.board.hexes.get(hexID);
+    const hex = safeGet(G.board.hexes, hexID);
     if (!hex) return potentialVictims;
 
     const vertices = getVerticesForHex(hex.coords);
 
     vertices.forEach(vId => {
-        const vertex = G.board.vertices.get(vId);
+        const vertex = safeGet(G.board.vertices, vId);
         if (vertex && vertex.owner !== playerID) {
             const victim = G.players[vertex.owner];
             if (victim && countResources(victim.resources) > 0) {
@@ -91,11 +92,11 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
 
     if (victimID) {
         if (!potentialVictims.has(victimID)) {
-            const hex = G.board.hexes.get(hexID);
+            const hex = safeGet(G.board.hexes, hexID);
             if (!hex) return { isValid: false, reason: "Invalid hex." }; // Should be caught by spatial check
 
             const vertices = getVerticesForHex(hex.coords);
-            const isOnHex = vertices.some(vId => G.board.vertices.get(vId)?.owner === victimID);
+            const isOnHex = vertices.some(vId => safeGet(G.board.vertices, vId)?.owner === victimID);
 
             if (!isOnHex) {
                  return { isValid: false, reason: "The chosen victim does not have a settlement on this hex." };

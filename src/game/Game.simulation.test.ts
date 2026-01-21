@@ -3,11 +3,17 @@
  */
 import { Client } from 'boardgame.io/client';
 import { Local } from 'boardgame.io/multiplayer';
+import { Ctx } from 'boardgame.io';
 import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './ai/enumerator';
 import { GameState } from './types';
+
+interface SimulationState {
+    G: GameState;
+    ctx: Ctx;
+}
 
 describe('Game Simulation with CatanBot', () => {
   it('should run a 2-player game without crashing', async () => {
@@ -38,7 +44,7 @@ describe('Game Simulation with CatanBot', () => {
     const MAX_STEPS = 500;
     let steps = 0;
 
-    const getState = (): GameState | null => client0.getState() as GameState | null;
+    const getState = (): SimulationState | undefined => client0.getState() as unknown as SimulationState | undefined;
 
     console.log('--- STARTING SIMULATION ---');
 

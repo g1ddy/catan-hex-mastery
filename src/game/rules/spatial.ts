@@ -1,6 +1,7 @@
 import { GameState } from '../types';
 import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
+import { safeCheck, safeGet } from '../../utils/objectUtils';
 
 export interface ValidationResult<T = unknown> {
     isValid: boolean;
@@ -9,7 +10,7 @@ export interface ValidationResult<T = unknown> {
 }
 
 const hasValidHex = (G: GameState, hexIds: string[]): boolean => {
-    return hexIds.some(id => G.board.hexes.has(id));
+    return hexIds.some(id => safeCheck(G.board.hexes, id));
 };
 
 export const validateSettlementLocation = (G: GameState, vertexId: string): ValidationResult => {
@@ -19,12 +20,12 @@ export const validateSettlementLocation = (G: GameState, vertexId: string): Vali
     if (!hasValidHex(G, getHexesForVertex(vertexId))) {
         return { isValid: false, reason: "This location is off the board" };
     }
-    if (G.board.vertices.has(vertexId)) {
+    if (safeCheck(G.board.vertices, vertexId)) {
         return { isValid: false, reason: "This vertex is already occupied" };
     }
 
     const neighbors = getVertexNeighbors(vertexId);
-    if (neighbors.some(n => G.board.vertices.has(n))) {
+    if (neighbors.some(n => safeCheck(G.board.vertices, n))) {
         return { isValid: false, reason: "Settlement is too close to another building" };
     }
 
@@ -42,7 +43,7 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
 
     const adjEdges = getEdgesForVertex(vertexId);
     const hasOwnRoad = adjEdges.some(eId => {
-        const edge = G.board.edges.get(eId);
+        const edge = safeGet(G.board.edges, eId);
         return edge?.owner === playerID;
     });
 
@@ -57,7 +58,7 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
     if (!isValidHexId(vertexId)) {
         return { isValid: false, reason: "Invalid vertex ID format" };
     }
-    const vertex = G.board.vertices.get(vertexId);
+    const vertex = safeGet(G.board.vertices, vertexId);
     if (!vertex) {
         return { isValid: false, reason: "No settlement exists at this location" };
     }
@@ -77,20 +78,20 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
     if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
-    if (G.board.edges.has(edgeId)) {
+    if (safeCheck(G.board.edges, edgeId)) {
         return { isValid: false, reason: "This edge is already occupied" };
     }
 
     const endpoints = getVerticesForEdge(edgeId);
     const hasConnection = endpoints.some(vId => {
-        const vertex = G.board.vertices.get(vId);
+        const vertex = safeGet(G.board.vertices, vId);
         if (vertex?.owner === playerID) return true;
         if (vertex && vertex.owner !== playerID) return false;
 
         const adjEdges = getEdgesForVertex(vId);
         return adjEdges.some(adjEdgeId => {
             if (adjEdgeId === edgeId) return false;
-            const adjEdge = G.board.edges.get(adjEdgeId);
+            const adjEdge = safeGet(G.board.edges, adjEdgeId);
             return adjEdge?.owner === playerID;
         });
     });
@@ -109,7 +110,7 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
     if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
-    if (G.board.edges.has(edgeId)) {
+    if (safeCheck(G.board.edges, edgeId)) {
         return { isValid: false, reason: "This edge is already occupied" };
     }
 
@@ -130,7 +131,7 @@ export const isValidRobberPlacement = (G: GameState, hexId: string): ValidationR
     if (!isValidHexId(hexId)) {
         return { isValid: false, reason: "Invalid hex ID format" };
     }
-    if (!G.board.hexes.has(hexId)) {
+    if (!safeCheck(G.board.hexes, hexId)) {
          return { isValid: false, reason: "Invalid hex location" };
     }
     if (G.robberLocation === hexId) {

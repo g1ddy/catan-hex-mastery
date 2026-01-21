@@ -12,6 +12,7 @@ describe('Coach Trade Logic', () => {
             players: {
                 '0': {
                     id: '0',
+                    name: 'Player 0',
                     resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
                     settlements: [],
                     roads: [],

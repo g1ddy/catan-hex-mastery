@@ -1,5 +1,6 @@
 import { Hex, TerrainType, CubeCoordinates, Port, PortType } from './types';
 import { getNeighbors, getEdgesForHex, parseEdgeId, getVerticesForEdge } from './hexUtils';
+import { safeSet, safeGet } from '../utils/objectUtils';
 import { shuffle } from 'lodash';
 
 const TERRAIN_COUNTS: Record<TerrainType, number> = {
@@ -47,11 +48,11 @@ function generateSpiralCoords(): CubeCoordinates[] {
     return results;
 }
 
-function generatePorts(hexes: Hex[]): Record<string, Port> {
+function generatePorts(hexes: Record<string, Hex>): Record<string, Port> {
     const ports: Record<string, Port> = {};
     const allEdges: string[] = [];
 
-    hexes.forEach(h => {
+    Object.values(hexes).forEach(h => {
         const edges = getEdgesForHex(h.coords);
         allEdges.push(...edges);
     });
@@ -99,22 +100,20 @@ function generatePorts(hexes: Hex[]): Record<string, Port> {
         // Distribute evenly
         // We have ~30 boundary edges. 9 ports.
         const edgeIndex = Math.floor(i * boundaryEdges.length / shuffledTypes.length);
-        // eslint-disable-next-line security/detect-object-injection
-        const edgeId = boundaryEdges[edgeIndex];
+        const edgeId = boundaryEdges[edgeIndex]; // eslint-disable-line security/detect-object-injection
         const vertices = getVerticesForEdge(edgeId);
 
-        // eslint-disable-next-line security/detect-object-injection
-        ports[edgeId] = {
+        safeSet(ports, edgeId, {
             type: shuffledTypes[i], // eslint-disable-line security/detect-object-injection
             edgeId,
             vertices
-        };
+        });
     }
 
     return ports;
 }
 
-export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
+export function generateBoard(): { hexes: Record<string, Hex>; ports: Record<string, Port> } {
     const coords = generateSpiralCoords();
 
     const terrainList: TerrainType[] = [];
@@ -124,14 +123,14 @@ export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
         for(let i=0; i<count; i++) terrainList.push(t);
     });
 
-    let hexes: Hex[] = [];
+    let hexes: Record<string, Hex> = {};
     let valid = false;
     let attempts = 0;
 
     while (!valid && attempts < 1000) {
         attempts++;
         const shuffledTerrains = shuffle(terrainList);
-        const tempHexes: Hex[] = [];
+        const tempHexes: Record<string, Hex> = {};
         let tokenIdx = 0;
 
         for (let i = 0; i < coords.length; i++) {
@@ -140,11 +139,12 @@ export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
             let token: number | null = null;
 
             if (terrain !== TerrainType.Desert && tokenIdx < STANDARD_TOKEN_ORDER.length) {
-                token = STANDARD_TOKEN_ORDER[tokenIdx++]; // eslint-disable-line security/detect-object-injection
+                token = STANDARD_TOKEN_ORDER[tokenIdx++];
             }
 
-            tempHexes.push({
-                id: `${coord.q},${coord.r},${coord.s}`,
+            const id = `${coord.q},${coord.r},${coord.s}`;
+            safeSet(tempHexes, id, {
+                id,
                 coords: coord,
                 terrain,
                 tokenValue: token
@@ -166,16 +166,13 @@ export function generateBoard(): { hexes: Hex[]; ports: Record<string, Port> } {
     return { hexes, ports };
 }
 
-function isValidBoard(hexes: Hex[]): boolean {
-    const hexMap = new Map<string, Hex>();
-    hexes.forEach(h => hexMap.set(h.id, h));
-
-    for (const hex of hexes) {
+function isValidBoard(hexes: Record<string, Hex>): boolean {
+    for (const hex of Object.values(hexes)) {
         if (hex.tokenValue === 6 || hex.tokenValue === 8) {
             const neighbors = getNeighbors(hex.coords);
             for (const n of neighbors) {
                 const nId = `${n.q},${n.r},${n.s}`;
-                const nHex = hexMap.get(nId);
+                const nHex = safeGet(hexes, nId);
                 if (nHex && (nHex.tokenValue === 6 || nHex.tokenValue === 8)) {
                     return false;
                 }

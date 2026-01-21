@@ -3,6 +3,7 @@ import { GameState } from '../types';
 import { BUILD_COSTS } from '../config';
 import { isValidHexId } from '../../utils/validation';
 import { RuleEngine } from '../rules/validator';
+import { safeSet, safeGet } from '../../utils/objectUtils';
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     // 0. Security Validation
@@ -17,7 +18,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildRoad', [edgeId]);
 
     // Execution
-    G.board.edges.set(edgeId, { owner: ctx.currentPlayer });
+    safeSet(G.board.edges, edgeId, { owner: ctx.currentPlayer });
     player.roads.push(edgeId);
     player.resources.wood -= cost.wood;
     player.resources.brick -= cost.brick;
@@ -36,7 +37,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildSettlement', [vertexId]);
 
     // Execution
-    G.board.vertices.set(vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
+    safeSet(G.board.vertices, vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
     player.settlements.push(vertexId);
     player.victoryPoints += 1;
     player.resources.wood -= cost.wood;
@@ -58,7 +59,7 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildCity', [vertexId]);
 
     // Execution
-    const vertex = G.board.vertices.get(vertexId);
+    const vertex = safeGet(G.board.vertices, vertexId);
     if (vertex) {
         vertex.type = 'city';
     }

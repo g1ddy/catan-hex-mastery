@@ -10,8 +10,8 @@ import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge }
 export const HEX_CORNERS = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i));
 
 export interface CachedHexGeometry {
-    vertices: { id: string; parts: string[] }[];
-    edges: { id: string; parts: string[] }[];
+    vertices: { id: string; parts: string[]; x: number; y: number }[];
+    edges: { id: string; parts: string[]; x: number; y: number }[];
     currentHexIdStr: string;
 }
 
@@ -40,8 +40,19 @@ export const getHexGeometry = (hex: Hex): CachedHexGeometry => {
     const rawVertexIds = getVerticesForHex(hex.coords);
     const rawEdgeIds = getEdgesForHex(hex.coords);
 
-    const verticesWithParts = rawVertexIds.map(id => ({ id, parts: getHexesForVertex(id) }));
-    const edgesWithParts = rawEdgeIds.map(id => ({ id, parts: getHexesForEdge(id) }));
+    const verticesWithParts = rawVertexIds.map((id, i) => ({
+        id,
+        parts: getHexesForVertex(id),
+        x: HEX_CORNERS[i].x,
+        y: HEX_CORNERS[i].y
+    }));
+
+    const edgesWithParts = rawEdgeIds.map((id, i) => ({
+        id,
+        parts: getHexesForEdge(id),
+        x: HEX_CORNERS[i].x,
+        y: HEX_CORNERS[i].y
+    }));
 
     const geometry: CachedHexGeometry = {
         vertices: verticesWithParts,

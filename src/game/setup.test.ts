@@ -4,7 +4,8 @@
 import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
 import { getSnakeDraftOrder } from './turnOrder';
-import { TerrainType } from './types';
+import { TerrainType, Hex, Vertex } from './types';
+import { safeGet } from '../utils/objectUtils';
 
 describe('Setup Phase Logic', () => {
   let client: ReturnType<typeof Client>;
@@ -28,10 +29,12 @@ describe('Setup Phase Logic', () => {
   test('Robber starts on the desert', () => {
     const { G } = client.store.getState();
     const robberHexId = G.robberLocation;
-    const robberHex = G.board.hexes.get(robberHexId);
+    const robberHex = safeGet<Hex>(G.board.hexes, robberHexId);
     expect(robberHex).toBeDefined();
-    expect(robberHex?.terrain).toBe(TerrainType.Desert);
-    expect(robberHex?.tokenValue).toBeNull();
+    if (robberHex) {
+        expect(robberHex.terrain).toBe(TerrainType.Desert);
+        expect(robberHex.tokenValue).toBeNull();
+    }
   });
 
   test('Snake draft order is correct', () => {
@@ -43,8 +46,11 @@ describe('Setup Phase Logic', () => {
     const vId = "0,0,0::1,-1,0::1,0,-1";
     client.moves.placeSettlement(vId);
     let state = client.store.getState();
-    expect(state.G.board.vertices.has(vId)).toBe(true);
-    expect(state.G.board.vertices.get(vId)?.owner).toBe('0');
+    const vertex = safeGet<Vertex>(state.G.board.vertices, vId);
+    expect(vertex).toBeDefined();
+    if (vertex) {
+        expect(vertex.owner).toBe('0');
+    }
 
     const eId = "0,0,0::1,-1,0";
     client.moves.placeRoad(eId);

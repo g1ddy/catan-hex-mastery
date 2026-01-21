@@ -1,6 +1,6 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { placeRoad, placeSettlement } from './setup';
-import { GameState, RollStatus, Edge, Vertex, Hex, Port } from '../types';
+import { GameState, RollStatus } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
@@ -22,10 +22,10 @@ describe('Security Validation: Input Sanitization', () => {
             },
         },
         board: {
-            edges: new Map<string, Edge>(),
-            vertices: new Map<string, Vertex>(),
-            hexes: new Map<string, Hex>(),
-            ports: new Map<string, Port>()
+            edges: {},
+            vertices: {},
+            hexes: {},
+            ports: {}
         },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
