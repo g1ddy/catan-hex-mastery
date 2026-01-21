@@ -170,7 +170,8 @@ export class Coach {
             return new Set<string>();
         }
 
-        const player = this.G.players[playerID];
+        const player = safeGet(this.G.players, playerID);
+        if (!player) return new Set<string>();
         const existingResources = new Set<string>();
 
         player.settlements.forEach(sVId => {
