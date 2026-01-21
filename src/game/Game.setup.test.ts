@@ -3,6 +3,7 @@
  */
 import { CatanGame } from './Game';
 import { Ctx } from 'boardgame.io';
+import { GameState } from './types';
 
 // Mock the full Setup Context required by boardgame.io
 // This avoids using 'as any' and satisfies the type requirements for the setup function
@@ -27,7 +28,7 @@ describe('CatanGame.setup', () => {
     } as Ctx;
 
     it('should initialize with default player names if no setupData provided', () => {
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx));
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx)) as GameState;
 
         expect(G.players['0'].name).toBe('Player 1');
         expect(G.players['1'].name).toBe('Player 2');
@@ -43,7 +44,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData);
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData) as GameState;
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Bob (Bot)');
@@ -59,7 +60,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData);
+        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData) as GameState;
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Player 2'); // Fallback

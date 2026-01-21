@@ -1,90 +1,50 @@
 import { GameState } from '../types';
 import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../hexUtils';
 import { isValidHexId } from '../../utils/validation';
+import { safeCheck, safeGet } from '../../utils/objectUtils';
 
-/* eslint-disable security/detect-object-injection */
-
-/**
- * Represents the result of a validation check.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
     isValid: boolean;
     reason?: string;
     data?: T;
 }
 
-/**
- * Generic helper to check if a set of hex IDs contains at least one valid board hex.
- * Used for both edges and vertices.
- */
 const hasValidHex = (G: GameState, hexIds: string[]): boolean => {
-    return hexIds.some(id => Object.prototype.hasOwnProperty.call(G.board.hexes, id));
+    return hexIds.some(id => safeCheck(G.board.hexes, id));
 };
 
-/**
- * Checks if a settlement can be placed at the given vertex based on physical rules.
- * Enforces:
- * 1. Spot is not already occupied.
- * 2. Distance Rule: No other building is adjacent.
- *
- * This does NOT check for road connectivity (which is not required in Setup, but is in Gameplay).
- *
- * @param G The game state.
- * @param vertexId The ID of the vertex to check.
- * @returns A ValidationResult object.
- */
 export const validateSettlementLocation = (G: GameState, vertexId: string): ValidationResult => {
-    // 0. Security Validation
     if (!isValidHexId(vertexId)) {
         return { isValid: false, reason: "Invalid vertex ID format" };
     }
-
-    // 0.5 Check if on board
     if (!hasValidHex(G, getHexesForVertex(vertexId))) {
         return { isValid: false, reason: "This location is off the board" };
     }
-
-    // 1. Check if occupied
-    if (G.board.vertices[vertexId]) {
+    if (safeCheck(G.board.vertices, vertexId)) {
         return { isValid: false, reason: "This vertex is already occupied" };
     }
 
-    // 2. Check Distance Rule
     const neighbors = getVertexNeighbors(vertexId);
-    if (neighbors.some(n => G.board.vertices[n])) {
+    if (neighbors.some(n => safeCheck(G.board.vertices, n))) {
         return { isValid: false, reason: "Settlement is too close to another building" };
     }
 
     return { isValid: true };
 };
 
-/**
- * Backwards compatibility wrapper for boolean checks.
- * @deprecated Use validateSettlementLocation for detailed errors.
- */
+/** @deprecated Use validateSettlementLocation for detailed errors. */
 export const isValidSettlementLocation = (G: GameState, vertexId: string): boolean => {
     return validateSettlementLocation(G, vertexId).isValid;
 };
 
-/**
- * Checks if a settlement allows placement by a specific player, including connectivity.
- * Use this for the "Build Settlement" action during Gameplay.
- *
- * @param G The game state.
- * @param vertexId The ID of the vertex.
- * @param playerID The player ID.
- * @returns ValidationResult
- */
 export const isValidSettlementPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
     const locationCheck = validateSettlementLocation(G, vertexId);
     if (!locationCheck.isValid) return locationCheck;
 
-    // Check connectivity to own road
     const adjEdges = getEdgesForVertex(vertexId);
     const hasOwnRoad = adjEdges.some(eId => {
-        const edge = G.board.edges[eId];
-        return edge && edge.owner === playerID;
+        const edge = safeGet(G.board.edges, eId);
+        return edge?.owner === playerID;
     });
 
     if (!hasOwnRoad) {
@@ -94,22 +54,11 @@ export const isValidSettlementPlacement = (G: GameState, vertexId: string, playe
     return { isValid: true };
 };
 
-/**
- * Checks if a city can be placed at the given vertex.
- * Enforces:
- * 1. Must be an existing settlement owned by the player.
- *
- * @param G The game state.
- * @param vertexId The ID of the vertex to check.
- * @param playerID The ID of the player attempting to build.
- * @returns ValidationResult
- */
 export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: string): ValidationResult => {
-    // 0. Security Validation
     if (!isValidHexId(vertexId)) {
         return { isValid: false, reason: "Invalid vertex ID format" };
     }
-    const vertex = G.board.vertices[vertexId];
+    const vertex = safeGet(G.board.vertices, vertexId);
     if (!vertex) {
         return { isValid: false, reason: "No settlement exists at this location" };
     }
@@ -122,53 +71,28 @@ export const isValidCityPlacement = (G: GameState, vertexId: string, playerID: s
     return { isValid: true };
 };
 
-/**
- * Checks if a road can be placed at the given edge.
- * Enforces:
- * 1. Edge is not already occupied.
- * 2. Connectivity: Must connect to an existing road or building owned by the player.
- * 3. Blocking: Cannot connect through an opponent's settlement/city.
- *
- * @param G The game state.
- * @param edgeId The ID of the edge to check.
- * @param playerID The ID of the player attempting to build.
- * @returns A ValidationResult object.
- */
 export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
-    // 0. Security Validation
     if (!isValidHexId(edgeId)) {
         return { isValid: false, reason: "Invalid edge ID format" };
     }
-
-    // 0.5 Check if on board
     if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
-
-    // 1. Check if occupied
-    if (G.board.edges[edgeId]) {
+    if (safeCheck(G.board.edges, edgeId)) {
         return { isValid: false, reason: "This edge is already occupied" };
     }
 
-    // 2. Connectivity & Blocking
     const endpoints = getVerticesForEdge(edgeId);
-
     const hasConnection = endpoints.some(vId => {
-        const vertex = G.board.vertices[vId];
+        const vertex = safeGet(G.board.vertices, vId);
+        if (vertex?.owner === playerID) return true;
+        if (vertex && vertex.owner !== playerID) return false;
 
-        // A. Direct connection to own.
-        if (vertex && vertex.owner === playerID) return true;
-
-        // B. Connection to own road (IF not blocked by opponent building)
-        if (vertex && vertex.owner !== playerID) return false; // Blocked by opponent or just opponent's building
-
-        // If vertex is empty (or technically shouldn't happen if we returned above, but for safety: vertex is undefined or null)
-        // Check for incoming roads
         const adjEdges = getEdgesForVertex(vId);
         return adjEdges.some(adjEdgeId => {
             if (adjEdgeId === edgeId) return false;
-            const adjEdge = G.board.edges[adjEdgeId];
-            return adjEdge && adjEdge.owner === playerID;
+            const adjEdge = safeGet(G.board.edges, adjEdgeId);
+            return adjEdge?.owner === playerID;
         });
     });
 
@@ -179,38 +103,22 @@ export const isValidRoadPlacement = (G: GameState, edgeId: string, playerID: str
     return { isValid: true };
 };
 
-/**
- * Checks if a road can be placed during the Setup Phase.
- * Special Setup Rule: Must be attached to the player's last placed settlement.
- *
- * @param G The game state
- * @param edgeId The edge ID
- * @param playerID The player ID
- * @returns A ValidationResult object.
- */
 export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID: string): ValidationResult => {
-    // 0. Security Validation
     if (!isValidHexId(edgeId)) {
         return { isValid: false, reason: "Invalid edge ID format" };
     }
-
-    // 0.5 Check if on board
     if (!hasValidHex(G, getHexesForEdge(edgeId))) {
         return { isValid: false, reason: "This edge is off the board" };
     }
-
-    // Check Occupancy
-    if (G.board.edges[edgeId]) {
+    if (safeCheck(G.board.edges, edgeId)) {
         return { isValid: false, reason: "This edge is already occupied" };
     }
 
-    // Check for active settlement
-    const lastSettlementId = G.players[playerID].settlements.at(-1);
+    const lastSettlementId = G.players[playerID]?.settlements.at(-1);
     if (!lastSettlementId) {
         return { isValid: false, reason: "No active settlement found to connect to" };
     }
 
-    // Check Connectivity
     const connectedEdges = getEdgesForVertex(lastSettlementId);
     if (!connectedEdges.includes(edgeId)) {
         return { isValid: false, reason: "Road must connect to your just-placed settlement" };
@@ -219,29 +127,13 @@ export const isValidSetupRoadPlacement = (G: GameState, edgeId: string, playerID
     return { isValid: true };
 };
 
-/**
- * Checks if the robber can be moved to the given hex.
- * Enforces:
- * 1. Hex must exist on the board.
- * 2. Hex must not be the current robber location.
- *
- * @param G The game state
- * @param hexId The hex ID
- * @returns A ValidationResult object.
- */
 export const isValidRobberPlacement = (G: GameState, hexId: string): ValidationResult => {
-    // 0. Security Validation
     if (!isValidHexId(hexId)) {
         return { isValid: false, reason: "Invalid hex ID format" };
     }
-
-    // 1. Check if hex exists
-    // Use hasOwnProperty to avoid prototype pollution per Guidelines
-    if (!Object.prototype.hasOwnProperty.call(G.board.hexes, hexId)) {
+    if (!safeCheck(G.board.hexes, hexId)) {
          return { isValid: false, reason: "Invalid hex location" };
     }
-
-    // 2. Check if moving to same spot
     if (G.robberLocation === hexId) {
         return { isValid: false, reason: "You must move the robber to a new location" };
     }

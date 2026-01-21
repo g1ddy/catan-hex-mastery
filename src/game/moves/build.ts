@@ -3,6 +3,7 @@ import { GameState } from '../types';
 import { BUILD_COSTS } from '../config';
 import { isValidHexId } from '../../utils/validation';
 import { RuleEngine } from '../rules/validator';
+import { safeSet, safeGet } from '../../utils/objectUtils';
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     // 0. Security Validation
@@ -17,8 +18,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildRoad', [edgeId]);
 
     // Execution
-    // eslint-disable-next-line security/detect-object-injection
-    G.board.edges[edgeId] = { owner: ctx.currentPlayer };
+    safeSet(G.board.edges, edgeId, { owner: ctx.currentPlayer });
     player.roads.push(edgeId);
     player.resources.wood -= cost.wood;
     player.resources.brick -= cost.brick;
@@ -37,8 +37,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildSettlement', [vertexId]);
 
     // Execution
-    // eslint-disable-next-line security/detect-object-injection
-    G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' };
+    safeSet(G.board.vertices, vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
     player.settlements.push(vertexId);
     player.victoryPoints += 1;
     player.resources.wood -= cost.wood;
@@ -60,8 +59,7 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildCity', [vertexId]);
 
     // Execution
-    // eslint-disable-next-line security/detect-object-injection
-    const vertex = G.board.vertices[vertexId];
+    const vertex = safeGet(G.board.vertices, vertexId);
     if (vertex) {
         vertex.type = 'city';
     }

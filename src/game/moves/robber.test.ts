@@ -2,7 +2,9 @@ import { dismissRobber } from './robber';
 import { STAGES } from '../constants';
 import { createMockGameState } from '../testUtils';
 import { RuleEngine } from '../rules/validator';
-import { TerrainType } from '../types';
+import { TerrainType, Hex, Vertex, Player } from '../types';
+import { Ctx } from 'boardgame.io';
+import { safeSet } from '../../utils/objectUtils';
 
 jest.mock('../rules/validator', () => ({
     RuleEngine: {
@@ -10,14 +12,25 @@ jest.mock('../rules/validator', () => ({
     },
 }));
 
+const createFullPlayer = (p: Partial<Player>): Player => ({
+    id: '0',
+    name: 'Player',
+    color: 'red',
+    resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+    settlements: [],
+    roads: [],
+    victoryPoints: 0,
+    ...p,
+});
+
+
 describe('Robber Moves', () => {
     test('dismissRobber transitions to ACTING stage and updates location', () => {
         const G = createMockGameState({ robberLocation: 'A' });
         const events = {
             setActivePlayers: jest.fn()
         };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const ctx: any = { currentPlayer: '0' };
+        const ctx: Ctx = { currentPlayer: '0' } as Ctx;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const random: any = { Shuffle: (arr: any[]) => arr }; // Simple mock
 
@@ -42,28 +55,27 @@ describe('Robber Moves', () => {
          const hexID = '0,0,0';
          const victimID = '1';
          const thiefID = '0';
+         const vertexID = '0,0,0::1,-1,0::1,0,-1';
 
          const G = createMockGameState({
              robberLocation: 'other',
              players: {
-                 '0': { id: '0', resources: { wood: 0 }, settlements: [], roads: [] },
-                 '1': { id: '1', resources: { wheat: 1 }, settlements: [], roads: [] }
+                 [thiefID]: createFullPlayer({ id: thiefID, resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),
+                 [victimID]: createFullPlayer({ id: victimID, resources: { wood: 0, brick: 0, sheep: 0, wheat: 1, ore: 0 } })
              },
-             board: {
-                 hexes: {
-                     [hexID]: { id: hexID, coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Fields, tokenValue: 6 }
-                 },
-                 vertices: {
-                     // Place victim on a vertex of the hex
-                     '0,0,0::1,-1,0::1,0,-1': { owner: victimID, type: 'settlement' }
-                 },
-                 edges: {},
-                 ports: {}
-             }
          });
 
+         // Manually set up board state with Maps
+         const hex: Hex = { id: hexID, coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Fields, tokenValue: 6 };
+         safeSet(G.board.hexes, hexID, hex);
+
+         const vertex: Vertex = { owner: victimID, type: 'settlement' };
+         safeSet(G.board.vertices, vertexID, vertex);
+
+
          const events = { setActivePlayers: jest.fn() };
-         const ctx: any = { currentPlayer: thiefID };
+         const ctx: Ctx = { currentPlayer: thiefID } as Ctx;
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
          const random: any = { Shuffle: (arr: any[]) => arr }; // Returns first element (wheat)
 
          const move = dismissRobber as any;

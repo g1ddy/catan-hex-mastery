@@ -1,6 +1,7 @@
 import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from '../types';
 import { PIP_MAP } from '../config';
 import { getHexesForVertex } from '../hexUtils';
+import { safeGet } from '../../utils/objectUtils';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;
@@ -30,11 +31,6 @@ export function calculateBoardStats(hexes: Record<string, Hex>): BoardStats {
   const warnings: string[] = [];
   let fairnessScore = 100;
 
-  // Analysis
-  // Expected roughly equal distribution.
-  // 5 resources. 100% / 5 = 20%.
-  // Warning if < 10% or > 30%.
-
   if (totalBoardPips > 0) {
       Object.entries(totalPips).forEach(([resource, pips]) => {
           const percentage = pips / totalBoardPips;
@@ -62,25 +58,15 @@ export function calculatePlayerPotentialPips(G: GameState): Record<string, Recor
     const result: Record<string, Record<string, number>> = {};
 
     Object.values(G.players).forEach(player => {
-        const playerPips: Record<string, number> = {
-            wood: 0,
-            brick: 0,
-            sheep: 0,
-            wheat: 0,
-            ore: 0
-        };
+        const playerPips: Record<string, number> = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
 
-        // Find all vertices owned by player
         Object.entries(G.board.vertices).forEach(([vId, vertex]) => {
             if (vertex.owner === player.id) {
-                // Determine multiplier
                 const multiplier = vertex.type === 'city' ? 2 : 1;
-
-                // Get adjacent hexes using the geometry-aware helper
                 const adjacentHexIds = getHexesForVertex(vId);
 
                 adjacentHexIds.forEach(hexId => {
-                    const hex = G.board.hexes[hexId];
+                    const hex = safeGet(G.board.hexes, hexId);
 
                     if (hex && hex.tokenValue && hex.terrain) {
                         const resource = TERRAIN_CONFIG[hex.terrain];

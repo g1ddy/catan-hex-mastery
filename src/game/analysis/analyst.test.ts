@@ -1,11 +1,12 @@
 import { calculatePlayerPotentialPips } from './analyst';
 import { GameState, TerrainType } from '../types';
+import { safeSet } from '../../utils/objectUtils';
 
 describe('calculatePlayerPotentialPips', () => {
-    const mockG = {
+    const createMockGameState = (): GameState => ({
         players: {
-            '0': { id: '0', color: 'red', resources: {}, settlements: [], roads: [], victoryPoints: 0 },
-            '1': { id: '1', color: 'blue', resources: {}, settlements: [], roads: [], victoryPoints: 0 }
+            '0': { id: '0', name: 'P0', color: 'red', resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 },
+            '1': { id: '1', name: 'P1', color: 'blue', resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 }
         },
         board: {
             hexes: {
@@ -14,18 +15,20 @@ describe('calculatePlayerPotentialPips', () => {
                 '1,0,-1': { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Desert, tokenValue: null } // 0 pips
             },
             vertices: {},
-            edges: {}
+            edges: {},
+            ports: {}
         }
-    } as unknown as GameState;
+    } as unknown as GameState);
 
-    // Helper to add vertex
-    const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
-        mockG.board.vertices[id] = { owner, type };
-    };
+    let mockG: GameState;
 
     beforeEach(() => {
-        mockG.board.vertices = {};
+        mockG = createMockGameState();
     });
+
+    const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
+        safeSet(mockG.board.vertices, id, { owner, type });
+    };
 
     test('should return 0 pips for no settlements', () => {
         const result = calculatePlayerPotentialPips(mockG);

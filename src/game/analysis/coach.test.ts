@@ -2,6 +2,7 @@ import { Ctx } from 'boardgame.io';
 import { getBestSettlementSpots, Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
 import { STRATEGIC_ADVICE } from './adviceConstants';
+import { safeSet } from '../../utils/objectUtils';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.
@@ -50,12 +51,12 @@ describe('Coach Analysis', () => {
         const hexes: Record<string, Hex> = {};
         hexConfig.forEach(h => {
             const [q, r, s] = h.id.split(',').map(Number);
-            hexes[h.id] = {
+            safeSet(hexes, h.id, {
                 id: h.id,
                 coords: { q, r, s },
                 terrain: h.terrain,
                 tokenValue: h.value
-            } as Hex;
+            } as Hex);
         });
 
         // Default stats: ample pips for everything so no scarcity
@@ -92,29 +93,33 @@ describe('Coach Analysis', () => {
             s1HexIds.forEach((hid, idx) => {
                 const res = firstSettlementResources[idx];
                 if (res && terrainMap[res]) {
-                   hexes[hid] = {
+                   safeSet(hexes, hid, {
                        id: hid,
                        coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: terrainMap[res],
                        tokenValue: 2 // 1 pip
-                   } as Hex;
+                   } as Hex);
                 } else {
-                   hexes[hid] = {
+                   safeSet(hexes, hid, {
                        id: hid,
                        coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: TerrainType.Desert,
                        tokenValue: 0
-                   } as Hex;
+                   } as Hex);
                 }
             });
         }
 
+        const board: BoardState = {
+            hexes,
+            vertices: {},
+            edges: {},
+            ports: {}
+        };
+
+
         return {
-            board: {
-                hexes,
-                vertices: {},
-                edges: {}
-            } as BoardState,
+            board,
             players: { '0': player },
             boardStats
         } as unknown as GameState;
@@ -315,7 +320,7 @@ describe('Coach Analysis', () => {
             ];
             const G = createMockState(hexes);
             // Occupy the target
-            G.board.vertices[TARGET_VERTEX_ID] = { owner: '1', type: 'settlement' };
+            safeSet(G.board.vertices, TARGET_VERTEX_ID, { owner: '1', type: 'settlement' });
 
             const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
@@ -330,7 +335,7 @@ describe('Coach Analysis', () => {
             ];
             const G = createMockState(hexes);
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
-            G.board.vertices[neighborID] = { owner: '1', type: 'settlement' };
+            safeSet(G.board.vertices, neighborID, { owner: '1', type: 'settlement' });
 
             const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);

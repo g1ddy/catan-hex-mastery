@@ -1,23 +1,22 @@
 import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
+import { safeGet } from '../../utils/objectUtils';
 
 /**
  * Mapping of TerrainType to Resource string.
- * Excludes non-resource terrains (Desert, Sea).
- * Derived from TERRAIN_CONFIG to ensure single source of truth.
  */
-export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, string>> = Object.entries(TERRAIN_CONFIG).reduce((acc, [terrain, resource]) => {
+export const TERRAIN_TO_RESOURCE: Partial<Record<TerrainType, keyof Resources>> = Object.entries(TERRAIN_CONFIG).reduce((acc, [terrain, resource]) => {
     if (resource) {
-        acc[terrain as TerrainType] = resource;
+        acc[terrain as TerrainType] = resource as keyof Resources;
     }
     return acc;
-}, {} as Partial<Record<TerrainType, string>>);
+}, {} as Partial<Record<TerrainType, keyof Resources>>);
 
 /**
  * Helper to count total resources in a bundle.
  */
 export function countResources(resources: Resources): number {
-    return resources.wood + resources.brick + resources.sheep + resources.wheat + resources.ore;
+    return Object.values(resources).reduce((sum, count) => sum + count, 0);
 }
 
 /**
@@ -27,41 +26,40 @@ export function countResources(resources: Resources): number {
 export function distributeResources(G: GameState, roll: number): Record<string, Partial<Resources>> {
     const rewards: Record<string, Partial<Resources>> = {};
 
-    // Helper to add rewards
     const addReward = (playerId: string, resource: keyof Resources, amount: number) => {
-        if (!rewards[playerId]) {
-            rewards[playerId] = {};
-        }
-        const current = rewards[playerId][resource] || 0;
-        rewards[playerId][resource] = current + amount;
+        const player = G.players[playerId];
+        if (!player) return;
 
-        // Update player state
-        if (G.players[playerId]) {
-            G.players[playerId].resources[resource] += amount;
-        }
+        // Initialize reward object for the player if it doesn't exist
+        rewards[playerId] = rewards[playerId] || {};
+        const playerRewards = rewards[playerId];
+
+        // Update rewards and player resources safely
+        playerRewards[resource] = (playerRewards[resource] || 0) + amount;
+        player.resources[resource] += amount;
     };
 
     if (roll === 7) {
-        // Robber logic (future)
+        // Robber logic is handled by the 'rob' move, not distribution.
         return rewards;
     }
 
     Object.values(G.board.hexes).forEach(hex => {
-        // Skip if Robber is present
-        if (hex.id === G.robberLocation) return;
+        // Skip if Robber is present or if roll doesn't match
+        if (hex.id === G.robberLocation || hex.tokenValue !== roll) {
+            return;
+        }
 
-        if (hex.tokenValue === roll) {
-            const resource = TERRAIN_CONFIG[hex.terrain];
-            if (resource) { // Skip Desert/Sea
-                const vertices = getVerticesForHex(hex.coords);
-                vertices.forEach(vId => {
-                    const vertex = G.board.vertices[vId];
-                    if (vertex && G.players[vertex.owner]) {
-                        const amount = vertex.type === 'city' ? 2 : 1;
-                        addReward(vertex.owner, resource as keyof Resources, amount);
-                    }
-                });
-            }
+        const resource = TERRAIN_TO_RESOURCE[hex.terrain];
+        if (resource) {
+            const vertices = getVerticesForHex(hex.coords);
+            vertices.forEach(vId => {
+                const vertex = safeGet(G.board.vertices, vId);
+                if (vertex) {
+                    const amount = vertex.type === 'city' ? 2 : 1;
+                    addReward(vertex.owner, resource, amount);
+                }
+            });
         }
     });
 

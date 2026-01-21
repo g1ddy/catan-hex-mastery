@@ -61,11 +61,20 @@ export interface SetupPhaseState {
   activeRound: 1 | 2;
 }
 
+export interface Vertex {
+  owner: string;
+  type: 'settlement' | 'city';
+}
+
+export interface Edge {
+  owner: string;
+}
+
 export interface BoardState {
   hexes: Record<string, Hex>;
   ports: Record<string, Port>;
-  vertices: Record<string, { owner: string; type: 'settlement' | 'city' }>; // owner is player ID
-  edges: Record<string, { owner: string }>; // owner is player ID
+  vertices: Record<string, Vertex>;
+  edges: Record<string, Edge>;
 }
 
 export interface BoardStats {

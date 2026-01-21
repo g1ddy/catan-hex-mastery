@@ -1,5 +1,5 @@
 import { regenerateBoard } from './setup';
-import { GameState, TerrainType } from '../types';
+import { GameState, TerrainType, Player } from '../types';
 import { Ctx } from 'boardgame.io';
 import { createMockGameState } from '../testUtils';
 
@@ -15,6 +15,18 @@ const mockCtx: Ctx = {
     turn: 1,
     phase: 'setup',
 } as Ctx;
+
+const createFullPlayer = (p: Partial<Player>): Player => ({
+    id: '0',
+    name: 'Player',
+    color: 'red',
+    resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+    settlements: [],
+    roads: [],
+    victoryPoints: 0,
+    ...p,
+});
+
 
 describe('regenerateBoard Move', () => {
     it('should allow regeneration when no pieces are placed', () => {
@@ -51,7 +63,8 @@ describe('regenerateBoard Move', () => {
         // Initialize player 1 explicitly
         const G = createMockGameState({
             players: {
-                '1': { id: '1', color: 'blue' }
+                '0': createFullPlayer({ id: '0' }),
+                '1': createFullPlayer({ id: '1', color: 'blue' })
             }
         });
         G.players['1'].roads.push('0,0,0::1,-1,0'); // Player 1 placed a road
@@ -64,8 +77,8 @@ describe('regenerateBoard Move', () => {
     it('should preserve player names/configuration after regeneration', () => {
         const G = createMockGameState({
             players: {
-                '0': { name: 'Bot 1' },
-                '1': { name: 'Bot 2' }
+                '0': createFullPlayer({ id: '0', name: 'Bot 1' }),
+                '1': createFullPlayer({ id: '1', name: 'Bot 2' })
             }
         });
 

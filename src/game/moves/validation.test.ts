@@ -21,11 +21,20 @@ describe('Security Validation: Input Sanitization', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: {}, vertices: {}, hexes: {}, ports: {} },
+        board: {
+            edges: {},
+            vertices: {},
+            hexes: {},
+            ports: {}
+        },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
-        boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
+        boardStats: {
+            totalPips: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+            fairnessScore: 0,
+            warnings: []
+        },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
