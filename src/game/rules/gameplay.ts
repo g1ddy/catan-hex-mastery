@@ -84,13 +84,7 @@ export const getPotentialVictims = (G: GameState, hexID: string, playerID: strin
  * Returns all valid hex IDs for the Robber (all except current location).
  */
 export const getValidRobberLocations = (G: GameState): Set<string> => {
-    const validSpots = new Set<string>();
-    Object.keys(G.board.hexes).forEach(id => {
-        if (id !== G.robberLocation) {
-            validSpots.add(id);
-        }
-    });
-    return validSpots;
+    return new Set(Object.keys(G.board.hexes).filter(id => id !== G.robberLocation));
 };
 
 /**
