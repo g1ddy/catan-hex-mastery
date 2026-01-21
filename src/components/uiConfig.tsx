@@ -47,3 +47,8 @@ export const TERRAIN_COLORS: Record<TerrainType, string> = {
   [TerrainType.Desert]: '#F4A460',
   [TerrainType.Sea]: '#87CEEB'
 };
+
+// Port Highlight Configuration
+export const PORT_HIGHLIGHT_RADIUS = 3.5;
+export const PORT_HIGHLIGHT_COLOR = "#FBBF24"; // Amber-400
+export const PORT_HIGHLIGHT_WIDTH = 0.8;

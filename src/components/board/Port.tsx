@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircleHelp } from 'lucide-react';
 import { PortType, TerrainType } from '../../game/types';
-import { RESOURCE_META, TERRAIN_COLORS } from '../uiConfig';
+import { RESOURCE_META, TERRAIN_COLORS, PORT_HIGHLIGHT_RADIUS, PORT_HIGHLIGHT_COLOR, PORT_HIGHLIGHT_WIDTH } from '../uiConfig';
 
 interface PortProps {
     cx: number;
@@ -49,10 +49,10 @@ export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor, isActive }
             {/* Active Glow/Ring */}
             {isActive && (
                 <circle
-                    r={3.5}
+                    r={PORT_HIGHLIGHT_RADIUS}
                     fill="none"
-                    stroke="#FBBF24" // Amber-400
-                    strokeWidth={0.8}
+                    stroke={PORT_HIGHLIGHT_COLOR}
+                    strokeWidth={PORT_HIGHLIGHT_WIDTH}
                     className="animate-pulse"
                 />
             )}

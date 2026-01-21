@@ -109,7 +109,13 @@ export const calculateTrade = (
     // 2. Sort trades to find the best one
     validTrades.sort((a, b) => {
         // Primary: Remainder Descending
-        return b.remainder - a.remainder;
+        if (b.remainder !== a.remainder) {
+            return b.remainder - a.remainder;
+        }
+        // Secondary: Resource Order (Stable Tie-breaker)
+        const indexA = RESOURCE_ORDER.indexOf(a.res);
+        const indexB = RESOURCE_ORDER.indexOf(b.res);
+        return indexA - indexB;
     });
 
     const bestTrade = validTrades[0];
