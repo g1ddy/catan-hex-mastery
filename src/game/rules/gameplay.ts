@@ -81,6 +81,13 @@ export const getPotentialVictims = (G: GameState, hexID: string, playerID: strin
 };
 
 /**
+ * Returns all valid hex IDs for the Robber (all except current location).
+ */
+export const getValidRobberLocations = (G: GameState): Set<string> => {
+    return new Set(Object.keys(G.board.hexes).filter(id => id !== G.robberLocation));
+};
+
+/**
  * Validates the "Dismiss Robber" move (Move Robber + Steal).
  */
 export const validateRobberMove = (G: GameState, playerID: string, hexID: string, victimID?: string): ValidationResult => {
@@ -106,5 +113,17 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
         }
     }
 
+    return { isValid: true };
+};
+
+/**
+ * Validates the "Roll Dice" move.
+ */
+export const validateRoll = (G: GameState, playerID: string): ValidationResult => {
+    if (!isValidPlayer(playerID, G)) {
+        return { isValid: false, reason: "Invalid player" };
+    }
+    // Basic validation: implicit via stage configuration.
+    // We assume if the move is available in the finite state machine, it's structurally valid.
     return { isValid: true };
 };

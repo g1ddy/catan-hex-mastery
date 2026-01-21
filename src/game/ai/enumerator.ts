@@ -3,8 +3,7 @@ import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
-import { getValidMovesForStage, RuleEngine } from '../rules/validator';
-import { getPotentialVictims } from '../rules/gameplay';
+import { getValidMovesForStage, RuleEngine, getValidRobberSpots, getValidRobberVictims } from '../rules/validator';
 
 // Helper to construct boardgame.io action objects.
 const makeMove = <K extends keyof MoveArguments>(moveName: K, args: MoveArguments[K]): BotMove => ({
@@ -72,10 +71,10 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             }
         } else if (moveName === 'dismissRobber') {
             // Handle Robber: Enumerate Hexes AND Victims
-             const validRobberSpots = Object.keys(G.board.hexes).filter(id => id !== G.robberLocation);
+             const validRobberSpots = getValidRobberSpots(G);
 
              validRobberSpots.forEach(hexID => {
-                 const potentialVictims = getPotentialVictims(G, hexID, playerID);
+                 const potentialVictims = getValidRobberVictims(G, hexID, playerID);
 
                  if (potentialVictims.size > 0) {
                      // Must choose a victim

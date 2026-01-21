@@ -1,11 +1,10 @@
 import { Move } from 'boardgame.io';
 import { GameState, RollStatus } from '../types';
+import { RuleEngine } from '../rules/validator';
 
-export const rollDice: Move<GameState> = ({ G, random }) => {
-    // Basic validation is implicit via stage configuration, but can prevent double rolling if needed.
-    // However, since we transition stages immediately after via onMove, this check is less critical
-    // but good for safety if we stick to one roll per turn.
-    // const canRoll = ... (omitted as stage usually restricts this)
+export const rollDice: Move<GameState> = ({ G, ctx, random }) => {
+    // Validate the move using the centralized RuleEngine
+    RuleEngine.validateMoveOrThrow(G, ctx, 'rollDice', []);
 
     const d1 = random.Die(6);
     const d2 = random.Die(6);

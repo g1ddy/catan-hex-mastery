@@ -91,6 +91,19 @@ module.exports = {
             path: L.BOTS
         },
         comment: 'Moves are executed by game engine, should not depend on Bots.',
+    },
+    /* 6. Chain of Command: Moves/AI must use RuleEngine Facade */
+    {
+        name: 'bypass-rule-facade',
+        severity: 'error',
+        from: {
+            path: [L.MOVES, L.AI]
+        },
+        to: {
+            path: L.RULES,
+            pathNot: '^src/game/rules/validator.ts'
+        },
+        comment: 'Moves and AI must access rules via the RuleEngine facade (validator.ts), not internal rule modules.'
     }
   ],
 };
