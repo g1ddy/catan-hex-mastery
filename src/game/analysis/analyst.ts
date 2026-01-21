@@ -1,6 +1,7 @@
 import { Hex, BoardStats, TERRAIN_CONFIG, GameState } from '../types';
 import { PIP_MAP } from '../config';
 import { getHexesForVertex } from '../hexUtils';
+import { safeGet } from '../../utils/objectUtils';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;
@@ -65,7 +66,7 @@ export function calculatePlayerPotentialPips(G: GameState): Record<string, Recor
                 const adjacentHexIds = getHexesForVertex(vId);
 
                 adjacentHexIds.forEach(hexId => {
-                    const hex = G.board.hexes[hexId]; // eslint-disable-line security/detect-object-injection
+                    const hex = safeGet(G.board.hexes, hexId);
 
                     if (hex && hex.tokenValue && hex.terrain) {
                         const resource = TERRAIN_CONFIG[hex.terrain];

@@ -1,5 +1,6 @@
 import { Hex, TerrainType, CubeCoordinates, Port, PortType } from './types';
 import { getNeighbors, getEdgesForHex, parseEdgeId, getVerticesForEdge } from './hexUtils';
+import { safeSet, safeGet } from '../utils/objectUtils';
 import { shuffle } from 'lodash';
 
 const TERRAIN_COUNTS: Record<TerrainType, number> = {
@@ -99,16 +100,14 @@ function generatePorts(hexes: Record<string, Hex>): Record<string, Port> {
         // Distribute evenly
         // We have ~30 boundary edges. 9 ports.
         const edgeIndex = Math.floor(i * boundaryEdges.length / shuffledTypes.length);
-        // eslint-disable-next-line security/detect-object-injection
-        const edgeId = boundaryEdges[edgeIndex];
+        const edgeId = boundaryEdges[edgeIndex]; // eslint-disable-line security/detect-object-injection
         const vertices = getVerticesForEdge(edgeId);
 
-        // eslint-disable-next-line security/detect-object-injection
-        ports[edgeId] = {
+        safeSet(ports, edgeId, {
             type: shuffledTypes[i], // eslint-disable-line security/detect-object-injection
             edgeId,
             vertices
-        };
+        });
     }
 
     return ports;
@@ -144,12 +143,12 @@ export function generateBoard(): { hexes: Record<string, Hex>; ports: Record<str
             }
 
             const id = `${coord.q},${coord.r},${coord.s}`;
-            tempHexes[id] = { // eslint-disable-line security/detect-object-injection
+            safeSet(tempHexes, id, {
                 id,
                 coords: coord,
                 terrain,
                 tokenValue: token
-            };
+            });
         }
 
         if (isValidBoard(tempHexes)) {
@@ -173,7 +172,7 @@ function isValidBoard(hexes: Record<string, Hex>): boolean {
             const neighbors = getNeighbors(hex.coords);
             for (const n of neighbors) {
                 const nId = `${n.q},${n.r},${n.s}`;
-                const nHex = hexes[nId]; // eslint-disable-line security/detect-object-injection
+                const nHex = safeGet(hexes, nId);
                 if (nHex && (nHex.tokenValue === 6 || nHex.tokenValue === 8)) {
                     return false;
                 }

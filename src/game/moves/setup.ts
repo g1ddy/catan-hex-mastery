@@ -7,6 +7,7 @@ import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { RuleEngine } from '../rules/validator';
 import { generateBoard } from '../boardGen';
 import { calculateBoardStats } from '../analysis/analyst';
+import { safeSet, safeGet } from '../../utils/objectUtils';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
 
@@ -19,7 +20,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeSettlement', [vertexId]);
 
   // Execution
-  G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' }; // eslint-disable-line security/detect-object-injection
+  safeSet(G.board.vertices, vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
 
@@ -29,7 +30,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     // Grant resources
     const touchingHexes = getHexesForVertex(vertexId);
     touchingHexes.forEach(hId => {
-      const hex = G.board.hexes[hId]; // eslint-disable-line security/detect-object-injection
+      const hex = safeGet(G.board.hexes, hId);
       if (hex) {
           const res = TERRAIN_TO_RESOURCE[hex.terrain];
           if (res) {
@@ -57,7 +58,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeRoad', [edgeId]);
 
   // Execution
-  G.board.edges[edgeId] = { owner: ctx.currentPlayer }; // eslint-disable-line security/detect-object-injection
+  safeSet(G.board.edges, edgeId, { owner: ctx.currentPlayer });
   G.players[ctx.currentPlayer].roads.push(edgeId);
 
   // State Transition

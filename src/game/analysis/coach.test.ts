@@ -2,6 +2,7 @@ import { Ctx } from 'boardgame.io';
 import { getBestSettlementSpots, Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
 import { STRATEGIC_ADVICE } from './adviceConstants';
+import { safeSet } from '../../utils/objectUtils';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.
@@ -92,19 +93,19 @@ describe('Coach Analysis', () => {
             s1HexIds.forEach((hid, idx) => {
                 const res = firstSettlementResources[idx];
                 if (res && terrainMap[res]) {
-                   hexes[hid] = { // eslint-disable-line security/detect-object-injection
+                   safeSet(hexes, hid, {
                        id: hid,
                        coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: terrainMap[res],
                        tokenValue: 2 // 1 pip
-                   } as Hex;
+                   } as Hex);
                 } else {
-                   hexes[hid] = { // eslint-disable-line security/detect-object-injection
+                   safeSet(hexes, hid, {
                        id: hid,
                        coords: { q: 10+idx, r: 10, s: -20-idx },
                        terrain: TerrainType.Desert,
                        tokenValue: 0
-                   } as Hex;
+                   } as Hex);
                 }
             });
         }
@@ -319,7 +320,7 @@ describe('Coach Analysis', () => {
             ];
             const G = createMockState(hexes);
             // Occupy the target
-            G.board.vertices[TARGET_VERTEX_ID] = { owner: '1', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
+            safeSet(G.board.vertices, TARGET_VERTEX_ID, { owner: '1', type: 'settlement' });
 
             const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
@@ -334,7 +335,7 @@ describe('Coach Analysis', () => {
             ];
             const G = createMockState(hexes);
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
-            G.board.vertices[neighborID] = { owner: '1', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
+            safeSet(G.board.vertices, neighborID, { owner: '1', type: 'settlement' });
 
             const results = getBestSettlementSpots(G, '0', mockCtx);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);

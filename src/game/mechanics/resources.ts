@@ -1,5 +1,6 @@
 import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
 import { getVerticesForHex } from '../hexUtils';
+import { safeGet } from '../../utils/objectUtils';
 
 /**
  * Mapping of TerrainType to Resource string.
@@ -53,7 +54,7 @@ export function distributeResources(G: GameState, roll: number): Record<string, 
         if (resource) {
             const vertices = getVerticesForHex(hex.coords);
             vertices.forEach(vId => {
-                const vertex = G.board.vertices[vId]; // eslint-disable-line security/detect-object-injection
+                const vertex = safeGet(G.board.vertices, vId);
                 if (vertex) {
                     const amount = vertex.type === 'city' ? 2 : 1;
                     addReward(vertex.owner, resource, amount);

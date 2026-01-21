@@ -2,6 +2,7 @@ import { placeSettlement, placeRoad } from './setup';
 import { GameState, RollStatus, TerrainType, Hex } from '../types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
+import { safeSet, safeGet } from '../../utils/objectUtils';
 
 // Cast moves to function type for direct testing
 const placeSettlementFn = placeSettlement as (args: unknown, vertexId: string) => unknown;
@@ -88,7 +89,7 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             placeSettlementFn({ G, ctx, events, playerID: '0' }, vId);
 
-            expect(G.board.vertices[vId]).toBeDefined(); // eslint-disable-line security/detect-object-injection
+            expect(safeGet(G.board.vertices, vId)).toBeDefined();
             expect(G.players['0'].settlements).toContain(vId);
             expect(events.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'placeRoad' });
         });
@@ -99,13 +100,13 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             // Mock placement of settlement
             G.players['0'].settlements.push(vId);
-            G.board.vertices[vId] = { owner: '0', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
+            safeSet(G.board.vertices, vId, { owner: '0', type: 'settlement' });
 
             const validEdge = "0,0,0::1,-1,0";
 
             placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
-            expect(G.board.edges[validEdge]).toBeDefined(); // eslint-disable-line security/detect-object-injection
+            expect(safeGet(G.board.edges, validEdge)).toBeDefined();
             expect(events.endTurn).toHaveBeenCalled();
         });
 
@@ -128,7 +129,7 @@ describe('Setup Phase Moves', () => {
 
         it('should fail if the edge is already occupied', () => {
             const edgeId = "0,0,0::1,-1,0";
-            G.board.edges[edgeId] = { owner: '1' }; // eslint-disable-line security/detect-object-injection
+            safeSet(G.board.edges, edgeId, { owner: '1' });
             G.players['0'].settlements.push("0,0,0::1,-1,0::0,-1,1"); // Player '0' has a settlement nearby
 
             const move = () => placeRoadFn({ G, ctx, events }, edgeId);

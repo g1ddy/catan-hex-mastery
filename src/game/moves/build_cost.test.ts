@@ -1,6 +1,7 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState, RollStatus, TerrainType, Hex } from '../types';
 import { Ctx } from 'boardgame.io';
+import { safeSet } from '../../utils/objectUtils';
 import * as _ from 'lodash';
 
 type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
@@ -59,7 +60,7 @@ describe('Unit Test: Resource Costs', () => {
 
         it('should not deduct resources on an invalid placement', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 0, ore: 0 };
-            G.board.edges[validEdgeId] = { owner: '1' }; // eslint-disable-line security/detect-object-injection
+            safeSet(G.board.edges, validEdgeId, { owner: '1' });
             const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, validEdgeId);
             expect(call).toThrow("This edge is already occupied");
 

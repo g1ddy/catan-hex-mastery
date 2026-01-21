@@ -1,5 +1,6 @@
 import { calculatePlayerPotentialPips } from './analyst';
 import { GameState, TerrainType } from '../types';
+import { safeSet } from '../../utils/objectUtils';
 
 describe('calculatePlayerPotentialPips', () => {
     const createMockGameState = (): GameState => ({
@@ -26,7 +27,7 @@ describe('calculatePlayerPotentialPips', () => {
     });
 
     const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
-        mockG.board.vertices[id] = { owner, type }; // eslint-disable-line security/detect-object-injection
+        safeSet(mockG.board.vertices, id, { owner, type });
     };
 
     test('should return 0 pips for no settlements', () => {
