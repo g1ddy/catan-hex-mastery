@@ -49,30 +49,32 @@ npx eslint src --rulesdir config/eslint-rules --no-eslintrc --rule 'complexity: 
 
 ## 📉 Complexity Baseline (Oct 2023 Refactor)
 
-Following the "AI to Rules" refactor, here are the current hotspots in the system.
+Following the "AI to Rules" refactor and "Split Coach" initiative, here are the current metrics.
 
-### Top 3 "Big Classes" (LOC)
+### Significant Improvement (Coach Split)
+| File | Metric | Before Split | After Split | Change |
+| :--- | :--- | :--- | :--- | :--- |
+| `src/game/analysis/coach.ts` | **LOC** | 355 | **160** | ▼ 55% |
+| `src/game/analysis/coach.ts` | **Fan-Out** | 11 | **7** | ▼ 36% |
+| `src/game/analysis/coach.ts` | **Instability** | 46% | **32%** | ▼ 14% |
+
+### Current Hotspots
 | File | LOC | Responsibility | Risk |
 | :--- | :--- | :--- | :--- |
-| `src/game/analysis/coach.ts` | **355** | Scoring, Strategy, Trade Analysis | **High**. It aggregates too many distinct advising responsibilities. |
 | `src/bots/BotCoach.ts` | **266** | Bot Decision Weighting | **Medium**. Complex logic but focused scope. |
-| `src/game/rules/queries.ts` | **245** | Availability Queries (Facade) | **Low**. High LOC but very low cyclomatic complexity (simple getters). |
+| `src/game/rules/queries.ts` | **245** | Availability Queries (Facade) | **Low**. High LOC but very low cyclomatic complexity. |
+| `src/game/analysis/advisors/SpatialAdvisor.ts` | **209** | Spatial Scoring Logic | **Low**. Pure logic, well-encapsulated. |
 
 ### Structural Coupling (Dependency Cruiser)
 | File | Fan-In | Fan-Out | Instability | Analysis |
 | :--- | :--- | :--- | :--- | :--- |
-| `src/game/analysis/coach.ts` | 13 | 11 | **46%** | **Critical Hotspot**. Highly coupled in both directions. |
+| `src/game/analysis/coach.ts` | 15 | 7 | **32%** | **Stable**. Successfully refactored into a proper facade. |
 | `src/game/rules/validator.ts` | 7 | 4 | 36% | **Healthy**. Refactor successfully reduced Fan-Out. |
 | `src/game/Game.ts` | 5 | 17 | 77% | **Expected**. The entry point naturally has high Fan-Out. |
 
-## 🎯 Refactoring Targets
+## 🎯 Future Targets
 
-Based on these metrics, future refactoring efforts should prioritize:
-
-1.  **Split `Coach.ts`**:
-    *   Extract `TradeAdvisor` logic.
-    *   Extract `SpatialAdvisor` logic.
-    *   Goal: Reduce LOC < 200, Fan-Out < 8.
-
-2.  **Monitor `BotCoach.ts`**:
+1.  **Monitor `BotCoach.ts`**:
     *   As bot personalities grow, this file risks becoming a monolith. Consider "Strategy Pattern" for personalities.
+2.  **Monitor `SpatialAdvisor.ts`**:
+    *   If this grows beyond 300 LOC, split into `SettlementScorer` and `CityScorer`.
