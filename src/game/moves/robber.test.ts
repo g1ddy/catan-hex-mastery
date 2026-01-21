@@ -10,6 +10,15 @@ jest.mock('../rules/validator', () => ({
     RuleEngine: {
         validateMoveOrThrow: jest.fn(),
     },
+    getValidRobberVictims: jest.fn((G, hexID) => {
+        // Mock finding a victim if there's a settlement on the hex
+        // This is a simplified mock to support the 'random steal' test
+        if (G.board.vertices) {
+            const hasVictim = Object.values(G.board.vertices).some((v: any) => v.owner === '1');
+            if (hasVictim) return new Set(['1']);
+        }
+        return new Set();
+    })
 }));
 
 const createFullPlayer = (p: Partial<Player>): Player => ({
