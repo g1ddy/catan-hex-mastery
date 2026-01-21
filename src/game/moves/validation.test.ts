@@ -1,6 +1,6 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { placeRoad, placeSettlement } from './setup';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus, Edge, Vertex, Hex, Port } from '../types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 
@@ -21,11 +21,20 @@ describe('Security Validation: Input Sanitization', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: {}, vertices: {}, hexes: {}, ports: {} },
+        board: {
+            edges: new Map<string, Edge>(),
+            vertices: new Map<string, Vertex>(),
+            hexes: new Map<string, Hex>(),
+            ports: new Map<string, Port>()
+        },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
-        boardStats: { totalPips: {}, fairnessScore: 0, warnings: [] },
+        boardStats: {
+            totalPips: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 },
+            fairnessScore: 0,
+            warnings: []
+        },
         rollStatus: RollStatus.IDLE,
         robberLocation: '0',
         playersToDiscard: [],
