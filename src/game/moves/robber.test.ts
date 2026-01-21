@@ -4,6 +4,7 @@ import { createMockGameState } from '../testUtils';
 import { RuleEngine } from '../rules/validator';
 import { TerrainType, Hex, Vertex, Player } from '../types';
 import { Ctx } from 'boardgame.io';
+import { safeSet } from '../../utils/objectUtils';
 
 jest.mock('../rules/validator', () => ({
     RuleEngine: {
@@ -66,10 +67,10 @@ describe('Robber Moves', () => {
 
          // Manually set up board state with Maps
          const hex: Hex = { id: hexID, coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Fields, tokenValue: 6 };
-         G.board.hexes[hexID] = hex;
+         safeSet(G.board.hexes, hexID, hex);
 
          const vertex: Vertex = { owner: victimID, type: 'settlement' };
-         G.board.vertices[vertexID] = vertex;
+         safeSet(G.board.vertices, vertexID, vertex);
 
 
          const events = { setActivePlayers: jest.fn() };

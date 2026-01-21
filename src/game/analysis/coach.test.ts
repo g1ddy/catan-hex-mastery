@@ -51,12 +51,12 @@ describe('Coach Analysis', () => {
         const hexes: Record<string, Hex> = {};
         hexConfig.forEach(h => {
             const [q, r, s] = h.id.split(',').map(Number);
-            hexes[h.id] = {
+            safeSet(hexes, h.id, {
                 id: h.id,
                 coords: { q, r, s },
                 terrain: h.terrain,
                 tokenValue: h.value
-            } as Hex;
+            } as Hex);
         });
 
         // Default stats: ample pips for everything so no scarcity
