@@ -90,7 +90,7 @@ export class Coach {
 
     private getVertexData(hexIds: string[]): { resources: string[], pips: number } {
         return hexIds.reduce((acc, hId) => {
-            const hex = this.G.board.hexes.get(hId);
+            const hex = this.G.board.hexes[hId]; // eslint-disable-line security/detect-object-injection
             if (!hex) return acc;
 
             if (hex.terrain) {

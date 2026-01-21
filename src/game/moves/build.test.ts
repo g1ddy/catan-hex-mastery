@@ -19,10 +19,10 @@ describe('Gameplay Moves', () => {
     beforeEach(() => {
         G = {
             board: {
-                hexes: new Map(mockHexes),
-                vertices: new Map(),
-                edges: new Map(),
-                ports: new Map(),
+                hexes: Object.fromEntries(mockHexes),
+                vertices: {},
+                edges: {},
+                ports: {},
             },
             players: {
                 '0': {
@@ -52,12 +52,12 @@ describe('Gameplay Moves', () => {
              const vId = "0,-1,1::0,0,0::1,-1,0";
              const eId = "0,0,0::1,-1,0";
 
-             G.board.vertices.set(vId, { owner: '0', type: 'settlement' });
+             G.board.vertices[vId] = { owner: '0', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
 
              (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, eId);
 
-             expect(G.board.edges.has(eId)).toBe(true);
-             expect(G.board.edges.get(eId)?.owner).toBe('0');
+             expect(G.board.edges[eId]).toBeDefined(); // eslint-disable-line security/detect-object-injection
+             expect(G.board.edges[eId]?.owner).toBe('0'); // eslint-disable-line security/detect-object-injection
              expect(G.players['0'].resources.wood).toBe(0);
              expect(G.players['0'].resources.brick).toBe(0);
              expect(G.players['0'].roads).toContain(eId);
@@ -76,12 +76,12 @@ describe('Gameplay Moves', () => {
 
             const vId = "0,0,0::1,-1,0::0,-1,1";
             const eId = "0,0,0::1,-1,0";
-            G.board.edges.set(eId, { owner: '0' });
+            G.board.edges[eId] = { owner: '0' }; // eslint-disable-line security/detect-object-injection
 
             (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
 
-            expect(G.board.vertices.has(vId)).toBe(true);
-            expect(G.board.vertices.get(vId)?.owner).toBe('0');
+            expect(G.board.vertices[vId]).toBeDefined(); // eslint-disable-line security/detect-object-injection
+            expect(G.board.vertices[vId]?.owner).toBe('0'); // eslint-disable-line security/detect-object-injection
             expect(G.players['0'].victoryPoints).toBe(1);
             expect(G.players['0'].resources.wood).toBe(0);
         });
@@ -90,7 +90,7 @@ describe('Gameplay Moves', () => {
     describe('buildCity', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
-             G.board.vertices.set(vId, { owner: '0', type: 'settlement' });
+             G.board.vertices[vId] = { owner: '0', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
              const call = () => (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
              expect(call).toThrow("Not enough resources to build a city");
         });
@@ -99,13 +99,13 @@ describe('Gameplay Moves', () => {
              G.players['0'].resources = { wood: 0, brick: 0, sheep: 0, ...BUILD_COSTS.city };
              const vId = "0,0,0::1,-1,0::0,-1,1";
 
-             G.board.vertices.set(vId, { owner: '0', type: 'settlement' });
+             G.board.vertices[vId] = { owner: '0', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
              G.players['0'].settlements.push(vId);
              G.players['0'].victoryPoints = 1;
 
              (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
 
-             expect(G.board.vertices.get(vId)?.type).toBe('city');
+             expect(G.board.vertices[vId]?.type).toBe('city'); // eslint-disable-line security/detect-object-injection
              expect(G.players['0'].victoryPoints).toBe(2);
              expect(G.players['0'].resources.ore).toBe(0);
         });

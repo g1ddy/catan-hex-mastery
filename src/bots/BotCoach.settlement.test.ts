@@ -3,7 +3,7 @@
  */
 
 import { Ctx } from 'boardgame.io';
-import { GameState, BotMove, RollStatus, Hex, Port } from '../game/types';
+import { GameState, BotMove, RollStatus } from '../game/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
@@ -24,10 +24,10 @@ describe('BotCoach Settlement Test', () => {
         // A complete and valid mock of the Game State
         G = {
             board: {
-                hexes: new Map<string, Hex>(),
-                vertices: new Map(),
-                edges: new Map(),
-                ports: new Map<string, Port>(),
+                hexes: {},
+                vertices: {},
+                edges: {},
+                ports: {},
             },
             players: {
                 '0': {

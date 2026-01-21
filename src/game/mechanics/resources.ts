@@ -43,7 +43,7 @@ export function distributeResources(G: GameState, roll: number): Record<string, 
         return rewards;
     }
 
-    G.board.hexes.forEach(hex => {
+    Object.values(G.board.hexes).forEach(hex => {
         // Skip if Robber is present or if roll doesn't match
         if (hex.id === G.robberLocation || hex.tokenValue !== roll) {
             return;
@@ -53,7 +53,7 @@ export function distributeResources(G: GameState, roll: number): Record<string, 
         if (resource) {
             const vertices = getVerticesForHex(hex.coords);
             vertices.forEach(vId => {
-                const vertex = G.board.vertices.get(vId);
+                const vertex = G.board.vertices[vId]; // eslint-disable-line security/detect-object-injection
                 if (vertex) {
                     const amount = vertex.type === 'city' ? 2 : 1;
                     addReward(vertex.owner, resource, amount);

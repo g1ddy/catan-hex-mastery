@@ -1,5 +1,5 @@
 import { distributeResources } from './resources';
-import { GameState, TerrainType, Hex } from '../types';
+import { GameState, TerrainType } from '../types';
 import { createTestGameState, createTestPlayer } from '../testUtils';
 
 // Mock getVerticesForHex
@@ -18,26 +18,26 @@ describe('distributeResources', () => {
     beforeEach(() => {
         G = createTestGameState({
             board: {
-                hexes: new Map<string, Hex>([
-                    ['0,0,0', {
+                hexes: {
+                    '0,0,0': {
                         id: '0,0,0',
                         coords: { q: 0, r: 0, s: 0 },
                         terrain: TerrainType.Forest,
                         tokenValue: 6
-                    }],
-                    ['1,0,-1', {
+                    },
+                    '1,0,-1': {
                         id: '1,0,-1',
                         coords: { q: 1, r: 0, s: -1 },
                         terrain: TerrainType.Mountains,
                         tokenValue: 8
-                    }]
-                ]),
-                vertices: new Map([
-                    ['0,0,0', { owner: '0', type: 'settlement' }],
-                    ['1,0,-1', { owner: '1', type: 'city' }]
-                ]),
-                edges: new Map(),
-                ports: new Map()
+                    }
+                },
+                vertices: {
+                    '0,0,0': { owner: '0', type: 'settlement' },
+                    '1,0,-1': { owner: '1', type: 'city' }
+                },
+                edges: {},
+                ports: {}
             },
             players: {
                 '0': createTestPlayer('0', { resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),

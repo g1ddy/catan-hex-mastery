@@ -5,13 +5,13 @@ import { getEdgesForHex } from './hexUtils';
 describe('boardGen', () => {
   test('generates 19 hexes and 9 ports', () => {
     const { hexes, ports } = generateBoard();
-    expect(hexes.length).toBe(19);
+    expect(Object.keys(hexes).length).toBe(19);
     expect(Object.keys(ports).length).toBe(9);
   });
 
   test('no desert has token', () => {
     const { hexes } = generateBoard();
-    const desert = hexes.find(h => h.terrain === TerrainType.Desert);
+    const desert = Object.values(hexes).find(h => h.terrain === TerrainType.Desert);
     expect(desert).toBeDefined();
     expect(desert?.tokenValue).toBeNull();
   });
@@ -20,7 +20,7 @@ describe('boardGen', () => {
     const { hexes, ports } = generateBoard();
     // Count edge occurrences to identify boundaries
     const allEdges: string[] = [];
-    hexes.forEach(h => allEdges.push(...getEdgesForHex(h.coords)));
+    Object.values(hexes).forEach(h => allEdges.push(...getEdgesForHex(h.coords)));
 
     const counts: Record<string, number> = {};
     allEdges.forEach(e => {
@@ -29,7 +29,6 @@ describe('boardGen', () => {
     });
 
     Object.values(ports).forEach(port => {
-        // eslint-disable-next-line security/detect-object-injection
         expect(counts[port.edgeId]).toBe(1);
     });
   });

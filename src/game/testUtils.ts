@@ -1,4 +1,4 @@
-import { GameState, Player, Resources, RollStatus, Hex, Port } from './types';
+import { GameState, Player, Resources, RollStatus } from './types';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
 // Legacy exports for existing tests
@@ -14,7 +14,7 @@ export const createTestPlayer = (id: string, overrides: Partial<Player> = {}): P
 });
 
 export const createTestGameState = (overrides: Partial<GameState> = {}): GameState => ({
-    board: { hexes: new Map(), vertices: new Map(), edges: new Map(), ports: new Map() },
+    board: { hexes: {}, vertices: {}, edges: {}, ports: {} },
     players: {},
     setupPhase: { activeRound: 1 },
     setupOrder: [],
@@ -49,10 +49,10 @@ export const createMockGameState = (overrides: Partial<GameState> = {}): GameSta
 
     const defaults: GameState = {
         board: {
-            hexes: new Map<string, Hex>(),
-            vertices: new Map(),
-            edges: new Map(),
-            ports: new Map<string, Port>(),
+            hexes: {},
+            vertices: {},
+            edges: {},
+            ports: {},
         },
         players: {
             '0': defaultPlayer,

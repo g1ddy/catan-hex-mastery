@@ -32,12 +32,12 @@ describe('regenerateBoard Move', () => {
     it('should allow regeneration when no pieces are placed', () => {
         const G = createMockGameState();
         // Ensure hexes are empty initially so we can see them populate if they weren't
-        G.board.hexes = new Map();
+        G.board.hexes = {};
 
         const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
 
         expect(result).not.toBe('INVALID_MOVE');
-        expect(G.board.hexes.size).toBeGreaterThan(0);
+        expect(Object.keys(G.board.hexes).length).toBeGreaterThan(0);
     });
 
     it('should update robberLocation to the new desert hex', () => {
@@ -45,7 +45,7 @@ describe('regenerateBoard Move', () => {
 
         (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
 
-        const desertHex = Array.from(G.board.hexes.values()).find(h => h.terrain === TerrainType.Desert);
+        const desertHex = Object.values(G.board.hexes).find(h => h.terrain === TerrainType.Desert);
         expect(desertHex).toBeDefined();
         expect(G.robberLocation).toBe(desertHex!.id);
     });

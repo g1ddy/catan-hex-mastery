@@ -60,13 +60,13 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
  */
 export const getPotentialVictims = (G: GameState, hexID: string, playerID: string): Set<string> => {
     const potentialVictims = new Set<string>();
-    const hex = G.board.hexes.get(hexID);
+    const hex = G.board.hexes[hexID]; // eslint-disable-line security/detect-object-injection
     if (!hex) return potentialVictims;
 
     const vertices = getVerticesForHex(hex.coords);
 
     vertices.forEach(vId => {
-        const vertex = G.board.vertices.get(vId);
+        const vertex = G.board.vertices[vId]; // eslint-disable-line security/detect-object-injection
         if (vertex && vertex.owner !== playerID) {
             const victim = G.players[vertex.owner];
             if (victim && countResources(victim.resources) > 0) {
@@ -91,11 +91,11 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
 
     if (victimID) {
         if (!potentialVictims.has(victimID)) {
-            const hex = G.board.hexes.get(hexID);
+            const hex = G.board.hexes[hexID]; // eslint-disable-line security/detect-object-injection
             if (!hex) return { isValid: false, reason: "Invalid hex." }; // Should be caught by spatial check
 
             const vertices = getVerticesForHex(hex.coords);
-            const isOnHex = vertices.some(vId => G.board.vertices.get(vId)?.owner === victimID);
+            const isOnHex = vertices.some(vId => G.board.vertices[vId]?.owner === victimID); // eslint-disable-line security/detect-object-injection
 
             if (!isOnHex) {
                  return { isValid: false, reason: "The chosen victim does not have a settlement on this hex." };

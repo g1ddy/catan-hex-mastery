@@ -19,7 +19,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeSettlement', [vertexId]);
 
   // Execution
-  G.board.vertices.set(vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
+  G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' }; // eslint-disable-line security/detect-object-injection
   G.players[ctx.currentPlayer].settlements.push(vertexId);
   G.players[ctx.currentPlayer].victoryPoints += 1; // Settlement worth 1 VP
 
@@ -29,7 +29,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
     // Grant resources
     const touchingHexes = getHexesForVertex(vertexId);
     touchingHexes.forEach(hId => {
-      const hex = G.board.hexes.get(hId);
+      const hex = G.board.hexes[hId]; // eslint-disable-line security/detect-object-injection
       if (hex) {
           const res = TERRAIN_TO_RESOURCE[hex.terrain];
           if (res) {
@@ -57,7 +57,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeRoad', [edgeId]);
 
   // Execution
-  G.board.edges.set(edgeId, { owner: ctx.currentPlayer });
+  G.board.edges[edgeId] = { owner: ctx.currentPlayer }; // eslint-disable-line security/detect-object-injection
   G.players[ctx.currentPlayer].roads.push(edgeId);
 
   // State Transition
@@ -79,7 +79,7 @@ export const regenerateBoard: Move<GameState> = ({ G }) => {
     G.boardStats = calculateBoardStats(hexes);
 
     // Fix: Update Robber location to new Desert
-    const desertHex = [...hexes.values()].find(h => h.terrain === TerrainType.Desert);
+    const desertHex = Object.values(hexes).find(h => h.terrain === TerrainType.Desert);
     if (!desertHex) {
         throw new Error('Board generation failed: Desert hex not found.');
     }

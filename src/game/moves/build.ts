@@ -17,7 +17,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildRoad', [edgeId]);
 
     // Execution
-    G.board.edges.set(edgeId, { owner: ctx.currentPlayer });
+    G.board.edges[edgeId] = { owner: ctx.currentPlayer }; // eslint-disable-line security/detect-object-injection
     player.roads.push(edgeId);
     player.resources.wood -= cost.wood;
     player.resources.brick -= cost.brick;
@@ -36,7 +36,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildSettlement', [vertexId]);
 
     // Execution
-    G.board.vertices.set(vertexId, { owner: ctx.currentPlayer, type: 'settlement' });
+    G.board.vertices[vertexId] = { owner: ctx.currentPlayer, type: 'settlement' }; // eslint-disable-line security/detect-object-injection
     player.settlements.push(vertexId);
     player.victoryPoints += 1;
     player.resources.wood -= cost.wood;
@@ -58,7 +58,7 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     RuleEngine.validateMoveOrThrow(G, ctx, 'buildCity', [vertexId]);
 
     // Execution
-    const vertex = G.board.vertices.get(vertexId);
+    const vertex = G.board.vertices[vertexId]; // eslint-disable-line security/detect-object-injection
     if (vertex) {
         vertex.type = 'city';
     }

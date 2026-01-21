@@ -1,5 +1,5 @@
 import { Game } from 'boardgame.io';
-import { GameState, Player, Resources, TerrainType, RollStatus, Hex, Port } from './types';
+import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
 import { generateBoard } from './boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
@@ -49,7 +49,7 @@ export const CatanGame: Game<GameState> = {
 
     const { hexes, ports } = generateBoard();
 
-    const desertHex = [...hexes.values()].find(h => h.terrain === TerrainType.Desert);
+    const desertHex = Object.values(hexes).find(h => h.terrain === TerrainType.Desert);
     if (!desertHex) {
       throw new Error('Board setup failed: Desert hex not found.');
     }
@@ -76,8 +76,8 @@ export const CatanGame: Game<GameState> = {
       board: {
         hexes,
         ports,
-        vertices: new Map(),
-        edges: new Map(),
+        vertices: {},
+        edges: {},
       },
       players,
       setupPhase: { activeRound: 1 },

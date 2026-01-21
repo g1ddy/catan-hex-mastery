@@ -28,7 +28,7 @@ describe('Unit Test: Resource Costs', () => {
                 victoryPoints: 0,
             },
         },
-        board: { edges: new Map(), vertices: new Map(), hexes: new Map(mockHexes), ports: new Map() },
+        board: { edges: {}, vertices: {}, hexes: Object.fromEntries(mockHexes), ports: {} },
         setupPhase: { activeRound: 1 },
         setupOrder: ['0', '1'],
         lastRoll: [0, 0],
@@ -59,7 +59,7 @@ describe('Unit Test: Resource Costs', () => {
 
         it('should not deduct resources on an invalid placement', () => {
             G.players['0'].resources = { wood: 1, brick: 1, wheat: 0, sheep: 0, ore: 0 };
-            G.board.edges.set(validEdgeId, { owner: '1' });
+            G.board.edges[validEdgeId] = { owner: '1' }; // eslint-disable-line security/detect-object-injection
             const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, validEdgeId);
             expect(call).toThrow("This edge is already occupied");
 

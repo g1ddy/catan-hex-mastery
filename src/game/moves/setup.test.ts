@@ -45,10 +45,10 @@ const mockHexes: [string, Hex][] = [
 // Create a safe Mock GameState object with defaults
 const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
     board: {
-        hexes: new Map(mockHexes), // Injected valid hexes
-        vertices: new Map(),
-        edges: new Map(),
-        ports: new Map(),
+        hexes: Object.fromEntries(mockHexes), // Injected valid hexes
+        vertices: {},
+        edges: {},
+        ports: {},
     },
     players: {
         '0': {
@@ -88,7 +88,7 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             placeSettlementFn({ G, ctx, events, playerID: '0' }, vId);
 
-            expect(G.board.vertices.has(vId)).toBe(true);
+            expect(G.board.vertices[vId]).toBeDefined(); // eslint-disable-line security/detect-object-injection
             expect(G.players['0'].settlements).toContain(vId);
             expect(events.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: 'placeRoad' });
         });
@@ -99,13 +99,13 @@ describe('Setup Phase Moves', () => {
             const vId = "0,0,0::1,-1,0::0,-1,1";
             // Mock placement of settlement
             G.players['0'].settlements.push(vId);
-            G.board.vertices.set(vId, { owner: '0', type: 'settlement' });
+            G.board.vertices[vId] = { owner: '0', type: 'settlement' }; // eslint-disable-line security/detect-object-injection
 
             const validEdge = "0,0,0::1,-1,0";
 
             placeRoadFn({ G, ctx, events, playerID: '0' }, validEdge);
 
-            expect(G.board.edges.has(validEdge)).toBe(true);
+            expect(G.board.edges[validEdge]).toBeDefined(); // eslint-disable-line security/detect-object-injection
             expect(events.endTurn).toHaveBeenCalled();
         });
 
@@ -128,7 +128,7 @@ describe('Setup Phase Moves', () => {
 
         it('should fail if the edge is already occupied', () => {
             const edgeId = "0,0,0::1,-1,0";
-            G.board.edges.set(edgeId, { owner: '1' }); // Occupied by another player
+            G.board.edges[edgeId] = { owner: '1' }; // eslint-disable-line security/detect-object-injection
             G.players['0'].settlements.push("0,0,0::1,-1,0::0,-1,1"); // Player '0' has a settlement nearby
 
             const move = () => placeRoadFn({ G, ctx, events }, edgeId);

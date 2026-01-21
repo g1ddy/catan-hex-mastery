@@ -1,5 +1,5 @@
 import { calculatePlayerPotentialPips } from './analyst';
-import { GameState, TerrainType, Hex } from '../types';
+import { GameState, TerrainType } from '../types';
 
 describe('calculatePlayerPotentialPips', () => {
     const createMockGameState = (): GameState => ({
@@ -8,14 +8,14 @@ describe('calculatePlayerPotentialPips', () => {
             '1': { id: '1', name: 'P1', color: 'blue', resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [], roads: [], victoryPoints: 0 }
         },
         board: {
-            hexes: new Map<string, Hex>([
-                ['0,0,0', { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 }], // 5 pips (Wood)
-                ['1,-1,0', { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Hills, tokenValue: 5 }], // 4 pips (Brick)
-                ['1,0,-1', { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Desert, tokenValue: null }] // 0 pips
-            ]),
-            vertices: new Map(),
-            edges: new Map(),
-            ports: new Map()
+            hexes: {
+                '0,0,0': { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 }, // 5 pips (Wood)
+                '1,-1,0': { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Hills, tokenValue: 5 }, // 4 pips (Brick)
+                '1,0,-1': { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Desert, tokenValue: null } // 0 pips
+            },
+            vertices: {},
+            edges: {},
+            ports: {}
         }
     } as unknown as GameState);
 
@@ -26,7 +26,7 @@ describe('calculatePlayerPotentialPips', () => {
     });
 
     const addVertex = (id: string, owner: string, type: 'settlement' | 'city') => {
-        mockG.board.vertices.set(id, { owner, type });
+        mockG.board.vertices[id] = { owner, type }; // eslint-disable-line security/detect-object-injection
     };
 
     test('should return 0 pips for no settlements', () => {

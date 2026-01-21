@@ -28,7 +28,7 @@ describe('Setup Phase Logic', () => {
   test('Robber starts on the desert', () => {
     const { G } = client.store.getState();
     const robberHexId = G.robberLocation;
-    const robberHex = G.board.hexes.get(robberHexId);
+    const robberHex = G.board.hexes[robberHexId];
     expect(robberHex).toBeDefined();
     expect(robberHex?.terrain).toBe(TerrainType.Desert);
     expect(robberHex?.tokenValue).toBeNull();
@@ -43,8 +43,8 @@ describe('Setup Phase Logic', () => {
     const vId = "0,0,0::1,-1,0::1,0,-1";
     client.moves.placeSettlement(vId);
     let state = client.store.getState();
-    expect(state.G.board.vertices.has(vId)).toBe(true);
-    expect(state.G.board.vertices.get(vId)?.owner).toBe('0');
+    expect(state.G.board.vertices[vId]).toBeDefined();
+    expect(state.G.board.vertices[vId]?.owner).toBe('0');
 
     const eId = "0,0,0::1,-1,0";
     client.moves.placeRoad(eId);
