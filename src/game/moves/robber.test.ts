@@ -10,7 +10,7 @@ jest.mock('../rules/validator', () => ({
     RuleEngine: {
         validateMoveOrThrow: jest.fn(),
     },
-    getValidRobberVictims: jest.fn((G, hexID) => {
+    getValidRobberVictims: jest.fn((G, _hexID) => {
         // Mock finding a victim if there's a settlement on the hex
         // This is a simplified mock to support the 'random steal' test
         if (G.board.vertices) {
