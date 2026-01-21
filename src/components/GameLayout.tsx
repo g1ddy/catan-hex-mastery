@@ -1,5 +1,5 @@
 import React from 'react';
-import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
+import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/constants';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,

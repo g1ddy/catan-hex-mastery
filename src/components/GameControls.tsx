@@ -135,8 +135,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
              );
         }
 
-        const resources = G.players[ctx.currentPlayer].resources;
-
         // Helper to check if a move is allowed in the current stage
         const isMoveAllowed = (moveName: string): boolean => {
             const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
