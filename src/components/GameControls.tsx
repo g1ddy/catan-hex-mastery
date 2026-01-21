@@ -68,6 +68,9 @@ export const GameControls: React.FC<GameControlsProps> = ({
         setIsEndingTurn(false);
     }, [ctx.currentPlayer, ctx.phase, activeStage]);
 
+    // Trade Logic (Hoisted Hook)
+    const { tradeResult, canTrade } = useTradeLogic(G, ctx);
+
     // Setup Phase
     if (isSetup) {
         let canInteract = false;
@@ -172,7 +175,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
         };
 
         // Trade Logic
-        const { tradeResult, canTrade } = useTradeLogic(G, ctx);
         const canTradeAllowed = canTrade && isMoveAllowed('tradeBank');
         const tradeTooltip = canTradeAllowed
             ? JSON.stringify({
