@@ -144,8 +144,13 @@ graph TD
 
 We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
 
-*   **Command Line**: `npm run check:arch`
-*   **Configuration**: `config/dependency-cruiser.cjs`
+*   **Command Line**: You can verify the architecture manually by running:
+    ```bash
+    npm run check:arch
+    ```
+*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
+*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
+*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
 
 ## 📂 Project Structure & Namespace Best Practices
 
@@ -194,19 +199,27 @@ To align with the Ideal Structure, we plan the following moves:
 
 ### Current Focus: Phase 7 (Full Game Loop) 🚧
 - [x] **Robber Mechanics**:
-    - [x] Resource Discarding.
-    - [x] Stealing.
+    - [x] Resource Discarding (Players with >7 cards must discard half on roll of 7).
+    - [x] Stealing (Active player steals 1 random resource from a player on the target hex).
 - [ ] **Trade System**:
-    - [ ] Player-to-Player trading.
-    - [ ] Trade interface.
+    - [ ] Player-to-Player trading (Offer, Counter-Offer, Accept/Reject).
+    - [ ] Trade interface and notification system.
 - [ ] **Development Cards**:
+    - [ ] Deck management & random shuffling.
     - [ ] "Buy Dev Card" move.
-    - [ ] Card Effects (Knight, etc).
+    - [ ] Cards include: Knight (Move Robber), Road Building, Year of Plenty, Monopoly, Victory Point.
+- [ ] **Special Awards**:
+    - [ ] **Longest Road**: Dynamic pathfinding algorithm to track continuous road segments.
+    - [ ] **Largest Army**: Tracking played Knight cards.
 - [ ] **Win Conditions**:
-    - [ ] Longest Road / Largest Army.
+    - [ ] Integrate Special Awards into VP calculation.
 
 ## 🤝 Contributing
 
-1.  Create a feature branch.
-2.  Ensure tests pass (`npm test` & `npm run test:e2e`).
-3.  Commit and Open PR.
+1.  Create a feature branch (`git checkout -b feature/amazing-feature`).
+2.  Ensure all tests pass (`npm test` & `npm run test:e2e`).
+3.  Commit your changes.
+4.  Open a Pull Request.
+
+---
+*For high-level strategy and game theory documentation, see [STRATEGY_ENGINE.md](./STRATEGY_ENGINE.md).*
