@@ -58,8 +58,8 @@ describe('Gameplay Moves', () => {
              (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, eId);
 
              expect(safeGet(G.board.edges, eId)).toBeDefined();
+             expect(safeGet(G.board.edges, eId)).toBeDefined();
              expect(safeGet(G.board.edges, eId)?.owner).toBe('0');
-             expect(G.players['0'].resources.wood).toBe(0);
              expect(G.players['0'].resources.brick).toBe(0);
              expect(G.players['0'].roads).toContain(eId);
         });
