@@ -95,6 +95,8 @@ The project follows a **5-Layer Architecture** (Layers 0-4) to separate concerns
 
 ### Architecture Diagram
 
+![Dependency Graph](images/dependency-graph.svg)
+
 ```mermaid
 graph TD
     subgraph Layer_4_Decision [Decision & Execution]
