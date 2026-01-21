@@ -21,7 +21,7 @@ const RESOURCE_TO_TERRAIN: Partial<Record<PortType, TerrainType>> = {
     'ore': TerrainType.Mountains,
 };
 
-export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor }) => {
+export const Port: React.FC<PortProps> = ({ cx, cy, type, ownerColor, isActive }) => {
     // Position port slightly outside the edge
     // Since (cx, cy) is relative to hex center (0,0), we can just scale the vector.
     const dist = Math.sqrt(cx*cx + cy*cy);
