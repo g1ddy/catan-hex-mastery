@@ -55,7 +55,7 @@ We use a dual-layer testing strategy:
 
 ## 🏗 Architecture
 
-The project follows a **5-Layer Architecture** (Layers 0-4) to separate concerns between Foundation, Validation, Enumeration, Evaluation, and Decision.
+The project follows a **4-Layer Architecture** (Layers 0-3) to separate concerns between Foundation, Rules, Analysis, and Decision.
 
 ### 0. Foundation Layer (Mechanics & Geometry)
 *   **`src/game/mechanics/*.ts`**: Pure logic and static data.
@@ -66,27 +66,27 @@ The project follows a **5-Layer Architecture** (Layers 0-4) to separate concerns
     *   Provides "Get neighbors", "Calculate distance".
 *   **Access:** Can be imported by **any** higher layer.
 
-### 1. Rules Layer (The "Validator")
+### 1. Rules Layer (Validation & Enumeration)
 *   **`src/game/rules/validator.ts`**: The Facade (Single Source of Truth) for **Validation**.
     *   It exposes `RuleEngine.validateMove` and `RuleEngine.validateMoveOrThrow`.
+*   **`src/game/rules/queries.ts`**: The Facade for **Availability** (Queries).
+    *   It exposes helper functions like `getValidMovesForStage`, `getValidSettlementSpots`.
+    *   Used by the UI to highlight spots and by the Enumerator to list moves.
+*   **`src/game/rules/enumerator.ts`**: The **Generator**.
+    *   It enumerates all legally possible actions for a turn by consuming `queries.ts` and `constants.ts`.
 *   **Internal Rules**:
     *   `gameplay.ts`: Validates state-aware moves (e.g., turn order).
     *   `spatial.ts`: Validates geometric rules using Foundation (e.g., "Is this spot connected?").
-*   **Responsibility**: Enforce the rules of the game. It uses Layer 0 for data but adds the "Permission" logic.
+*   **Responsibility**: Enforce the rules of the game and define what is possible.
 
-### 2. Enumeration Layer (The "Generator")
-*   **`src/game/ai/enumerator.ts`**: Generates all legally possible actions for a turn.
-    *   It iterates through `STAGE_MOVES` (constants).
-    *   It uses `RuleEngine` to find valid arguments (e.g., "Which edges can I build a road on?").
-    *   It powers the Bot's decision tree.
-
-### 3. Evaluation Layer (The "Analyst")
+### 2. Evaluation Layer (The "Analyst")
 *   **`src/game/analysis/coach.ts`**: The "Brain". It scores actions based on game theory:
     *   **Strategic Advice**: "Build Roads" vs "Build Cities" (High-level strategy).
     *   **Spatial Scoring**: Heatmaps for specific board spots (pips, scarcity).
     *   It exposes `scoreAction` and `getStrategicAdvice`.
+    *   It consumes **Rules Layer** (Enumeration/Queries) to know what to score.
 
-### 4. Decision Layer (The "Bot")
+### 3. Decision Layer (The "Bot" & Moves)
 *   **`src/bots/BotCoach.ts`**: The "Bridge". It selects the best move from the Enumerator layer by:
     *   Applying `BotProfile` weights (Personality).
     *   Boosting moves recommended by the `Coach` (Strategy).
@@ -99,21 +99,19 @@ The project follows a **5-Layer Architecture** (Layers 0-4) to separate concerns
 
 ```mermaid
 graph TD
-    subgraph Layer_4_Decision [Decision & Execution]
+    subgraph Layer_3_Decision [Decision & Execution]
         BC[BotCoach.ts]
         Moves[moves/build.ts]
     end
 
-    subgraph Layer_3_Evaluation [Evaluation Layer]
+    subgraph Layer_2_Evaluation [Evaluation Layer]
         C[Coach.ts]
     end
 
-    subgraph Layer_2_Enumeration [Enumeration Layer]
-        Enum[ai/enumerator.ts]
-    end
-
-    subgraph Layer_1_Rules [Logic / Rule Engine]
-        V[rules/validator.ts]
+    subgraph Layer_1_Rules [Rules Layer]
+        V[rules/validator.ts<br/>(Validation)]
+        Q[rules/queries.ts<br/>(Queries)]
+        E[rules/enumerator.ts<br/>(Enumeration)]
         P[rules/spatial.ts]
         G[rules/gameplay.ts]
     end
@@ -124,14 +122,17 @@ graph TD
     end
 
     %% Flows
-    BC -->|Get Options| Enum
+    BC -->|Get Options| E
     BC -->|Get Scores| C
-    Enum -->|Query Validity| V
+    E -->|Query Spots| Q
+    C -->|Query Spots| Q
     Moves -->|Enforce Rules| V
 
     %% Internal Rules
     V --> P
     V --> G
+    Q --> P
+    Q --> G
 
     %% Foundation Usage
     V --> Mech
@@ -165,8 +166,7 @@ src/
 │   ├── geometry/       # (Proposed) Pure Math: geometry.ts, hexUtils.ts
 │   ├── generation/     # (Proposed) Setup: boardGen.ts
 │   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts
-│   ├── rules/          # Validation: validator.ts (Facade), spatial.ts
-│   ├── ai/             # Enumeration: enumerator.ts
+│   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts, enumerator.ts
 │   ├── analysis/       # Evaluation: coach.ts, analyst.ts
 │   ├── moves/          # Execution: build.ts, trade.ts
 │   └── Game.ts         # Main Entry Point
@@ -181,6 +181,11 @@ src/
 3.  **No Monoliths**: Avoid "Utils" folders that become dumping grounds. `hexUtils` is acceptable because it is specific to the Hexagonal Grid domain, but `gameUtils` would be an anti-pattern.
 
 ## 🗺️ Development Roadmap
+
+### Completed Refactoring ✅
+- [x] **Unified Move Architecture**: Separated Validation (Rules) from Execution (Moves).
+- [x] **God Object Split**: `rules/validator.ts` split into `RuleEngine` (Validation) and `Queries` (Availability).
+- [x] **Layer Simplification**: Merged AI Enumeration into Rules Layer to simplify dependencies (`src/game/rules/enumerator.ts`).
 
 ### Refactoring Roadmap (To-Do) 🛠️
 To align with the Ideal Structure, we plan the following moves:

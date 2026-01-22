@@ -13,7 +13,7 @@ import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './constants';
 import { distributeResources, countResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
-import { enumerate } from './ai/enumerator';
+import { enumerate } from './rules/enumerator';
 import { stripHtml } from '../utils/sanitize';
 
 const MOVE_MAP = {
