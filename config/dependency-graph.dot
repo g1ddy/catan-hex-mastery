@@ -135,22 +135,29 @@ strict digraph "dependency-cruiser output"{
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/CoachPlugin.ts" [label=<CoachPlugin.ts> tooltip="CoachPlugin.ts" URL="src/game/analysis/CoachPlugin.ts" fillcolor="#ddfeff"] } } }
     "src/game/analysis/CoachPlugin.ts" -> "src/game/analysis/coach.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/adviceConstants.ts" [label=<adviceConstants.ts> tooltip="adviceConstants.ts" URL="src/game/analysis/adviceConstants.ts" fillcolor="#ddfeff"] } } }
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" subgraph "cluster_src/game/analysis/advisors" {label="advisors" "src/game/analysis/advisors/SpatialAdvisor.ts" [label=<SpatialAdvisor.ts> tooltip="SpatialAdvisor.ts" URL="src/game/analysis/advisors/SpatialAdvisor.ts" fillcolor="#ddfeff"] } } } }
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/utils/objectUtils.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/utils/validation.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/hexUtils.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/mechanics/resources.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/mechanics/scoring.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/rules/queries.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/types.ts"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" subgraph "cluster_src/game/analysis/advisors" {label="advisors" "src/game/analysis/advisors/TradeAdvisor.ts" [label=<TradeAdvisor.ts> tooltip="TradeAdvisor.ts" URL="src/game/analysis/advisors/TradeAdvisor.ts" fillcolor="#ddfeff"] } } } }
+    "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/utils/validation.ts"
+    "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/mechanics/trade.ts"
+    "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/analysis/coach.ts" [arrowhead="normalnoneodot"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/analyst.ts" [label=<analyst.ts> tooltip="analyst.ts" URL="src/game/analysis/analyst.ts" fillcolor="#ddfeff"] } } }
     "src/game/analysis/analyst.ts" -> "src/utils/objectUtils.ts"
     "src/game/analysis/analyst.ts" -> "src/game/config.ts"
     "src/game/analysis/analyst.ts" -> "src/game/hexUtils.ts"
     "src/game/analysis/analyst.ts" -> "src/game/types.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/coach.ts" [label=<coach.ts> tooltip="coach.ts" URL="src/game/analysis/coach.ts" fillcolor="#ddfeff"] } } }
-    "src/game/analysis/coach.ts" -> "src/utils/objectUtils.ts"
     "src/game/analysis/coach.ts" -> "src/utils/validation.ts"
     "src/game/analysis/coach.ts" -> "src/game/constants.ts"
-    "src/game/analysis/coach.ts" -> "src/game/hexUtils.ts"
-    "src/game/analysis/coach.ts" -> "src/game/mechanics/resources.ts"
-    "src/game/analysis/coach.ts" -> "src/game/mechanics/scoring.ts"
-    "src/game/analysis/coach.ts" -> "src/game/mechanics/trade.ts"
-    "src/game/analysis/coach.ts" -> "src/game/rules/queries.ts"
-    "src/game/analysis/coach.ts" -> "src/game/types.ts"
     "src/game/analysis/coach.ts" -> "src/game/analysis/adviceConstants.ts"
+    "src/game/analysis/coach.ts" -> "src/game/analysis/advisors/SpatialAdvisor.ts"
+    "src/game/analysis/coach.ts" -> "src/game/analysis/advisors/TradeAdvisor.ts" [arrowhead="normalnoneodot"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" "src/game/boardGen.ts" [label=<boardGen.ts> tooltip="boardGen.ts" URL="src/game/boardGen.ts" fillcolor="#ddfeff"] } }
     "src/game/boardGen.ts" -> "src/utils/objectUtils.ts"
     "src/game/boardGen.ts" -> "src/game/hexUtils.ts"
