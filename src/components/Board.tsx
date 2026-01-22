@@ -129,6 +129,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
         // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const coach = (ctx as any).coach as Coach;
         const coachInstance = coach || new Coach(G);
 
