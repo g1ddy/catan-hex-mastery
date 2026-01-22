@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction, Player, MoveArguments } from '../game/types';
+import { GameState, MakeMoveAction, Player, MoveArguments } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
@@ -15,7 +15,7 @@ import { getAffordableBuilds } from '../game/mechanics/costs';
 import { createMockGameState } from '../game/testUtils';
 
 // Mock getHexesForVertex to avoid crashes
-jest.mock('../game/hexUtils', () => ({
+jest.mock('../game/geometry/hexUtils', () => ({
     getHexesForVertex: jest.fn(() => [])
 }));
 

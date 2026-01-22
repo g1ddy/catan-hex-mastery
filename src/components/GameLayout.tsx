@@ -1,5 +1,5 @@
 import React from 'react';
-import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
+import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/core/config';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
@@ -12,7 +12,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useViewportDvh } from '../hooks/useViewportDvh';
-import { Resources } from '../game/types';
+import { Resources } from '../game/core/types';
 import { RESOURCE_META } from './uiConfig';
 import { AnalystShell } from './AnalystShell';
 import { CoachShell } from './CoachShell';

@@ -1,4 +1,4 @@
-import { GameState, MoveArguments } from '../types';
+import { GameState, MoveArguments } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll } from './gameplay';
 import {

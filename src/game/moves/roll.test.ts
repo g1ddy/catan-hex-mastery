@@ -1,5 +1,5 @@
 import { rollDice } from './roll';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus } from '../core/types';
 import { createTestGameState } from '../testUtils';
 
 // Define strict interfaces for mocks to avoid 'any'

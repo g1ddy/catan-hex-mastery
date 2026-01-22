@@ -1,5 +1,5 @@
-import { hexCornerOffset } from './geometry';
-import { Hex } from './types';
+import { hexCornerOffset } from './math';
+import { Hex } from '../core/types';
 import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge } from './hexUtils';
 
 /**

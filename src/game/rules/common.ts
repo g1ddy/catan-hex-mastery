@@ -1,5 +1,5 @@
-import { GameState, Resources } from '../types';
-import { BUILD_COSTS } from '../config';
+import { GameState, Resources } from '../core/types';
+import { BUILD_COSTS } from '../core/config';
 import { isValidPlayer } from '../../utils/validation';
 import { canAfford as canAffordResources } from '../mechanics/costs';
 

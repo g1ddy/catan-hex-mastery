@@ -1,4 +1,4 @@
-import { getNeighbors, getDistance, parseVertexId, getVerticesForEdge } from './hexUtils';
+import { getNeighbors, getDistance, parseVertexId, getVerticesForEdge } from './geometry/hexUtils';
 
 describe('hexUtils', () => {
   test('getNeighbors returns 6 neighbors', () => {

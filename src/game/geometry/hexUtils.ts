@@ -1,5 +1,5 @@
-import { CubeCoordinates } from './types';
-import { getVertexNeighborIndices } from './geometry';
+import { CubeCoordinates } from '../core/types';
+import { getVertexNeighborIndices } from './math';
 
 const DIFF_TO_DIR: Record<string, number> = {
   "1,-1,0": 0,

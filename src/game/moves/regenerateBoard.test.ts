@@ -1,5 +1,5 @@
 import { regenerateBoard } from './setup';
-import { GameState, TerrainType, Player } from '../types';
+import { GameState, TerrainType, Player } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { createMockGameState } from '../testUtils';
 

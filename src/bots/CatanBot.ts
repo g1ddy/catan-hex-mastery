@@ -1,5 +1,5 @@
 import { Bot } from 'boardgame.io/ai';
-import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/types';
+import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';

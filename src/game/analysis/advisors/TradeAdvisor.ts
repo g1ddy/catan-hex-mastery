@@ -1,4 +1,4 @@
-import { GameState } from '../../types';
+import { GameState } from '../../core/types';
 import { isValidPlayer } from '../../../utils/validation';
 import { calculateTrade } from '../../mechanics/trade';
 import { ORE_RESERVE_THRESHOLD } from '../coach';

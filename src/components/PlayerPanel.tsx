@@ -1,4 +1,4 @@
-import { GameState, Player } from '../game/types';
+import { GameState, Player } from '../game/core/types';
 import { Layers } from 'lucide-react';
 import { ResourceIconRow } from './ResourceIconRow';
 

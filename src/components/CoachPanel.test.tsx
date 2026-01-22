@@ -7,7 +7,7 @@ import { createMockGameState } from '../game/testUtils';
 import { Ctx } from 'boardgame.io';
 import * as analyst from '../game/analysis/analyst';
 import '@testing-library/jest-dom';
-import { Player } from '../game/types';
+import { Player } from '../game/core/types';
 
 // Mock the analyst module
 jest.mock('../game/analysis/analyst');

@@ -1,5 +1,5 @@
 import { calculateTrade, getExchangeRates } from './trade';
-import { GameState, Port } from '../types';
+import { GameState, Port } from '../core/types';
 import { createTestGameState } from '../testUtils';
 
 describe('Trade Logic', () => {

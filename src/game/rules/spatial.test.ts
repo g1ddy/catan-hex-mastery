@@ -5,7 +5,7 @@ import {
     isValidSetupRoadPlacement,
     isValidSettlementPlacement
 } from './spatial';
-import { GameState } from '../types';
+import { GameState } from '../core/types';
 
 describe('spatial rules', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

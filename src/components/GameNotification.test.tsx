@@ -3,7 +3,7 @@
  */
 import { render, screen, act } from '@testing-library/react';
 import { GameNotification } from './GameNotification';
-import { GameState } from '../game/types';
+import { GameState } from '../game/core/types';
 import '@testing-library/jest-dom';
 
 // Mock Lucide icons

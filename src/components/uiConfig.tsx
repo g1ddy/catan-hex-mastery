@@ -1,5 +1,5 @@
 import { Trees, BrickWall, Cloud, Wheat, Mountain, MapPin, Home, Castle, LucideIcon } from 'lucide-react';
-import { TerrainType } from '../game/types';
+import { TerrainType } from '../game/core/types';
 
 export interface ResourceMeta {
   name: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';

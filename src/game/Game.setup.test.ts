@@ -3,7 +3,7 @@
  */
 import { CatanGame } from './Game';
 import { Ctx } from 'boardgame.io';
-import { GameState } from './types';
+import { GameState } from './core/types';
 
 // Mock the full Setup Context required by boardgame.io
 // This avoids using 'as any' and satisfies the type requirements for the setup function

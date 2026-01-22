@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from './GameControls';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES } from '../game/core/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 
 export interface CustomMessage {

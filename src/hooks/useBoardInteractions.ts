@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState } from '../game/types';
+import { GameState } from '../game/core/types';
 import { getValidMovesForStage } from '../game/rules/queries';
 
 export interface BoardInteractions {

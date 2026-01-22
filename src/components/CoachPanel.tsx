@@ -1,6 +1,6 @@
 import React from 'react';
 import { Ctx } from 'boardgame.io';
-import { GameState } from '../game/types';
+import { GameState } from '../game/core/types';
 import { calculatePlayerPotentialPips } from '../game/analysis/analyst';
 import { ResourceIconRow } from './ResourceIconRow';
 import { StrategicAdvice } from '../game/analysis/coach';

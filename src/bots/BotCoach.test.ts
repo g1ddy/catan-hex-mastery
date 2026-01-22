@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction, MoveArguments } from '../game/types';
+import { GameState, MakeMoveAction, MoveArguments } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile } from './profiles/BotProfile';
 
@@ -22,7 +22,7 @@ jest.mock('../game/mechanics/costs', () => ({
         devCard: true
     }))
 }));
-jest.mock('../game/hexUtils', () => ({
+jest.mock('../game/geometry/hexUtils', () => ({
     getHexesForVertex: jest.fn(() => []),
 }));
 

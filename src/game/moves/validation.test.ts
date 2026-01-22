@@ -1,6 +1,6 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { placeRoad, placeSettlement } from './setup';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import * as _ from 'lodash';
 

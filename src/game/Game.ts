@@ -1,6 +1,6 @@
 import { Game } from 'boardgame.io';
-import { GameState, Player, Resources, TerrainType, RollStatus } from './types';
-import { generateBoard } from './boardGen';
+import { GameState, Player, Resources, TerrainType, RollStatus } from './core/types';
+import { generateBoard } from './generation/boardGen';
 import { getSnakeDraftOrder } from './turnOrder';
 import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
@@ -9,7 +9,7 @@ import { rollDice } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analysis/analyst';
-import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './constants';
+import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './core/constants';
 import { distributeResources, countResources } from './mechanics/resources';
 import { PLAYER_COLORS } from '../components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';

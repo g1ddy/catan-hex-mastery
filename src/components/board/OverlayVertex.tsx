@@ -1,7 +1,7 @@
 import React from 'react';
 import { BuildingIcon } from './BuildingIcon';
 import { CoachRecommendation } from '../../game/analysis/coach';
-import { BOARD_CONFIG } from '../../game/config';
+import { BOARD_CONFIG } from '../../game/core/config';
 import { BuildMode } from '../GameControls';
 
 export interface OverlayVertexProps {

@@ -1,11 +1,11 @@
 import { Move } from 'boardgame.io';
-import { GameState, TerrainType } from '../types';
-import { STAGES } from '../constants';
-import { getHexesForVertex } from '../hexUtils';
+import { GameState, TerrainType } from '../core/types';
+import { STAGES } from '../core/constants';
+import { getHexesForVertex } from '../geometry/hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { RuleEngine } from '../rules/validator';
-import { generateBoard } from '../boardGen';
+import { generateBoard } from '../generation/boardGen';
 import { calculateBoardStats } from '../analysis/analyst';
 import { safeSet, safeGet } from '../../utils/objectUtils';
 

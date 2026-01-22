@@ -1,12 +1,12 @@
 import { Ctx } from 'boardgame.io';
 import { getBestSettlementSpots, Coach } from './coach';
-import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../types';
+import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../core/types';
 import { STRATEGIC_ADVICE } from './adviceConstants';
 import { safeSet } from '../../utils/objectUtils';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.
-jest.mock('../hexUtils', () => ({
+jest.mock('../geometry/hexUtils', () => ({
     getVerticesForHex: (coords: { q: number, r: number, s: number }) => {
         const id = `${coords.q},${coords.r},${coords.s}`;
         const targetHexes = ['0,0,0', '1,-1,0', '1,0,-1'];

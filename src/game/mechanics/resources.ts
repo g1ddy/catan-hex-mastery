@@ -1,5 +1,5 @@
-import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../types';
-import { getVerticesForHex } from '../hexUtils';
+import { GameState, TERRAIN_CONFIG, Resources, TerrainType } from '../core/types';
+import { getVerticesForHex } from '../geometry/hexUtils';
 import { safeGet } from '../../utils/objectUtils';
 
 /**

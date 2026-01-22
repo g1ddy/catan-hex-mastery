@@ -1,9 +1,9 @@
 import { distributeResources } from './resources';
-import { GameState, TerrainType } from '../types';
+import { GameState, TerrainType } from '../core/types';
 import { createTestGameState, createTestPlayer } from '../testUtils';
 
 // Mock getVerticesForHex
-jest.mock('../hexUtils', () => ({
+jest.mock('../geometry/hexUtils', () => ({
     getVerticesForHex: (coords: { q: number, r: number, s: number }) => {
         // Return predictable vertex IDs based on coords
         return [`${coords.q},${coords.r},${coords.s}`];

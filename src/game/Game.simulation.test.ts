@@ -8,7 +8,7 @@ import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './rules/enumerator';
-import { GameState } from './types';
+import { GameState } from './core/types';
 
 interface SimulationState {
     G: GameState;

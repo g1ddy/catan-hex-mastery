@@ -1,5 +1,5 @@
 import React from 'react';
-import { BoardStats, GameState } from '../game/types';
+import { BoardStats, GameState } from '../game/core/types';
 import { RefreshCw } from 'lucide-react';
 
 interface AnalystPanelProps {

@@ -1,8 +1,8 @@
 import { dismissRobber } from './robber';
-import { STAGES } from '../constants';
+import { STAGES } from '../core/constants';
 import { createMockGameState } from '../testUtils';
 import { RuleEngine } from '../rules/validator';
-import { TerrainType, Hex, Vertex, Player } from '../types';
+import { TerrainType, Hex, Vertex, Player } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { safeSet } from '../../utils/objectUtils';
 

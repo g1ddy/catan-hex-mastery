@@ -1,5 +1,5 @@
-import { BANK_TRADE_GIVE_AMOUNT } from '../config';
-import { GameState, Resources } from '../types';
+import { BANK_TRADE_GIVE_AMOUNT } from '../core/config';
+import { GameState, Resources } from '../core/types';
 import { safeGet } from '../../utils/objectUtils';
 
 export const RESOURCE_ORDER: (keyof Resources)[] = ['wood', 'brick', 'sheep', 'wheat', 'ore'];

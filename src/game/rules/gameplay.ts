@@ -1,11 +1,11 @@
-import { GameState } from '../types';
+import { GameState } from '../core/types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
 import { isValidPlayer } from '../../utils/validation';
-import { BANK_TRADE_GIVE_AMOUNT } from '../config';
+import { BANK_TRADE_GIVE_AMOUNT } from '../core/config';
 import { countResources } from '../mechanics/resources';
-import { getVerticesForHex } from '../hexUtils';
+import { getVerticesForHex } from '../geometry/hexUtils';
 import { safeGet } from '../../utils/objectUtils';
 
 /**

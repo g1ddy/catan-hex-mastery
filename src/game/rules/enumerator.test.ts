@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 import { enumerate } from './enumerator';
-import { GameState } from '../types';
-import { STAGES } from '../constants';
+import { GameState } from '../core/types';
+import { STAGES } from '../core/constants';
 
 // Mock validator functions
 jest.mock('./validator', () => {
@@ -68,8 +68,8 @@ jest.mock('../mechanics/costs', () => ({
     }))
 }));
 
-jest.mock('../constants', () => {
-    const original = jest.requireActual('../constants');
+jest.mock('../core/constants', () => {
+    const original = jest.requireActual('../core/constants');
     return {
         ...original,
         STAGE_MOVES: {
