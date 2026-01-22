@@ -2,7 +2,7 @@ import { GameAction } from '../../game/core/types';
 import { BotProfile } from '../profiles/BotProfile';
 import { Coach } from '../../game/analysis/coach';
 import { getAffordableBuilds } from '../../game/mechanics/costs';
-import { ActionUtils } from '../../utils/actionUtils';
+import { ActionUtils } from '../utils/ActionUtils';
 
 // Constants extracted from BotCoach
 const STRATEGIC_ADVICE_BOOST = 1.5;

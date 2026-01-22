@@ -1,4 +1,4 @@
-import { GameAction, BotMove, MoveArguments } from '../game/core/types';
+import { GameAction, BotMove, MoveArguments } from '../../game/core/types';
 
 export class ActionUtils {
     /**
