@@ -66,6 +66,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Configure Git User
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
     - name: Install Graphviz
       if: github.ref_name == 'main'
       run: sudo apt-get update && sudo apt-get install -y graphviz
@@ -77,8 +82,6 @@ jobs:
     - name: Commit and Push Dependency Graph
       if: github.ref_name == 'main'
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
         if [[ -n $(git status --porcelain config/dependency-graph.dot docs/images/) ]]; then
           git add config/dependency-graph.dot docs/images/
           git commit -m "chore(docs): update dependency graph [skip ci]"
@@ -96,8 +99,6 @@ jobs:
     - name: Create Release Tag
       if: env.NEW_TAG != ''
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
         git tag ${{ env.NEW_TAG }}
         git push origin ${{ env.NEW_TAG }}
 
