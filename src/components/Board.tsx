@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState } from '../game/core/types';
@@ -128,8 +129,8 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
         // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const coach = (ctx as any).coach as Coach;
-        // eslint-disable-next-line security/detect-object-injection
         const coachInstance = coach || new Coach(G);
 
         let allScores: CoachRecommendation[] = [];
@@ -176,46 +177,48 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
 
   const BoardContent = (
     <div className="board absolute inset-0 overflow-hidden">
-        {/* Tooltip for Coach Mode */}
-        <Tooltip
-            id="coach-tooltip"
-            place="top"
-            className="coach-tooltip"
-            style={{ zIndex: Z_INDEX_TOOLTIP }}
-            render={({ content }) => {
-                if (!content) return null;
-                const rec = coachData.recommendations[content];
-                if (!rec) return null;
+        {createPortal(
+            <Tooltip
+                id="coach-tooltip"
+                place="top"
+                className="coach-tooltip"
+                style={{ zIndex: Z_INDEX_TOOLTIP }}
+                render={({ content }) => {
+                    if (!content) return null;
+                    // eslint-disable-next-line security/detect-object-injection
+                    const rec = coachData.recommendations[content];
+                    if (!rec) return null;
 
-                const { score, details } = rec;
-                const parts = [];
-                // Pips
-                parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
-                // Scarcity
-                if (details.scarcityBonus && details.scarceResources.length > 0) {
-                    parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                }
-                // Diversity
-                if (details.diversityBonus) {
-                    parts.push('High Diversity');
-                }
-                // Synergy
-                if (details.synergyBonus) {
-                    parts.push('Synergy');
-                }
-                // Needed
-                if (details.neededResources.length > 0) {
-                     parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                }
-                return (
-                    <div>
-                        <div className="font-bold mb-1">Score: {score}</div>
-                        <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
-                    </div>
-                );
-            }}
-        />
-
+                    const { score, details } = rec;
+                    const parts = [];
+                    // Pips
+                    parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
+                    // Scarcity
+                    if (details.scarcityBonus && details.scarceResources.length > 0) {
+                        parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                    }
+                    // Diversity
+                    if (details.diversityBonus) {
+                        parts.push('High Diversity');
+                    }
+                    // Synergy
+                    if (details.synergyBonus) {
+                        parts.push('Synergy');
+                    }
+                    // Needed
+                    if (details.neededResources.length > 0) {
+                        parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
+                    }
+                    return (
+                        <div>
+                            <div className="font-bold mb-1">Score: {score}</div>
+                            <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
+                        </div>
+                    );
+                }}
+            />,
+            document.body
+        )}
       <HexGrid
         width="100%"
         height="100%"

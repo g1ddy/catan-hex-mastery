@@ -50,7 +50,7 @@ test.describe('Player Panel Tests', () => {
     await expect(tooltip).toHaveText('Wood');
 
     // Check z-index to be sure
-    await expect(tooltip).toHaveCSS('z-index', '1000');
+    await expect(tooltip).toHaveCSS('z-index', '9999');
   });
 
   test('Mobile: Docked Player Panel works', async ({ page, isMobile: _isMobile }) => {
@@ -101,6 +101,6 @@ test.describe('Player Panel Tests', () => {
     await expect(tooltip).toHaveText('Wood');
 
     // Check z-index on mobile as well
-    await expect(tooltip).toHaveCSS('z-index', '1000');
+    await expect(tooltip).toHaveCSS('z-index', '9999');
   });
 });

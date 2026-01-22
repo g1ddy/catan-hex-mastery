@@ -6,7 +6,7 @@
  */
 
 // The highest z-index, reserved for tooltips to ensure they appear above all other content.
-export const Z_INDEX_TOOLTIP = 1000;
+export const Z_INDEX_TOOLTIP = 9999;
 
 // Z-index for overlay panels (like mobile drawers) to ensure they appear above the board.
 export const Z_INDEX_OVERLAY_PANEL = 200;
