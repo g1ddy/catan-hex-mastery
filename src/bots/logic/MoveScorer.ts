@@ -2,7 +2,7 @@ import { GameAction } from '../../game/core/types';
 import { BotProfile } from '../profiles/BotProfile';
 import { Coach } from '../../game/analysis/coach';
 import { getAffordableBuilds } from '../../game/mechanics/costs';
-import { BotMove } from '../../game/core/types'; // Using re-exported type or original
+import { ActionUtils } from '../../utils/actionUtils';
 
 // Constants extracted from BotCoach
 const STRATEGIC_ADVICE_BOOST = 1.5;
@@ -20,15 +20,8 @@ export interface ScoringContext {
 }
 
 export class MoveScorer {
-    private getMoveName(action: GameAction): string {
-        if ('payload' in action) {
-            return action.payload.type;
-        }
-        return (action as BotMove).move;
-    }
-
     public getWeightedScore(move: GameAction, context: ScoringContext): number {
-        const name = this.getMoveName(move);
+        const name = ActionUtils.getMoveName(move) as string;
         let weight = 0;
 
         // Base Weight from Profile

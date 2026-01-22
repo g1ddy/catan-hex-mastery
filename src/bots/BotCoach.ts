@@ -1,10 +1,11 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction, MoveArguments, BotMove } from '../game/core/types';
+import { GameState, GameAction, BotMove } from '../game/core/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { MoveScorer, ScoringContext } from './logic/MoveScorer';
+import { ActionUtils } from '../utils/actionUtils';
 
 export type { BotMove };
 
@@ -25,20 +26,6 @@ export class BotCoach {
         this.scorer = new MoveScorer();
     }
 
-    private getMoveName(action: GameAction): keyof MoveArguments {
-        if ('payload' in action) {
-            return action.payload.type;
-        }
-        return (action as BotMove).move;
-    }
-
-    private getMoveArgs(action: GameAction): MoveArguments[keyof MoveArguments] {
-        if ('payload' in action) {
-            return action.payload.args;
-        }
-        return (action as BotMove).args;
-    }
-
     /**
      * Helper to refine a list of top moves of a specific type using spatial scoring.
      * Finds the single best move of that type and promotes it to the top.
@@ -49,7 +36,7 @@ export class BotCoach {
         moveType: string,
         scoreFn: (candidates: string[]) => CoachRecommendation[]
     ): GameAction[] | null {
-        const specificMoves = topMoves.filter(m => this.getMoveName(m) === moveType);
+        const specificMoves = topMoves.filter(m => ActionUtils.getMoveName(m) === moveType);
 
         if (specificMoves.length <= 1) {
             return null; // No refinement needed or impossible
@@ -58,7 +45,7 @@ export class BotCoach {
         // Extract candidate IDs (e.g. vertex IDs)
         // We filter out undefined values to ensure type safety, assuming spatial moves always have 1 arg (the ID)
         const candidateIds = specificMoves
-            .map(m => this.getMoveArgs(m)[0])
+            .map(m => ActionUtils.getMoveArgs(m)[0])
             .filter((id): id is string => typeof id === 'string');
 
         // Get scores from Coach
@@ -67,8 +54,8 @@ export class BotCoach {
 
         // Find the single best move
         const bestMove = specificMoves.reduce((best, current) => {
-            const vBest = this.getMoveArgs(best)[0];
-            const vCurrent = this.getMoveArgs(current)[0];
+            const vBest = ActionUtils.getMoveArgs(best)[0];
+            const vCurrent = ActionUtils.getMoveArgs(current)[0];
 
             // Safety check for indices
             if (typeof vBest !== 'string' || typeof vCurrent !== 'string') return best;
@@ -108,7 +95,7 @@ export class BotCoach {
         if (!allMoves || allMoves.length === 0) return [];
 
         // 1. Detect Roll Dice (always prioritize)
-        const isRolling = allMoves.some(m => this.getMoveName(m) === 'rollDice');
+        const isRolling = allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice');
         if (isRolling) {
             return allMoves;
         }
@@ -116,14 +103,14 @@ export class BotCoach {
         // 2. Setup Phase Optimization (Special logic preserved)
         // Setup Settlement needs heavy Coach lifting, better done specifically here
         // to avoid recalculating the map 50 times in scoreAction loop.
-        const isSetupSettlement = allMoves.some(m => this.getMoveName(m) === 'placeSettlement');
+        const isSetupSettlement = allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement');
         if (isSetupSettlement) {
             // Use Coach analysis to find the best spots
             const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
             const movesByVertex = new Map<string, GameAction>();
             allMoves.forEach(m => {
-                if (this.getMoveName(m) === 'placeSettlement') {
-                    const args = this.getMoveArgs(m);
+                if (ActionUtils.getMoveName(m) === 'placeSettlement') {
+                    const args = ActionUtils.getMoveArgs(m);
                     // Safely access first argument (vertexID)
                     const vId = args[0];
                     if (typeof vId === 'string') {
@@ -198,7 +185,7 @@ export class BotCoach {
 
         // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
         // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
-        const topMoveNames = topMoves.map(m => this.getMoveName(m));
+        const topMoveNames = topMoves.map(m => ActionUtils.getMoveName(m));
         const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
 
         if (allAreRoads) {
