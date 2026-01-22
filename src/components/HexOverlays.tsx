@@ -5,7 +5,7 @@ import { GameState, Hex } from '../game/core/types';
 import { HEX_CORNERS, getHexGeometry } from '../game/geometry/staticGeometry';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
-import { safeMove } from '../utils/moveUtils';
+import { safeMove } from '../utils/feedback';
 import { safeGet, safeCheck } from '../utils/objectUtils';
 import { PHASES, STAGES } from '../game/core/constants';
 import { useBoardInteractions } from '../hooks/useBoardInteractions';

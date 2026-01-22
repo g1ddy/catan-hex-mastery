@@ -1,4 +1,4 @@
-import { GameState } from '../game/core/types';
+import { GameState } from './types';
 
 /**
  * Validates that a string is a safe hex coordinate ID.

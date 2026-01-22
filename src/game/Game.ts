@@ -1,7 +1,7 @@
 import { Game } from 'boardgame.io';
 import { GameState, Player, Resources, TerrainType, RollStatus } from './core/types';
 import { generateBoard } from './generation/boardGen';
-import { getSnakeDraftOrder } from './turnOrder';
+import { getSnakeDraftOrder } from './mechanics/turnOrder';
 import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';

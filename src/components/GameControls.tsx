@@ -5,7 +5,7 @@ import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
 import { PHASES, STAGES, STAGE_MOVES } from '../game/core/constants';
-import { safeMove } from '../utils/moveUtils';
+import { safeMove } from '../utils/feedback';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { StrategicAdvice } from '../game/analysis/coach';
 import { useTradeLogic } from '../hooks/useTradeLogic';

@@ -6,7 +6,7 @@ import {
 import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
 import { DiceIcons } from './DiceIcons';
 import { RESOURCE_META } from './uiConfig';
-import { isValidPlayer } from '../utils/validation';
+import { isValidPlayer } from '../game/core/validation';
 
 interface GameNotificationProps {
     G: GameState;

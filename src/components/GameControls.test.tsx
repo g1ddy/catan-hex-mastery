@@ -30,7 +30,7 @@ jest.mock('react-tooltip', () => ({
 }));
 
 // Mock safeMove
-jest.mock('../utils/moveUtils', () => ({
+jest.mock('../utils/feedback', () => ({
     safeMove: (fn: () => void) => fn(),
 }));
 

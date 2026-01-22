@@ -1,20 +1,14 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction, MoveArguments } from '../game/core/types';
+import { GameState, GameAction, MoveArguments, BotMove } from '../game/core/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
-import { isValidPlayer } from '../utils/validation';
+import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { MoveScorer, ScoringContext } from './logic/MoveScorer';
 
-// Re-export BotMove to match boardgame.io's ActionShape if needed,
-// but local definition is fine as long as we cast it when interacting with framework types.
-import { BotMove } from '../game/core/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
-const STRATEGIC_ADVICE_BOOST = 1.5;
 const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
-const AFFORDABLE_BOOST = 10.0;
-const ROAD_FATIGUE_PENALTY = 0.01;
-const TRADE_BOOST = 5.0;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
@@ -22,11 +16,13 @@ export class BotCoach {
     private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
+    private scorer: MoveScorer;
 
     constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.G = G;
         this.coach = coach;
         this.profile = profile;
+        this.scorer = new MoveScorer();
     }
 
     private getMoveName(action: GameAction): keyof MoveArguments {
@@ -155,67 +151,22 @@ export class BotCoach {
         const player = this.G.players[playerID];
         const affordable = getAffordableBuilds(player.resources);
         const settlementCount = player.settlements.length;
-        // const cityCount = player.cities.length; // Not used in fatigue formula currently
         const roadCount = player.roads.length;
 
-        const roadFatigue = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
+        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
 
-        const getWeightedScore = (move: GameAction): number => {
-            const name = this.getMoveName(move);
-            let weight = 0;
-
-            // Base Weight from Profile
-            switch (name) {
-                case 'buildCity': weight = this.profile.weights.buildCity; break;
-                case 'buildSettlement': weight = this.profile.weights.buildSettlement; break;
-                case 'buildRoad': weight = this.profile.weights.buildRoad; break;
-                case 'placeRoad': weight = this.profile.weights.buildRoad; break;
-                case 'buyDevCard': weight = this.profile.weights.buyDevCard; break;
-                case 'endTurn': weight = 1.0; break;
-                case 'tradeBank': weight = this.profile.weights.tradeBank; break;
-                default: weight = 0.5; break;
-            }
-
-            // Coach Strategic Multiplier
-            if (advisedMoves.has(name)) {
-                weight *= STRATEGIC_ADVICE_BOOST; // Boost advised moves
-            }
-
-            // Dynamic Logic Multipliers
-            if (name === 'buildSettlement' && affordable.settlement) {
-                weight *= AFFORDABLE_BOOST;
-            }
-            if (name === 'buildCity' && affordable.city) {
-                weight *= AFFORDABLE_BOOST;
-            }
-            if (name === 'buildRoad') {
-                if (roadFatigue) {
-                    weight *= ROAD_FATIGUE_PENALTY;
-                }
-                // Minor boost if we can afford a road but NOT a settlement, to keep expanding?
-                // Or just rely on base weight. User asked to "balance" it.
-                // If not affordable, getAffordableBuilds returns false, but 'buildRoad' won't be in list anyway
-                // because enumerator checks affordability.
-            }
-            if (name === 'tradeBank') {
-                // If we can't afford a settlement, but can trade, boost trade.
-                if (!affordable.settlement) {
-                     weight *= TRADE_BOOST;
-                }
-
-                // Smart Ban: Protect Ore (City bottleneck) using shared Coach logic
-                const tradeEvaluation = this.coach.evaluateTrade(playerID);
-                if (!tradeEvaluation.isSafe) {
-                    weight = 0;
-                }
-            }
-
-            return weight;
+        const context: ScoringContext = {
+            profile: this.profile,
+            advisedMoves,
+            affordable,
+            isRoadFatigued,
+            coach: this.coach,
+            playerID
         };
 
         // Capture weights to handle tie-breaking/shuffling later
         const moveWeights = new Map<GameAction, number>();
-        allMoves.forEach(m => moveWeights.set(m, getWeightedScore(m)));
+        allMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
 
         // Initial Sort by Weight
         const sortedMoves = [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
