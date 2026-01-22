@@ -58,6 +58,16 @@ Following the "AI to Rules" refactor and "Split Coach" initiative, here are the 
 | `src/game/analysis/coach.ts` | **Fan-Out** | 11 | **7** | ▼ 36% |
 | `src/game/analysis/coach.ts` | **Instability** | 46% | **32%** | ▼ 14% |
 
+### Refactoring Update (Namespace Restructure)
+Following the "Namespace Restructure" refactor to align with directional layers (`Core`, `Geometry`, `Generation`):
+
+| File | Metric | Value | Interpretation |
+| :--- | :--- | :--- | :--- |
+| `src/game/core/types.ts` | **Instability** | **0%** | Perfect Stability (Foundation). Referenced by 68 modules. |
+| `src/game/geometry/math.ts` | **Instability** | **0%** | Perfect Stability. |
+| `src/game/generation/boardGen.ts` | **Instability** | **57%** | Moderate. Depends on Core/Geometry, used by Game/Setup. |
+| `src/game/rules/validator.ts` | **Instability** | **36%** | Healthy. Facade pattern successfully shields it. |
+
 ### Current Hotspots
 | File | LOC | Responsibility | Risk |
 | :--- | :--- | :--- | :--- |

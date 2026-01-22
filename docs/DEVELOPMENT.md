@@ -55,18 +55,26 @@ We use a dual-layer testing strategy:
 
 ## 🏗 Architecture
 
-The project follows a **4-Layer Architecture** (Layers 0-3) to separate concerns between Foundation, Rules, Analysis, and Decision.
+The project follows a **Multi-Layer Architecture** (Layers -1 to 3) to separate concerns between Foundation, Rules, Analysis, and Decision.
+
+### -1. Core Layer (Pure Definition)
+*   **`src/game/core/types.ts`**: Global type definitions.
+*   **`src/game/core/constants.ts`**: Game constants (e.g., `STAGES`, `PHASES`).
+*   **`src/game/core/config.ts`**: Configuration (e.g., `BOARD_CONFIG`).
+*   **Responsibility**: The vocabulary of the system. I=0 (No dependencies).
 
 ### 0. Foundation Layer (Mechanics & Geometry)
+*   **`src/game/geometry/*.ts`**: Pure math and spatial utilities.
+    *   `math.ts`, `hexUtils.ts`, `staticGeometry.ts`.
 *   **`src/game/mechanics/*.ts`**: Pure logic and static data.
     *   `resources.ts`, `costs.ts`, `scoring.ts`.
-    *   Provides primitives like "What does a road cost?" or "Is this trade valid?".
-*   **`src/game/geometry/*.ts`** (Proposed): Math and spatial utilities.
-    *   `hexUtils.ts`, `geometry.ts`.
-    *   Provides "Get neighbors", "Calculate distance".
-*   **Access:** Can be imported by **any** higher layer.
+*   **Access**: Can be imported by **any** higher layer.
 
-### 1. Rules Layer (Validation & Enumeration)
+### 1. Generation Layer (Setup)
+*   **`src/game/generation/boardGen.ts`**: Procedural board generation logic.
+*   **Responsibility**: Creating the initial state.
+
+### 1.5. Rules Layer (Validation & Enumeration)
 *   **`src/game/rules/validator.ts`**: The Facade (Single Source of Truth) for **Validation**.
     *   It exposes `RuleEngine.validateMove` and `RuleEngine.validateMoveOrThrow`.
 *   **`src/game/rules/queries.ts`**: The Facade for **Availability** (Queries).
@@ -116,9 +124,17 @@ graph TD
         G[rules/gameplay.ts]
     end
 
+    subgraph Layer_1_Generation [Generation Layer]
+        Gen[generation/boardGen.ts]
+    end
+
     subgraph Layer_0_Foundation [Foundation Layer]
         Mech[mechanics/costs.ts]
-        Geo[geometry/*.ts]
+        Geo[geometry/hexUtils.ts]
+    end
+
+    subgraph Layer_Minus1_Core [Core Layer]
+        Core[core/types.ts]
     end
 
     %% Flows
@@ -139,6 +155,10 @@ graph TD
     P --> Geo
     BC --> Mech
     C --> Mech
+
+    %% Core Usage (Universal)
+    Geo --> Core
+    Mech --> Core
 ```
 
 ### Architecture Verification
@@ -162,13 +182,13 @@ We aim for small, focused classes with specific responsibilities.
 ```
 src/
 ├── game/
-│   ├── core/           # (Proposed) Constants, Types, Config
-│   ├── geometry/       # (Proposed) Pure Math: geometry.ts, hexUtils.ts
-│   ├── generation/     # (Proposed) Setup: boardGen.ts
-│   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts
-│   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts, enumerator.ts
-│   ├── analysis/       # Evaluation: coach.ts, analyst.ts
-│   ├── moves/          # Execution: build.ts, trade.ts
+│   ├── core/           # Types, Constants, Config (Layer -1)
+│   ├── geometry/       # Pure Math: math.ts, hexUtils.ts (Layer 0)
+│   ├── generation/     # Setup: boardGen.ts (Layer 1)
+│   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts (Layer 0)
+│   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts (Layer 1.5)
+│   ├── analysis/       # Evaluation: coach.ts, analyst.ts (Layer 2)
+│   ├── moves/          # Execution: build.ts, trade.ts (Layer 3)
 │   └── Game.ts         # Main Entry Point
 ```
 
@@ -186,21 +206,7 @@ src/
 - [x] **Unified Move Architecture**: Separated Validation (Rules) from Execution (Moves).
 - [x] **God Object Split**: `rules/validator.ts` split into `RuleEngine` (Validation) and `Queries` (Availability).
 - [x] **Layer Simplification**: Merged AI Enumeration into Rules Layer to simplify dependencies (`src/game/rules/enumerator.ts`).
-
-### Refactoring Roadmap (To-Do) 🛠️
-To align with the Ideal Structure, we plan the following moves:
-
-- [ ] **Geometry Cleanup**:
-    - Move `src/game/geometry.ts` -> `src/game/geometry/index.ts` (or `math.ts`)
-    - Move `src/game/staticGeometry.ts` -> `src/game/geometry/static.ts`
-    - Move `src/game/hexUtils.ts` -> `src/game/geometry/hexUtils.ts`
-- [ ] **Generation Cleanup**:
-    - Move `src/game/boardGen.ts` -> `src/game/generation/boardGen.ts`
-- [ ] **Core Cleanup**:
-    - Move `src/game/types.ts` -> `src/game/core/types.ts`
-    - Move `src/game/constants.ts` -> `src/game/core/constants.ts`
-    - Move `src/game/config.ts` -> `src/game/core/config.ts`
-- [ ] **Dependency Cruiser**: Update `config/dependency-cruiser.cjs` aliases to reflect these new paths.
+- [x] **Namespace Restructure**: Implemented the "Ideal Structure" (`Core`, `Geometry`, `Generation`) to separate concerns and stabilize the dependency graph.
 
 ### Current Focus: Phase 7 (Full Game Loop) 🚧
 - [x] **Robber Mechanics**:
