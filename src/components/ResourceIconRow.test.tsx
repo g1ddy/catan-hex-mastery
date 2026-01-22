@@ -30,6 +30,9 @@ describe('ResourceIconRow', () => {
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('5')).toBeInTheDocument();
+
+    // Check for zero counts (there are 2 resources with 0: sheep and ore)
+    expect(screen.getAllByText('0')).toHaveLength(2);
   });
 
   it('provides accessible labels for screen readers', () => {
