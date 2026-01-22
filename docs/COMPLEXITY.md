@@ -88,3 +88,43 @@ Following the "Namespace Restructure" refactor to align with directional layers 
     *   As bot personalities grow, this file risks becoming a monolith. Consider "Strategy Pattern" for personalities.
 2.  **Monitor `SpatialAdvisor.ts`**:
     *   If this grows beyond 300 LOC, split into `SettlementScorer` and `CityScorer`.
+
+
+## 🚨 Automated Complexity Report
+
+**Last Updated:** 2026-01-22
+
+### 🏥 Repository Health Score: **87.0 / 100**
+
+*   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
+*   **Total Files Scanned**: 79
+
+### 🔥 Top 10 High-Complexity Files (Compound Score)
+_Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
+
+| File | Score | LOC | Complexity | Fan-Out | Instability |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `src/components/Board.tsx` | **124.3** | 332 | 14 | 22 | 0.96 |
+| `src/components/GameControls.tsx` | **116.3** | 325 | 24 | 11 | 0.69 |
+| `src/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
+| `src/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
+| `src/components/GameStatusBanner.tsx` | **85.3** | 150 | 23 | 5 | 0.71 |
+| `src/bots/BotCoach.ts` | **81.8** | 205 | 16 | 8 | 0.67 |
+| `src/game/Game.ts` | **78.2** | 147 | 7 | 17 | 0.77 |
+| `src/game/rules/queries.ts` | **71.9** | 279 | 7 | 9 | 0.6 |
+| `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
+| `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
+
+### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
+| File | Max Complexity | LOC |
+| :--- | :--- | :--- |
+| `src/components/GameControls.tsx` | **24** | 325 |
+| `src/components/GameStatusBanner.tsx` | **23** | 150 |
+| `src/bots/logic/MoveScorer.ts` | **18** | 72 |
+| `src/bots/BotCoach.ts` | **16** | 205 |
+| `src/components/Board.tsx` | **14** | 332 |
+| `src/components/HexOverlays.tsx` | **14** | 194 |
+| `src/components/board/OverlayVertex.tsx` | **14** | 104 |
+| `src/game/rules/enumerator.ts` | **13** | 108 |
+| `src/components/PlayerPanel.tsx` | **11** | 127 |
+| `src/game/analysis/coach.ts` | **10** | 161 |
