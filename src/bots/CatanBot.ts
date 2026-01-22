@@ -41,7 +41,6 @@ export class CatanBot extends Bot {
         return index;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async play(state: { G: GameState; ctx: Ctx }, playerID: string) {
         const { G, ctx } = state;
 

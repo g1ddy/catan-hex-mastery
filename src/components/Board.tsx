@@ -130,7 +130,6 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
         // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
         const coach = (ctx as any).coach as Coach;
-        // eslint-disable-next-line security/detect-object-injection
         const coachInstance = coach || new Coach(G);
 
         let allScores: CoachRecommendation[] = [];
@@ -185,6 +184,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
                 style={{ zIndex: Z_INDEX_TOOLTIP }}
                 render={({ content }) => {
                     if (!content) return null;
+                    // eslint-disable-next-line security/detect-object-injection
                     const rec = coachData.recommendations[content];
                     if (!rec) return null;
 

@@ -150,7 +150,6 @@ describe('ai.enumerate', () => {
     it('should enumerate dismissRobber with valid targets', () => {
         ctx.activePlayers['0'] = STAGES.ROBBER;
         // Mock board with hexes A, B, C
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         G.board = {
             hexes: {
                 'A': { coords: { q: 0, r: 0, s: 0 } },

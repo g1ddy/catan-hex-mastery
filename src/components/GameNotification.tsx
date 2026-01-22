@@ -186,10 +186,11 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
                 return renderProductionContent(displayNotification);
             case 'robber':
                 return renderRobberContent(displayNotification);
-            default:
+            default: {
                 // @ts-ignore
                 const _exhaustiveCheck: never = displayNotification;
                 return null;
+            }
         }
     };
 
