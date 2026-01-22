@@ -20,7 +20,7 @@ import { PHASES, STAGE_MOVES, STAGES } from '../game/core/constants';
 import { useTradeLogic } from '../hooks/useTradeLogic';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { isValidRobberPlacement } from '../game/rules/spatial';
+import { getValidRobberLocations } from '../game/rules/queries';
 import { Hex } from '../game/core/types';
 
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
@@ -66,7 +66,7 @@ export const Board: React.FC<CatanBoardProps> = ({ G, ctx, moves, playerID, onPl
     const { G, ctx } = stateRef.current;
     const stage = ctx.activePlayers?.[ctx.currentPlayer];
     if (ctx.phase === PHASES.GAMEPLAY && stage === STAGES.ROBBER) {
-        if (isValidRobberPlacement(G, hex.id).isValid) {
+        if (getValidRobberLocations(G).has(hex.id)) {
             setPendingRobberHex(hex.id);
         }
     }

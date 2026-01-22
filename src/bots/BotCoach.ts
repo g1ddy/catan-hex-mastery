@@ -5,7 +5,7 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { MoveScorer, ScoringContext } from './logic/MoveScorer';
-import { ActionUtils } from '../utils/actionUtils';
+import { ActionUtils } from './utils/ActionUtils';
 
 export type { BotMove };
 
