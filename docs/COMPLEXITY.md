@@ -97,14 +97,14 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 ### 🏥 Repository Health Score: **87.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 79
+*   **Total Files Scanned**: 80
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/components/Board.tsx` | **124.3** | 332 | 14 | 22 | 0.96 |
+| `src/components/Board.tsx` | **126.7** | 335 | 14 | 23 | 0.96 |
 | `src/components/GameControls.tsx` | **116.3** | 325 | 24 | 11 | 0.69 |
 | `src/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
 | `src/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
@@ -122,9 +122,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/components/GameStatusBanner.tsx` | **23** | 150 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
-| `src/components/Board.tsx` | **14** | 332 |
+| `src/components/Board.tsx` | **14** | 335 |
 | `src/components/HexOverlays.tsx` | **14** | 194 |
 | `src/components/board/OverlayVertex.tsx` | **14** | 104 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
 | `src/components/PlayerPanel.tsx` | **11** | 127 |
-| `src/game/analysis/coach.ts` | **10** | 161 |
+| `src/game/analysis/coach.ts` | **10** | 159 |
