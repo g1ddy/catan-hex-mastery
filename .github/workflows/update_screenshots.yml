@@ -7,6 +7,7 @@ on:
       - 'docs/**'
       - '!docs/images/**'
       - 'README.md'
+      - 'package.json'
 
 jobs:
   generate-screenshots:
