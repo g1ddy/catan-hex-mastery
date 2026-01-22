@@ -194,7 +194,7 @@ export class SpatialAdvisor {
 
         const recommendations = candidates
             .map(vId => {
-                if (typeof vId !== 'string' || vId.includes('__proto__') || vId.includes('constructor') || vId.includes('prototype')) return null;
+                if (vId.includes('__proto__') || vId.includes('constructor') || vId.includes('prototype')) return null;
                 try {
                     return this.scoreVertex(vId, playerID, scarcityMap, existingResources);
                 } catch (error) {
