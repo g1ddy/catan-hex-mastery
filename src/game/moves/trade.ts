@@ -1,6 +1,6 @@
 import { Move } from 'boardgame.io';
-import { BANK_TRADE_RECEIVE_AMOUNT } from '../config';
-import { GameState } from '../types';
+import { BANK_TRADE_RECEIVE_AMOUNT } from '../core/config';
+import { GameState } from '../core/types';
 import { RuleEngine } from '../rules/validator';
 import { TradeResult } from '../mechanics/trade';
 

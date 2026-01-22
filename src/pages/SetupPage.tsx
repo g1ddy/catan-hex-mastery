@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
-import { GAME_CONFIG } from '../game/config';
+import { GAME_CONFIG } from '../game/core/config';
 import 'react-tooltip/dist/react-tooltip.css';
 
 const LOCAL_MODE_WARNING = "3-4 Player modes are unavailable in Local Pass-and-Play.";

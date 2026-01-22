@@ -1,5 +1,5 @@
-import { GameState } from '../types';
-import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../hexUtils';
+import { GameState } from '../core/types';
+import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../geometry/hexUtils';
 import { isValidHexId } from '../../utils/validation';
 import { safeCheck, safeGet } from '../../utils/objectUtils';
 

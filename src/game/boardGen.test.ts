@@ -1,6 +1,6 @@
-import { generateBoard } from './boardGen';
-import { TerrainType } from './types';
-import { getEdgesForHex } from './hexUtils';
+import { generateBoard } from './generation/boardGen';
+import { TerrainType } from './core/types';
+import { getEdgesForHex } from './geometry/hexUtils';
 
 describe('boardGen', () => {
   test('generates 19 hexes and 9 ports', () => {

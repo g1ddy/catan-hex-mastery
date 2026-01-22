@@ -1,4 +1,4 @@
-import { GameState, Player, Resources, RollStatus } from './types';
+import { GameState, Player, Resources, RollStatus } from './core/types';
 import { PLAYER_COLORS } from '../components/uiConfig';
 
 // Legacy exports for existing tests

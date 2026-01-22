@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState, Hex } from '../game/types';
-import { HEX_CORNERS, getHexGeometry } from '../game/staticGeometry';
+import { GameState, Hex } from '../game/core/types';
+import { HEX_CORNERS, getHexGeometry } from '../game/geometry/staticGeometry';
 import { BuildMode, UiMode } from './GameControls';
 import { getHeatmapColor, CoachRecommendation } from '../game/analysis/coach';
 import { safeMove } from '../utils/moveUtils';
 import { safeGet, safeCheck } from '../utils/objectUtils';
-import { PHASES, STAGES } from '../game/constants';
+import { PHASES, STAGES } from '../game/core/constants';
 import { useBoardInteractions } from '../hooks/useBoardInteractions';
 import { OverlayVertex } from './board/OverlayVertex';
 import { OverlayEdge } from './board/OverlayEdge';

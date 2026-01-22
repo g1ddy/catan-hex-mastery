@@ -2,8 +2,8 @@
 /** @jest-environment jsdom */
 import { render, screen } from '@testing-library/react';
 import { GameControls, BuildMode, UiMode } from './GameControls';
-import { GameState, RollStatus } from '../game/types';
-import { PHASES, STAGES } from '../game/constants';
+import { GameState, RollStatus } from '../game/core/types';
+import { PHASES, STAGES } from '../game/core/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 

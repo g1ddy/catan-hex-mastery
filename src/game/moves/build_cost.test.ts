@@ -1,5 +1,5 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
-import { GameState, RollStatus, TerrainType, Hex } from '../types';
+import { GameState, RollStatus, TerrainType, Hex } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { safeSet } from '../../utils/objectUtils';
 import * as _ from 'lodash';

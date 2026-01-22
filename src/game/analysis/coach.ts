@@ -1,7 +1,7 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction, BotMove } from '../types';
+import { GameState, GameAction, BotMove } from '../core/types';
 import { isValidPlayer } from '../../utils/validation';
-import { STAGES } from '../constants';
+import { STAGES } from '../core/constants';
 import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';

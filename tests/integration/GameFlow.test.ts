@@ -3,8 +3,8 @@
  */
 import { Client } from 'boardgame.io/client';
 import { CatanGame } from '../../src/game/Game';
-import { getVertexId, getEdgeId } from '../../src/game/hexUtils';
-import { PHASES, STAGES } from '../../src/game/constants';
+import { getVertexId, getEdgeId } from '../../src/game/geometry/hexUtils';
+import { PHASES, STAGES } from '../../src/game/core/constants';
 
 describe('Game Integration', () => {
     it('should complete setup phase and transition to gameplay phase without infinite loop', () => {

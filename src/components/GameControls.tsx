@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { GameState, RollStatus } from '../game/types';
-import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/config';
+import { GameState, RollStatus } from '../game/core/types';
+import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../game/core/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from './uiConfig';
-import { PHASES, STAGES, STAGE_MOVES } from '../game/constants';
+import { PHASES, STAGES, STAGE_MOVES } from '../game/core/constants';
 import { safeMove } from '../utils/moveUtils';
 import { getAffordableBuilds } from '../game/mechanics/costs';
 import { StrategicAdvice } from '../game/analysis/coach';

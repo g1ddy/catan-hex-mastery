@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState } from '../types';
+import { GameState } from '../core/types';
 import { Coach } from './coach';
 
 export const CoachPlugin = {

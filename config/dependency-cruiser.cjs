@@ -1,6 +1,9 @@
 // Define Layer Paths
 const L = {
+    CORE: '^src/game/core',
+    GEOMETRY: '^src/game/geometry',
     MECHANICS: '^src/game/mechanics',
+    GENERATION: '^src/game/generation',
     RULES: '^src/game/rules',
     ANALYSIS: '^src/game/analysis',
     MOVES: '^src/game/moves',
@@ -8,7 +11,10 @@ const L = {
 };
 
 // Groups of layers for easier rule definition
-const HIGHER_THAN_MECHANICS = [L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_CORE = [L.GEOMETRY, L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_GEOMETRY = [L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_MECHANICS = [L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const HIGHER_THAN_GENERATION = [L.MECHANICS, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
 const HIGHER_THAN_RULES = [L.ANALYSIS, L.MOVES, L.BOTS];
 
 /** @type {import('dependency-cruiser').IConfiguration} */
@@ -33,7 +39,23 @@ module.exports = {
     },
   },
   forbidden: [
-    /* 1. Mechanics Layer (Bottom) cannot import from higher layers */
+    /* 0. Core Layer (Bottom) cannot import from higher layers */
+    {
+        name: 'core-layer-violation',
+        severity: 'error',
+        from: { path: L.CORE },
+        to: { path: HIGHER_THAN_CORE },
+        comment: 'Core layer (Types/Constants) must be pure.',
+    },
+    /* 0.5 Geometry Layer cannot import from higher layers */
+    {
+        name: 'geometry-layer-violation',
+        severity: 'error',
+        from: { path: L.GEOMETRY },
+        to: { path: HIGHER_THAN_GEOMETRY },
+        comment: 'Geometry layer must be pure math (only depend on Core).',
+    },
+    /* 1. Mechanics Layer cannot import from higher layers */
     {
       name: 'mechanics-layer-violation',
       severity: 'error',
@@ -42,6 +64,16 @@ module.exports = {
         path: HIGHER_THAN_MECHANICS
       },
       comment: 'Mechanics layer must be pure and not depend on higher layers.',
+    },
+    /* 1.5 Generation Layer cannot import from higher layers */
+    {
+        name: 'generation-layer-violation',
+        severity: 'error',
+        from: { path: L.GENERATION },
+        to: {
+            path: HIGHER_THAN_GENERATION
+        },
+        comment: 'Generation layer cannot depend on Rules, Analysis, Moves, or Bots.',
     },
     /* 2. Rules Layer cannot import from higher layers */
     {

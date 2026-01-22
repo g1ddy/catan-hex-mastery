@@ -1,10 +1,10 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, TerrainType } from '../../types';
+import { GameState, TerrainType } from '../../core/types';
 import { getValidSetupSettlementSpots } from '../../rules/queries';
 import { isValidPlayer } from '../../../utils/validation';
 import { getPips } from '../../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../../mechanics/resources';
-import { getHexesForVertex } from '../../hexUtils';
+import { getHexesForVertex } from '../../geometry/hexUtils';
 import { CoachRecommendation, CoachConfig } from '../coach';
 import { safeGet } from '../../../utils/objectUtils';
 

@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import { Coach, ORE_RESERVE_THRESHOLD } from './coach';
-import { GameState } from '../types';
+import { GameState } from '../core/types';
 import { createMockGameState } from '../testUtils';
 
 describe('Coach Trade Logic', () => {

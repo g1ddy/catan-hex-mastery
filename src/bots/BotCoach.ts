@@ -1,5 +1,5 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction, MoveArguments } from '../game/types';
+import { GameState, GameAction, MoveArguments } from '../game/core/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../utils/validation';
@@ -7,7 +7,7 @@ import { getAffordableBuilds } from '../game/mechanics/costs';
 
 // Re-export BotMove to match boardgame.io's ActionShape if needed,
 // but local definition is fine as long as we cast it when interacting with framework types.
-import { BotMove } from '../game/types'; // Kept for backward compatibility if other modules import it from here
+import { BotMove } from '../game/core/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
 const STRATEGIC_ADVICE_BOOST = 1.5;

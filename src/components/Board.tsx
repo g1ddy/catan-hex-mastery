@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState } from '../game/types';
+import { GameState } from '../game/core/types';
 import { GameHex } from './GameHex';
 import { PlayerPanel } from './PlayerPanel';
 import AnalystPanel from './AnalystPanel';
 import { CoachPanel } from './CoachPanel';
 import { GameLayout } from './GameLayout';
-import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/config';
+import { BOARD_CONFIG, BOARD_VIEWBOX } from '../game/core/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from './GameControls';
 import { CoachRecommendation, Coach, StrategicAdvice } from '../game/analysis/coach';
 import { Tooltip } from 'react-tooltip';
@@ -15,12 +15,12 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../styles/z-indices';
 import { GameStatusBanner, CustomMessage } from './GameStatusBanner';
 import { GameNotification } from './GameNotification';
-import { PHASES, STAGE_MOVES, STAGES } from '../game/constants';
+import { PHASES, STAGE_MOVES, STAGES } from '../game/core/constants';
 import { useTradeLogic } from '../hooks/useTradeLogic';
 import { HexOverlays } from './HexOverlays';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { isValidRobberPlacement } from '../game/rules/spatial';
-import { Hex } from '../game/types';
+import { Hex } from '../game/core/types';
 
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 

@@ -1,6 +1,6 @@
-import { Hex, TerrainType, CubeCoordinates, Port, PortType } from './types';
-import { getNeighbors, getEdgesForHex, parseEdgeId, getVerticesForEdge } from './hexUtils';
-import { safeSet, safeGet } from '../utils/objectUtils';
+import { Hex, TerrainType, CubeCoordinates, Port, PortType } from '../core/types';
+import { getNeighbors, getEdgesForHex, parseEdgeId, getVerticesForEdge } from '../geometry/hexUtils';
+import { safeSet, safeGet } from '../../utils/objectUtils';
 import { shuffle } from 'lodash';
 
 const TERRAIN_COUNTS: Record<TerrainType, number> = {

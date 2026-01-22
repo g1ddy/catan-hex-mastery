@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io';
-import { GameState, RollStatus } from '../types';
+import { GameState, RollStatus } from '../core/types';
 import { RuleEngine } from '../rules/validator';
 
 export const rollDice: Move<GameState> = ({ G, ctx, random }) => {

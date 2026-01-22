@@ -1,6 +1,6 @@
 import { Move } from 'boardgame.io';
-import { GameState, Resources } from '../types';
-import { STAGES } from '../constants';
+import { GameState, Resources } from '../core/types';
+import { STAGES } from '../core/constants';
 import { RuleEngine } from '../rules/validator';
 import { getValidRobberVictims } from '../rules/queries';
 

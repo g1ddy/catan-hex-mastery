@@ -1,6 +1,6 @@
-import { GameState, GameAction, BotMove, MoveArguments } from '../types';
+import { GameState, GameAction, BotMove, MoveArguments } from '../core/types';
 import { Ctx } from 'boardgame.io';
-import { STAGE_MOVES } from '../constants';
+import { STAGE_MOVES } from '../core/constants';
 import { isValidPlayer } from '../../utils/validation';
 // Import the helper directly, not from RuleEngine object
 import { RuleEngine } from './validator';

@@ -1,5 +1,5 @@
 import { calculateBoardStats } from '../src/game/analyst';
-import { Hex, TerrainType } from '../src/game/types';
+import { Hex, TerrainType } from '../src/game/core/types';
 
 console.log("Verifying Analyst Logic...");
 

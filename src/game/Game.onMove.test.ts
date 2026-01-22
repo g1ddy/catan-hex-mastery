@@ -1,6 +1,6 @@
 import { CatanGame } from './Game';
-import { GameState, RollStatus } from './types';
-import { STAGES, PHASES } from './constants';
+import { GameState, RollStatus } from './core/types';
+import { STAGES, PHASES } from './core/constants';
 import { createTestGameState, createTestPlayer } from './testUtils';
 
 // Mock distributeResources to verify it's called, but keep countResources actual

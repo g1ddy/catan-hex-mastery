@@ -1,5 +1,5 @@
 import { placeSettlement, placeRoad } from './setup';
-import { GameState, RollStatus, TerrainType, Hex } from '../types';
+import { GameState, RollStatus, TerrainType, Hex } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 import { safeSet, safeGet } from '../../utils/objectUtils';

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { GameState } from '../game/types';
+import { GameState } from '../game/core/types';
 import { calculateTrade, getExchangeRates, TradeResult, ExchangeRates } from '../game/mechanics/trade';
-import { STAGE_MOVES } from '../game/constants';
+import { STAGE_MOVES } from '../game/core/constants';
 import { Ctx } from 'boardgame.io';
 
 export interface UseTradeLogicResult {

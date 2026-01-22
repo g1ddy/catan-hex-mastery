@@ -1,4 +1,4 @@
-import { GameState } from '../types';
+import { GameState } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { getValidRobberLocations, getPotentialVictims } from './gameplay';
 import {
@@ -8,9 +8,9 @@ import {
     isValidCityPlacement,
     isValidRoadPlacement
 } from './spatial';
-import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../hexUtils';
+import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../geometry/hexUtils';
 import { getAffordableBuilds } from '../mechanics/costs';
-import { PHASES, STAGES } from '../constants';
+import { PHASES, STAGES } from '../core/constants';
 import { isValidPlayer } from '../../utils/validation';
 
 export interface ValidMoves {

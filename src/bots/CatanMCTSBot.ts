@@ -1,7 +1,7 @@
 import { MCTSBot } from 'boardgame.io/ai';
 import { Game, Ctx } from 'boardgame.io';
-import { GameState, GameAction } from '../game/types';
-import { WINNING_SCORE } from '../game/constants';
+import { GameState, GameAction } from '../game/core/types';
+import { WINNING_SCORE } from '../game/core/constants';
 
 interface BotConfig {
     game: Game;

@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 import { render, screen, act } from '@testing-library/react';
 import { GameStatusBanner } from './GameStatusBanner';
-import { GameState, RollStatus } from '../game/types';
-import { PHASES, STAGES } from '../game/constants';
+import { GameState, RollStatus } from '../game/core/types';
+import { PHASES, STAGES } from '../game/core/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
 

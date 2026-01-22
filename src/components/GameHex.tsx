@@ -1,7 +1,7 @@
 import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { Skull } from 'lucide-react';
-import { Hex } from '../game/types';
+import { Hex } from '../game/core/types';
 import { NumberToken } from './NumberToken';
 import { TERRAIN_COLORS } from './uiConfig';
 

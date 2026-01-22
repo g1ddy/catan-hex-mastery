@@ -1,5 +1,5 @@
 import React from 'react';
-import { Resources } from '../game/types';
+import { Resources } from '../game/core/types';
 import { RESOURCE_META } from './uiConfig';
 
 interface ResourceIconRowProps {
