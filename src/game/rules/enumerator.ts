@@ -1,7 +1,7 @@
 import { GameState, GameAction, BotMove, MoveArguments } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { STAGE_MOVES } from '../core/constants';
-import { isValidPlayer } from '../../utils/validation';
+import { isValidPlayer } from '../core/validation';
 // Import the helper directly, not from RuleEngine object
 import { RuleEngine } from './validator';
 import { getValidMovesForStage, getValidRobberSpots, getValidRobberVictims } from './queries';

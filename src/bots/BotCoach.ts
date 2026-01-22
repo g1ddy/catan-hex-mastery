@@ -1,20 +1,15 @@
 import { Ctx } from 'boardgame.io';
-import { GameState, GameAction, MoveArguments } from '../game/core/types';
+import { GameState, GameAction, BotMove } from '../game/core/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
-import { isValidPlayer } from '../utils/validation';
+import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { MoveScorer, ScoringContext } from './logic/MoveScorer';
+import { ActionUtils } from '../utils/actionUtils';
 
-// Re-export BotMove to match boardgame.io's ActionShape if needed,
-// but local definition is fine as long as we cast it when interacting with framework types.
-import { BotMove } from '../game/core/types'; // Kept for backward compatibility if other modules import it from here
 export type { BotMove };
 
-const STRATEGIC_ADVICE_BOOST = 1.5;
 const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
-const AFFORDABLE_BOOST = 10.0;
-const ROAD_FATIGUE_PENALTY = 0.01;
-const TRADE_BOOST = 5.0;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
@@ -22,25 +17,13 @@ export class BotCoach {
     private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
+    private scorer: MoveScorer;
 
     constructor(G: GameState, coach: Coach, profile: BotProfile = BALANCED_PROFILE) {
         this.G = G;
         this.coach = coach;
         this.profile = profile;
-    }
-
-    private getMoveName(action: GameAction): keyof MoveArguments {
-        if ('payload' in action) {
-            return action.payload.type;
-        }
-        return (action as BotMove).move;
-    }
-
-    private getMoveArgs(action: GameAction): MoveArguments[keyof MoveArguments] {
-        if ('payload' in action) {
-            return action.payload.args;
-        }
-        return (action as BotMove).args;
+        this.scorer = new MoveScorer();
     }
 
     /**
@@ -53,7 +36,7 @@ export class BotCoach {
         moveType: string,
         scoreFn: (candidates: string[]) => CoachRecommendation[]
     ): GameAction[] | null {
-        const specificMoves = topMoves.filter(m => this.getMoveName(m) === moveType);
+        const specificMoves = topMoves.filter(m => ActionUtils.getMoveName(m) === moveType);
 
         if (specificMoves.length <= 1) {
             return null; // No refinement needed or impossible
@@ -62,7 +45,7 @@ export class BotCoach {
         // Extract candidate IDs (e.g. vertex IDs)
         // We filter out undefined values to ensure type safety, assuming spatial moves always have 1 arg (the ID)
         const candidateIds = specificMoves
-            .map(m => this.getMoveArgs(m)[0])
+            .map(m => ActionUtils.getMoveArgs(m)[0])
             .filter((id): id is string => typeof id === 'string');
 
         // Get scores from Coach
@@ -71,8 +54,8 @@ export class BotCoach {
 
         // Find the single best move
         const bestMove = specificMoves.reduce((best, current) => {
-            const vBest = this.getMoveArgs(best)[0];
-            const vCurrent = this.getMoveArgs(current)[0];
+            const vBest = ActionUtils.getMoveArgs(best)[0];
+            const vCurrent = ActionUtils.getMoveArgs(current)[0];
 
             // Safety check for indices
             if (typeof vBest !== 'string' || typeof vCurrent !== 'string') return best;
@@ -112,7 +95,7 @@ export class BotCoach {
         if (!allMoves || allMoves.length === 0) return [];
 
         // 1. Detect Roll Dice (always prioritize)
-        const isRolling = allMoves.some(m => this.getMoveName(m) === 'rollDice');
+        const isRolling = allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice');
         if (isRolling) {
             return allMoves;
         }
@@ -120,14 +103,14 @@ export class BotCoach {
         // 2. Setup Phase Optimization (Special logic preserved)
         // Setup Settlement needs heavy Coach lifting, better done specifically here
         // to avoid recalculating the map 50 times in scoreAction loop.
-        const isSetupSettlement = allMoves.some(m => this.getMoveName(m) === 'placeSettlement');
+        const isSetupSettlement = allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement');
         if (isSetupSettlement) {
             // Use Coach analysis to find the best spots
             const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
             const movesByVertex = new Map<string, GameAction>();
             allMoves.forEach(m => {
-                if (this.getMoveName(m) === 'placeSettlement') {
-                    const args = this.getMoveArgs(m);
+                if (ActionUtils.getMoveName(m) === 'placeSettlement') {
+                    const args = ActionUtils.getMoveArgs(m);
                     // Safely access first argument (vertexID)
                     const vId = args[0];
                     if (typeof vId === 'string') {
@@ -155,67 +138,22 @@ export class BotCoach {
         const player = this.G.players[playerID];
         const affordable = getAffordableBuilds(player.resources);
         const settlementCount = player.settlements.length;
-        // const cityCount = player.cities.length; // Not used in fatigue formula currently
         const roadCount = player.roads.length;
 
-        const roadFatigue = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
+        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
 
-        const getWeightedScore = (move: GameAction): number => {
-            const name = this.getMoveName(move);
-            let weight = 0;
-
-            // Base Weight from Profile
-            switch (name) {
-                case 'buildCity': weight = this.profile.weights.buildCity; break;
-                case 'buildSettlement': weight = this.profile.weights.buildSettlement; break;
-                case 'buildRoad': weight = this.profile.weights.buildRoad; break;
-                case 'placeRoad': weight = this.profile.weights.buildRoad; break;
-                case 'buyDevCard': weight = this.profile.weights.buyDevCard; break;
-                case 'endTurn': weight = 1.0; break;
-                case 'tradeBank': weight = this.profile.weights.tradeBank; break;
-                default: weight = 0.5; break;
-            }
-
-            // Coach Strategic Multiplier
-            if (advisedMoves.has(name)) {
-                weight *= STRATEGIC_ADVICE_BOOST; // Boost advised moves
-            }
-
-            // Dynamic Logic Multipliers
-            if (name === 'buildSettlement' && affordable.settlement) {
-                weight *= AFFORDABLE_BOOST;
-            }
-            if (name === 'buildCity' && affordable.city) {
-                weight *= AFFORDABLE_BOOST;
-            }
-            if (name === 'buildRoad') {
-                if (roadFatigue) {
-                    weight *= ROAD_FATIGUE_PENALTY;
-                }
-                // Minor boost if we can afford a road but NOT a settlement, to keep expanding?
-                // Or just rely on base weight. User asked to "balance" it.
-                // If not affordable, getAffordableBuilds returns false, but 'buildRoad' won't be in list anyway
-                // because enumerator checks affordability.
-            }
-            if (name === 'tradeBank') {
-                // If we can't afford a settlement, but can trade, boost trade.
-                if (!affordable.settlement) {
-                     weight *= TRADE_BOOST;
-                }
-
-                // Smart Ban: Protect Ore (City bottleneck) using shared Coach logic
-                const tradeEvaluation = this.coach.evaluateTrade(playerID);
-                if (!tradeEvaluation.isSafe) {
-                    weight = 0;
-                }
-            }
-
-            return weight;
+        const context: ScoringContext = {
+            profile: this.profile,
+            advisedMoves,
+            affordable,
+            isRoadFatigued,
+            coach: this.coach,
+            playerID
         };
 
         // Capture weights to handle tie-breaking/shuffling later
         const moveWeights = new Map<GameAction, number>();
-        allMoves.forEach(m => moveWeights.set(m, getWeightedScore(m)));
+        allMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
 
         // Initial Sort by Weight
         const sortedMoves = [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
@@ -247,7 +185,7 @@ export class BotCoach {
 
         // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
         // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
-        const topMoveNames = topMoves.map(m => this.getMoveName(m));
+        const topMoveNames = topMoves.map(m => ActionUtils.getMoveName(m));
         const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
 
         if (allAreRoads) {

@@ -1,12 +1,12 @@
 import { GameState } from '../core/types';
-import { canAffordRoad, canAffordSettlement, canAffordCity } from './common';
+import { canAffordRoad, canAffordSettlement, canAffordCity } from './economy';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
-import { isValidPlayer } from '../../utils/validation';
+import { isValidPlayer } from '../core/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../core/config';
-import { countResources } from '../mechanics/resources';
 import { getVerticesForHex } from '../geometry/hexUtils';
 import { safeGet } from '../../utils/objectUtils';
+import { getPotentialVictims } from './queries';
 
 /**
  * Validates the "Build Road" move during the Gameplay Phase.
@@ -55,36 +55,6 @@ export const validateTradeBank = (G: GameState, playerID: string): ValidationRes
     }
 
     return { isValid: true, data: tradeResult };
-};
-
-/**
- * Helper to identify valid victims on a target hex.
- */
-export const getPotentialVictims = (G: GameState, hexID: string, playerID: string): Set<string> => {
-    const potentialVictims = new Set<string>();
-    const hex = safeGet(G.board.hexes, hexID);
-    if (!hex) return potentialVictims;
-
-    const vertices = getVerticesForHex(hex.coords);
-
-    vertices.forEach(vId => {
-        const vertex = safeGet(G.board.vertices, vId);
-        if (vertex && vertex.owner !== playerID) {
-            const victim = G.players[vertex.owner];
-            if (victim && countResources(victim.resources) > 0) {
-                 potentialVictims.add(vertex.owner);
-            }
-        }
-    });
-
-    return potentialVictims;
-};
-
-/**
- * Returns all valid hex IDs for the Robber (all except current location).
- */
-export const getValidRobberLocations = (G: GameState): Set<string> => {
-    return new Set(Object.keys(G.board.hexes).filter(id => id !== G.robberLocation));
 };
 
 /**

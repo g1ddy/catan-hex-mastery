@@ -1,6 +1,6 @@
 import { GameState } from '../core/types';
 import { getVertexNeighbors, getEdgesForVertex, getVerticesForEdge, getHexesForEdge, getHexesForVertex } from '../geometry/hexUtils';
-import { isValidHexId } from '../../utils/validation';
+import { isValidHexId } from '../core/validation';
 import { safeCheck, safeGet } from '../../utils/objectUtils';
 
 export interface ValidationResult<T = unknown> {

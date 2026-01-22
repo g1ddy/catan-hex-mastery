@@ -1,7 +1,7 @@
 import { Move } from 'boardgame.io';
 import { GameState } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
-import { isValidHexId } from '../../utils/validation';
+import { isValidHexId } from '../core/validation';
 import { RuleEngine } from '../rules/validator';
 import { safeSet, safeGet } from '../../utils/objectUtils';
 

@@ -3,7 +3,7 @@
  */
 import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
-import { getSnakeDraftOrder } from './turnOrder';
+import { getSnakeDraftOrder } from './mechanics/turnOrder';
 import { TerrainType, Hex, Vertex } from './core/types';
 import { safeGet } from '../utils/objectUtils';
 
