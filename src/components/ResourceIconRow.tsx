@@ -16,12 +16,22 @@ export const ResourceIconRow: React.FC<ResourceIconRowProps> = ({ resources, siz
 
   return (
     <div className={`flex items-center gap-2 ${textSize} ${className}`}>
-        {RESOURCE_META.map(({ name, label, Icon, color }) => (
-            <span key={name} className="flex items-center gap-0.5" data-tooltip-id="resource-tooltip" data-tooltip-content={label}>
-                <Icon size={iconSize} className={color} />
-                {r[name] || 0}
-            </span>
-        ))}
+        {RESOURCE_META.map(({ name, label, Icon, color }) => {
+            // eslint-disable-next-line security/detect-object-injection
+            const count = r[name] || 0;
+            return (
+                <span
+                    key={name}
+                    className="flex items-center gap-0.5"
+                    data-tooltip-id="resource-tooltip"
+                    data-tooltip-content={label}
+                    aria-label={`${count} ${label}`}
+                >
+                    <Icon size={iconSize} className={color} aria-hidden="true" />
+                    {count}
+                </span>
+            );
+        })}
     </div>
   );
 };
