@@ -161,18 +161,6 @@ graph TD
     Mech --> Core
 ```
 
-### Architecture Verification
-
-We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
-
-*   **Command Line**: You can verify the architecture manually by running:
-    ```bash
-    npm run check:arch
-    ```
-*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
-*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
-*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
-
 ## 📂 Project Structure & Namespace Best Practices
 
 ### Ideal Structure
@@ -181,15 +169,20 @@ We aim for small, focused classes with specific responsibilities.
 
 ```
 src/
-├── game/
+├── features/           # UI Domains (Feature-Based Architecture)
+│   ├── board/          # Board rendering & overlays
+│   ├── coach/          # Analyst dashboard & coach bot UI
+│   ├── game/           # Main Game Screen & Layout
+│   └── hud/            # Game controls, player panels, notifications
+├── game/               # Game Logic
 │   ├── core/           # Types, Constants, Config (Layer -1)
 │   ├── geometry/       # Pure Math: math.ts, hexUtils.ts (Layer 0)
 │   ├── generation/     # Setup: boardGen.ts (Layer 1)
 │   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts (Layer 0)
 │   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts (Layer 1.5)
 │   ├── analysis/       # Evaluation: coach.ts, analyst.ts (Layer 2)
-│   ├── moves/          # Execution: build.ts, trade.ts (Layer 3)
-│   └── Game.ts         # Main Entry Point
+│   └── moves/          # Execution: build.ts, trade.ts (Layer 3)
+└── shared/             # Generic UI components (buttons, icons, etc.)
 ```
 
 ### Namespace Guidelines
@@ -200,24 +193,56 @@ src/
     *   **Game Rules** (Costs, Etc) go to `mechanics/`.
 3.  **No Monoliths**: Avoid "Utils" folders that become dumping grounds. `hexUtils` is acceptable because it is specific to the Hexagonal Grid domain, but `gameUtils` would be an anti-pattern.
 
+## 🎨 UI Architecture (Feature-Based)
+
+To maintain a clean and scalable frontend, we organize UI components by **Feature Domain** (`src/features/`) rather than by technical type (e.g., no `src/components`).
+
+### Key Concepts
+
+1.  **Feature Isolation**: Each feature (e.g., `board`, `coach`, `hud`) should be self-contained.
+    *   Cross-feature imports should be minimized or orchestrated by a parent container.
+    *   `src/features/game/components/GameScreen.tsx` acts as the **Orchestrator**, assembling the Board, HUD, and Coach panels into a cohesive page.
+
+2.  **Shared Components**: Generic UI elements (Buttons, Tooltips, Icons) that are used across multiple features reside in `src/shared`.
+    *   `src/shared` **cannot** depend on `src/features` or complex Game Logic.
+
+3.  **Strict Layering**:
+    *   **Game Logic (`src/game`)** is the "Backend" (pure TS). It **never** imports UI.
+    *   **UI (`src/features`)** imports Game Logic to render state, but logic should not bleed into components.
+
+### UI Best Practices & Cleaning Strategies
+
+To keep UI components (especially the Orchestrator `GameScreen.tsx`) clean:
+
+1.  **Logic Extraction via Custom Hooks**:
+    *   **Do not** write complex calculations (e.g., Coach scoring loops, Dice roll effects) inside the component body.
+    *   **Do** extract this logic into a custom hook (e.g., `useCoachData`, `useGameEffects`) placed in `src/features/{feature}/hooks/`.
+    *   *Example:* `useCoachData` takes `G` and `ctx` and returns a memoized `CoachData` object, keeping `GameScreen` focused purely on passing props.
+
+2.  **Pure Rendering**:
+    *   Components should ideally be functional and determined solely by their props.
+    *   Use `React.memo` for expensive components (like `GameHex`) to prevent unnecessary re-renders.
+
+3.  **Facade Pattern**:
+    *   When a component needs data from multiple complex sources, create a Hook or a Helper Class to act as a Facade, providing a simple API to the component.
+
 ## 🗺️ Development Roadmap
 
 ### Completed Refactoring ✅
 - [x] **Unified Move Architecture**: Separated Validation (Rules) from Execution (Moves).
 - [x] **God Object Split**: `rules/validator.ts` split into `RuleEngine` (Validation) and `Queries` (Availability).
-- [x] **Layer Simplification**: Merged AI Enumeration into Rules Layer to simplify dependencies (`src/game/rules/enumerator.ts`).
 - [x] **Namespace Restructure**: Implemented the "Ideal Structure" (`Core`, `Geometry`, `Generation`) to separate concerns and stabilize the dependency graph.
+- [x] **UI Migration**: Migrated `src/components` to `src/features` (Board, Coach, Game, HUD).
+- [x] **GameScreen Refactor**: Extracted complex logic (Coach Data, Game Effects) from `GameScreen.tsx` into dedicated hooks (`useCoachData`, `useGameEffects`).
 
 ### Strategic Refactoring (Complexity Reduction) 📉
 To improve the [Repo Health Score](./COMPLEXITY.md), we are targeting files with high coupling and complexity.
 
-*   **Primary Target**: `src/components/Board.tsx` (Score: 126.7)
-    *   **Issue**: High Fan-Out (23 dependencies) and high LOC (335).
-    *   **Goal**: Reduce Fan-Out to < 15 and LOC to < 300.
-    *   **Strategy**: Extract sub-components (e.g., `BoardGrid`, `RobberOverlay`) and use a Facade or Hook to group related imports.
-*   **Secondary Target**: `src/components/GameControls.tsx` (Score: 116.3)
-    *   **Issue**: High Cyclomatic Complexity (24).
-    *   **Goal**: Reduce Complexity to < 15.
+*   **Primary Target**: `src/features/game/components/GameScreen.tsx` (Formerly `Board.tsx`)
+    *   **Issue**: Acts as the central hub, prone to "God Component" growth.
+    *   **Strategy**: Continuously extract logic into `src/features/{feature}/hooks/` as new features (Trade, Dev Cards) are added.
+*   **Secondary Target**: `src/features/hud/components/GameControls.tsx`
+    *   **Issue**: High Cyclomatic Complexity (handling many move types).
     *   **Strategy**: Extract logic into custom hooks (e.g., `useBuildActions`, `useTurnActions`).
 
 ### Current Focus: Phase 7 (Full Game Loop) 🚧
