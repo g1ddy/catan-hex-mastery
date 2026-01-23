@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { GameState, RollStatus } from '../../../game/core/types';
 import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../game/core/config';
 import { Dices as Dice, ArrowRight, Loader2, Handshake } from 'lucide-react';
 import { Ctx } from 'boardgame.io';
 import { BUILD_BUTTON_CONFIG } from '../../../shared/components/uiConfig';
-import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
+import { STAGES } from '../../../game/core/constants';
 import { safeMove } from '../../../shared/utils/feedback';
-import { getAffordableBuilds } from '../../../game/mechanics/costs';
 import { StrategicAdvice } from '../../../game/analysis/coach';
-import { useTradeLogic } from '../hooks/useTradeLogic';
+import { useGameControls } from '../hooks/useGameControls';
 
 export type BuildMode = 'road' | 'settlement' | 'city' | null;
 export type UiMode = 'viewing' | 'placing';
@@ -55,21 +54,23 @@ export const GameControls: React.FC<GameControlsProps> = ({
     advice = null,
     pendingRobberHex
 }) => {
-    const isSetup = ctx.phase === PHASES.SETUP;
-    const isGameplay = ctx.phase === PHASES.GAMEPLAY;
-
-    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
-    const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
-    const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
-
-    const [isEndingTurn, setIsEndingTurn] = useState(false);
-
-    useEffect(() => {
-        setIsEndingTurn(false);
-    }, [ctx.currentPlayer, ctx.phase, activeStage]);
-
-    // Trade Logic (Hoisted Hook)
-    const { tradeResult, canTrade } = useTradeLogic(G, ctx);
+    const {
+        isSetup,
+        isGameplay,
+        activeStage,
+        isRollingStage,
+        isRobberStage,
+        isEndingTurn,
+        affordMap,
+        canTrade,
+        tradeResult,
+        isRolling,
+        lastRollSum,
+        isMoveAllowed,
+        handleEndTurn,
+        handleRoll,
+        handleTrade
+    } = useGameControls(G, ctx, moves, setBuildMode);
 
     // Setup Phase
     if (isSetup) {
@@ -135,17 +136,6 @@ export const GameControls: React.FC<GameControlsProps> = ({
              );
         }
 
-        const resources = G.players[ctx.currentPlayer].resources;
-
-        // Helper to check if a move is allowed in the current stage
-        const isMoveAllowed = (moveName: string): boolean => {
-            const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
-            return !!allowedMoves && (allowedMoves as readonly string[]).includes(moveName);
-        };
-
-        // Build Button Logic
-        const affordMap = getAffordableBuilds(resources);
-
         const moveNameMap: Record<string, string> = {
             road: 'buildRoad',
             settlement: 'buildSettlement',
@@ -185,37 +175,13 @@ export const GameControls: React.FC<GameControlsProps> = ({
             })
             : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade`;
 
-        const handleTrade = () => {
-            if (canTradeAllowed) {
-                safeMove(() => moves.tradeBank());
-            }
-        };
-
-        // End Turn Logic
-        const handleEndTurn = () => {
-            if (!isMoveAllowed('endTurn')) return;
-            setIsEndingTurn(true);
-            setBuildMode(null);
-            if (!safeMove(() => moves.endTurn())) {
-                setIsEndingTurn(false);
-            }
-        };
-
         const endTurnLabel = isEndingTurn ? "Ending..." : "End";
         const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
         const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
 
-        // Roll Logic
-        const isRolling = G.rollStatus === RollStatus.ROLLING;
         const rollLabel = isRolling ? "Rolling..." : "Roll";
         const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
 
-        const handleRoll = () => {
-            if (!isMoveAllowed('rollDice')) return;
-            safeMove(() => moves.rollDice());
-        };
-
-        const lastRollSum = G.lastRoll[0] + G.lastRoll[1];
         const showLastRoll = !isMoveAllowed('rollDice') && lastRollSum > 0;
         const showRollButton = isMoveAllowed('rollDice') || isRollingStage; // Keep visible during transition/check
 

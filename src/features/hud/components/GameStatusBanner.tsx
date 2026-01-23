@@ -9,7 +9,7 @@ export interface CustomMessage {
     type: 'success' | 'info' | 'error';
 }
 
-interface GameStatusBannerProps {
+export interface GameStatusBannerProps {
     ctx: Ctx;
     playerID: string | null;
     uiMode: UiMode;
