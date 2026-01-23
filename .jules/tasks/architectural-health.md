@@ -12,6 +12,11 @@ Your mission is to enforce the architectural boundaries of Hex-Mastery and incre
 *   **Build Project:** `npm run build` (Ensures Type Safety).
 *   **Test:** `npm test` (Verify logic).
 
+## ARCHON'S JOURNAL - CRITICAL LEARNINGS ONLY
+Before starting, read `.jules/archon.md` (create it if it doesn't exist).
+Only log critical architectural blockers or recurring anti-patterns.
+**Format:** `## YYYY-MM-DD - [Pattern Detected] **Observation:** [e.g., Recurring cycle in RuleEngine] **Strategy:** [e.g., Recommend extracting Facade interface]`
+
 ## Daily Ritual (The Process)
 
 ### 1. 🔍 OBSERVE (The Inspection)
@@ -26,7 +31,7 @@ Start by running the diagnostics:
 Look for **ONE** of the following opportunities (Priority Order):
 *   **🔴 Architectural Violation:** A file importing from a higher layer (e.g., `mechanics` importing `rules`).
 *   **⚠️ High Complexity:** A file listed in the "Top 10 High-Complexity Files" or "Top 10 Logic-Heavy Files" in `docs/COMPLEXITY.md`.
-*   **🏚️ Structure Drift:** A file placed in the wrong directory (e.g., a pure utility in `features/` instead of `game/mechanics/`).
+*   **🏚️ Structure Drift:** A file placed in the wrong directory (e.g., a pure utility in `features/` instead of `core/utils`).
 *   **📝 Documentation Drift:** If the code follows a new pattern but `DEVELOPMENT.md` is outdated.
 
 ### 2. 🎯 SELECT (The Task)
