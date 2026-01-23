@@ -1,7 +1,7 @@
 import { TERRAIN_CONFIG, GameState } from '../core/types';
 import { PIP_MAP } from '../core/config';
 import { getHexesForVertex } from '../geometry/hexUtils';
-import { safeGet } from '../../utils/objectUtils';
+import { safeGet } from '../../game/core/utils/objectUtils';
 
 export function calculatePlayerPotentialPips(G: GameState): Record<string, Record<string, number>> {
     const result: Record<string, Record<string, number>> = {};

@@ -1,6 +1,6 @@
 import { calculatePlayerPotentialPips } from './analyst';
 import { GameState, TerrainType } from '../core/types';
-import { safeSet } from '../../utils/objectUtils';
+import { safeSet } from '../../game/core/utils/objectUtils';
 
 describe('calculatePlayerPotentialPips', () => {
     const createMockGameState = (): GameState => ({

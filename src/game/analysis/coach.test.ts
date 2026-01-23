@@ -2,7 +2,7 @@ import { Ctx } from 'boardgame.io';
 import { getBestSettlementSpots, Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../core/types';
 import { STRATEGIC_ADVICE } from './adviceConstants';
-import { safeSet } from '../../utils/objectUtils';
+import { safeSet } from '../../game/core/utils/objectUtils';
 
 // Mock getVerticesForHex so we don't depend on actual geometry/imports
 // but ensure it returns the vertex ID we expect for our tests.

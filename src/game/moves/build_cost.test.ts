@@ -1,7 +1,7 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState, RollStatus, TerrainType, Hex } from '../core/types';
 import { Ctx } from 'boardgame.io';
-import { safeSet } from '../../utils/objectUtils';
+import { safeSet } from '../../game/core/utils/objectUtils';
 import * as _ from 'lodash';
 
 type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;

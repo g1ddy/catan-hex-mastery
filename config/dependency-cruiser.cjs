@@ -8,12 +8,20 @@ const L = {
     ANALYSIS: '^src/game/analysis',
     MOVES: '^src/game/moves',
     BOTS: '^src/bots',
+
+    // UI Layers
+    SHARED: '^src/shared',
+    FEATURES: '^src/features',
+    FEATURE_GAME: '^src/features/game',
 };
 
 // Groups of layers for easier rule definition
-const HIGHER_THAN_CORE = [L.GEOMETRY, L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
-const HIGHER_THAN_GEOMETRY = [L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
-const HIGHER_THAN_MECHANICS = [L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const GAME_LAYERS = [L.CORE, L.GEOMETRY, L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
+const UI_LAYERS = [L.SHARED, L.FEATURES];
+
+const HIGHER_THAN_CORE = [L.GEOMETRY, L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS, ...UI_LAYERS];
+const HIGHER_THAN_GEOMETRY = [L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS, ...UI_LAYERS];
+const HIGHER_THAN_MECHANICS = [L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS, ...UI_LAYERS];
 const HIGHER_THAN_GENERATION = [L.RULES, L.ANALYSIS, L.MOVES, L.BOTS];
 const HIGHER_THAN_RULES = [L.ANALYSIS, L.MOVES, L.BOTS];
 
@@ -119,10 +127,45 @@ module.exports = {
             path: L.RULES,
             pathNot: [
                 '^src/game/rules/validator.ts',
-                '^src/game/rules/queries.ts' // Allow Moves to access Queries directly if needed? Or restrict?
+                '^src/game/rules/queries.ts'
             ]
         },
         comment: 'Moves must access rules via the RuleEngine facade (validator.ts) or Query facade (queries.ts).'
+    },
+    /* 6. UI Structure: Logic cannot import UI */
+    {
+        name: 'logic-ui-violation',
+        severity: 'error',
+        from: { path: GAME_LAYERS },
+        to: { path: UI_LAYERS },
+        comment: 'Game logic (Core, Rules, Moves) cannot depend on UI (Features, Shared).'
+    },
+    /* 7. UI Structure: Shared cannot import Features or Logic (except Core) */
+    {
+        name: 'shared-layer-violation',
+        severity: 'error',
+        from: { path: L.SHARED },
+        to: {
+            path: [L.FEATURES, L.GEOMETRY, L.MECHANICS, L.GENERATION, L.RULES, L.ANALYSIS, L.MOVES, L.BOTS]
+        },
+        comment: 'Shared UI cannot depend on Features or Game Logic (except Core Types/Config).'
+    },
+    /* 8. Feature Isolation: Features cannot import other Features (except GameScreen) */
+    {
+        name: 'feature-isolation',
+        severity: 'info', // Start as info, promote to error if strict modularity desired
+        from: {
+            path: L.FEATURES,
+            pathNot: L.FEATURE_GAME // GameScreen acts as orchestrator
+        },
+        to: {
+            path: L.FEATURES,
+            pathNot: '^src/features/[^/]+' // Allow internal imports
+        },
+        // Logic: if from is `src/features/board`, to cannot be `src/features/hud`.
+        // This is hard to express with regex in pathNot.
+        // Simplified: Warn on any cross-feature import.
+        comment: 'Features should be independent. Cross-feature imports are discouraged.'
     }
   ],
 };

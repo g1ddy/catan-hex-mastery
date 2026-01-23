@@ -6,7 +6,7 @@ import { getPips } from '../../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../../mechanics/resources';
 import { getHexesForVertex } from '../../geometry/hexUtils';
 import { CoachRecommendation, CoachConfig } from '../coach';
-import { safeGet } from '../../../utils/objectUtils';
+import { safeGet } from '../../../game/core/utils/objectUtils';
 
 export class SpatialAdvisor {
     private G: GameState;

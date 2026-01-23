@@ -4,7 +4,7 @@ import { createMockGameState } from '../testUtils';
 import { RuleEngine } from '../rules/validator';
 import { TerrainType, Hex, Vertex, Player } from '../core/types';
 import { Ctx } from 'boardgame.io';
-import { safeSet } from '../../utils/objectUtils';
+import { safeSet } from '../../game/core/utils/objectUtils';
 
 jest.mock('../rules/validator', () => ({
     RuleEngine: {

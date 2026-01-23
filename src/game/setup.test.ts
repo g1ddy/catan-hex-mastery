@@ -5,7 +5,7 @@ import { CatanGame } from './Game';
 import { Client } from 'boardgame.io/client';
 import { getSnakeDraftOrder } from './mechanics/turnOrder';
 import { TerrainType, Hex, Vertex } from './core/types';
-import { safeGet } from '../utils/objectUtils';
+import { safeGet } from '../game/core/utils/objectUtils';
 
 describe('Setup Phase Logic', () => {
   let client: ReturnType<typeof Client>;

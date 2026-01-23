@@ -3,7 +3,7 @@ import { GameState } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
 import { isValidHexId } from '../core/validation';
 import { RuleEngine } from '../rules/validator';
-import { safeSet, safeGet } from '../../utils/objectUtils';
+import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
 export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     // 0. Security Validation
