@@ -1,7 +1,7 @@
 import { GameState } from '../../core/types';
 import { isValidPlayer } from '../../core/validation';
 import { calculateTrade } from '../../mechanics/trade';
-import { ORE_RESERVE_THRESHOLD } from '../coach';
+import { ORE_RESERVE_THRESHOLD } from '../adviceConstants';
 
 export class TradeAdvisor {
     private G: GameState;

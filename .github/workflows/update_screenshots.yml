@@ -1,4 +1,4 @@
-name: Documentation Screenshots
+name: Update Documentation Assets
 
 on:
   pull_request:
@@ -6,11 +6,12 @@ on:
     paths:
       - 'docs/**'
       - '!docs/images/**'
+      - '!docs/COMPLEXITY.md'
       - 'README.md'
       - 'package.json'
 
 jobs:
-  generate-screenshots:
+  update-docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -37,8 +38,16 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Generate Dependency Graph
-        run: npm run generate:graph
+      - name: Generate Dependency Graph (DOT)
+        run: npm run generate:dot
+
+      - name: Generate Graph Images (SVG/PNG)
+        run: |
+          dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg
+          dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png
+
+      - name: Calculate Complexity
+        run: npm run calculate:complexity
 
       - name: Generate Screenshots
         # We use the dedicated config which handles the server (port 4174) and test discovery
@@ -50,5 +59,5 @@ jobs:
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs(assets): update automated screenshots [skip ci]"
-          file_pattern: 'docs/images/*.png docs/images/*.svg'
+          commit_message: "docs(assets): update screenshots and complexity report [skip ci]"
+          file_pattern: 'docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md'

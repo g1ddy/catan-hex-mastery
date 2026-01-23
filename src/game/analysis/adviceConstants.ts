@@ -13,3 +13,5 @@ export const STRATEGIC_ADVICE = {
         INVALID_PLAYER: "Invalid player ID."
     }
 };
+
+export const ORE_RESERVE_THRESHOLD = 6;

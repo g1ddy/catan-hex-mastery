@@ -6,7 +6,7 @@ import { isValidHexId } from '../core/validation';
 import { TERRAIN_TO_RESOURCE } from '../mechanics/resources';
 import { RuleEngine } from '../rules/validator';
 import { generateBoard } from '../generation/boardGen';
-import { calculateBoardStats } from '../analysis/analyst';
+import { calculateBoardStats } from '../mechanics/boardStats';
 import { safeSet, safeGet } from '../../utils/objectUtils';
 
 export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
