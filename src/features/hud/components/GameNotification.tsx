@@ -8,7 +8,7 @@ import { DiceIcons } from '../../../shared/components/ui/DiceIcons';
 import { RESOURCE_META } from '../../../shared/components/uiConfig';
 import { isValidPlayer } from '../../../game/core/validation';
 
-interface GameNotificationProps {
+export interface GameNotificationProps {
     G: GameState;
 }
 
