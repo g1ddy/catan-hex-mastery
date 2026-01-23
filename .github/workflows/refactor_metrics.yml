@@ -1,17 +1,12 @@
-name: Documentation Screenshots
+name: Refactor Metrics
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ main ]
-    paths:
-      - 'docs/**'
-      - '!docs/images/**'
-      - 'README.md'
-      - 'package.json'
+    types: [labeled, synchronize]
 
 jobs:
-  generate-screenshots:
+  generate-metrics:
+    if: contains(github.event.pull_request.labels.*.name, 'refactor')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,6 +14,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,24 +29,17 @@ jobs:
       - name: Install Graphviz
         run: sudo apt-get update && sudo apt-get install -y graphviz
 
-      - name: Install Playwright Browsers
-        run: npx playwright install chromium
-
       - name: Build Project
         run: npm run build
 
       - name: Generate Dependency Graph
         run: npm run generate:graph
 
-      - name: Generate Screenshots
-        # We use the dedicated config which handles the server (port 4174) and test discovery
-        run: |
-          npm run test:screenshots
-        env:
-          CI: true
+      - name: Calculate Complexity
+        run: npm run calculate:complexity
 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs(assets): update automated screenshots [skip ci]"
-          file_pattern: 'docs/images/*.png docs/images/*.svg'
+          commit_message: "docs(metrics): update dependency graph and complexity report [skip ci]"
+          file_pattern: 'docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md config/dependency-graph.dot'
