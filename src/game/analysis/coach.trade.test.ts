@@ -1,5 +1,6 @@
 /** @jest-environment jsdom */
-import { Coach, ORE_RESERVE_THRESHOLD } from './coach';
+import { Coach } from './coach';
+import { ORE_RESERVE_THRESHOLD } from './adviceConstants';
 import { GameState } from '../core/types';
 import { createMockGameState } from '../testUtils';
 

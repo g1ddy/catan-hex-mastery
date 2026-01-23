@@ -6,8 +6,6 @@ import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 
-export const ORE_RESERVE_THRESHOLD = 6;
-
 export interface CoachRecommendation {
     vertexId: string;
     score: number;

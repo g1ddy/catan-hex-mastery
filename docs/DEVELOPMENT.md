@@ -208,6 +208,18 @@ src/
 - [x] **Layer Simplification**: Merged AI Enumeration into Rules Layer to simplify dependencies (`src/game/rules/enumerator.ts`).
 - [x] **Namespace Restructure**: Implemented the "Ideal Structure" (`Core`, `Geometry`, `Generation`) to separate concerns and stabilize the dependency graph.
 
+### Strategic Refactoring (Complexity Reduction) 📉
+To improve the [Repo Health Score](./COMPLEXITY.md), we are targeting files with high coupling and complexity.
+
+*   **Primary Target**: `src/components/Board.tsx` (Score: 126.7)
+    *   **Issue**: High Fan-Out (23 dependencies) and high LOC (335).
+    *   **Goal**: Reduce Fan-Out to < 15 and LOC to < 300.
+    *   **Strategy**: Extract sub-components (e.g., `BoardGrid`, `RobberOverlay`) and use a Facade or Hook to group related imports.
+*   **Secondary Target**: `src/components/GameControls.tsx` (Score: 116.3)
+    *   **Issue**: High Cyclomatic Complexity (24).
+    *   **Goal**: Reduce Complexity to < 15.
+    *   **Strategy**: Extract logic into custom hooks (e.g., `useBuildActions`, `useTurnActions`).
+
 ### Current Focus: Phase 7 (Full Game Loop) 🚧
 - [x] **Robber Mechanics**:
     - [x] Resource Discarding (Players with >7 cards must discard half on roll of 7).
