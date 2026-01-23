@@ -94,18 +94,18 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 **Last Updated:** 2026-01-23
 
-### 🏥 Repository Health Score: **87.0 / 100**
+### 🏥 Repository Health Score: **88.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 80
+*   **Total Files Scanned**: 82
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/game/components/GameScreen.tsx` | **126.7** | 335 | 14 | 23 | 0.96 |
-| `src/features/hud/components/GameControls.tsx` | **116.3** | 325 | 24 | 11 | 0.69 |
+| `src/features/hud/components/GameControls.tsx` | **115.4** | 325 | 24 | 11 | 0.65 |
+| `src/features/game/components/GameScreen.tsx` | **113.5** | 263 | 9 | 25 | 0.96 |
 | `src/features/game/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
 | `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
 | `src/features/hud/components/GameStatusBanner.tsx` | **85.3** | 150 | 23 | 5 | 0.71 |
@@ -122,9 +122,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/hud/components/GameStatusBanner.tsx` | **23** | 150 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
-| `src/features/game/components/GameScreen.tsx` | **14** | 335 |
 | `src/features/board/components/HexOverlays.tsx` | **14** | 194 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
+| `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |
 | `src/game/analysis/coach.ts` | **10** | 159 |
