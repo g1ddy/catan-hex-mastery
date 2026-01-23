@@ -2,7 +2,7 @@ import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState, TerrainType, Hex } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
 import { Ctx } from 'boardgame.io';
-import { safeSet, safeGet } from '../../utils/objectUtils';
+import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
 type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
 

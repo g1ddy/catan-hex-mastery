@@ -11,10 +11,10 @@ import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './analysis/analyst';
 import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './core/constants';
 import { distributeResources, countResources } from './mechanics/resources';
-import { PLAYER_COLORS } from '../components/uiConfig';
+import { PLAYER_COLORS } from '../shared/components/uiConfig';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './rules/enumerator';
-import { stripHtml } from '../utils/sanitize';
+import { stripHtml } from '../game/core/utils/sanitize';
 
 const MOVE_MAP = {
     rollDice, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,

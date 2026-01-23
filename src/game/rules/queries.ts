@@ -11,7 +11,7 @@ import { getVerticesForHex, getVerticesForEdge, getEdgesForVertex } from '../geo
 import { getAffordableBuilds } from '../mechanics/costs';
 import { PHASES, STAGES } from '../core/constants';
 import { isValidPlayer } from '../core/validation';
-import { safeGet } from '../../utils/objectUtils';
+import { safeGet } from '../../game/core/utils/objectUtils';
 import { countResources } from '../mechanics/resources';
 
 export interface ValidMoves {

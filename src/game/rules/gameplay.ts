@@ -5,7 +5,7 @@ import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trad
 import { isValidPlayer } from '../core/validation';
 import { BANK_TRADE_GIVE_AMOUNT } from '../core/config';
 import { getVerticesForHex } from '../geometry/hexUtils';
-import { safeGet } from '../../utils/objectUtils';
+import { safeGet } from '../../game/core/utils/objectUtils';
 import { getPotentialVictims } from './queries';
 
 /**

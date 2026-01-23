@@ -1,0 +1,126 @@
+import { GameState, Player } from '../../../game/core/types';
+import { Layers } from 'lucide-react';
+import { ResourceIconRow } from '../../../shared/components/ui/ResourceIconRow';
+
+interface PlayerCardProps {
+  player: Player;
+  isActive: boolean;
+}
+
+// Regex to validate hex color codes (e.g., #E53935 or #E53)
+const HEX_COLOR_REGEX = /^#([0-9A-F]{3}){1,2}$/i;
+
+function PlayerCard({ player, isActive }: PlayerCardProps) {
+  const totalResources = Object.values(player.resources).reduce((a, b) => a + b, 0);
+
+  // Styles for active state differences
+  const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
+  const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+
+  // Securely handle player color
+  const isValidColor = HEX_COLOR_REGEX.test(player.color);
+  const playerColorStyle = isValidColor ? { backgroundColor: player.color } : { backgroundColor: '#666' }; // Fallback gray
+
+  // Calculate player number once
+  const playerNumber = parseInt(player.id, 10) + 1;
+
+  return (
+    <div className={`
+        flex items-center gap-2 rounded border transition-colors flex-shrink-0
+        p-1 px-2
+        ${mobileActive}
+        md:w-64 md:block md:p-3 md:opacity-100
+        ${desktopBorder}
+    `}>
+      {/* Header: Identity */}
+      <div className="flex items-center gap-1 font-bold text-sm md:text-base md:mb-1">
+        <div className="w-2 h-2 md:w-3 md:h-3 rounded-full shadow-sm" style={playerColorStyle}></div>
+
+        {/* Text: P1 vs Player 1 */}
+        <span className={`md:hidden ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>
+            P{playerNumber}
+        </span>
+        <span
+          className="hidden md:inline text-slate-100 truncate"
+          title={`P${playerNumber}: ${player.name || `Player ${playerNumber}`}`}
+        >
+          P{playerNumber}: {player.name || `Player ${playerNumber}`}
+        </span>
+      </div>
+
+      {/* Desktop Details: VP, Sett, Roads */}
+      <div className="hidden md:block text-sm text-slate-300 mt-1 mb-2">
+        VP: {player.victoryPoints} | Sett: {player.settlements.length} | Roads: {player.roads.length}
+      </div>
+
+      {/* Resources & Mobile Summary */}
+      <div className="flex items-center md:block">
+        {/* Active Mobile VP */}
+        {isActive && (
+            <span className="md:hidden text-xs text-slate-300 font-normal mr-1 whitespace-nowrap">
+                VP: {player.victoryPoints}
+            </span>
+        )}
+
+        {/* Mobile Divider (Only if active) */}
+        <div className={`md:hidden h-4 w-px bg-slate-600 mx-1 ${isActive ? 'block' : 'hidden'}`}></div>
+
+        {/* Resource Row - Show if active on mobile, always on desktop */}
+        <div className={`${isActive ? 'block' : 'hidden'} md:block`}>
+             <div className="md:hidden">
+                <ResourceIconRow resources={player.resources} size="sm" />
+             </div>
+             <div className="hidden md:block">
+                <ResourceIconRow resources={player.resources} size="md" />
+             </div>
+        </div>
+
+         {/* Mobile Inactive Summary (VP + Count) */}
+         <div
+            className={`md:hidden text-[10px] text-slate-400 flex items-center gap-1 ${!isActive ? 'block' : 'hidden'}`}
+            aria-label={`Victory Points: ${player.victoryPoints}, Total Resources: ${totalResources}`}
+            role="group"
+         >
+            VP:{player.victoryPoints} | <Layers size={10} className="inline" aria-hidden="true" /> {totalResources}
+         </div>
+      </div>
+    </div>
+  );
+}
+
+interface PlayerPanelProps {
+  players: GameState['players'];
+  currentPlayerId: string;
+  className?: string;
+}
+
+export function PlayerPanel({ players, currentPlayerId, className = '' }: PlayerPanelProps) {
+  const playerList = Object.values(players);
+
+  return (
+    <div className={`
+        player-panel
+        bg-slate-900/90 backdrop-blur-md border border-slate-700
+        rounded-xl shadow-xl text-slate-100
+        transition-all
+        ${className}
+    `}>
+      {/* Header - Desktop Only */}
+      <h3 className="hidden md:block font-bold text-lg mb-2 p-4 pb-0">Players</h3>
+
+      {/* Content Container */}
+      <div className="
+          flex flex-row overflow-x-auto scrollbar-hide p-2 px-3 items-center justify-center
+          md:flex-col md:overflow-visible md:p-4 md:gap-3
+      ">
+        {playerList.map((player) => (
+          <PlayerCard
+            key={player.id}
+            player={player}
+            isActive={player.id === currentPlayerId}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

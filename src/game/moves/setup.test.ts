@@ -2,7 +2,7 @@ import { placeSettlement, placeRoad } from './setup';
 import { GameState, RollStatus, TerrainType, Hex } from '../core/types';
 import { Ctx } from 'boardgame.io';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
-import { safeSet, safeGet } from '../../utils/objectUtils';
+import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
 // Cast moves to function type for direct testing
 const placeSettlementFn = placeSettlement as (args: unknown, vertexId: string) => unknown;
