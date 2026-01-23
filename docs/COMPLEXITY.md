@@ -97,7 +97,7 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 ### 🏥 Repository Health Score: **90.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 87
+*   **Total Files Scanned**: 88
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
@@ -109,11 +109,11 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
 | `src/features/hud/components/GameStatusBanner.tsx` | **83.5** | 150 | 23 | 5 | 0.63 |
 | `src/bots/BotCoach.ts` | **81.8** | 205 | 16 | 8 | 0.67 |
-| `src/features/board/BoardLayer.tsx` | **78.6** | 139 | 9 | 14 | 0.93 |
 | `src/game/Game.ts` | **78.2** | 147 | 7 | 17 | 0.77 |
 | `src/features/game/components/GameScreen.tsx` | **74.2** | 174 | 4 | 15 | 0.94 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
+| `src/game/rules/queries.ts` | **65.7** | 234 | 7 | 8 | 0.62 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
