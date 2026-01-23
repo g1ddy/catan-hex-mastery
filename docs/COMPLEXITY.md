@@ -94,37 +94,37 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 **Last Updated:** 2026-01-23
 
-### 🏥 Repository Health Score: **88.0 / 100**
+### 🏥 Repository Health Score: **90.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 82
+*   **Total Files Scanned**: 87
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/hud/components/GameControls.tsx` | **115.4** | 325 | 24 | 11 | 0.65 |
-| `src/features/game/components/GameScreen.tsx` | **113.4** | 262 | 9 | 25 | 0.96 |
+| `src/features/hud/components/GameControls.tsx` | **103.6** | 291 | 22 | 10 | 0.53 |
 | `src/features/game/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
 | `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
-| `src/features/hud/components/GameStatusBanner.tsx` | **85.3** | 150 | 23 | 5 | 0.71 |
+| `src/features/hud/components/GameStatusBanner.tsx` | **83.5** | 150 | 23 | 5 | 0.63 |
 | `src/bots/BotCoach.ts` | **81.8** | 205 | 16 | 8 | 0.67 |
+| `src/features/board/BoardLayer.tsx` | **79.4** | 147 | 9 | 14 | 0.93 |
 | `src/game/Game.ts` | **78.2** | 147 | 7 | 17 | 0.77 |
-| `src/game/rules/queries.ts` | **71.9** | 279 | 7 | 9 | 0.6 |
+| `src/features/game/components/GameScreen.tsx` | **74.2** | 174 | 4 | 15 | 0.94 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/features/hud/components/GameControls.tsx` | **24** | 325 |
 | `src/features/hud/components/GameStatusBanner.tsx` | **23** | 150 |
+| `src/features/hud/components/GameControls.tsx` | **22** | 291 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
+| `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/features/board/components/HexOverlays.tsx` | **14** | 194 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
-| `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |
 | `src/game/analysis/coach.ts` | **10** | 159 |
