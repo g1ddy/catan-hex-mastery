@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'src/**'
+      - 'src/**/*.{ts,tsx}'
       - 'docs/**'
       - '!docs/images/**'
       - '!docs/COMPLEXITY.md'
@@ -39,8 +39,13 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Generate Dependency Graph
-        run: npm run generate:graph
+      - name: Generate Dependency Graph (DOT)
+        run: npm run generate:dot
+
+      - name: Generate Graph Images (SVG/PNG)
+        run: |
+          dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg
+          dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png
 
       - name: Calculate Complexity
         run: npm run calculate:complexity
