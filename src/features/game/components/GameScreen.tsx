@@ -10,7 +10,7 @@ import { CoachPanel } from '../../coach/components/CoachPanel';
 import { GameLayout } from './GameLayout';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../../../game/core/config';
 import { GameControls, BuildMode, UiMode, GameControlsProps } from '../../hud/components/GameControls';
-import { CoachRecommendation, Coach, StrategicAdvice } from '../../../game/analysis/coach';
+import { Coach, StrategicAdvice } from '../../../game/analysis/coach';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { Z_INDEX_TOOLTIP } from '../../../styles/z-indices';
@@ -22,18 +22,13 @@ import { HexOverlays } from '../../board/components/HexOverlays';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { getValidRobberLocations } from '../../../game/rules/queries';
 import { Hex } from '../../../game/core/types';
+import { useCoachData } from '../../coach/hooks/useCoachData';
+import { useGameEffects } from '../hooks/useGameEffects';
 
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 
 export interface GameScreenProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
-}
-
-interface CoachData {
-    recommendations: Record<string, CoachRecommendation>;
-    minScore: number;
-    maxScore: number;
-    top3Set: Set<string>;
 }
 
 export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
@@ -47,7 +42,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
     }
   }, [ctx.currentPlayer, playerID, onPlayerChange]);
 
-  const [producingHexIds, setProducingHexIds] = useState<string[]>([]);
+  // Game Effects (Visuals)
+  const { producingHexIds } = useGameEffects(G);
+
   const [showResourceHeatmap, setShowResourceHeatmap] = useState<boolean>(false);
   const [isCoachModeEnabled, setIsCoachModeEnabled] = useState<boolean>(true);
   const [customBannerMessage, setCustomBannerMessage] = useState<CustomMessage | null>(null);
@@ -83,22 +80,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
       }
   }, [ctx.phase, isMobile]);
 
-  // Visualize Roll & Rewards
-  React.useEffect(() => {
-      const [d1, d2] = G.lastRoll;
-      const sum = d1 + d2;
-
-      if (sum === 0) return; // Initial state
-
-      // 1. Highlight Hexes
-      const activeIds = hexes.filter(h => h.tokenValue === sum).map(h => h.id);
-
-      if (activeIds.length > 0) {
-          setProducingHexIds(activeIds);
-          setTimeout(() => setProducingHexIds([]), 3000);
-      }
-  }, [G.lastRoll]);
-
   const [buildMode, setBuildMode] = useState<BuildMode>(null);
   const [uiMode, setUiMode] = useState<UiMode>('viewing');
 
@@ -109,61 +90,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
         return coach.getStrategicAdvice(ctx.currentPlayer, ctx);
     }, [G, ctx, isCoachModeEnabled]);
 
-    // Calculate Coach Data at Board Level (O(Vertices)) instead of per-hex
-    const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
-    const coachData: CoachData = React.useMemo(() => {
-        const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
-
-        if (!isCoachModeEnabled) {
-            return EMPTY_COACH_DATA;
-        }
-
-        // Active when placing settlement in Setup OR Gameplay, OR City in Gameplay
-        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
-        const isGameSettlement = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
-        const isGameCity = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'city';
-
-        if (!isSetupPlacing && !isGameSettlement && !isGameCity) {
-            return EMPTY_COACH_DATA;
-        }
-
-        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-        // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const coach = (ctx as any).coach as Coach;
-        const coachInstance = coach || new Coach(G);
-
-        let allScores: CoachRecommendation[] = [];
-
-        if (isGameCity) {
-            const candidates = G.players[ctx.currentPlayer]?.settlements || [];
-            if (typeof coachInstance.getBestCitySpots === 'function') {
-                allScores = coachInstance.getBestCitySpots(ctx.currentPlayer, ctx, candidates);
-            }
-        } else {
-            if (typeof coachInstance.getAllSettlementScores === 'function') {
-                allScores = coachInstance.getAllSettlementScores(ctx.currentPlayer, ctx);
-            }
-        }
-
-        if (allScores.length === 0) {
-            return EMPTY_COACH_DATA;
-        }
-
-        const vals = allScores.map(s => s.score);
-        const sorted = [...allScores].sort((a, b) => b.score - a.score);
-        const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
-
-        // Convert to Map for O(1) Lookup
-        const recMap = Object.fromEntries(allScores.map(rec => [rec.vertexId, rec]));
-
-        return {
-            recommendations: recMap,
-            minScore: Math.min(...vals),
-            maxScore: Math.max(...vals),
-            top3Set: new Set(top3Ids)
-        };
-    }, [G.board, G.boardStats, currentPlayerSettlements, ctx.phase, uiMode, buildMode, ctx.currentPlayer, isCoachModeEnabled]);
+    // Calculate Coach Data using extracted hook
+    const coachData = useCoachData(G, ctx, buildMode, uiMode, isCoachModeEnabled);
 
   const handleSetCoachModeEnabled = (enabled: boolean) => {
       setIsCoachModeEnabled(enabled);
