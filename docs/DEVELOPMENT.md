@@ -161,6 +161,18 @@ graph TD
     Mech --> Core
 ```
 
+### Architecture Verification
+
+We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
+
+*   **Command Line**: You can verify the architecture manually by running:
+    ```bash
+    npm run check:arch
+    ```
+*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
+*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
+*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
+
 ## 📂 Project Structure & Namespace Best Practices
 
 ### Ideal Structure
