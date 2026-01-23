@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { Tooltip } from 'react-tooltip';
@@ -12,6 +12,7 @@ import { HexOverlays } from './components/HexOverlays';
 import { CoachData } from '../coach/hooks/useCoachData';
 import { useGameEffects } from './hooks/useGameEffects';
 import { BuildMode, UiMode } from '../hud/components/GameControls';
+import { renderTooltipContent } from './components/helpers';
 
 interface BoardLayerProps {
     G: GameState;
@@ -45,6 +46,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
 }) => {
     const hexes = Object.values(G.board.hexes);
     const { producingHexIds } = useGameEffects(G);
+    const renderCoachTooltip = useCallback(renderTooltipContent(coachData), [coachData]);
 
     return (
         <div className="board absolute inset-0 overflow-hidden">
@@ -54,38 +56,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
                     place="top"
                     className="coach-tooltip"
                     style={{ zIndex: Z_INDEX_TOOLTIP }}
-                    render={({ content }) => {
-                        if (!content) return null;
-                        const rec = coachData.recommendations.get(content);
-                        if (!rec) return null;
-
-                        const { score, details } = rec;
-                        const parts = [];
-                        // Pips
-                        parts.push(details.pips >= 10 ? 'High Pips' : `${details.pips} Pips`);
-                        // Scarcity
-                        if (details.scarcityBonus && details.scarceResources.length > 0) {
-                            parts.push(`Rare ${details.scarceResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                        }
-                        // Diversity
-                        if (details.diversityBonus) {
-                            parts.push('High Diversity');
-                        }
-                        // Synergy
-                        if (details.synergyBonus) {
-                            parts.push('Synergy');
-                        }
-                        // Needed
-                        if (details.neededResources.length > 0) {
-                            parts.push(`Missing ${details.neededResources.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join('/')}`);
-                        }
-                        return (
-                            <div>
-                                <div className="font-bold mb-1">Score: {score}</div>
-                                <div className="text-xs text-slate-300">{parts.join(' + ')}</div>
-                            </div>
-                        );
-                    }}
+                    render={renderCoachTooltip}
                 />,
                 document.body
             )}
