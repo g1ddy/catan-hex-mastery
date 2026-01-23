@@ -6,13 +6,13 @@ import { BuildMode, UiMode } from '../../hud/components/GameControls';
 import { Ctx } from 'boardgame.io';
 
 export interface CoachData {
-    recommendations: Record<string, CoachRecommendation>;
+    recommendations: Map<string, CoachRecommendation>;
     minScore: number;
     maxScore: number;
     top3Set: Set<string>;
 }
 
-const EMPTY_COACH_DATA: CoachData = { recommendations: {}, minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+const EMPTY_COACH_DATA: CoachData = { recommendations: new Map(), minScore: 0, maxScore: 0, top3Set: new Set<string>() };
 
 export const useCoachData = (
     G: GameState,
@@ -65,7 +65,7 @@ export const useCoachData = (
         const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
 
         // Convert to Map for O(1) Lookup
-        const recMap = Object.fromEntries(allScores.map(rec => [rec.vertexId, rec]));
+        const recMap = new Map(allScores.map(rec => [rec.vertexId, rec]));
 
         return {
             recommendations: recMap,

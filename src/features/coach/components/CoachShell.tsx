@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useIsMobile } from '../../../shared/hooks/useIsMobile';
 import { X, ChevronRight } from 'lucide-react';
 import { Z_INDEX_OVERLAY_PANEL } from '../../../styles/z-indices';
 

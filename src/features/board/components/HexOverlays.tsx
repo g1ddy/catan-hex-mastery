@@ -14,7 +14,7 @@ import { OverlayEdge } from './OverlayEdge';
 import { Port } from './Port';
 
 export interface CoachData {
-    recommendations: Record<string, CoachRecommendation>;
+    recommendations: Map<string, CoachRecommendation>;
     minScore: number;
     maxScore: number;
     top3Set: Set<string>;
@@ -91,7 +91,7 @@ export const HexOverlays = React.memo(({
                 let clickAction = () => {};
 
                 const applyCoachRec = () => {
-                    const rec = coachData.recommendations[vId];
+                    const rec = coachData.recommendations.get(vId);
                     if (rec) {
                         recommendationData = rec;
                         heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);

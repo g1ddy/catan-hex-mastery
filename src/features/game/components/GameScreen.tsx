@@ -19,7 +19,7 @@ import { GameNotification } from '../../hud/components/GameNotification';
 import { PHASES, STAGE_MOVES, STAGES } from '../../../game/core/constants';
 import { useTradeLogic } from '../../hud/hooks/useTradeLogic';
 import { HexOverlays } from '../../board/components/HexOverlays';
-import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useIsMobile } from '../../../shared/hooks/useIsMobile';
 import { getValidRobberLocations } from '../../../game/rules/queries';
 import { Hex } from '../../../game/core/types';
 import { useCoachData } from '../../coach/hooks/useCoachData';
@@ -113,8 +113,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                 style={{ zIndex: Z_INDEX_TOOLTIP }}
                 render={({ content }) => {
                     if (!content) return null;
-                    // eslint-disable-next-line security/detect-object-injection
-                    const rec = coachData.recommendations[content];
+                    const rec = coachData.recommendations.get(content);
                     if (!rec) return null;
 
                     const { score, details } = rec;
