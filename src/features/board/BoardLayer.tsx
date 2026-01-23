@@ -10,7 +10,7 @@ import { Z_INDEX_TOOLTIP } from '../../styles/z-indices';
 import { GameHex } from './components/GameHex';
 import { HexOverlays } from './components/HexOverlays';
 import { CoachData } from '../coach/hooks/useCoachData';
-import { useGameEffects } from '../game/hooks/useGameEffects';
+import { useGameEffects } from './hooks/useGameEffects';
 import { BuildMode, UiMode } from '../hud/components/GameControls';
 
 interface BoardLayerProps {
@@ -43,15 +43,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
     pendingRobberHex,
     onHexClick
 }) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const hexes = Object.values(G.board.hexes) as any[];
-    // hexes are Record<string, Hex>. Object.values should return Hex[].
-    // But if TS fails to infer, we cast.
-    // Actually, let's fix the root cause if possible.
-    // G.board.hexes is Record<string, Hex>.
-    // Object.values(G.board.hexes) is Hex[].
-    // If imports work, this should work.
-
+    const hexes = Object.values(G.board.hexes);
     const { producingHexIds } = useGameEffects(G);
 
     return (

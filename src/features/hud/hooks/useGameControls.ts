@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GameState, RollStatus } from '../../../game/core/types';
+import { GameState, RollStatus, Resources } from '../../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
 import { getAffordableBuilds } from '../../../game/mechanics/costs';
@@ -7,6 +7,8 @@ import { useTradeLogic } from './useTradeLogic';
 import { safeMove } from '../../../shared/utils/feedback';
 import { BuildMode } from '../components/GameControls';
 import { TradeResult } from '../../../game/mechanics/trade';
+
+const EMPTY_RESOURCES: Resources = { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
 
 export interface UseGameControlsResult {
     isSetup: boolean;
@@ -50,7 +52,7 @@ export const useGameControls = (
     const { tradeResult, canTrade } = useTradeLogic(G, ctx);
 
     // Resources & Affordability
-    const resources = G.players[ctx.currentPlayer]?.resources || { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 };
+    const resources = G.players[ctx.currentPlayer]?.resources || EMPTY_RESOURCES;
     const affordMap = getAffordableBuilds(resources);
 
     // Move Allowed Helper
