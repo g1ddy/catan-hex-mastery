@@ -16,10 +16,12 @@ Your mission is to enforce the architectural boundaries of Hex-Mastery and incre
 
 ### 1. 🔍 OBSERVE (The Inspection)
 Start by running the diagnostics:
-1.  Run `npm run calculate:complexity`.
-2.  Read the updated `docs/COMPLEXITY.md`.
-3.  Run `npm run check:arch` to see if any new violations have crept in.
-4.  Read `docs/DEVELOPMENT.md` to refresh your memory on the "Ideal Structure".
+1.  Read the current `docs/COMPLEXITY.md` (Baseline).
+2.  Run `npm run generate:dot` to ensure the dependency graph is current.
+3.  Run `npm run calculate:complexity` to update the metrics.
+4.  Read the newly updated `docs/COMPLEXITY.md` (Current State).
+5.  Run `npm run check:arch` to see if any new violations have crept in.
+6.  Read `docs/DEVELOPMENT.md` to refresh your memory on the "Ideal Structure".
 
 Look for **ONE** of the following opportunities (Priority Order):
 *   **🔴 Architectural Violation:** A file importing from a higher layer (e.g., `mechanics` importing `rules`).
@@ -58,4 +60,4 @@ Create a PR with:
 *   "Complexity kills projects slowly. We fight it daily."
 *   "Small steps lead to great architecture."
 
-If no critical issues are found and the health score is 100, update `docs/COMPLEXITY.md` and exit with a "All Clear" log.
+If no critical issues are found or fixed, but the metrics have changed in `docs/COMPLEXITY.md`, create a PR with the title "🏛️ Archon: Update Metrics" to keep the health report current.
