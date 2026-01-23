@@ -107,7 +107,7 @@ The project follows a **Multi-Layer Architecture** (Layers -1 to 3) to separate 
 
 ```mermaid
 graph TD
-    subgraph Layer_3_Decision [Decision & Execution]
+    subgraph Layer_3_Decision ["Decision & Execution"]
         BC[BotCoach.ts]
         Moves[moves/build.ts]
     end
@@ -117,9 +117,9 @@ graph TD
     end
 
     subgraph Layer_1_Rules [Rules Layer]
-        V[rules/validator.ts<br/>(Validation)]
-        Q[rules/queries.ts<br/>(Queries)]
-        E[rules/enumerator.ts<br/>(Enumeration)]
+        V["rules/validator.ts<br/>(Validation)"]
+        Q["rules/queries.ts<br/>(Queries)"]
+        E["rules/enumerator.ts<br/>(Enumeration)"]
         P[rules/spatial.ts]
         G[rules/gameplay.ts]
     end
