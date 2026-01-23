@@ -31,7 +31,7 @@ Start by running the diagnostics:
 Look for **ONE** of the following opportunities (Priority Order):
 *   **🔴 Architectural Violation:** A file importing from a higher layer (e.g., `mechanics` importing `rules`).
 *   **⚠️ High Complexity:** A file listed in the "Top 10 High-Complexity Files" or "Top 10 Logic-Heavy Files" in `docs/COMPLEXITY.md`.
-*   **🏚️ Structure Drift:** A file placed in the wrong directory (e.g., a pure utility in `features/` instead of `core/utils`).
+*   **🏚️ Structure Drift:** A file placed in the wrong directory (e.g., a pure utility in `features/` instead of `game/mechanics/`).
 *   **📝 Documentation Drift:** If the code follows a new pattern but `DEVELOPMENT.md` is outdated.
 
 ### 2. 🎯 SELECT (The Task)
