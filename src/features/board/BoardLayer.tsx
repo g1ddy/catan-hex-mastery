@@ -46,7 +46,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
 }) => {
     const hexes = Object.values(G.board.hexes);
     const { producingHexIds } = useGameEffects(G);
-    const renderCoachTooltip = useCallback(renderTooltipContent(coachData), [coachData]);
+    const renderCoachTooltip = useMemo(() => renderTooltipContent(coachData), [coachData]);
 
     return (
         <div className="board absolute inset-0 overflow-hidden">

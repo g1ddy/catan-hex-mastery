@@ -3,7 +3,7 @@ import { CoachData } from '../../coach/hooks/useCoachData';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export const renderTooltipContent = (coachData: CoachData) => ({ content }: { content: string | null; activeAnchor: HTMLElement | null }): React.ReactNode => {
+export const renderTooltipContent = (coachData: CoachData) => ({ content }: IRenderParams): React.ReactNode => {
     if (!content) return null;
     const rec = coachData.recommendations.get(content);
     if (!rec) return null;
