@@ -7,10 +7,6 @@ import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 const DEFAULT_GREED_FACTOR = 0.6;
 
-function isBotMove(action: GameAction): action is BotMove {
-    return 'move' in action;
-}
-
 export type CatanBotConfig = {
     enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
     seed?: string | number;
@@ -52,14 +48,8 @@ export class CatanBot extends Bot {
         const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
-            // Must return strictly typed object, even if no action, to satisfy Bot signature
-            // return undefined to indicate no move possible (pass)
             return undefined as any;
         }
-
-        // The enumerator can return a mix of BotMove and MakeMoveAction objects.
-        // The BotCoach only understands BotMove, so we filter for those.
-        const botMoves = allMoves.filter(isBotMove);
 
         // 2. Use BotCoach to filter/rank these moves
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,12 +60,18 @@ export class CatanBot extends Bot {
 
         const botCoach = new BotCoach(G, coach, this.profile);
         // Note: filterOptimalMoves returns a sorted list where index 0 is best
-        const bestMoves = botCoach.filterOptimalMoves(botMoves, playerID, ctx);
-        const candidates = bestMoves.length > 0 ? bestMoves : botMoves;
+        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
+        const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
 
         // 3. Pick weighted randomly from the candidates (favoring top ranks)
         const selectedIndex = this.pickWeightedIndex(candidates.length, DEFAULT_GREED_FACTOR);
         const selectedMove = candidates[selectedIndex];
+
+        // It's possible for the candidates array to be empty if the enumerator
+        // returns moves that the BotCoach filters out. In this case, pass.
+        if (!selectedMove) {
+            return undefined as any;
+        }
 
         // 4. Construct proper MAKE_MOVE action
         let actionPayload: MakeMoveAction['payload'];
