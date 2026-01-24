@@ -20,19 +20,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Install Graphviz
-        run: sudo apt-get update && sudo apt-get install -y graphviz
+        uses: ts-graphviz/setup-graphviz@v2
 
       - name: Build Project
         run: npm run build
 
-      - name: Generate Dependency Graph
+      - name: Generate Dependency Graph (DOT)
+        run: npm run generate:dot
+
+      - name: Generate Graph Images
         run: npm run generate:graph
 
       - name: Calculate Complexity
