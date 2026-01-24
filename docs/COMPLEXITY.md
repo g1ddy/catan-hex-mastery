@@ -104,12 +104,12 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/game/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
+| `src/features/game/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
 | `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
 | `src/features/hud/components/GameStatusBanner.tsx` | **83.5** | 150 | 23 | 5 | 0.63 |
 | `src/bots/BotCoach.ts` | **81.8** | 205 | 16 | 8 | 0.67 |
 | `src/game/Game.ts` | **78.2** | 147 | 7 | 17 | 0.77 |
-| `src/features/game/components/GameScreen.tsx` | **76.3** | 175 | 4 | 16 | 0.94 |
+| `src/features/game/GameScreen.tsx` | **76.3** | 175 | 4 | 16 | 0.94 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
 | `src/game/rules/queries.ts` | **65.7** | 234 | 7 | 8 | 0.62 |

@@ -1,22 +1,22 @@
 import React from 'react';
-import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../game/core/config';
+import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../game/core/config';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
     Z_INDEX_GAME_CONTROLS_CONTAINER,
     Z_INDEX_FLOATING_UI
-} from '../../shared/constants/z-indices';
+} from '../shared/constants/z-indices';
 import { BarChart2, Bot, ArrowRight } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import { useIsMobile } from '../../shared/hooks/useIsMobile';
-import { useViewportDvh } from '../hooks/useViewportDvh';
-import { Resources } from '../../../game/core/types';
-import { RESOURCE_META } from '../../shared/config/uiConfig';
-import { AnalystShell } from '../../coach/components/AnalystShell';
-import { CoachShell } from '../../coach/components/CoachShell';
-import { DiceIcons } from '../../shared/components/DiceIcons';
+import { useIsMobile } from '../shared/hooks/useIsMobile';
+import { useViewportDvh } from './hooks/useViewportDvh';
+import { Resources } from '../../game/core/types';
+import { RESOURCE_META } from '../shared/config/uiConfig';
+import { AnalystShell } from '../coach/components/AnalystShell';
+import { CoachShell } from '../coach/components/CoachShell';
+import { DiceIcons } from '../shared/components/DiceIcons';
 
 interface GameLayoutProps {
   board: React.ReactNode;

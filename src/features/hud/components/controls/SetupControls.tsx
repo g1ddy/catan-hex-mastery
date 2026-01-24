@@ -1,7 +1,7 @@
 import React from 'react';
 import { STAGES } from '../../../../game/core/constants';
 import { UiMode } from '../../../shared/types';
-import { ActionButton } from '../ActionButton';
+import { ActionButton } from './ActionButton';
 
 interface SetupControlsProps {
     uiMode: UiMode;
