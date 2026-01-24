@@ -5,7 +5,7 @@ import { calculatePlayerPotentialPips } from '../../../game/analysis/analyst';
 import { ResourceIconRow } from '../../../shared/components/ui/ResourceIconRow';
 import { StrategicAdvice } from '../../../game/analysis/coach';
 
-interface CoachPanelProps {
+export interface CoachPanelProps {
     G?: GameState;
     ctx: Ctx;
     showResourceHeatmap: boolean;

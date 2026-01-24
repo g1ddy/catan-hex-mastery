@@ -88,7 +88,7 @@ function PlayerCard({ player, isActive }: PlayerCardProps) {
   );
 }
 
-interface PlayerPanelProps {
+export interface PlayerPanelProps {
   players: GameState['players'];
   currentPlayerId: string;
   className?: string;
