@@ -97,14 +97,13 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 ### 🏥 Repository Health Score: **90.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 88
+*   **Total Files Scanned**: 93
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/hud/components/GameControls.tsx` | **103.6** | 291 | 22 | 10 | 0.53 |
 | `src/features/game/components/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
 | `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
 | `src/features/hud/components/GameStatusBanner.tsx` | **83.5** | 150 | 23 | 5 | 0.63 |
@@ -114,17 +113,18 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
 | `src/game/rules/queries.ts` | **65.7** | 234 | 7 | 8 | 0.62 |
+| `src/features/board/components/OverlayVertex.tsx` | **65.1** | 104 | 14 | 5 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
 | `src/features/hud/components/GameStatusBanner.tsx` | **23** | 150 |
-| `src/features/hud/components/GameControls.tsx` | **22** | 291 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
 | `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/features/board/components/HexOverlays.tsx` | **14** | 194 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
+| `src/features/hud/components/controls/TurnControls.tsx` | **11** | 77 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |
 | `src/game/analysis/coach.ts` | **10** | 159 |
