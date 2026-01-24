@@ -1,5 +1,9 @@
 import { GameState } from './types';
 
+// Enforce reasonable coordinate bounds to prevent DoS/memory issues
+// A radius of 20 is significantly larger than any standard Catan board (radius 2-5).
+const MAX_COORDINATE_VALUE = 20;
+
 /**
  * Validates that a string is a safe hex coordinate ID.
  * Format expected: "q,r,s" or "q,r,s::q,r,s" or "q,r,s::q,r,s::q,r,s"
@@ -32,6 +36,11 @@ export const isValidHexId = (id: string): boolean => {
 
         // Security: Ensure coordinates are within safe integer range to prevent precision loss/overflow attacks
         if (!Number.isSafeInteger(q) || !Number.isSafeInteger(r) || !Number.isSafeInteger(s)) {
+            return false;
+        }
+
+        // Security: Check bounds
+        if (Math.max(Math.abs(q), Math.abs(r), Math.abs(s)) > MAX_COORDINATE_VALUE) {
             return false;
         }
 

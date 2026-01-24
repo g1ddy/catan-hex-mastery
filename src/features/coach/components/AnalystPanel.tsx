@@ -2,7 +2,7 @@ import React from 'react';
 import { BoardStats, GameState } from '../../../game/core/types';
 import { RefreshCw } from 'lucide-react';
 
-interface AnalystPanelProps {
+export interface AnalystPanelProps {
   stats: BoardStats;
   onRegenerate?: () => void;
   canRegenerate: boolean;
