@@ -40,7 +40,7 @@ export const isValidHexId = (id: string): boolean => {
         }
 
         // Security: Check bounds
-        if (Math.abs(q) > MAX_COORDINATE_VALUE || Math.abs(r) > MAX_COORDINATE_VALUE || Math.abs(s) > MAX_COORDINATE_VALUE) {
+        if (Math.max(Math.abs(q), Math.abs(r), Math.abs(s)) > MAX_COORDINATE_VALUE) {
             return false;
         }
 
