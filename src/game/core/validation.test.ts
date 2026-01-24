@@ -13,12 +13,9 @@ describe('isValidHexId', () => {
   });
 
   test('rejects non-strings', () => {
-    // @ts-ignore
-    expect(isValidHexId(null)).toBe(false);
-    // @ts-ignore
-    expect(isValidHexId(123)).toBe(false);
-    // @ts-ignore
-    expect(isValidHexId(undefined)).toBe(false);
+    expect(isValidHexId(null as unknown as string)).toBe(false);
+    expect(isValidHexId(123 as unknown as string)).toBe(false);
+    expect(isValidHexId(undefined as unknown as string)).toBe(false);
   });
 
   test('rejects prototype keys', () => {
@@ -57,5 +54,12 @@ describe('isValidHexId', () => {
       // Unsafe negative number
       const unsafeMin = '-9007199254740992,9007199254740991,1';
       expect(isValidHexId(unsafeMin)).toBe(false);
+  });
+
+  test('rejects out of bounds coordinates', () => {
+    // 100 is > MAX_COORDINATE_VALUE (20)
+    expect(isValidHexId('100,-100,0')).toBe(false);
+    expect(isValidHexId('20,-20,0')).toBe(true); // Boundary check
+    expect(isValidHexId('-21,20,1')).toBe(false); // One component over
   });
 });
