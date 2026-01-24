@@ -79,10 +79,10 @@ export const BuildBar: React.FC<BuildBarProps> = ({
             >
                 <button
                     onClick={onTrade}
-                    disabled={!canTrade}
+                    disabled={!canTradeAllowed}
                     aria-label="Trade 4:1"
                     className={`p-3 rounded-lg flex items-center justify-center transition-all ${
-                        canTrade
+                        canTradeAllowed
                         ? "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white btn-focus-ring"
                         : "bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed"
                     }`}

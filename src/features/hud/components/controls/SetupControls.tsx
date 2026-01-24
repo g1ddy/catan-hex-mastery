@@ -1,6 +1,7 @@
 import React from 'react';
 import { STAGES } from '../../../../game/core/constants';
 import { UiMode } from '../../types';
+import { ActionButton } from '../../../../shared/components/ui/ActionButton';
 
 interface SetupControlsProps {
     uiMode: UiMode;
@@ -8,15 +9,6 @@ interface SetupControlsProps {
     activeStage: string | undefined;
     className?: string;
 }
-
-const BeginPlacementButton: React.FC<{ onClick: () => void, className?: string, label?: string }> = ({ onClick, className, label = "Begin Placement" }) => (
-    <button
-        onClick={onClick}
-        className={className}
-    >
-        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>{label}</span>
-    </button>
-);
 
 export const SetupControls: React.FC<SetupControlsProps> = ({
     uiMode,
@@ -42,7 +34,7 @@ export const SetupControls: React.FC<SetupControlsProps> = ({
     if (uiMode === 'viewing') {
          return (
             <div className={`flex-grow flex pointer-events-auto ${className}`}>
-                <BeginPlacementButton
+                <ActionButton
                     onClick={handleClick}
                     className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse motion-reduce:animate-none"
                 />
