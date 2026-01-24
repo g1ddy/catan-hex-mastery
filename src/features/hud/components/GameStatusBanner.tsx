@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from '../../shared/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
-import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
+import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from './constants/emojis';
 
 export interface CustomMessage {
     text: string;

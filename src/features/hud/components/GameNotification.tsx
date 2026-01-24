@@ -3,7 +3,7 @@ import { GameState, Resources, ProductionEvent, RobberEvent } from '../../../gam
 import {
     Trees, BrickWall, Wheat, Mountain, Cloud, Dices, Ghost, ArrowRight
 } from 'lucide-react';
-import { NO_YIELD_EMOJIS, getRandomEmoji } from '../constants/emojis';
+import { NO_YIELD_EMOJIS, getRandomEmoji } from './constants/emojis';
 import { DiceIcons } from '../../shared/components/DiceIcons';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 import { isValidPlayer } from '../../../game/core/validation';

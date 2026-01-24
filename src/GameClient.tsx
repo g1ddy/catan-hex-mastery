@@ -3,7 +3,7 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { Ctx, DefaultPluginAPIs } from 'boardgame.io';
 import { CatanGame } from './game/Game';
-import { GameScreen } from './features/game/components/GameScreen';
+import { GameScreen } from './features/game/GameScreen';
 import { CatanBot } from './bots/CatanBot';
 import { Bot } from 'boardgame.io/ai';
 
