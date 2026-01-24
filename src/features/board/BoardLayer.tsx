@@ -6,12 +6,12 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { GameState, Hex } from '../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../../game/core/config';
-import { Z_INDEX_TOOLTIP } from '../../shared/constants/z-indices';
+import { Z_INDEX_TOOLTIP } from '../shared/constants/z-indices';
 import { GameHex } from './components/GameHex';
 import { HexOverlays } from './components/HexOverlays';
 import { CoachData } from '../coach/hooks/useCoachData';
 import { useGameEffects } from './hooks/useGameEffects';
-import { BuildMode, UiMode } from '../hud/components/GameControls';
+import { BuildMode, UiMode } from '../shared/types';
 import { renderTooltipContent } from './components/helpers';
 
 interface BoardLayerProps {

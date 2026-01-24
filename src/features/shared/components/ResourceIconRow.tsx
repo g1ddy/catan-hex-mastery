@@ -1,6 +1,6 @@
 import React from 'react';
 import { Resources } from '../../../game/core/types';
-import { RESOURCE_META } from '../uiConfig';
+import { RESOURCE_META } from '../config/uiConfig';
 
 interface ResourceIconRowProps {
   resources: Partial<Resources> | Record<string, number>;

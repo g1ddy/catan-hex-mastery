@@ -2,7 +2,7 @@ import React from 'react';
 import { GameState } from '../../../game/core/types';
 import { CoachRecommendation, Coach } from '../../../game/analysis/coach';
 import { PHASES } from '../../../game/core/constants';
-import { BuildMode, UiMode } from '../../hud/components/GameControls';
+import { BuildMode, UiMode } from '../../shared/types';
 import { Ctx } from 'boardgame.io';
 
 export interface CoachData {
