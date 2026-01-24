@@ -61,7 +61,8 @@ describe('spatial rules', () => {
         it('returns false if off-board', () => {
             const G = mockG();
             // A vertex composed entirely of off-board hexes
-            const offBoardVertex = '10,10,-20::11,10,-21::10,11,-21';
+            // Use coordinates within MAX_COORDINATE_VALUE (20) but off the mock board
+            const offBoardVertex = '5,5,-10::6,5,-11::5,6,-11';
             const result = isValidSettlementLocation(G, offBoardVertex);
             expect(result).toBe(false);
         });
@@ -125,7 +126,7 @@ describe('spatial rules', () => {
         it('returns false if off-board', () => {
             const G = mockG();
             // Edge between two hexes not in G.board.hexes
-            const offBoardEdge = '10,10,-20::11,10,-21';
+            const offBoardEdge = '5,5,-10::6,5,-11';
             const result = isValidRoadPlacement(G, offBoardEdge, 'p1');
             expect(result.isValid).toBe(false);
             expect(result.reason).toBe("This edge is off the board");
