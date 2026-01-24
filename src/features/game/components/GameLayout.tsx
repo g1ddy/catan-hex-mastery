@@ -5,7 +5,7 @@ import {
     Z_INDEX_TOOLTIP,
     Z_INDEX_GAME_CONTROLS_CONTAINER,
     Z_INDEX_FLOATING_UI
-} from '../../../styles/z-indices';
+} from '../../../shared/constants/z-indices';
 import { BarChart2, Bot, ArrowRight } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
