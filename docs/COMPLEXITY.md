@@ -97,7 +97,7 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 ### 🏥 Repository Health Score: **90.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 93
+*   **Total Files Scanned**: 94
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
