@@ -2,7 +2,7 @@ import React from 'react';
 import { Ctx } from 'boardgame.io';
 import { GameState } from '../../../game/core/types';
 import { calculatePlayerPotentialPips } from '../../../game/analysis/analyst';
-import { ResourceIconRow } from '../../../shared/components/ui/ResourceIconRow';
+import { ResourceIconRow } from '../../shared/components/ResourceIconRow';
 import { StrategicAdvice } from '../../../game/analysis/coach';
 
 export interface CoachPanelProps {

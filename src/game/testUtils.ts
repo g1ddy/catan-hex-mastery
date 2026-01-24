@@ -1,5 +1,5 @@
 import { GameState, Player, Resources, RollStatus } from './core/types';
-import { PLAYER_COLORS } from '../shared/components/uiConfig';
+import { PLAYER_COLORS } from './core/config';
 
 // Legacy exports for existing tests
 export const createTestPlayer = (id: string, overrides: Partial<Player> = {}): Player => ({

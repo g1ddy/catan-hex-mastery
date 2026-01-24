@@ -5,10 +5,11 @@ import { GameLayout } from './GameLayout';
 import { Coach, StrategicAdvice } from '../../../game/analysis/coach';
 import { PHASES, STAGE_MOVES, STAGES } from '../../../game/core/constants';
 import { useTradeLogic } from '../../hud/hooks/useTradeLogic';
-import { useIsMobile } from '../../../shared/hooks/useIsMobile';
+import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { getValidRobberLocations } from '../../../game/rules/queries';
 import { useCoachData } from '../../coach/hooks/useCoachData';
-import { BuildMode, UiMode, GameControlsProps } from '../../hud/components/GameControls';
+import { GameControlsProps } from '../../hud/components/GameControls';
+import { BuildMode, UiMode } from '../../shared/types';
 import { CustomMessage } from '../../hud/components/GameStatusBanner';
 
 // Feature Layers

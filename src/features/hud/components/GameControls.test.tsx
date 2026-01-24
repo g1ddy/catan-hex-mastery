@@ -1,7 +1,8 @@
 
 /** @jest-environment jsdom */
 import { render, screen } from '@testing-library/react';
-import { GameControls, BuildMode, UiMode } from './GameControls';
+import { GameControls } from './GameControls';
+import { BuildMode, UiMode } from '../../shared/types';
 import { GameState, RollStatus } from '../../../game/core/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { Ctx } from 'boardgame.io';
@@ -30,7 +31,7 @@ jest.mock('react-tooltip', () => ({
 }));
 
 // Mock safeMove
-jest.mock('../../../shared/utils/feedback', () => ({
+jest.mock('../../shared/utils/feedback', () => ({
     safeMove: (fn: () => void) => fn(),
 }));
 

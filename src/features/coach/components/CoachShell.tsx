@@ -1,7 +1,7 @@
 import React from 'react';
-import { useIsMobile } from '../../../shared/hooks/useIsMobile';
+import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { X, ChevronRight } from 'lucide-react';
-import { Z_INDEX_OVERLAY_PANEL } from '../../../shared/constants/z-indices';
+import { Z_INDEX_OVERLAY_PANEL } from '../../shared/constants/z-indices';
 
 interface CoachShellProps {
   children: React.ReactNode;
