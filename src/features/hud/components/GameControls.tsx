@@ -80,7 +80,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
             return (
                 <RobberControls
                     pendingRobberHex={pendingRobberHex ?? null}
-                    onConfirm={() => safeMove(() => moves.dismissRobber(pendingRobberHex))}
+                    onConfirm={() => {
+                        if (pendingRobberHex) {
+                            safeMove(() => moves.dismissRobber(pendingRobberHex));
+                        }
+                    }}
                     className={className}
                 />
             );

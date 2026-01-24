@@ -17,6 +17,6 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         disabled={disabled}
         {...props}
     >
-        <span className={className?.includes('text-lg') ? "text-lg font-bold" : "text-base font-bold"}>{label}</span>
+        <span className="text-base font-bold">{label}</span>
     </button>
 );
