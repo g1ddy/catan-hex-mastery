@@ -45,11 +45,9 @@ export class CatanBot extends Bot {
         const { G, ctx } = state;
 
         // 1. Get ALL valid moves from the base enumerator
-        const allMoves = this.enumerate(G, ctx, playerID);
+        const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
-            // Must return strictly typed object, even if no action, to satisfy Bot signature
-            // return undefined to indicate no move possible (pass)
             return undefined as any;
         }
 
@@ -62,12 +60,18 @@ export class CatanBot extends Bot {
 
         const botCoach = new BotCoach(G, coach, this.profile);
         // Note: filterOptimalMoves returns a sorted list where index 0 is best
-        const bestMoves = botCoach.filterOptimalMoves(allMoves as GameAction[], playerID, ctx);
+        const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
         const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
 
         // 3. Pick weighted randomly from the candidates (favoring top ranks)
         const selectedIndex = this.pickWeightedIndex(candidates.length, DEFAULT_GREED_FACTOR);
         const selectedMove = candidates[selectedIndex];
+
+        // It's possible for the candidates array to be empty if the enumerator
+        // returns moves that the BotCoach filters out. In this case, pass.
+        if (!selectedMove) {
+            return undefined as any;
+        }
 
         // 4. Construct proper MAKE_MOVE action
         let actionPayload: MakeMoveAction['payload'];
