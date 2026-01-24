@@ -48,7 +48,7 @@ export class CatanBot extends Bot {
         const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
-            return undefined as any;
+            return undefined;
         }
 
         // 2. Use BotCoach to filter/rank these moves
@@ -70,7 +70,7 @@ export class CatanBot extends Bot {
         // It's possible for the candidates array to be empty if the enumerator
         // returns moves that the BotCoach filters out. In this case, pass.
         if (!selectedMove) {
-            return undefined as any;
+            return undefined;
         }
 
         // 4. Construct proper MAKE_MOVE action
