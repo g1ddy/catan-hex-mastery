@@ -94,26 +94,26 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 **Last Updated:** 2026-01-25
 
-### 🏥 Repository Health Score: **89.0 / 100**
+### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 95
+*   **Total Files Scanned**: 94
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/game/GameLayout.tsx` | **94.7** | 280 | 10 | 14 | 0.93 |
-| `src/features/board/components/HexOverlays.tsx` | **94.1** | 194 | 14 | 14 | 0.93 |
-| `src/bots/BotCoach.ts` | **81.8** | 205 | 16 | 8 | 0.67 |
-| `src/game/Game.ts` | **78.2** | 147 | 7 | 17 | 0.77 |
-| `src/features/hud/hooks/useGameStatusMessage.ts` | **77.8** | 135 | 20 | 5 | 0.71 |
-| `src/features/game/GameScreen.tsx` | **76.3** | 175 | 4 | 16 | 0.94 |
-| `src/game/analysis/advisors/SpatialAdvisor.ts` | **71** | 210 | 7 | 9 | 0.9 |
+| `src/features/board/components/HexOverlays.tsx` | **87.7** | 194 | 14 | 11 | 0.92 |
+| `src/bots/BotCoach.ts` | **84** | 205 | 16 | 7 | 0.88 |
+| `src/features/game/GameLayout.tsx` | **84** | 280 | 10 | 9 | 0.9 |
+| `src/game/Game.ts` | **77.5** | 147 | 7 | 15 | 0.94 |
+| `src/features/game/GameScreen.tsx` | **72.2** | 175 | 4 | 14 | 0.93 |
+| `src/features/hud/hooks/useGameStatusMessage.ts` | **71.5** | 135 | 20 | 3 | 0.6 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
-| `src/game/rules/queries.ts` | **65.7** | 234 | 7 | 8 | 0.62 |
-| `src/features/board/components/OverlayVertex.tsx` | **65.1** | 104 | 14 | 5 | 0.83 |
+| `src/game/analysis/advisors/SpatialAdvisor.ts` | **68.8** | 210 | 7 | 8 | 0.89 |
+| `src/game/rules/enumerator.ts` | **63.5** | 108 | 13 | 5 | 0.83 |
+| `src/game/rules/queries.ts` | **63.1** | 234 | 7 | 7 | 0.58 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
