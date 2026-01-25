@@ -32,6 +32,9 @@ jobs:
       - name: Build Project
         run: npm run build
 
+      - name: Generate Dependency Graph (JSON)
+        run: npm run generate:json
+
       - name: Generate Dependency Graph (DOT)
         run: npm run generate:dot
 
@@ -45,4 +48,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "docs(metrics): update dependency graph and complexity report [skip ci]"
-          file_pattern: 'docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md config/dependency-graph.dot'
+          file_pattern: 'docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md config/dependency-graph.dot config/dependency-graph.json'

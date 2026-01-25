@@ -5,7 +5,7 @@ const { execSync } = require('child_process');
 // Configuration
 const SRC_DIR = 'src';
 const DOCS_FILE = 'docs/COMPLEXITY.md';
-const DEP_CRUISER_CONFIG = 'config/dependency-cruiser.cjs';
+const DEP_GRAPH_JSON = 'config/dependency-graph.json';
 
 // Thresholds for "Repo Health" Penalties
 const THRESHOLDS = {
@@ -40,14 +40,19 @@ function main() {
     console.log('📊 Starting Complexity Analysis...');
 
     // 1. Dependency Cruiser (Fan-In, Fan-Out, Instability)
-    console.log('   - Running Dependency Cruiser...');
-    const depCruiseJson = runCommand(`npx depcruise ${SRC_DIR} --config ${DEP_CRUISER_CONFIG} --output-type json`);
+    console.log('   - Reading Dependency Cruiser JSON...');
     let modules = [];
     try {
-        const data = JSON.parse(depCruiseJson);
-        modules = data.modules || [];
+        if (fs.existsSync(DEP_GRAPH_JSON)) {
+            const data = JSON.parse(fs.readFileSync(DEP_GRAPH_JSON, 'utf8'));
+            modules = data.modules || [];
+        } else {
+            console.error(`❌ Dependency graph JSON not found at ${DEP_GRAPH_JSON}. Run 'npm run generate:json' first.`);
+            process.exit(1);
+        }
     } catch (e) {
-        console.error('Failed to parse Dependency Cruiser output');
+        console.error('Failed to parse Dependency Cruiser output', e);
+        process.exit(1);
     }
 
     // 2. ESLint (Cyclomatic Complexity)
