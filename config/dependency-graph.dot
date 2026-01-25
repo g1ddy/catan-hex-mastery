@@ -127,8 +127,7 @@ strict digraph "dependency-cruiser output"{
     "src/features/hud/components/GameNotification.tsx" -> "src/features/shared/config/uiConfig.tsx"
     "src/features/hud/components/GameNotification.tsx" -> "src/features/hud/components/constants/emojis.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/GameStatusBanner.tsx" [label=<GameStatusBanner.tsx> tooltip="GameStatusBanner.tsx" URL="src/features/hud/components/GameStatusBanner.tsx" fillcolor="#bbfeff"] } } } }
-    "src/features/hud/components/GameStatusBanner.tsx" -> "src/game/core/constants.ts"
-    "src/features/hud/components/GameStatusBanner.tsx" -> "src/features/hud/components/constants/emojis.ts"
+    "src/features/hud/components/GameStatusBanner.tsx" -> "src/features/hud/hooks/useGameStatusMessage.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/PlayerPanel.tsx" [label=<PlayerPanel.tsx> tooltip="PlayerPanel.tsx" URL="src/features/hud/components/PlayerPanel.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/hud/components/PlayerPanel.tsx" -> "src/features/shared/components/ResourceIconRow.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/constants" {label="constants" "src/features/hud/components/constants/emojis.ts" [label=<emojis.ts> tooltip="emojis.ts" URL="src/features/hud/components/constants/emojis.ts" fillcolor="#ddfeff"] } } } } }
@@ -149,6 +148,9 @@ strict digraph "dependency-cruiser output"{
     "src/features/hud/hooks/useGameControls.ts" -> "src/game/mechanics/costs.ts"
     "src/features/hud/hooks/useGameControls.ts" -> "src/features/shared/utils/feedback.ts"
     "src/features/hud/hooks/useGameControls.ts" -> "src/features/hud/hooks/useTradeLogic.ts"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/hooks" {label="hooks" "src/features/hud/hooks/useGameStatusMessage.ts" [label=<useGameStatusMessage.ts> tooltip="useGameStatusMessage.ts" URL="src/features/hud/hooks/useGameStatusMessage.ts" fillcolor="#ddfeff"] } } } }
+    "src/features/hud/hooks/useGameStatusMessage.ts" -> "src/game/core/constants.ts"
+    "src/features/hud/hooks/useGameStatusMessage.ts" -> "src/features/hud/components/constants/emojis.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/hooks" {label="hooks" "src/features/hud/hooks/useTradeLogic.ts" [label=<useTradeLogic.ts> tooltip="useTradeLogic.ts" URL="src/features/hud/hooks/useTradeLogic.ts" fillcolor="#ddfeff"] } } } }
     "src/features/hud/hooks/useTradeLogic.ts" -> "src/game/core/constants.ts"
     "src/features/hud/hooks/useTradeLogic.ts" -> "src/game/mechanics/trade.ts"
