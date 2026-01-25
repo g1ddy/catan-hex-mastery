@@ -1,6 +1,13 @@
 #!/bin/bash
 bash scripts/setup.sh
 
+# Check if package-lock.json was modified
+if ! git diff --quiet package-lock.json; then
+  echo "WARNING: package-lock.json was modified during setup. Resetting changes to ensure clean working tree."
+  git diff package-lock.json
+  git restore package-lock.json
+fi
+
 echo "Setup complete. Starting verification..."
 
 # 1. Check critical versions
