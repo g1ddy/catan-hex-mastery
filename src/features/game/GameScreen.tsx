@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState, Hex } from '../../../game/core/types';
+import { GameState, Hex } from '../../game/core/types';
 import { GameLayout } from './GameLayout';
-import { Coach, StrategicAdvice } from '../../../game/analysis/coach';
-import { PHASES, STAGE_MOVES, STAGES } from '../../../game/core/constants';
-import { useTradeLogic } from '../../hud/hooks/useTradeLogic';
-import { useIsMobile } from '../../../shared/hooks/useIsMobile';
-import { getValidRobberLocations } from '../../../game/rules/queries';
-import { useCoachData } from '../../coach/hooks/useCoachData';
-import { BuildMode, UiMode, GameControlsProps } from '../../hud/components/GameControls';
-import { CustomMessage } from '../../hud/components/GameStatusBanner';
+import { Coach, StrategicAdvice } from '../../game/analysis/coach';
+import { PHASES, STAGE_MOVES, STAGES } from '../../game/core/constants';
+import { useTradeLogic } from '../hud/hooks/useTradeLogic';
+import { useIsMobile } from '../shared/hooks/useIsMobile';
+import { getValidRobberLocations } from '../../game/rules/queries';
+import { useCoachData } from '../coach/hooks/useCoachData';
+import { GameControlsProps } from '../hud/components/GameControls';
+import { BuildMode, UiMode } from '../shared/types';
+import { CustomMessage } from '../hud/components/GameStatusBanner';
 
 // Feature Layers
-import { BoardLayer } from '../../board/BoardLayer';
-import { HUDLayer } from '../../hud/HUDLayer';
-import { CoachLayer } from '../../coach/CoachLayer';
+import { BoardLayer } from '../board/BoardLayer';
+import { HUDLayer } from '../hud/HUDLayer';
+import { CoachLayer } from '../coach/CoachLayer';
 
 const MESSAGE_BOARD_REGENERATED = "Board Regenerated!";
 

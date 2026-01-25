@@ -20,7 +20,7 @@ jest.mock('lucide-react', () => ({
 }));
 
 // Mock DiceIcons
-jest.mock('../../../shared/components/ui/DiceIcons', () => ({
+jest.mock('../../shared/components/DiceIcons', () => ({
     DiceIcons: () => <div data-testid="icon-dice-icons" />
 }));
 

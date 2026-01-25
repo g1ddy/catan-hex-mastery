@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionButton } from '../../../../shared/components/ui/ActionButton';
+import { ActionButton } from './ActionButton';
 
 interface RobberControlsProps {
     pendingRobberHex: string | null;

@@ -1,6 +1,6 @@
 import { GameState, Player } from '../../../game/core/types';
 import { Layers } from 'lucide-react';
-import { ResourceIconRow } from '../../../shared/components/ui/ResourceIconRow';
+import { ResourceIconRow } from '../../shared/components/ResourceIconRow';
 
 interface PlayerCardProps {
   player: Player;

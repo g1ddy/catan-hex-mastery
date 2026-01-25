@@ -1,10 +1,10 @@
 import React from 'react';
 import { Handshake } from 'lucide-react';
 import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../../game/core/config';
-import { BUILD_BUTTON_CONFIG } from '../../../../shared/components/uiConfig';
+import { BUILD_BUTTON_CONFIG } from '../../../shared/config/uiConfig';
 import { StrategicAdvice } from '../../../../game/analysis/coach';
 import { TradeResult } from '../../../../game/mechanics/trade';
-import { BuildMode } from '../../types';
+import { BuildMode } from '../../../shared/types';
 
 interface BuildBarProps {
     affordMap: Record<string, boolean>;

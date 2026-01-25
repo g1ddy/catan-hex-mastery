@@ -1,5 +1,5 @@
 import { Trees, BrickWall, Cloud, Wheat, Mountain, MapPin, Home, Castle, LucideIcon } from 'lucide-react';
-import { TerrainType } from '../../game/core/types';
+import { TerrainType } from '../../../game/core/types';
 
 export interface ResourceMeta {
   name: 'wood' | 'brick' | 'sheep' | 'wheat' | 'ore';
@@ -27,15 +27,6 @@ export const BUILD_BUTTON_CONFIG: BuildButtonConfig[] = [
   { type: 'road', label: 'Road', Icon: MapPin, ariaPrefix: 'Build Road' },
   { type: 'settlement', label: 'Settlement', Icon: Home, ariaPrefix: 'Build Settlement' },
   { type: 'city', label: 'City', Icon: Castle, ariaPrefix: 'Build City' },
-];
-
-export const PLAYER_COLORS = [
-  '#E53935', // Red
-  '#1E88E5', // Blue
-  '#FB8C00', // Orange
-  '#FDD835', // White/Yellow
-  '#8E24AA', // Purple
-  '#43A047', // Green
 ];
 
 export const TERRAIN_COLORS: Record<TerrainType, string> = {

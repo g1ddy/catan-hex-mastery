@@ -1,10 +1,10 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
 import { Ctx } from 'boardgame.io';
-import { safeMove } from '../../../shared/utils/feedback';
+import { safeMove } from '../../shared/utils/feedback';
 import { StrategicAdvice } from '../../../game/analysis/coach';
 import { useGameControls } from '../hooks/useGameControls';
-import { BuildMode, UiMode } from '../types';
+import { BuildMode, UiMode } from '../../shared/types';
 import { SetupControls } from './controls/SetupControls';
 import { RobberControls } from './controls/RobberControls';
 import { BuildBar } from './controls/BuildBar';

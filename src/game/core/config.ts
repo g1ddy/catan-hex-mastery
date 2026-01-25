@@ -53,3 +53,12 @@ export const PIP_MAP: Record<number, number> = {
 
 export const BANK_TRADE_GIVE_AMOUNT = 4;
 export const BANK_TRADE_RECEIVE_AMOUNT = 1;
+
+export const PLAYER_COLORS = [
+  '#E53935', // Red
+  '#1E88E5', // Blue
+  '#FB8C00', // Orange
+  '#FDD835', // White/Yellow
+  '#8E24AA', // Purple
+  '#43A047', // Green
+];

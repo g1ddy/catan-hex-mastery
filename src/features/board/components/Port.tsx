@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircleHelp } from 'lucide-react';
 import { PortType, TerrainType } from '../../../game/core/types';
-import { RESOURCE_META, TERRAIN_COLORS, PORT_HIGHLIGHT_RADIUS, PORT_HIGHLIGHT_COLOR, PORT_HIGHLIGHT_WIDTH } from '../../../shared/components/uiConfig';
+import { RESOURCE_META, TERRAIN_COLORS, PORT_HIGHLIGHT_RADIUS, PORT_HIGHLIGHT_COLOR, PORT_HIGHLIGHT_WIDTH } from '../../shared/config/uiConfig';
 
 interface PortProps {
     cx: number;

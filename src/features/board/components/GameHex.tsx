@@ -2,8 +2,8 @@ import React from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { Skull } from 'lucide-react';
 import { Hex } from '../../../game/core/types';
-import { NumberToken } from '../../../shared/components/ui/NumberToken';
-import { TERRAIN_COLORS } from '../../../shared/components/uiConfig';
+import { NumberToken } from './NumberToken';
+import { TERRAIN_COLORS } from '../../shared/config/uiConfig';
 
 interface GameHexProps {
   hex: Hex;
