@@ -10,7 +10,7 @@ import { getValidRobberLocations } from '../../game/rules/queries';
 import { useCoachData } from '../coach/hooks/useCoachData';
 import { GameControlsProps } from '../hud/components/GameControls';
 import { BuildMode, UiMode } from '../shared/types';
-import { CustomMessage } from '../hud/components/GameStatusBanner';
+import { CustomMessage } from '../hud/hooks/useGameStatusMessage';
 
 // Feature Layers
 import { BoardLayer } from '../board/BoardLayer';
