@@ -513,8 +513,10 @@
         "src/features/board/hooks/useGameEffects.ts",
         "src/features/coach/components/AnalystPanel.tsx",
         "src/features/coach/components/CoachPanel.tsx",
+        "src/features/coach/components/PlayerProductionPotential.tsx",
         "src/game/analysis/analyst.ts",
         "src/features/shared/components/ResourceIconRow.tsx",
+        "src/features/coach/components/PlayerPotentialChart.tsx",
         "src/features/hud/components/GameNotification.tsx",
         "src/features/hud/components/PlayerPanel.tsx",
         "src/features/game/GameLayout.tsx",
@@ -2518,6 +2520,7 @@
         "src/features/hud/components/controls/BuildBar.tsx",
         "src/features/board/components/Port.tsx",
         "src/features/shared/components/ResourceIconRow.tsx",
+        "src/features/coach/components/PlayerPotentialChart.tsx",
         "src/features/hud/components/GameNotification.tsx",
         "src/features/game/GameLayout.tsx"
       ],
@@ -3692,14 +3695,14 @@
       "dependencies": [
         {
           "dynamic": false,
-          "module": "../../../game/analysis/analyst",
+          "module": "../../../game/analysis/coach",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
             "import"
           ],
-          "resolved": "src/game/analysis/analyst.ts",
+          "resolved": "src/game/analysis/coach.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -3709,14 +3712,58 @@
         },
         {
           "dynamic": false,
-          "module": "../../../game/analysis/coach",
+          "module": "../../../game/core/types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
             "import"
           ],
-          "resolved": "src/game/analysis/coach.ts",
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "./PlayerProductionPotential",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/coach/components/PlayerProductionPotential.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/coach/CoachLayer.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/coach/components/PlayerProductionPotential.tsx",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/analysis/analyst",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/analysis/analyst.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -3757,10 +3804,27 @@
           "matchesDoNotFollow": false,
           "circular": false,
           "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "./PlayerPotentialChart",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/coach/components/PlayerPotentialChart.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
         }
       ],
       "dependents": [
-        "src/features/coach/CoachLayer.tsx"
+        "src/features/coach/components/CoachPanel.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -3838,7 +3902,7 @@
         }
       ],
       "dependents": [
-        "src/features/coach/components/CoachPanel.tsx"
+        "src/features/coach/components/PlayerProductionPotential.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -3882,8 +3946,52 @@
         }
       ],
       "dependents": [
-        "src/features/coach/components/CoachPanel.tsx",
+        "src/features/coach/components/PlayerProductionPotential.tsx",
         "src/features/hud/components/PlayerPanel.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/coach/components/PlayerPotentialChart.tsx",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/config/uiConfig",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/shared/config/uiConfig.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/coach/components/PlayerProductionPotential.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -5904,10 +6012,10 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 95,
-    "totalDependenciesCruised": 279,
+    "totalCruised": 97,
+    "totalDependenciesCruised": 284,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
