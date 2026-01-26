@@ -13,24 +13,20 @@ export const PlayerPotentialChart: React.FC<PlayerPotentialChartProps> = ({ play
             <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Resource Distribution</h4>
             <div className="flex flex-col gap-3">
                 {RESOURCE_META.map(({ name, label, Icon, color }) => {
-                    // Calculate total pips for this resource across all players
-                    let totalPips = 0;
-                    const segments: { playerId: string; pips: number; percent: number }[] = [];
+                    const playerPips = Object.values(players).map(player => ({
+                        playerId: player.id,
+                        pips: playerPotentials[player.id]?.[name] || 0,
+                    }));
 
-                    Object.values(players).forEach(player => {
-                        const pips = playerPotentials[player.id]?.[name] || 0;
-                        if (pips > 0) {
-                            totalPips += pips;
-                            segments.push({ playerId: player.id, pips, percent: 0 }); // Percent calc later
-                        }
-                    });
+                    const totalPips = playerPips.reduce((sum, p) => sum + p.pips, 0);
 
-                    // Calculate percentages
-                    if (totalPips > 0) {
-                        segments.forEach(seg => {
-                            seg.percent = (seg.pips / totalPips) * 100;
-                        });
-                    }
+                    const segments = playerPips
+                        .filter(({ pips }) => pips > 0)
+                        .map(({ playerId, pips }) => ({
+                            playerId,
+                            pips,
+                            percent: totalPips > 0 ? (pips / totalPips) * 100 : 0,
+                        }));
 
                     return (
                         <div key={name} className="flex flex-col gap-1">
