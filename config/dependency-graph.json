@@ -504,12 +504,12 @@
         "src/features/shared/config/uiConfig.tsx",
         "src/features/board/components/HexOverlays.tsx",
         "src/game/geometry/staticGeometry.ts",
-        "src/features/board/hooks/useBoardInteractions.ts",
         "src/features/hud/components/GameControls.tsx",
         "src/features/hud/hooks/useGameControls.ts",
         "src/features/hud/hooks/useTradeLogic.ts",
         "src/features/hud/components/controls/TurnControls.tsx",
         "src/features/board/components/Port.tsx",
+        "src/features/board/hooks/useBoardInteractions.ts",
         "src/features/board/hooks/useGameEffects.ts",
         "src/features/coach/components/AnalystPanel.tsx",
         "src/features/coach/components/CoachPanel.tsx",
@@ -2301,6 +2301,23 @@
         },
         {
           "dynamic": false,
+          "module": "./hooks/useBoardInteractions",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/board/hooks/useBoardInteractions.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
           "module": "./hooks/useGameEffects",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -2687,23 +2704,6 @@
         },
         {
           "dynamic": false,
-          "module": "../hooks/useBoardInteractions",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/features/board/hooks/useBoardInteractions.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
           "module": "./OverlayEdge",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -2828,50 +2828,6 @@
         "src/features/board/components/HexOverlays.tsx",
         "src/features/hud/components/GameControls.tsx",
         "src/features/hud/hooks/useGameControls.ts"
-      ],
-      "orphan": false,
-      "valid": true
-    },
-    {
-      "source": "src/features/board/hooks/useBoardInteractions.ts",
-      "dependencies": [
-        {
-          "dynamic": false,
-          "module": "../../../game/core/types",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/game/core/types.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
-          "module": "../../../game/rules/queries",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/game/rules/queries.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        }
-      ],
-      "dependents": [
-        "src/features/board/components/HexOverlays.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -3588,6 +3544,50 @@
       ],
       "dependents": [
         "src/features/board/components/HexOverlays.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/board/hooks/useBoardInteractions.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../../game/rules/queries",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/rules/queries.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/board/BoardLayer.tsx"
       ],
       "orphan": false,
       "valid": true
