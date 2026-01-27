@@ -2,12 +2,12 @@ import React from 'react';
 import { Player } from '../../../game/core/types';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 
-interface PlayerPotentialChartProps {
+interface ResourceDistributionProps {
     playerPotentials: Record<string, Record<string, number>>;
     players: Record<string, Player>;
 }
 
-export const PlayerPotentialChart: React.FC<PlayerPotentialChartProps> = ({ playerPotentials, players }) => {
+export const ResourceDistribution: React.FC<ResourceDistributionProps> = ({ playerPotentials, players }) => {
     return (
         <div className="flex flex-col gap-3 mt-4">
             <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Resource Distribution</h4>
