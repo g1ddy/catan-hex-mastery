@@ -57,6 +57,7 @@ strict digraph "dependency-cruiser output"{
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/GameHex.tsx"
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/helpers.tsx"
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/HexOverlays.tsx"
+    "src/features/board/BoardLayer.tsx" -> "src/features/board/hooks/useBoardInteractions.ts"
     "src/features/board/BoardLayer.tsx" -> "src/features/board/hooks/useGameEffects.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/BuildingIcon.tsx" [label=<BuildingIcon.tsx> tooltip="BuildingIcon.tsx" URL="src/features/board/components/BuildingIcon.tsx" fillcolor="#bbfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/GameHex.tsx" [label=<GameHex.tsx> tooltip="GameHex.tsx" URL="src/features/board/components/GameHex.tsx" fillcolor="#bbfeff"] } } } }
@@ -71,7 +72,6 @@ strict digraph "dependency-cruiser output"{
     "src/features/board/components/HexOverlays.tsx" -> "src/game/geometry/staticGeometry.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/shared/types.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/shared/utils/feedback.ts"
-    "src/features/board/components/HexOverlays.tsx" -> "src/features/board/hooks/useBoardInteractions.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/board/components/OverlayEdge.tsx"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/board/components/OverlayVertex.tsx"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/board/components/Port.tsx"

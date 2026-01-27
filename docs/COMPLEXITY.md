@@ -92,7 +92,7 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-01-26
+**Last Updated:** 2026-01-27
 
 ### 🏥 Repository Health Score: **91.0 / 100**
 
@@ -104,7 +104,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/board/components/HexOverlays.tsx` | **87.7** | 194 | 14 | 11 | 0.92 |
+| `src/features/board/components/HexOverlays.tsx` | **94.5** | 203 | 18 | 10 | 0.91 |
 | `src/bots/BotCoach.ts` | **84** | 205 | 16 | 7 | 0.88 |
 | `src/features/game/GameLayout.tsx` | **84** | 280 | 10 | 9 | 0.9 |
 | `src/game/Game.ts` | **77.5** | 147 | 7 | 15 | 0.94 |
@@ -120,9 +120,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- |
 | `src/features/hud/hooks/useGameStatusMessage.ts` | **20** | 135 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
+| `src/features/board/components/HexOverlays.tsx` | **18** | 203 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
 | `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
-| `src/features/board/components/HexOverlays.tsx` | **14** | 194 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
 | `src/features/hud/components/controls/TurnControls.tsx` | **11** | 77 |
