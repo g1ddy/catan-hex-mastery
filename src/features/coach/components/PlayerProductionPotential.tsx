@@ -28,7 +28,6 @@ export const PlayerProductionPotential: React.FC<PlayerProductionPotentialProps>
                                 P{Number(player.id) + 1}: {player.name}
                             </span>
                         </div>
-                        {/* eslint-disable-next-line security/detect-object-injection */}
                         <ResourceIconRow resources={playerPotentials[player.id]} size="sm" />
                     </div>
                 ))}
