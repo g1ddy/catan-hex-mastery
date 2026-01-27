@@ -1,4 +1,5 @@
 // Game Configuration
+import { TerrainType } from './types';
 
 export const BOARD_CONFIG = {
   // HexGrid dimensions (used for aspect ratio calculations, not hard pixels)
@@ -62,3 +63,13 @@ export const PLAYER_COLORS = [
   '#8E24AA', // Purple
   '#43A047', // Green
 ];
+
+export const TERRAIN_CONFIG: Record<TerrainType, string | null> = {
+  [TerrainType.Forest]: 'wood',
+  [TerrainType.Hills]: 'brick',
+  [TerrainType.Pasture]: 'sheep',
+  [TerrainType.Fields]: 'wheat',
+  [TerrainType.Mountains]: 'ore',
+  [TerrainType.Desert]: null,
+  [TerrainType.Sea]: null
+};
