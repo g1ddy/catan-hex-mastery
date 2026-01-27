@@ -516,7 +516,8 @@
         "src/features/coach/components/PlayerProductionPotential.tsx",
         "src/game/analysis/analyst.ts",
         "src/features/shared/components/ResourceIconRow.tsx",
-        "src/features/coach/components/PlayerPotentialChart.tsx",
+        "src/features/coach/components/PlayerProduction.tsx",
+        "src/features/coach/components/ResourceDistribution.tsx",
         "src/features/hud/components/GameNotification.tsx",
         "src/features/hud/components/PlayerPanel.tsx",
         "src/features/game/GameLayout.tsx",
@@ -2537,7 +2538,8 @@
         "src/features/hud/components/controls/BuildBar.tsx",
         "src/features/board/components/Port.tsx",
         "src/features/shared/components/ResourceIconRow.tsx",
-        "src/features/coach/components/PlayerPotentialChart.tsx",
+        "src/features/coach/components/PlayerProduction.tsx",
+        "src/features/coach/components/ResourceDistribution.tsx",
         "src/features/hud/components/GameNotification.tsx",
         "src/features/game/GameLayout.tsx"
       ],
@@ -3807,14 +3809,31 @@
         },
         {
           "dynamic": false,
-          "module": "./PlayerPotentialChart",
+          "module": "./PlayerProduction",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
             "import"
           ],
-          "resolved": "src/features/coach/components/PlayerPotentialChart.tsx",
+          "resolved": "src/features/coach/components/PlayerProduction.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "./ResourceDistribution",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/coach/components/ResourceDistribution.tsx",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -3953,7 +3972,51 @@
       "valid": true
     },
     {
-      "source": "src/features/coach/components/PlayerPotentialChart.tsx",
+      "source": "src/features/coach/components/PlayerProduction.tsx",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/config/uiConfig",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/shared/config/uiConfig.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/coach/components/PlayerProductionPotential.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/coach/components/ResourceDistribution.tsx",
       "dependencies": [
         {
           "dynamic": false,
@@ -6012,8 +6075,8 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 97,
-    "totalDependenciesCruised": 284,
+    "totalCruised": 98,
+    "totalDependenciesCruised": 287,
     "optionsUsed": {
       "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,

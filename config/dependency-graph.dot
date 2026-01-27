@@ -107,14 +107,18 @@ strict digraph "dependency-cruiser output"{
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/CoachShell.tsx" [label=<CoachShell.tsx> tooltip="CoachShell.tsx" URL="src/features/coach/components/CoachShell.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/coach/components/CoachShell.tsx" -> "src/features/shared/constants/z-indices.ts"
     "src/features/coach/components/CoachShell.tsx" -> "src/features/shared/hooks/useIsMobile.ts"
-    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/PlayerPotentialChart.tsx" [label=<PlayerPotentialChart.tsx> tooltip="PlayerPotentialChart.tsx" URL="src/features/coach/components/PlayerPotentialChart.tsx" fillcolor="#bbfeff"] } } } }
-    "src/features/coach/components/PlayerPotentialChart.tsx" -> "src/game/core/types.ts"
-    "src/features/coach/components/PlayerPotentialChart.tsx" -> "src/features/shared/config/uiConfig.tsx"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/PlayerProduction.tsx" [label=<PlayerProduction.tsx> tooltip="PlayerProduction.tsx" URL="src/features/coach/components/PlayerProduction.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/PlayerProduction.tsx" -> "src/game/core/types.ts"
+    "src/features/coach/components/PlayerProduction.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/PlayerProductionPotential.tsx" [label=<PlayerProductionPotential.tsx> tooltip="PlayerProductionPotential.tsx" URL="src/features/coach/components/PlayerProductionPotential.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/game/analysis/analyst.ts"
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/game/core/types.ts"
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/shared/components/ResourceIconRow.tsx"
-    "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/coach/components/PlayerPotentialChart.tsx"
+    "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/coach/components/PlayerProduction.tsx"
+    "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/coach/components/ResourceDistribution.tsx"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/ResourceDistribution.tsx" [label=<ResourceDistribution.tsx> tooltip="ResourceDistribution.tsx" URL="src/features/coach/components/ResourceDistribution.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/ResourceDistribution.tsx" -> "src/game/core/types.ts"
+    "src/features/coach/components/ResourceDistribution.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/hooks" {label="hooks" "src/features/coach/hooks/useCoachData.ts" [label=<useCoachData.ts> tooltip="useCoachData.ts" URL="src/features/coach/hooks/useCoachData.ts" fillcolor="#ddfeff"] } } } }
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/analysis/coach.ts"
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/core/constants.ts"
