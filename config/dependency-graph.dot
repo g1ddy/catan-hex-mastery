@@ -18,6 +18,8 @@ strict digraph "dependency-cruiser output"{
     "src/bots/BalancedBot.ts" -> "src/bots/CatanBot.ts"
     "src/bots/BalancedBot.ts" -> "src/bots/profiles/BotProfile.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" "src/bots/BotCoach.ts" [label=<BotCoach.ts> tooltip="BotCoach.ts" URL="src/bots/BotCoach.ts" fillcolor="#ddfeff"] } }
+    "src/bots/BotCoach.ts" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/bots/BotCoach.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/bots/BotCoach.ts" -> "src/game/core/validation.ts"
     "src/bots/BotCoach.ts" -> "src/game/mechanics/costs.ts"
     "src/bots/BotCoach.ts" -> "src/bots/logic/MoveScorer.ts"
@@ -25,10 +27,12 @@ strict digraph "dependency-cruiser output"{
     "src/bots/BotCoach.ts" -> "src/bots/utils/ActionUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" "src/bots/CatanBot.ts" [label=<CatanBot.ts> tooltip="CatanBot.ts" URL="src/bots/CatanBot.ts" fillcolor="#ddfeff"] } }
     "src/bots/CatanBot.ts" -> "src/game/analysis/coach.ts"
+    "src/bots/CatanBot.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/bots/CatanBot.ts" -> "src/bots/BotCoach.ts"
     "src/bots/CatanBot.ts" -> "src/bots/profiles/BotProfile.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" "src/bots/CatanMCTSBot.ts" [label=<CatanMCTSBot.ts> tooltip="CatanMCTSBot.ts" URL="src/bots/CatanMCTSBot.ts" fillcolor="#ddfeff"] } }
     "src/bots/CatanMCTSBot.ts" -> "src/game/core/constants.ts"
+    "src/bots/CatanMCTSBot.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" "src/bots/DefensiveBot.ts" [label=<DefensiveBot.ts> tooltip="DefensiveBot.ts" URL="src/bots/DefensiveBot.ts" fillcolor="#ddfeff"] } }
     "src/bots/DefensiveBot.ts" -> "src/bots/CatanBot.ts"
     "src/bots/DefensiveBot.ts" -> "src/bots/profiles/BotProfile.ts"
@@ -36,12 +40,20 @@ strict digraph "dependency-cruiser output"{
     "src/bots/ExpansiveBot.ts" -> "src/bots/CatanBot.ts"
     "src/bots/ExpansiveBot.ts" -> "src/bots/profiles/BotProfile.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" subgraph "cluster_src/bots/logic" {label="logic" "src/bots/logic/MoveScorer.ts" [label=<MoveScorer.ts> tooltip="MoveScorer.ts" URL="src/bots/logic/MoveScorer.ts" fillcolor="#ddfeff"] } } }
+    "src/bots/logic/MoveScorer.ts" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/bots/logic/MoveScorer.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/bots/logic/MoveScorer.ts" -> "src/game/mechanics/costs.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/bots/logic/MoveScorer.ts" -> "src/bots/profiles/BotProfile.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/bots/logic/MoveScorer.ts" -> "src/bots/utils/ActionUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" subgraph "cluster_src/bots/profiles" {label="profiles" "src/bots/profiles/BotProfile.ts" [label=<BotProfile.ts> tooltip="BotProfile.ts" URL="src/bots/profiles/BotProfile.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/bots" {label="bots" subgraph "cluster_src/bots/utils" {label="utils" "src/bots/utils/ActionUtils.ts" [label=<ActionUtils.ts> tooltip="ActionUtils.ts" URL="src/bots/utils/ActionUtils.ts" fillcolor="#ddfeff"] } } }
+    "src/bots/utils/ActionUtils.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" "src/features/board/BoardLayer.tsx" [label=<BoardLayer.tsx> tooltip="BoardLayer.tsx" URL="src/features/board/BoardLayer.tsx" fillcolor="#bbfeff"] } } }
     "src/features/board/BoardLayer.tsx" -> "src/game/core/config.ts"
+    "src/features/board/BoardLayer.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/board/BoardLayer.tsx" -> "src/features/coach/hooks/useCoachData.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/BoardLayer.tsx" -> "src/features/shared/constants/z-indices.ts"
+    "src/features/board/BoardLayer.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/GameHex.tsx"
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/helpers.tsx"
     "src/features/board/BoardLayer.tsx" -> "src/features/board/components/HexOverlays.tsx"
@@ -49,13 +61,16 @@ strict digraph "dependency-cruiser output"{
     "src/features/board/BoardLayer.tsx" -> "src/features/board/hooks/useGameEffects.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/BuildingIcon.tsx" [label=<BuildingIcon.tsx> tooltip="BuildingIcon.tsx" URL="src/features/board/components/BuildingIcon.tsx" fillcolor="#bbfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/GameHex.tsx" [label=<GameHex.tsx> tooltip="GameHex.tsx" URL="src/features/board/components/GameHex.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/board/components/GameHex.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/components/GameHex.tsx" -> "src/features/shared/config/uiConfig.tsx"
     "src/features/board/components/GameHex.tsx" -> "src/features/board/components/NumberToken.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/HexOverlays.tsx" [label=<HexOverlays.tsx> tooltip="HexOverlays.tsx" URL="src/features/board/components/HexOverlays.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/board/components/HexOverlays.tsx" -> "src/game/analysis/coach.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/game/core/constants.ts"
+    "src/features/board/components/HexOverlays.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/components/HexOverlays.tsx" -> "src/game/core/utils/objectUtils.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/game/geometry/staticGeometry.ts"
+    "src/features/board/components/HexOverlays.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/components/HexOverlays.tsx" -> "src/features/shared/utils/feedback.ts"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/board/components/OverlayEdge.tsx"
     "src/features/board/components/HexOverlays.tsx" -> "src/features/board/components/OverlayVertex.tsx"
@@ -63,41 +78,55 @@ strict digraph "dependency-cruiser output"{
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/NumberToken.tsx" [label=<NumberToken.tsx> tooltip="NumberToken.tsx" URL="src/features/board/components/NumberToken.tsx" fillcolor="#bbfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/OverlayEdge.tsx" [label=<OverlayEdge.tsx> tooltip="OverlayEdge.tsx" URL="src/features/board/components/OverlayEdge.tsx" fillcolor="#bbfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/OverlayVertex.tsx" [label=<OverlayVertex.tsx> tooltip="OverlayVertex.tsx" URL="src/features/board/components/OverlayVertex.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/board/components/OverlayVertex.tsx" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/components/OverlayVertex.tsx" -> "src/game/core/config.ts"
+    "src/features/board/components/OverlayVertex.tsx" -> "src/features/hud/components/GameControls.tsx" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/components/OverlayVertex.tsx" -> "src/features/board/components/BuildingIcon.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/Port.tsx" [label=<Port.tsx> tooltip="Port.tsx" URL="src/features/board/components/Port.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/board/components/Port.tsx" -> "src/game/core/types.ts"
     "src/features/board/components/Port.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/components" {label="components" "src/features/board/components/helpers.tsx" [label=<helpers.tsx> tooltip="helpers.tsx" URL="src/features/board/components/helpers.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/board/components/helpers.tsx" -> "src/features/coach/hooks/useCoachData.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/hooks" {label="hooks" "src/features/board/hooks/useBoardInteractions.ts" [label=<useBoardInteractions.ts> tooltip="useBoardInteractions.ts" URL="src/features/board/hooks/useBoardInteractions.ts" fillcolor="#ddfeff"] } } } }
+    "src/features/board/hooks/useBoardInteractions.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/board/hooks/useBoardInteractions.ts" -> "src/game/rules/queries.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/board" {label="board" subgraph "cluster_src/features/board/hooks" {label="hooks" "src/features/board/hooks/useGameEffects.ts" [label=<useGameEffects.ts> tooltip="useGameEffects.ts" URL="src/features/board/hooks/useGameEffects.ts" fillcolor="#ddfeff"] } } } }
+    "src/features/board/hooks/useGameEffects.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" "src/features/coach/CoachLayer.tsx" [label=<CoachLayer.tsx> tooltip="CoachLayer.tsx" URL="src/features/coach/CoachLayer.tsx" fillcolor="#bbfeff"] } } }
     "src/features/coach/CoachLayer.tsx" -> "src/features/coach/components/AnalystPanel.tsx"
     "src/features/coach/CoachLayer.tsx" -> "src/features/coach/components/CoachPanel.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/AnalystPanel.tsx" [label=<AnalystPanel.tsx> tooltip="AnalystPanel.tsx" URL="src/features/coach/components/AnalystPanel.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/AnalystPanel.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/AnalystShell.tsx" [label=<AnalystShell.tsx> tooltip="AnalystShell.tsx" URL="src/features/coach/components/AnalystShell.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/coach/components/AnalystShell.tsx" -> "src/features/shared/constants/z-indices.ts"
     "src/features/coach/components/AnalystShell.tsx" -> "src/features/shared/hooks/useIsMobile.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/CoachPanel.tsx" [label=<CoachPanel.tsx> tooltip="CoachPanel.tsx" URL="src/features/coach/components/CoachPanel.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/CoachPanel.tsx" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/components/CoachPanel.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/coach/components/CoachPanel.tsx" -> "src/features/coach/components/PlayerProductionPotential.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/CoachShell.tsx" [label=<CoachShell.tsx> tooltip="CoachShell.tsx" URL="src/features/coach/components/CoachShell.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/coach/components/CoachShell.tsx" -> "src/features/shared/constants/z-indices.ts"
     "src/features/coach/components/CoachShell.tsx" -> "src/features/shared/hooks/useIsMobile.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/PlayerProduction.tsx" [label=<PlayerProduction.tsx> tooltip="PlayerProduction.tsx" URL="src/features/coach/components/PlayerProduction.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/PlayerProduction.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/coach/components/PlayerProduction.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/PlayerProductionPotential.tsx" [label=<PlayerProductionPotential.tsx> tooltip="PlayerProductionPotential.tsx" URL="src/features/coach/components/PlayerProductionPotential.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/game/analysis/analyst.ts"
+    "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/shared/components/ResourceIconRow.tsx"
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/coach/components/PlayerProduction.tsx"
     "src/features/coach/components/PlayerProductionPotential.tsx" -> "src/features/coach/components/ResourceDistribution.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/components" {label="components" "src/features/coach/components/ResourceDistribution.tsx" [label=<ResourceDistribution.tsx> tooltip="ResourceDistribution.tsx" URL="src/features/coach/components/ResourceDistribution.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/coach/components/ResourceDistribution.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/coach/components/ResourceDistribution.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/hooks" {label="hooks" "src/features/coach/hooks/useCoachData.ts" [label=<useCoachData.ts> tooltip="useCoachData.ts" URL="src/features/coach/hooks/useCoachData.ts" fillcolor="#ddfeff"] } } } }
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/analysis/coach.ts"
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/core/constants.ts"
+    "src/features/coach/hooks/useCoachData.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/hooks/useCoachData.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/GameLayout.tsx" [label=<GameLayout.tsx> tooltip="GameLayout.tsx" URL="src/features/game/GameLayout.tsx" fillcolor="#bbfeff"] } } }
     "src/features/game/GameLayout.tsx" -> "src/game/core/config.ts"
+    "src/features/game/GameLayout.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/GameLayout.tsx" -> "src/features/coach/components/AnalystShell.tsx"
     "src/features/game/GameLayout.tsx" -> "src/features/coach/components/CoachShell.tsx"
     "src/features/game/GameLayout.tsx" -> "src/features/shared/components/DiceIcons.tsx"
@@ -107,9 +136,11 @@ strict digraph "dependency-cruiser output"{
     "src/features/game/GameLayout.tsx" -> "src/features/game/hooks/useViewportDvh.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/GameScreen.tsx" [label=<GameScreen.tsx> tooltip="GameScreen.tsx" URL="src/features/game/GameScreen.tsx" fillcolor="#bbfeff"] } } }
     "src/features/game/GameScreen.tsx" -> "src/game/analysis/coach.ts"
+    "src/features/game/GameScreen.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/GameScreen.tsx" -> "src/features/board/BoardLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/CoachLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/hooks/useCoachData.ts"
+    "src/features/game/GameScreen.tsx" -> "src/features/hud/components/GameControls.tsx" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/GameScreen.tsx" -> "src/features/hud/hooks/useTradeLogic.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/hud/HUDLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/game/constants.ts"
@@ -118,8 +149,11 @@ strict digraph "dependency-cruiser output"{
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/constants.ts" [label=<constants.ts> tooltip="constants.ts" URL="src/features/game/constants.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" subgraph "cluster_src/features/game/hooks" {label="hooks" "src/features/game/hooks/useGameScreenState.ts" [label=<useGameScreenState.ts> tooltip="useGameScreenState.ts" URL="src/features/game/hooks/useGameScreenState.ts" fillcolor="#ddfeff"] } } } }
     "src/features/game/hooks/useGameScreenState.ts" -> "src/game/core/constants.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/hooks/useGameScreenState.ts" -> "src/game/rules/queries.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/features/hud/hooks/useGameStatusMessage.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/hooks/useGameScreenState.ts" -> "src/features/shared/hooks/useIsMobile.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" subgraph "cluster_src/features/game/hooks" {label="hooks" "src/features/game/hooks/useViewportDvh.ts" [label=<useViewportDvh.ts> tooltip="useViewportDvh.ts" URL="src/features/game/hooks/useViewportDvh.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" "src/features/hud/HUDLayer.tsx" [label=<HUDLayer.tsx> tooltip="HUDLayer.tsx" URL="src/features/hud/HUDLayer.tsx" fillcolor="#bbfeff"] } } }
     "src/features/hud/HUDLayer.tsx" -> "src/features/hud/components/GameControls.tsx"
@@ -127,6 +161,9 @@ strict digraph "dependency-cruiser output"{
     "src/features/hud/HUDLayer.tsx" -> "src/features/hud/components/GameStatusBanner.tsx"
     "src/features/hud/HUDLayer.tsx" -> "src/features/hud/components/PlayerPanel.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/GameControls.tsx" [label=<GameControls.tsx> tooltip="GameControls.tsx" URL="src/features/hud/components/GameControls.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/hud/components/GameControls.tsx" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/hud/components/GameControls.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/hud/components/GameControls.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/GameControls.tsx" -> "src/features/shared/utils/feedback.ts"
     "src/features/hud/components/GameControls.tsx" -> "src/features/hud/hooks/useGameControls.ts"
     "src/features/hud/components/GameControls.tsx" -> "src/features/hud/components/controls/BuildBar.tsx"
@@ -134,23 +171,30 @@ strict digraph "dependency-cruiser output"{
     "src/features/hud/components/GameControls.tsx" -> "src/features/hud/components/controls/SetupControls.tsx"
     "src/features/hud/components/GameControls.tsx" -> "src/features/hud/components/controls/TurnControls.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/GameNotification.tsx" [label=<GameNotification.tsx> tooltip="GameNotification.tsx" URL="src/features/hud/components/GameNotification.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/hud/components/GameNotification.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/GameNotification.tsx" -> "src/game/core/validation.ts"
     "src/features/hud/components/GameNotification.tsx" -> "src/features/shared/components/DiceIcons.tsx"
     "src/features/hud/components/GameNotification.tsx" -> "src/features/shared/config/uiConfig.tsx"
     "src/features/hud/components/GameNotification.tsx" -> "src/features/hud/components/constants/emojis.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/GameStatusBanner.tsx" [label=<GameStatusBanner.tsx> tooltip="GameStatusBanner.tsx" URL="src/features/hud/components/GameStatusBanner.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/hud/components/GameStatusBanner.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/GameStatusBanner.tsx" -> "src/features/hud/hooks/useGameStatusMessage.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" "src/features/hud/components/PlayerPanel.tsx" [label=<PlayerPanel.tsx> tooltip="PlayerPanel.tsx" URL="src/features/hud/components/PlayerPanel.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/hud/components/PlayerPanel.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/PlayerPanel.tsx" -> "src/features/shared/components/ResourceIconRow.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/constants" {label="constants" "src/features/hud/components/constants/emojis.ts" [label=<emojis.ts> tooltip="emojis.ts" URL="src/features/hud/components/constants/emojis.ts" fillcolor="#ddfeff"] } } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/controls" {label="controls" "src/features/hud/components/controls/ActionButton.tsx" [label=<ActionButton.tsx> tooltip="ActionButton.tsx" URL="src/features/hud/components/controls/ActionButton.tsx" fillcolor="#bbfeff"] } } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/controls" {label="controls" "src/features/hud/components/controls/BuildBar.tsx" [label=<BuildBar.tsx> tooltip="BuildBar.tsx" URL="src/features/hud/components/controls/BuildBar.tsx" fillcolor="#bbfeff"] } } } } }
+    "src/features/hud/components/controls/BuildBar.tsx" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/controls/BuildBar.tsx" -> "src/game/core/config.ts"
+    "src/features/hud/components/controls/BuildBar.tsx" -> "src/game/mechanics/trade.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/controls/BuildBar.tsx" -> "src/features/shared/config/uiConfig.tsx"
+    "src/features/hud/components/controls/BuildBar.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/controls" {label="controls" "src/features/hud/components/controls/RobberControls.tsx" [label=<RobberControls.tsx> tooltip="RobberControls.tsx" URL="src/features/hud/components/controls/RobberControls.tsx" fillcolor="#bbfeff"] } } } } }
     "src/features/hud/components/controls/RobberControls.tsx" -> "src/features/hud/components/controls/ActionButton.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/controls" {label="controls" "src/features/hud/components/controls/SetupControls.tsx" [label=<SetupControls.tsx> tooltip="SetupControls.tsx" URL="src/features/hud/components/controls/SetupControls.tsx" fillcolor="#bbfeff"] } } } } }
     "src/features/hud/components/controls/SetupControls.tsx" -> "src/game/core/constants.ts"
+    "src/features/hud/components/controls/SetupControls.tsx" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/components/controls/SetupControls.tsx" -> "src/features/hud/components/controls/ActionButton.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/components" {label="components" subgraph "cluster_src/features/hud/components/controls" {label="controls" "src/features/hud/components/controls/TurnControls.tsx" [label=<TurnControls.tsx> tooltip="TurnControls.tsx" URL="src/features/hud/components/controls/TurnControls.tsx" fillcolor="#bbfeff"] } } } } }
     "src/features/hud/components/controls/TurnControls.tsx" -> "src/game/core/types.ts"
@@ -158,22 +202,27 @@ strict digraph "dependency-cruiser output"{
     "src/features/hud/hooks/useGameControls.ts" -> "src/game/core/constants.ts"
     "src/features/hud/hooks/useGameControls.ts" -> "src/game/core/types.ts"
     "src/features/hud/hooks/useGameControls.ts" -> "src/game/mechanics/costs.ts"
+    "src/features/hud/hooks/useGameControls.ts" -> "src/game/mechanics/trade.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/hud/hooks/useGameControls.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/hooks/useGameControls.ts" -> "src/features/shared/utils/feedback.ts"
     "src/features/hud/hooks/useGameControls.ts" -> "src/features/hud/hooks/useTradeLogic.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/hooks" {label="hooks" "src/features/hud/hooks/useGameStatusMessage.ts" [label=<useGameStatusMessage.ts> tooltip="useGameStatusMessage.ts" URL="src/features/hud/hooks/useGameStatusMessage.ts" fillcolor="#ddfeff"] } } } }
     "src/features/hud/hooks/useGameStatusMessage.ts" -> "src/game/core/constants.ts"
+    "src/features/hud/hooks/useGameStatusMessage.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/hooks/useGameStatusMessage.ts" -> "src/features/hud/components/constants/emojis.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" subgraph "cluster_src/features/hud/hooks" {label="hooks" "src/features/hud/hooks/useTradeLogic.ts" [label=<useTradeLogic.ts> tooltip="useTradeLogic.ts" URL="src/features/hud/hooks/useTradeLogic.ts" fillcolor="#ddfeff"] } } } }
     "src/features/hud/hooks/useTradeLogic.ts" -> "src/game/core/constants.ts"
+    "src/features/hud/hooks/useTradeLogic.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/hud/hooks/useTradeLogic.ts" -> "src/game/mechanics/trade.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/components" {label="components" "src/features/shared/components/DiceIcons.tsx" [label=<DiceIcons.tsx> tooltip="DiceIcons.tsx" URL="src/features/shared/components/DiceIcons.tsx" fillcolor="#bbfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/components" {label="components" "src/features/shared/components/ResourceIconRow.tsx" [label=<ResourceIconRow.tsx> tooltip="ResourceIconRow.tsx" URL="src/features/shared/components/ResourceIconRow.tsx" fillcolor="#bbfeff"] } } } }
+    "src/features/shared/components/ResourceIconRow.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/shared/components/ResourceIconRow.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/config" {label="config" "src/features/shared/config/uiConfig.tsx" [label=<uiConfig.tsx> tooltip="uiConfig.tsx" URL="src/features/shared/config/uiConfig.tsx" fillcolor="#bbfeff"] } } } }
     "src/features/shared/config/uiConfig.tsx" -> "src/game/core/types.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/constants" {label="constants" "src/features/shared/constants/z-indices.ts" [label=<z-indices.ts> tooltip="z-indices.ts" URL="src/features/shared/constants/z-indices.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/hooks" {label="hooks" "src/features/shared/hooks/useIsMobile.ts" [label=<useIsMobile.ts> tooltip="useIsMobile.ts" URL="src/features/shared/hooks/useIsMobile.ts" fillcolor="#ddfeff"] } } } }
-    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" "src/features/shared/types.ts" [label=<types.ts> tooltip="types.ts" URL="src/features/shared/types.ts" fillcolor="#ccffcc"] } } }
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" "src/features/shared/types.ts" [label=<types.ts> tooltip="types.ts" URL="src/features/shared/types.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/shared" {label="shared" subgraph "cluster_src/features/shared/utils" {label="utils" "src/features/shared/utils/feedback.ts" [label=<feedback.ts> tooltip="feedback.ts" URL="src/features/shared/utils/feedback.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" "src/game/Game.ts" [label=<Game.ts> tooltip="Game.ts" URL="src/game/Game.ts" fillcolor="#ddfeff"] } }
     "src/game/Game.ts" -> "src/game/core/utils/sanitize.ts"
@@ -192,6 +241,7 @@ strict digraph "dependency-cruiser output"{
     "src/game/Game.ts" -> "src/game/moves/trade.ts"
     "src/game/Game.ts" -> "src/game/rules/enumerator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/CoachPlugin.ts" [label=<CoachPlugin.ts> tooltip="CoachPlugin.ts" URL="src/game/analysis/CoachPlugin.ts" fillcolor="#ddfeff"] } } }
+    "src/game/analysis/CoachPlugin.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/analysis/CoachPlugin.ts" -> "src/game/analysis/coach.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/adviceConstants.ts" [label=<adviceConstants.ts> tooltip="adviceConstants.ts" URL="src/game/analysis/adviceConstants.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" subgraph "cluster_src/game/analysis/advisors" {label="advisors" "src/game/analysis/advisors/SpatialAdvisor.ts" [label=<SpatialAdvisor.ts> tooltip="SpatialAdvisor.ts" URL="src/game/analysis/advisors/SpatialAdvisor.ts" fillcolor="#ddfeff"] } } } }
@@ -202,19 +252,23 @@ strict digraph "dependency-cruiser output"{
     "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/mechanics/resources.ts"
     "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/mechanics/scoring.ts"
     "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/rules/queries.ts"
+    "src/game/analysis/advisors/SpatialAdvisor.ts" -> "src/game/analysis/coach.ts" [arrowhead="normalnoneodot" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" subgraph "cluster_src/game/analysis/advisors" {label="advisors" "src/game/analysis/advisors/TradeAdvisor.ts" [label=<TradeAdvisor.ts> tooltip="TradeAdvisor.ts" URL="src/game/analysis/advisors/TradeAdvisor.ts" fillcolor="#ddfeff"] } } } }
+    "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/core/validation.ts"
     "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/mechanics/trade.ts"
     "src/game/analysis/advisors/TradeAdvisor.ts" -> "src/game/analysis/adviceConstants.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/analyst.ts" [label=<analyst.ts> tooltip="analyst.ts" URL="src/game/analysis/analyst.ts" fillcolor="#ddfeff"] } } }
     "src/game/analysis/analyst.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/analysis/analyst.ts" -> "src/game/core/config.ts"
+    "src/game/analysis/analyst.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/analysis/analyst.ts" -> "src/game/geometry/hexUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/analysis" {label="analysis" "src/game/analysis/coach.ts" [label=<coach.ts> tooltip="coach.ts" URL="src/game/analysis/coach.ts" fillcolor="#ddfeff"] } } }
     "src/game/analysis/coach.ts" -> "src/game/core/constants.ts"
+    "src/game/analysis/coach.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/analysis/coach.ts" -> "src/game/core/validation.ts"
     "src/game/analysis/coach.ts" -> "src/game/analysis/adviceConstants.ts"
-    "src/game/analysis/coach.ts" -> "src/game/analysis/advisors/SpatialAdvisor.ts"
+    "src/game/analysis/coach.ts" -> "src/game/analysis/advisors/SpatialAdvisor.ts" [arrowhead="normalnoneodot"]
     "src/game/analysis/coach.ts" -> "src/game/analysis/advisors/TradeAdvisor.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/core" {label="core" "src/game/core/config.ts" [label=<config.ts> tooltip="config.ts" URL="src/game/core/config.ts" fillcolor="#ddfeff"] } } }
     "src/game/core/config.ts" -> "src/game/core/types.ts"
@@ -223,36 +277,45 @@ strict digraph "dependency-cruiser output"{
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/core" {label="core" subgraph "cluster_src/game/core/utils" {label="utils" "src/game/core/utils/objectUtils.ts" [label=<objectUtils.ts> tooltip="objectUtils.ts" URL="src/game/core/utils/objectUtils.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/core" {label="core" subgraph "cluster_src/game/core/utils" {label="utils" "src/game/core/utils/sanitize.ts" [label=<sanitize.ts> tooltip="sanitize.ts" URL="src/game/core/utils/sanitize.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/core" {label="core" "src/game/core/validation.ts" [label=<validation.ts> tooltip="validation.ts" URL="src/game/core/validation.ts" fillcolor="#ddfeff"] } } }
+    "src/game/core/validation.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/generation" {label="generation" "src/game/generation/boardGen.ts" [label=<boardGen.ts> tooltip="boardGen.ts" URL="src/game/generation/boardGen.ts" fillcolor="#ddfeff"] } } }
     "src/game/generation/boardGen.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/generation/boardGen.ts" -> "src/game/core/types.ts"
     "src/game/generation/boardGen.ts" -> "src/game/geometry/hexUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/geometry" {label="geometry" "src/game/geometry/hexUtils.ts" [label=<hexUtils.ts> tooltip="hexUtils.ts" URL="src/game/geometry/hexUtils.ts" fillcolor="#ddfeff"] } } }
+    "src/game/geometry/hexUtils.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/geometry/hexUtils.ts" -> "src/game/geometry/math.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/geometry" {label="geometry" "src/game/geometry/math.ts" [label=<math.ts> tooltip="math.ts" URL="src/game/geometry/math.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/geometry" {label="geometry" "src/game/geometry/staticGeometry.ts" [label=<staticGeometry.ts> tooltip="staticGeometry.ts" URL="src/game/geometry/staticGeometry.ts" fillcolor="#ddfeff"] } } }
+    "src/game/geometry/staticGeometry.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/geometry/staticGeometry.ts" -> "src/game/geometry/hexUtils.ts"
     "src/game/geometry/staticGeometry.ts" -> "src/game/geometry/math.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/boardStats.ts" [label=<boardStats.ts> tooltip="boardStats.ts" URL="src/game/mechanics/boardStats.ts" fillcolor="#ddfeff"] } } }
     "src/game/mechanics/boardStats.ts" -> "src/game/core/config.ts"
+    "src/game/mechanics/boardStats.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/costs.ts" [label=<costs.ts> tooltip="costs.ts" URL="src/game/mechanics/costs.ts" fillcolor="#ddfeff"] } } }
     "src/game/mechanics/costs.ts" -> "src/game/core/config.ts"
+    "src/game/mechanics/costs.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/resources.ts" [label=<resources.ts> tooltip="resources.ts" URL="src/game/mechanics/resources.ts" fillcolor="#ddfeff"] } } }
     "src/game/mechanics/resources.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/mechanics/resources.ts" -> "src/game/core/config.ts"
+    "src/game/mechanics/resources.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/mechanics/resources.ts" -> "src/game/geometry/hexUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/scoring.ts" [label=<scoring.ts> tooltip="scoring.ts" URL="src/game/mechanics/scoring.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/trade.ts" [label=<trade.ts> tooltip="trade.ts" URL="src/game/mechanics/trade.ts" fillcolor="#ddfeff"] } } }
     "src/game/mechanics/trade.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/mechanics/trade.ts" -> "src/game/core/config.ts"
+    "src/game/mechanics/trade.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/mechanics" {label="mechanics" "src/game/mechanics/turnOrder.ts" [label=<turnOrder.ts> tooltip="turnOrder.ts" URL="src/game/mechanics/turnOrder.ts" fillcolor="#ddfeff"] } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/moves" {label="moves" "src/game/moves/build.ts" [label=<build.ts> tooltip="build.ts" URL="src/game/moves/build.ts" fillcolor="#ddfeff"] } } }
     "src/game/moves/build.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/moves/build.ts" -> "src/game/core/config.ts"
+    "src/game/moves/build.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/moves/build.ts" -> "src/game/core/validation.ts"
     "src/game/moves/build.ts" -> "src/game/rules/validator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/moves" {label="moves" "src/game/moves/robber.ts" [label=<robber.ts> tooltip="robber.ts" URL="src/game/moves/robber.ts" fillcolor="#ddfeff"] } } }
     "src/game/moves/robber.ts" -> "src/game/core/constants.ts"
+    "src/game/moves/robber.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/moves/robber.ts" -> "src/game/rules/queries.ts"
     "src/game/moves/robber.ts" -> "src/game/rules/validator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/moves" {label="moves" "src/game/moves/roll.ts" [label=<roll.ts> tooltip="roll.ts" URL="src/game/moves/roll.ts" fillcolor="#ddfeff"] } } }
@@ -270,19 +333,24 @@ strict digraph "dependency-cruiser output"{
     "src/game/moves/setup.ts" -> "src/game/rules/validator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/moves" {label="moves" "src/game/moves/trade.ts" [label=<trade.ts> tooltip="trade.ts" URL="src/game/moves/trade.ts" fillcolor="#ddfeff"] } } }
     "src/game/moves/trade.ts" -> "src/game/core/config.ts"
+    "src/game/moves/trade.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/game/moves/trade.ts" -> "src/game/mechanics/trade.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/moves/trade.ts" -> "src/game/rules/validator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/economy.ts" [label=<economy.ts> tooltip="economy.ts" URL="src/game/rules/economy.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/economy.ts" -> "src/game/core/config.ts"
+    "src/game/rules/economy.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/economy.ts" -> "src/game/core/validation.ts"
     "src/game/rules/economy.ts" -> "src/game/mechanics/costs.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/enumerator.ts" [label=<enumerator.ts> tooltip="enumerator.ts" URL="src/game/rules/enumerator.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/enumerator.ts" -> "src/game/core/constants.ts"
+    "src/game/rules/enumerator.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/enumerator.ts" -> "src/game/core/validation.ts"
     "src/game/rules/enumerator.ts" -> "src/game/rules/queries.ts"
     "src/game/rules/enumerator.ts" -> "src/game/rules/validator.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/moveValidation.ts" [label=<moveValidation.ts> tooltip="moveValidation.ts" URL="src/game/rules/moveValidation.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/moveValidation.ts" -> "src/game/core/utils/objectUtils.ts"
     "src/game/rules/moveValidation.ts" -> "src/game/core/config.ts"
+    "src/game/rules/moveValidation.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/moveValidation.ts" -> "src/game/core/validation.ts"
     "src/game/rules/moveValidation.ts" -> "src/game/geometry/hexUtils.ts"
     "src/game/rules/moveValidation.ts" -> "src/game/mechanics/trade.ts"
@@ -291,6 +359,7 @@ strict digraph "dependency-cruiser output"{
     "src/game/rules/moveValidation.ts" -> "src/game/rules/spatial.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/queries.ts" [label=<queries.ts> tooltip="queries.ts" URL="src/game/rules/queries.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/queries.ts" -> "src/game/core/constants.ts"
+    "src/game/rules/queries.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/queries.ts" -> "src/game/core/validation.ts"
     "src/game/rules/queries.ts" -> "src/game/geometry/hexUtils.ts"
     "src/game/rules/queries.ts" -> "src/game/mechanics/costs.ts"
@@ -298,13 +367,16 @@ strict digraph "dependency-cruiser output"{
     "src/game/rules/queries.ts" -> "src/game/rules/spatial.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/robberRules.ts" [label=<robberRules.ts> tooltip="robberRules.ts" URL="src/game/rules/robberRules.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/robberRules.ts" -> "src/game/core/utils/objectUtils.ts"
+    "src/game/rules/robberRules.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/robberRules.ts" -> "src/game/geometry/hexUtils.ts"
     "src/game/rules/robberRules.ts" -> "src/game/mechanics/resources.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/spatial.ts" [label=<spatial.ts> tooltip="spatial.ts" URL="src/game/rules/spatial.ts" fillcolor="#ddfeff"] } } }
     "src/game/rules/spatial.ts" -> "src/game/core/utils/objectUtils.ts"
+    "src/game/rules/spatial.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/spatial.ts" -> "src/game/core/validation.ts"
     "src/game/rules/spatial.ts" -> "src/game/geometry/hexUtils.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/game" {label="game" subgraph "cluster_src/game/rules" {label="rules" "src/game/rules/validator.ts" [label=<validator.ts> tooltip="validator.ts" URL="src/game/rules/validator.ts" fillcolor="#ddfeff"] } } }
+    "src/game/rules/validator.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/game/rules/validator.ts" -> "src/game/rules/moveValidation.ts"
     "src/game/rules/validator.ts" -> "src/game/rules/spatial.ts"
     subgraph "cluster_src" {label="src" "src/main.tsx" [label=<main.tsx> tooltip="main.tsx" URL="src/main.tsx" fillcolor="#bbfeff"] }
