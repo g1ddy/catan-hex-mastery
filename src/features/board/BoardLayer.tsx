@@ -11,6 +11,7 @@ import { GameHex } from './components/GameHex';
 import { HexOverlays } from './components/HexOverlays';
 import { CoachData } from '../coach/hooks/useCoachData';
 import { useGameEffects } from './hooks/useGameEffects';
+import { useBoardInteractions } from './hooks/useBoardInteractions';
 import { BuildMode, UiMode } from '../shared/types';
 import { renderTooltipContent } from './components/helpers';
 
@@ -46,6 +47,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
 }) => {
     const hexes = Object.values(G.board.hexes);
     const { producingHexIds } = useGameEffects(G);
+    const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
     const renderCoachTooltip = useCallback(renderTooltipContent(coachData), [coachData]);
 
     return (
@@ -99,6 +101,9 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
                                 showResourceHeatmap={showResourceHeatmap}
                                 coachData={coachData}
                                 highlightedPortEdgeId={highlightedPortEdgeId}
+                                validSettlements={validSettlements}
+                                validCities={validCities}
+                                validRoads={validRoads}
                             />
                         ))}
                     </g>

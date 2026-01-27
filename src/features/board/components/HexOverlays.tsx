@@ -8,7 +8,6 @@ import { getHeatmapColor, CoachRecommendation } from '../../../game/analysis/coa
 import { safeMove } from '../../shared/utils/feedback';
 import { safeGet, safeCheck } from '../../../game/core/utils/objectUtils';
 import { PHASES, STAGES } from '../../../game/core/constants';
-import { useBoardInteractions } from '../hooks/useBoardInteractions';
 import { OverlayVertex } from './OverlayVertex';
 import { OverlayEdge } from './OverlayEdge';
 import { Port } from './Port';
@@ -32,6 +31,9 @@ interface HexOverlaysProps {
     showResourceHeatmap: boolean;
     coachData: CoachData;
     highlightedPortEdgeId?: string;
+    validSettlements: Set<string>;
+    validCities: Set<string>;
+    validRoads: Set<string>;
 }
 
 // Custom memoization to prevent re-renders when board state changes unnecessarily
@@ -52,20 +54,25 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
 
     for (const v of prevV) {
         if (safeGet(prev.G.board.vertices, v.id) !== safeGet(next.G.board.vertices, v.id)) return false;
+        // Check if settlement/city validity changed for this vertex
+        if (prev.validSettlements.has(v.id) !== next.validSettlements.has(v.id)) return false;
+        if (prev.validCities.has(v.id) !== next.validCities.has(v.id)) return false;
     }
     for (const e of prevE) {
         if (safeGet(prev.G.board.edges, e.id) !== safeGet(next.G.board.edges, e.id)) return false;
         if (safeGet(prev.G.board.ports, e.id) !== safeGet(next.G.board.ports, e.id)) return false;
+        // Check if road validity changed for this edge
+        if (prev.validRoads.has(e.id) !== next.validRoads.has(e.id)) return false;
     }
 
     return true;
 }
 
 export const HexOverlays = React.memo(({
-    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData, highlightedPortEdgeId
+    hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData, highlightedPortEdgeId,
+    validSettlements, validCities, validRoads
 }: HexOverlaysProps) => {
     const { vertices, edges, currentHexIdStr } = useMemo(() => getHexGeometry(hex), [hex]);
-    const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);
 
     const getPrimaryHexOwner = (parts: string[]): string => {
         return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0];
