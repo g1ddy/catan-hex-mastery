@@ -5,6 +5,7 @@ module.exports = {
     // Graph generation specific options
     includeOnly: '^src',
     exclude: '(\\.test\\.ts|\\.test\\.tsx|\\.spec\\.ts|testUtils\\.ts)$',
+    tsPreCompilationDeps: false,
   },
   // No rules enforced for graph generation
   forbidden: [],
