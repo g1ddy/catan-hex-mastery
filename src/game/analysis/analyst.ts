@@ -1,5 +1,4 @@
-import { GameState } from '../core/types';
-import { TERRAIN_CONFIG, PIP_MAP } from '../core/config';
+import { TERRAIN_CONFIG, PIP_MAP, GameState } from '../core/config';
 import { getHexesForVertex } from '../geometry/hexUtils';
 import { safeGet } from '../../game/core/utils/objectUtils';
 
