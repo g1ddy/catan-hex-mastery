@@ -487,6 +487,7 @@
         "src/game/analysis/advisors/SpatialAdvisor.ts",
         "src/game/geometry/hexUtils.ts",
         "src/game/mechanics/resources.ts",
+        "src/game/core/config.ts",
         "src/game/rules/queries.ts",
         "src/game/mechanics/costs.ts",
         "src/game/rules/robberRules.ts",
@@ -853,6 +854,23 @@
         },
         {
           "dynamic": false,
+          "module": "../core/config",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/config.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
           "module": "../core/types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -891,6 +909,47 @@
         "src/game/rules/robberRules.ts",
         "src/game/Game.ts",
         "src/game/moves/setup.ts"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/game/core/config.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "./types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/game/mechanics/resources.ts",
+        "src/game/mechanics/costs.ts",
+        "src/game/mechanics/trade.ts",
+        "src/features/board/BoardLayer.tsx",
+        "src/features/board/components/OverlayVertex.tsx",
+        "src/features/hud/components/controls/BuildBar.tsx",
+        "src/game/analysis/analyst.ts",
+        "src/features/game/GameLayout.tsx",
+        "src/game/Game.ts",
+        "src/game/mechanics/boardStats.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/rules/economy.ts",
+        "src/game/moves/trade.ts",
+        "src/pages/SetupPage.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -1081,28 +1140,6 @@
         "src/bots/logic/MoveScorer.ts",
         "src/features/hud/hooks/useGameControls.ts",
         "src/game/rules/economy.ts"
-      ],
-      "orphan": false,
-      "valid": true
-    },
-    {
-      "source": "src/game/core/config.ts",
-      "dependencies": [],
-      "dependents": [
-        "src/game/mechanics/costs.ts",
-        "src/game/mechanics/trade.ts",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/board/components/OverlayVertex.tsx",
-        "src/features/hud/components/controls/BuildBar.tsx",
-        "src/game/analysis/analyst.ts",
-        "src/features/game/GameLayout.tsx",
-        "src/game/Game.ts",
-        "src/game/mechanics/boardStats.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/rules/economy.ts",
-        "src/game/moves/trade.ts",
-        "src/pages/SetupPage.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -6067,13 +6104,6 @@
       "valid": true
     },
     {
-      "source": "src/game/core/utils/stringUtils.ts",
-      "dependencies": [],
-      "dependents": [],
-      "orphan": true,
-      "valid": true
-    },
-    {
       "source": "src/main.tsx",
       "dependencies": [
         {
@@ -6146,10 +6176,10 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 100,
-    "totalDependenciesCruised": 290,
+    "totalCruised": 99,
+    "totalDependenciesCruised": 292,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,

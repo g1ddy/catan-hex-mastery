@@ -1,5 +1,5 @@
-import { Hex, BoardStats, TERRAIN_CONFIG } from '../core/types';
-import { PIP_MAP } from '../core/config';
+import { Hex, BoardStats } from '../core/types';
+import { TERRAIN_CONFIG, PIP_MAP } from '../core/config';
 
 const SCARCITY_THRESHOLD = 0.10;
 const ABUNDANCE_THRESHOLD = 0.30;

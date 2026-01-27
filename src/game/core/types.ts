@@ -14,15 +14,6 @@ export enum TerrainType {
   Sea = 'Sea'
 }
 
-export const TERRAIN_CONFIG: Record<TerrainType, string | null> = {
-  [TerrainType.Forest]: 'wood',
-  [TerrainType.Hills]: 'brick',
-  [TerrainType.Pasture]: 'sheep',
-  [TerrainType.Fields]: 'wheat',
-  [TerrainType.Mountains]: 'ore',
-  [TerrainType.Desert]: null,
-  [TerrainType.Sea]: null
-};
 
 export interface Hex {
   id: string;
