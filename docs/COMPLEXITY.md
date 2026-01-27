@@ -97,23 +97,23 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 ### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Files Scanned**: 99
+*   **Total Files Scanned**: 98
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
 _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/features/board/components/HexOverlays.tsx` | **94.5** | 203 | 18 | 10 | 0.91 |
-| `src/bots/BotCoach.ts` | **84** | 205 | 16 | 7 | 0.88 |
-| `src/features/game/GameLayout.tsx` | **84** | 280 | 10 | 9 | 0.9 |
+| `src/features/board/components/HexOverlays.tsx` | **90.1** | 203 | 18 | 8 | 0.89 |
+| `src/features/game/GameLayout.tsx` | **81.8** | 280 | 10 | 8 | 0.89 |
+| `src/bots/BotCoach.ts` | **79.2** | 205 | 16 | 5 | 0.83 |
 | `src/game/Game.ts` | **77.5** | 147 | 7 | 15 | 0.94 |
-| `src/features/hud/hooks/useGameStatusMessage.ts` | **71.5** | 135 | 20 | 3 | 0.6 |
-| `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
-| `src/game/analysis/advisors/SpatialAdvisor.ts` | **68.8** | 210 | 7 | 8 | 0.89 |
-| `src/game/rules/enumerator.ts` | **63.5** | 108 | 13 | 5 | 0.83 |
-| `src/game/rules/queries.ts` | **63.1** | 234 | 7 | 7 | 0.58 |
-| `src/features/board/components/OverlayVertex.tsx` | **62.4** | 104 | 14 | 4 | 0.8 |
+| `src/features/hud/hooks/useGameStatusMessage.ts` | **70.8** | 135 | 20 | 2 | 0.67 |
+| `src/game/analysis/advisors/SpatialAdvisor.ts` | **66.5** | 210 | 7 | 7 | 0.88 |
+| `src/game/rules/enumerator.ts` | **60.8** | 108 | 13 | 4 | 0.8 |
+| `src/game/rules/queries.ts` | **60.3** | 234 | 7 | 6 | 0.55 |
+| `src/features/hud/components/GameNotification.tsx` | **58.9** | 229 | 6 | 4 | 0.8 |
+| `src/game/moves/setup.ts` | **58.9** | 89 | 7 | 9 | 0.9 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
@@ -122,8 +122,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/features/board/components/HexOverlays.tsx` | **18** | 203 |
 | `src/bots/BotCoach.ts` | **16** | 205 |
-| `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
+| `src/features/coach/hooks/useCoachData.ts` | **14** | 78 |
 | `src/game/rules/enumerator.ts` | **13** | 108 |
 | `src/features/hud/components/controls/TurnControls.tsx` | **11** | 77 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |

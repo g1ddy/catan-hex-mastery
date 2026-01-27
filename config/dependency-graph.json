@@ -4845,7 +4845,7 @@
     "totalCruised": 99,
     "totalDependenciesCruised": 220,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
