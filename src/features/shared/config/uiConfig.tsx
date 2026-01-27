@@ -6,14 +6,15 @@ export interface ResourceMeta {
   label: string;
   Icon: LucideIcon;
   color: string;
+  bgColor: string;
 }
 
 export const RESOURCE_META: ResourceMeta[] = [
-  { name: 'wood', label: 'Wood', Icon: Trees, color: 'text-green-500' },
-  { name: 'brick', label: 'Brick', Icon: BrickWall, color: 'text-orange-500' },
-  { name: 'sheep', label: 'Sheep', Icon: Cloud, color: 'text-slate-300' },
-  { name: 'wheat', label: 'Wheat', Icon: Wheat, color: 'text-yellow-500' },
-  { name: 'ore', label: 'Ore', Icon: Mountain, color: 'text-gray-400' },
+  { name: 'wood', label: 'Wood', Icon: Trees, color: 'text-green-500', bgColor: 'bg-green-500' },
+  { name: 'brick', label: 'Brick', Icon: BrickWall, color: 'text-orange-500', bgColor: 'bg-orange-500' },
+  { name: 'sheep', label: 'Sheep', Icon: Cloud, color: 'text-slate-300', bgColor: 'bg-slate-300' },
+  { name: 'wheat', label: 'Wheat', Icon: Wheat, color: 'text-yellow-500', bgColor: 'bg-yellow-500' },
+  { name: 'ore', label: 'Ore', Icon: Mountain, color: 'text-gray-400', bgColor: 'bg-gray-400' },
 ];
 
 export interface BuildButtonConfig {
