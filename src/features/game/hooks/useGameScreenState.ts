@@ -73,7 +73,7 @@ export const useGameScreenState = (
 
          if (stage in STAGE_MOVES) {
              const allowedMoves = STAGE_MOVES[stage as keyof typeof STAGE_MOVES];
-             return (allowedMoves as readonly string[])?.includes('regenerateBoard') ?? false;
+             return allowedMoves.includes('regenerateBoard');
          }
          return false;
     }, [ctx.activePlayers, ctx.currentPlayer]);
