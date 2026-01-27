@@ -38,6 +38,8 @@ interface HexOverlaysProps {
 
 // Custom memoization to prevent re-renders when board state changes unnecessarily
 function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
+    if (prev.hex.id !== next.hex.id) return false;
+
     if (prev.buildMode !== next.buildMode ||
         prev.uiMode !== next.uiMode ||
         prev.showResourceHeatmap !== next.showResourceHeatmap ||
