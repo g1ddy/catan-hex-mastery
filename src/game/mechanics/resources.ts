@@ -1,4 +1,4 @@
-import { GameState, Resources, TerrainType } from '../core/types';
+import { Resources, TerrainType, GameState } from '../core/types';
 import { TERRAIN_CONFIG } from '../core/config';
 import { getVerticesForHex } from '../geometry/hexUtils';
 import { safeGet } from '../../game/core/utils/objectUtils';
