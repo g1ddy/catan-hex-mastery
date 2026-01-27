@@ -24,14 +24,14 @@ We are working on **Phase 7: Full Game Loop**, which involves implementing compl
 
 **Completed Features (Do Not Regress):**
 *   **UI/UX (Phase 6)**: Mobile-responsive layouts, Tooltips, Toasts, and stable drawer/sidebar navigation.
+*   **Code Cleanup (Phase 6.5)**: Refactored `GameScreen` to reduce complexity and extracted state management to hooks. Verified mobile layout stability.
 *   **Code Refactor (Phase 5)**: Unified 4-Layer Architecture (Validator, Enumerator).
 *   **Analyst Module**: Real-time stats (Pips, Fairness, Scarcity) are fully implemented.
 *   **Coach**: The heuristic engine correctly scores settlements based on Pips, Scarcity, Diversity, and Synergy. Recommendations are visualized on the board.
 
 **Priorities:**
-1.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
-2.  **Code Cleanup**: Verify no unused CSS or "magic strings" remain before starting complex game logic.
-3.  **Phase 7 Execution**: Implement Trading, Robber mechanics (stealing/discarding), and Development Cards as defined in `DEVELOPMENT.md`.
+1.  **Phase 7 Execution**: Implement Trading, Robber mechanics (stealing/discarding), and Development Cards as defined in `DEVELOPMENT.md`.
+2.  **Visual Consistency**: Ensure `NumberToken` components are legible and properly styled across all resolutions.
 
 ## 🚫 Constraints
 *   **No Class Components:** Use React Functional Components + Hooks only.
@@ -73,11 +73,11 @@ When implementing logic, remember the "Why".
 
 ## Verification
 ### Mobile Layout Verification
-To verify the mobile layout rendering (and ensure the SVG board is visible and properly sized), use the Playwright script `tests/mobile_layout.spec.ts`.
+To verify the mobile layout rendering (and ensure the SVG board is visible and properly sized), use the Playwright script `tests/e2e/MobileLayout.spec.ts`.
 
 ```bash
 # Run the test
-npx playwright test tests/mobile_layout.spec.ts --config config/playwright.config.ts --project="Mobile Safari"
+npx playwright test tests/e2e/MobileLayout.spec.ts --config config/playwright.config.ts --project="Mobile Safari"
 ```
 
 This test checks:

@@ -136,19 +136,24 @@ strict digraph "dependency-cruiser output"{
     "src/features/game/GameLayout.tsx" -> "src/features/game/hooks/useViewportDvh.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/GameScreen.tsx" [label=<GameScreen.tsx> tooltip="GameScreen.tsx" URL="src/features/game/GameScreen.tsx" fillcolor="#bbfeff"] } } }
     "src/features/game/GameScreen.tsx" -> "src/game/analysis/coach.ts"
-    "src/features/game/GameScreen.tsx" -> "src/game/core/constants.ts"
     "src/features/game/GameScreen.tsx" -> "src/game/core/types.ts"
-    "src/features/game/GameScreen.tsx" -> "src/game/rules/queries.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/board/BoardLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/CoachLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/hooks/useCoachData.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/hud/components/GameControls.tsx"
-    "src/features/game/GameScreen.tsx" -> "src/features/hud/hooks/useGameStatusMessage.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/hud/hooks/useTradeLogic.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/hud/HUDLayer.tsx"
-    "src/features/game/GameScreen.tsx" -> "src/features/shared/hooks/useIsMobile.ts"
-    "src/features/game/GameScreen.tsx" -> "src/features/shared/types.ts"
+    "src/features/game/GameScreen.tsx" -> "src/features/game/constants.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/game/GameLayout.tsx"
+    "src/features/game/GameScreen.tsx" -> "src/features/game/hooks/useGameScreenState.ts"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/constants.ts" [label=<constants.ts> tooltip="constants.ts" URL="src/features/game/constants.ts" fillcolor="#ddfeff"] } } }
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" subgraph "cluster_src/features/game/hooks" {label="hooks" "src/features/game/hooks/useGameScreenState.ts" [label=<useGameScreenState.ts> tooltip="useGameScreenState.ts" URL="src/features/game/hooks/useGameScreenState.ts" fillcolor="#ddfeff"] } } } }
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/game/core/constants.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/game/core/types.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/game/rules/queries.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/features/hud/hooks/useGameStatusMessage.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/features/shared/hooks/useIsMobile.ts"
+    "src/features/game/hooks/useGameScreenState.ts" -> "src/features/shared/types.ts"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" subgraph "cluster_src/features/game/hooks" {label="hooks" "src/features/game/hooks/useViewportDvh.ts" [label=<useViewportDvh.ts> tooltip="useViewportDvh.ts" URL="src/features/game/hooks/useViewportDvh.ts" fillcolor="#ddfeff"] } } } }
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/hud" {label="hud" "src/features/hud/HUDLayer.tsx" [label=<HUDLayer.tsx> tooltip="HUDLayer.tsx" URL="src/features/hud/HUDLayer.tsx" fillcolor="#bbfeff"] } } }
     "src/features/hud/HUDLayer.tsx" -> "src/features/hud/components/GameControls.tsx"

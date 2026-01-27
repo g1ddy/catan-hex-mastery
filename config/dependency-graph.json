@@ -462,13 +462,13 @@
         "src/game/analysis/coach.ts",
         "src/game/rules/queries.ts",
         "src/bots/CatanMCTSBot.ts",
-        "src/features/game/GameScreen.tsx",
         "src/features/coach/hooks/useCoachData.ts",
         "src/features/board/components/HexOverlays.tsx",
         "src/features/hud/hooks/useGameControls.ts",
         "src/features/hud/hooks/useTradeLogic.ts",
         "src/features/hud/components/controls/SetupControls.tsx",
         "src/features/hud/hooks/useGameStatusMessage.ts",
+        "src/features/game/hooks/useGameScreenState.ts",
         "src/game/Game.ts",
         "src/game/moves/robber.ts",
         "src/game/moves/setup.ts",
@@ -521,6 +521,7 @@
         "src/features/hud/components/GameNotification.tsx",
         "src/features/hud/components/PlayerPanel.tsx",
         "src/features/game/GameLayout.tsx",
+        "src/features/game/hooks/useGameScreenState.ts",
         "src/game/Game.ts",
         "src/game/analysis/CoachPlugin.ts",
         "src/game/generation/boardGen.ts",
@@ -1028,8 +1029,8 @@
       ],
       "dependents": [
         "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/features/game/GameScreen.tsx",
         "src/features/board/hooks/useBoardInteractions.ts",
+        "src/features/game/hooks/useGameScreenState.ts",
         "src/game/moves/robber.ts",
         "src/game/rules/enumerator.ts"
       ],
@@ -1935,23 +1936,6 @@
         },
         {
           "dynamic": false,
-          "module": "../../game/core/constants",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/game/core/constants.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
           "module": "../../game/core/types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -1960,23 +1944,6 @@
             "import"
           ],
           "resolved": "src/game/core/types.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
-          "module": "../../game/rules/queries",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/game/rules/queries.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -2054,23 +2021,6 @@
         },
         {
           "dynamic": false,
-          "module": "../hud/hooks/useGameStatusMessage",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/features/hud/hooks/useGameStatusMessage.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
           "module": "../hud/hooks/useTradeLogic",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -2105,31 +2055,14 @@
         },
         {
           "dynamic": false,
-          "module": "../shared/hooks/useIsMobile",
+          "module": "./constants",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
             "import"
           ],
-          "resolved": "src/features/shared/hooks/useIsMobile.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
-          "module": "../shared/types",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/features/shared/types.ts",
+          "resolved": "src/features/game/constants.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -2147,6 +2080,23 @@
             "import"
           ],
           "resolved": "src/features/game/GameLayout.tsx",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "./hooks/useGameScreenState",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/game/hooks/useGameScreenState.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -2425,7 +2375,6 @@
       "source": "src/features/shared/types.ts",
       "dependencies": [],
       "dependents": [
-        "src/features/game/GameScreen.tsx",
         "src/features/board/BoardLayer.tsx",
         "src/features/coach/hooks/useCoachData.ts",
         "src/features/board/components/HexOverlays.tsx",
@@ -2433,8 +2382,9 @@
         "src/features/hud/hooks/useGameControls.ts",
         "src/features/hud/components/controls/BuildBar.tsx",
         "src/features/hud/components/controls/SetupControls.tsx",
+        "src/features/hud/components/GameStatusBanner.tsx",
         "src/features/hud/hooks/useGameStatusMessage.ts",
-        "src/features/hud/components/GameStatusBanner.tsx"
+        "src/features/game/hooks/useGameScreenState.ts"
       ],
       "orphan": false,
       "valid": true
@@ -4060,78 +4010,6 @@
       "valid": true
     },
     {
-      "source": "src/features/hud/hooks/useGameStatusMessage.ts",
-      "dependencies": [
-        {
-          "dynamic": false,
-          "module": "../../../game/core/constants",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/game/core/constants.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
-          "module": "../../shared/types",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/features/shared/types.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
-          "module": "../components/constants/emojis",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "resolved": "src/features/hud/components/constants/emojis.ts",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        }
-      ],
-      "dependents": [
-        "src/features/game/GameScreen.tsx",
-        "src/features/hud/components/GameStatusBanner.tsx"
-      ],
-      "orphan": false,
-      "valid": true
-    },
-    {
-      "source": "src/features/hud/components/constants/emojis.ts",
-      "dependencies": [],
-      "dependents": [
-        "src/features/hud/hooks/useGameStatusMessage.ts",
-        "src/features/hud/components/GameNotification.tsx"
-      ],
-      "orphan": false,
-      "valid": true
-    },
-    {
       "source": "src/features/hud/HUDLayer.tsx",
       "dependencies": [
         {
@@ -4315,6 +4193,16 @@
       "valid": true
     },
     {
+      "source": "src/features/hud/components/constants/emojis.ts",
+      "dependencies": [],
+      "dependents": [
+        "src/features/hud/components/GameNotification.tsx",
+        "src/features/hud/hooks/useGameStatusMessage.ts"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
       "source": "src/features/hud/components/GameStatusBanner.tsx",
       "dependencies": [
         {
@@ -4354,6 +4242,68 @@
       ],
       "dependents": [
         "src/features/hud/HUDLayer.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/hud/hooks/useGameStatusMessage.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/core/constants",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/constants.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/shared/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../components/constants/emojis",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/hud/components/constants/emojis.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/hud/components/GameStatusBanner.tsx",
+        "src/features/game/hooks/useGameScreenState.ts"
       ],
       "orphan": false,
       "valid": true
@@ -4403,13 +4353,10 @@
       "valid": true
     },
     {
-      "source": "src/features/shared/hooks/useIsMobile.ts",
+      "source": "src/features/game/constants.ts",
       "dependencies": [],
       "dependents": [
-        "src/features/game/GameScreen.tsx",
-        "src/features/game/GameLayout.tsx",
-        "src/features/coach/components/AnalystShell.tsx",
-        "src/features/coach/components/CoachShell.tsx"
+        "src/features/game/GameScreen.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -4622,6 +4569,18 @@
       "valid": true
     },
     {
+      "source": "src/features/shared/hooks/useIsMobile.ts",
+      "dependencies": [],
+      "dependents": [
+        "src/features/game/GameLayout.tsx",
+        "src/features/coach/components/AnalystShell.tsx",
+        "src/features/coach/components/CoachShell.tsx",
+        "src/features/game/hooks/useGameScreenState.ts"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
       "source": "src/features/coach/components/CoachShell.tsx",
       "dependencies": [
         {
@@ -4670,6 +4629,118 @@
       "dependencies": [],
       "dependents": [
         "src/features/game/GameLayout.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/game/hooks/useGameScreenState.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/core/constants",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/constants.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../../game/rules/queries",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/game/rules/queries.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../hud/hooks/useGameStatusMessage",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/hud/hooks/useGameStatusMessage.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/hooks/useIsMobile",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/shared/hooks/useIsMobile.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "resolved": "src/features/shared/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/game/GameScreen.tsx"
       ],
       "orphan": false,
       "valid": true
@@ -6075,8 +6146,8 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 98,
-    "totalDependenciesCruised": 287,
+    "totalCruised": 100,
+    "totalDependenciesCruised": 290,
     "optionsUsed": {
       "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
