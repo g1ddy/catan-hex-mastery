@@ -57,7 +57,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                 <BoardLayer
                     G={G}
                     ctx={ctx}
-                    moves={moves as unknown as ClientMoves}
+                    moves={moves as ClientMoves}
                     coachData={coachData}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
@@ -90,7 +90,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                 <HUDLayer.Controls
                     G={G}
                     ctx={ctx}
-                    moves={moves as unknown as ClientMoves}
+                    moves={moves as ClientMoves}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
                     uiMode={uiMode}
