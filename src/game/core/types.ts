@@ -148,3 +148,10 @@ export interface MakeMoveAction {
 
 // Union type to handle both formats
 export type GameAction = BotMove | MakeMoveAction;
+
+// Strict Client Moves Interface
+export type ValidMoveNames = Exclude<keyof MoveArguments, 'buyDevCard'>;
+
+export type ClientMoves = {
+  [K in ValidMoveNames]: (...args: MoveArguments[K]) => void;
+};

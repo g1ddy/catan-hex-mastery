@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameState } from '../../../game/core/types';
+import { GameState, ClientMoves } from '../../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { safeMove } from '../../shared/utils/feedback';
 import { StrategicAdvice } from '../../../game/analysis/coach';
@@ -15,13 +15,7 @@ export type { BuildMode, UiMode };
 export interface GameControlsProps {
     G: GameState;
     ctx: Ctx;
-    moves: {
-        rollDice: () => void;
-        endTurn: () => void;
-        tradeBank: () => void;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: (...args: any[]) => void;
-    };
+    moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;

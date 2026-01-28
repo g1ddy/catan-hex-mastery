@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState, Hex } from '../../../game/core/types';
+import { GameState, Hex, ClientMoves } from '../../../game/core/types';
 import { HEX_CORNERS, getHexGeometry } from '../../../game/geometry/staticGeometry';
 import { BuildMode, UiMode } from '../../shared/types';
 import { getHeatmapColor, CoachRecommendation } from '../../../game/analysis/coach';
@@ -23,7 +23,7 @@ interface HexOverlaysProps {
     hex: Hex;
     G: GameState;
     ctx: BoardProps<GameState>['ctx'];
-    moves: BoardProps<GameState>['moves'];
+    moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
     uiMode: UiMode;

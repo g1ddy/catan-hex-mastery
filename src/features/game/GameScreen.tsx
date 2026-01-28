@@ -1,11 +1,10 @@
 import React from 'react';
 import { BoardProps } from 'boardgame.io/react';
-import { GameState } from '../../game/core/types';
+import { GameState, ClientMoves } from '../../game/core/types';
 import { GameLayout } from './GameLayout';
 import { Coach, StrategicAdvice } from '../../game/analysis/coach';
 import { useTradeLogic } from '../hud/hooks/useTradeLogic';
 import { useCoachData } from '../coach/hooks/useCoachData';
-import { GameControlsProps } from '../hud/components/GameControls';
 import { GAME_MESSAGES } from './constants';
 import { useGameScreenState } from './hooks/useGameScreenState';
 
@@ -58,7 +57,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                 <BoardLayer
                     G={G}
                     ctx={ctx}
-                    moves={moves}
+                    moves={moves as unknown as ClientMoves}
                     coachData={coachData}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
@@ -91,7 +90,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                 <HUDLayer.Controls
                     G={G}
                     ctx={ctx}
-                    moves={moves as unknown as GameControlsProps['moves']}
+                    moves={moves as unknown as ClientMoves}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
                     uiMode={uiMode}

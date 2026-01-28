@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import { GameState, Hex } from '../../game/core/types';
+import { GameState, Hex, ClientMoves } from '../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../../game/core/config';
 import { Z_INDEX_TOOLTIP } from '../shared/constants/z-indices';
@@ -18,8 +18,7 @@ import { renderTooltipContent } from './components/helpers';
 interface BoardLayerProps {
     G: GameState;
     ctx: Ctx;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    moves: any;
+    moves: ClientMoves;
     coachData: CoachData;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;

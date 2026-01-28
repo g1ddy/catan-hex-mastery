@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GameState, RollStatus, Resources } from '../../../game/core/types';
+import { GameState, RollStatus, Resources, ClientMoves } from '../../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
 import { getAffordableBuilds } from '../../../game/mechanics/costs';
@@ -32,8 +32,7 @@ export interface UseGameControlsResult {
 export const useGameControls = (
     G: GameState,
     ctx: Ctx,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    moves: any,
+    moves: ClientMoves,
     setBuildMode: (mode: BuildMode) => void
 ): UseGameControlsResult => {
     const isSetup = ctx.phase === PHASES.SETUP;

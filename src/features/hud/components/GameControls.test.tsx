@@ -3,7 +3,7 @@
 import { render, screen } from '@testing-library/react';
 import { GameControls } from './GameControls';
 import { BuildMode, UiMode } from '../../shared/types';
-import { GameState, RollStatus } from '../../../game/core/types';
+import { GameState, RollStatus, ClientMoves } from '../../../game/core/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { Ctx } from 'boardgame.io';
 import '@testing-library/jest-dom';
@@ -71,7 +71,7 @@ describe('GameControls Accessibility', () => {
         rollDice: jest.fn(),
         endTurn: jest.fn(),
         tradeBank: jest.fn(),
-    };
+    } as unknown as ClientMoves;
 
     const props = {
         G: mockG,
