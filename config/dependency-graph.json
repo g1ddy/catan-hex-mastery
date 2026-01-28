@@ -2154,25 +2154,6 @@
         },
         {
           "dynamic": false,
-          "module": "../hud/components/GameControls",
-          "moduleSystem": "es6",
-          "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "preCompilationOnly": true,
-          "resolved": "src/features/hud/components/GameControls.tsx",
-          "coreModule": false,
-          "followable": true,
-          "couldNotResolve": false,
-          "matchesDoNotFollow": false,
-          "circular": false,
-          "valid": true
-        },
-        {
-          "dynamic": false,
           "module": "../hud/hooks/useTradeLogic",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -3246,7 +3227,6 @@
         }
       ],
       "dependents": [
-        "src/features/game/GameScreen.tsx",
         "src/features/board/components/OverlayVertex.tsx",
         "src/features/hud/HUDLayer.tsx"
       ],
@@ -6543,7 +6523,7 @@
     "info": 0,
     "ignore": 0,
     "totalCruised": 99,
-    "totalDependenciesCruised": 292,
+    "totalDependenciesCruised": 291,
     "optionsUsed": {
       "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,

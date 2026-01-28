@@ -140,7 +140,6 @@ strict digraph "dependency-cruiser output"{
     "src/features/game/GameScreen.tsx" -> "src/features/board/BoardLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/CoachLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/coach/hooks/useCoachData.ts"
-    "src/features/game/GameScreen.tsx" -> "src/features/hud/components/GameControls.tsx" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/game/GameScreen.tsx" -> "src/features/hud/hooks/useTradeLogic.ts"
     "src/features/game/GameScreen.tsx" -> "src/features/hud/HUDLayer.tsx"
     "src/features/game/GameScreen.tsx" -> "src/features/game/constants.ts"
