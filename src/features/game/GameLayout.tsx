@@ -142,6 +142,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         aria-label="Toggle Analyst Dashboard"
         aria-expanded={activePanel === 'analyst'}
         aria-controls="analyst-dashboard"
+        data-tooltip-id="ui-tooltip"
+        data-tooltip-content="Analyst Dashboard"
     >
         <BarChart2 size={24} />
     </button>
@@ -160,6 +162,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         aria-label="Toggle Coach Bot"
         aria-expanded={activePanel === 'coach'}
         aria-controls="coach-bot-panel"
+        data-tooltip-id="ui-tooltip"
+        data-tooltip-content="Coach Bot"
     >
         <Bot size={24} />
     </button>
@@ -193,6 +197,11 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           place="top"
           style={{ zIndex: Z_INDEX_TOOLTIP }}
           render={renderTradeTooltip}
+      />
+      <Tooltip
+          id="ui-tooltip"
+          place="bottom"
+          style={{ zIndex: Z_INDEX_TOOLTIP }}
       />
 
       {/* 2. Analyst Panel (Left Sidebar on Desktop, Top Drawer on Mobile) */}
