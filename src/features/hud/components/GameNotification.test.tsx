@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { GameNotification } from './GameNotification';
-import { GameState } from '../../../game/core/types';
+import { GameState, RollStatus } from '../../../game/core/types';
 import '@testing-library/jest-dom';
 
 // Mock Lucide icons
@@ -31,11 +31,19 @@ const mockG = {
         '1': { color: '#0000ff', resources: {}, id: '1', name: 'Player 1' }
     },
     lastRoll: [1, 1], // sum 2
+    notification: null,
+    rollStatus: RollStatus.IDLE
+} as unknown as GameState;
+
+const GRolling = {
+    ...mockG,
+    rollStatus: RollStatus.ROLLING,
     notification: null
 } as unknown as GameState;
 
 const GWithRewards = {
     ...mockG,
+    rollStatus: RollStatus.RESOLVED,
     notification: {
         type: 'production',
         rollValue: 2,
@@ -48,6 +56,7 @@ const GWithRewards = {
 
 const GNoRewards = {
     ...mockG,
+    rollStatus: RollStatus.RESOLVED,
     notification: {
         type: 'production',
         rollValue: 2,
@@ -60,6 +69,7 @@ const GNoRewards = {
 
 const GWithSteal = {
     ...mockG,
+    rollStatus: RollStatus.RESOLVED,
     notification: {
         type: 'robber',
         thief: '0',
@@ -71,26 +81,25 @@ const GWithSteal = {
 jest.useFakeTimers();
 
 describe('GameNotification', () => {
-    test('renders resources when present after animation', () => {
+    test('renders Rolling state', () => {
+        render(<GameNotification G={GRolling} />);
+        expect(screen.getByText('Rolling...')).toBeInTheDocument();
+        expect(screen.queryByText('P1')).not.toBeInTheDocument();
+    });
+
+    test('renders resources immediately when notification present', () => {
         render(<GameNotification G={GWithRewards} />);
 
-        // Initially rolling (Production only)
-        expect(screen.getByText('Rolling...')).toBeInTheDocument();
+        // Should NOT show rolling
+        expect(screen.queryByText('Rolling...')).not.toBeInTheDocument();
 
-        act(() => {
-            jest.advanceTimersByTime(1000);
-        });
-
+        // Should show result immediately
         expect(screen.getByText('P1')).toBeInTheDocument();
+        expect(screen.getByTestId('icon-trees')).toBeInTheDocument();
     });
 
     test('renders emoji when no rewards', () => {
         render(<GameNotification G={GNoRewards} />);
-
-        act(() => {
-            jest.advanceTimersByTime(1000);
-        });
-
         expect(screen.getByLabelText('No resources')).toBeInTheDocument();
     });
 

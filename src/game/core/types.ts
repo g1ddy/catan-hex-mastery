@@ -115,6 +115,7 @@ export interface MoveArguments {
   buildCity: [string];
   tradeBank: [];
   rollDice: [];
+  resolveRoll: [];
   endTurn: [];
   placeSettlement: [string];
   placeRoad: [string];
