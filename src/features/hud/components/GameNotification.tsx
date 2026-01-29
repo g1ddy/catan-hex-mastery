@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { GameState, Resources, ProductionEvent, RobberEvent } from '../../../game/core/types';
+import { GameState, Resources, ProductionEvent, RobberEvent, RollStatus } from '../../../game/core/types';
 import {
     Trees, BrickWall, Wheat, Mountain, Cloud, Dices, Ghost, ArrowRight
 } from 'lucide-react';
@@ -22,46 +22,34 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
 
 export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
     const [visible, setVisible] = useState(false);
-    const [isRolling, setIsRolling] = useState(false);
 
+    const isRolling = G.rollStatus === RollStatus.ROLLING;
     const notification = G.notification;
-    // We use a ref to track the "active" notification data to display even during exit animation
-    // But since we control 'visible', we can just use G.notification.
-    // Wait, if G.notification becomes null, we want to hide.
-    // But if we want to fade out, we need the data to remain?
-    // Current CSS 'animate-leave' handles opacity.
-    // If we set visible=false, we still render the component but with 'animate-leave'?
-    // Or we unmount?
-    // The previous code: className={`${visible ? 'animate-enter' : 'animate-leave'} ...`}
-    // So it stays mounted.
-    // But if G.notification is null, we can't render content.
-    // Solution: Keep a local state 'displayNotification' that updates only when notification is non-null.
 
+    // Local state to persist notification data during fade-out
     const [displayNotification, setDisplayNotification] = useState(notification);
 
     useEffect(() => {
+        if (isRolling) {
+            setVisible(true);
+            // When rolling starts, we don't necessarily clear displayNotification immediately
+            // or maybe we do?
+            // If we are rolling, we show the Rolling spinner.
+            return;
+        }
+
         if (notification) {
             setDisplayNotification(notification);
             setVisible(true);
 
-            const isProduction = notification.type === 'production';
-            setIsRolling(isProduction);
-
-            const timers: NodeJS.Timeout[] = [];
-            if (isProduction) {
-                timers.push(setTimeout(() => setIsRolling(false), 1000));
-            }
-            timers.push(setTimeout(() => setVisible(false), 5000));
-
-            return () => {
-                timers.forEach(clearTimeout);
-            };
-        } else {
-            // If notification cleared (e.g. new roll started), hide immediately
+            // Auto-hide notification after 5s
+            const timer = setTimeout(() => setVisible(false), 5000);
+            return () => clearTimeout(timer);
+        } else if (!isRolling) {
+            // If no notification and not rolling, hide.
             setVisible(false);
-            setIsRolling(false);
         }
-    }, [notification]);
+    }, [notification, isRolling]);
 
     // Derived state from displayNotification
     const hasAnyResources = useMemo(() => {
@@ -76,7 +64,10 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
         return getRandomEmoji(NO_YIELD_EMOJIS);
     }, [hasAnyResources, displayNotification]);
 
-    if (!displayNotification) return null;
+    // If invisible and not rolling, nothing to render (eventually unmount or hide)
+    // But we use CSS opacity/transform for transitions usually.
+    // If displayNotification is null and not rolling, we truly can't render much.
+    if (!displayNotification && !isRolling) return null;
 
     const renderProductionContent = (evt: ProductionEvent) => (
         <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 transition-opacity duration-300 ${isRolling ? 'opacity-0' : 'opacity-100'}`}>
@@ -172,15 +163,14 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
     };
 
     // Roll Value for Icon (Production only)
-    const [d1, d2] = (displayNotification.type === 'production')
-        ? G.lastRoll // Use G.lastRoll to match board state, or derive from event? Event has rollValue but not split d1/d2.
-        // Actually, G.lastRoll is [d1, d2].
-        // If event.rollValue != G.lastRoll sum, that would be weird.
-        // We'll trust G.lastRoll as it's the source of truth for dice display.
+    const [d1, d2] = (displayNotification?.type === 'production')
+        ? G.lastRoll
         : [0, 0];
 
     const renderNotificationContent = () => {
-        // The null check at the top of the component body ensures displayNotification is not null here.
+        if (isRolling) return null; // Content hidden when rolling
+        if (!displayNotification) return null;
+
         switch (displayNotification.type) {
             case 'production':
                 return renderProductionContent(displayNotification);
@@ -203,22 +193,21 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
             <div className="flex items-center gap-4 text-slate-100">
                 {/* Icon Section */}
                 <div className="flex items-center gap-2">
-                    {displayNotification.type === 'production' ? (
-                        isRolling ? (
-                            <>
-                                <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
-                                <span className="font-bold text-lg text-amber-400">Rolling...</span>
-                            </>
-                        ) : (
-                            <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" />
-                        )
+                    {/* If Rolling, show spinner. Else if Production, show Dice. Else show Ghost. */}
+                    {isRolling ? (
+                         <>
+                            <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
+                            <span className="font-bold text-lg text-amber-400">Rolling...</span>
+                        </>
+                    ) : (displayNotification?.type === 'production') ? (
+                         <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" />
                     ) : (
                         <Ghost size={24} className="text-purple-400" />
                     )}
                 </div>
 
-                {/* Vertical Separator */}
-                <div className="h-6 w-px bg-slate-600/50" />
+                {/* Vertical Separator - Only if there is content to separate */}
+                {(!isRolling && displayNotification) && <div className="h-6 w-px bg-slate-600/50" />}
 
                 {/* Content Section */}
                 {renderNotificationContent()}

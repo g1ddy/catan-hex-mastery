@@ -5,19 +5,18 @@ import { getSnakeDraftOrder } from './mechanics/turnOrder';
 import { placeSettlement, placeRoad, regenerateBoard } from './moves/setup';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './moves/build';
 import { tradeBank } from './moves/trade';
-import { rollDice } from './moves/roll';
+import { rollDice, resolveRoll } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './mechanics/boardStats';
 import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './core/constants';
-import { distributeResources, countResources } from './mechanics/resources';
 import { PLAYER_COLORS } from './core/config';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './rules/enumerator';
 import { stripHtml } from '../game/core/utils/sanitize';
 
 const MOVE_MAP = {
-    rollDice, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,
+    rollDice, resolveRoll, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,
     placeSettlement, placeRoad, regenerateBoard, dismissRobber
 };
 
@@ -109,31 +108,6 @@ export const CatanGame: Game<GameState> = {
       turn: {
         activePlayers: { currentPlayer: STAGES.ROLLING },
         onBegin: ({ G }) => { G.rollStatus = RollStatus.IDLE; },
-        onMove: ({ G, ctx, events, random }) => {
-            const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
-            if (activeStage === STAGES.ROLLING) {
-                const rollValue = G.lastRoll[0] + G.lastRoll[1];
-                G.notification = { type: 'production', rewards: distributeResources(G, rollValue), rollValue };
-                G.rollStatus = RollStatus.RESOLVED;
-
-                if (rollValue === 7) {
-                    Object.values(G.players).forEach(player => {
-                        const total = countResources(player.resources);
-                        if (total > 7) {
-                            const toDiscard = Math.floor(total / 2);
-                            const resources: (keyof Resources)[] = [];
-                            (Object.entries(player.resources) as [keyof Resources, number][]).forEach(([res, amount]) => {
-                                resources.push(...Array(amount).fill(res));
-                            });
-                            random.Shuffle(resources).slice(0, toDiscard).forEach(res => player.resources[res]--);
-                        }
-                    });
-                    events.setActivePlayers?.({ currentPlayer: STAGES.ROBBER });
-                } else {
-                    events.setActivePlayers?.({ currentPlayer: STAGES.ACTING });
-                }
-            }
-        },
         stages: {
            [STAGES.ROLLING]: { moves: getMovesForStage(STAGES.ROLLING) },
            [STAGES.ACTING]: { moves: getMovesForStage(STAGES.ACTING) },
