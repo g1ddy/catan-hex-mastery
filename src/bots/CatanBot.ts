@@ -4,8 +4,10 @@ import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
+import { ActionUtils } from './utils/ActionUtils';
 
 const DEFAULT_GREED_FACTOR = 0.6;
+const RESOLVE_ROLL_DELAY_MS = 1000;
 
 export type CatanBotConfig = {
     enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
@@ -44,6 +46,12 @@ export class CatanBot extends Bot {
     async play(state: { G: GameState; ctx: Ctx }, playerID: string) {
         const { G, ctx } = state;
 
+        // 0. Safety: Never attempt a move if it's not our turn
+        // This prevents console spam and unauthorized move attempts.
+        if (playerID !== ctx.currentPlayer) {
+            return undefined as any;
+        }
+
         // 1. Get ALL valid moves from the base enumerator
         const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
@@ -61,19 +69,26 @@ export class CatanBot extends Bot {
         const botCoach = new BotCoach(G, coach, this.profile);
         // Note: filterOptimalMoves returns a sorted list where index 0 is best
         const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
+
+        // If it's our turn but filterOptimalMoves returns nothing (which shouldn't happen if allMoves is non-empty),
+        // we fallback to allMoves to avoid the bot getting stuck, but this is a secondary safety.
         const candidates = bestMoves.length > 0 ? bestMoves : allMoves;
 
         // 3. Pick weighted randomly from the candidates (favoring top ranks)
         const selectedIndex = this.pickWeightedIndex(candidates.length, DEFAULT_GREED_FACTOR);
         const selectedMove = candidates[selectedIndex];
 
-        // It's possible for the candidates array to be empty if the enumerator
-        // returns moves that the BotCoach filters out. In this case, pass.
         if (!selectedMove) {
             return undefined as any;
         }
 
-        // 4. Construct proper MAKE_MOVE action
+        // 4. Handle Resolution Delay (sync with UI animations)
+        const moveName = ActionUtils.getMoveName(selectedMove);
+        if (moveName === 'resolveRoll') {
+            await new Promise(resolve => setTimeout(resolve, RESOLVE_ROLL_DELAY_MS));
+        }
+
+        // 5. Construct proper MAKE_MOVE action
         let actionPayload: MakeMoveAction['payload'];
 
         if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
@@ -94,7 +109,7 @@ export class CatanBot extends Bot {
 
         return {
             action: {
-                type: 'MAKE_MOVE',
+                type: 'MAKE_MOVE' as const,
                 payload: actionPayload
             },
             metadata: { message: `CatanBot (${this.profile.name})` }

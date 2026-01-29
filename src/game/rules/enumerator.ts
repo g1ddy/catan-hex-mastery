@@ -96,9 +96,10 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             }
         } else {
             // Handle Non-Parameterized Moves (Everything else)
-            // Assume 0-argument validity (e.g., rollDice, endTurn, regenerateBoard)
-            if (moveName === 'rollDice' || moveName === 'endTurn' || moveName === 'regenerateBoard') {
-                 moves.push(makeMove(moveName, []));
+            // Use RuleEngine for ALL non-parameterized moves to ensure correctness
+            const moveKey = moveName as keyof MoveArguments;
+            if (RuleEngine.validateMove(G, ctx, moveKey, [] as any).isValid) {
+                 moves.push(makeMove(moveKey, [] as any));
             }
         }
     });

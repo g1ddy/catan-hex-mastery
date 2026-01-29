@@ -1,4 +1,4 @@
-import { GameState } from '../core/types';
+import { GameState, RollStatus } from '../core/types';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './economy';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
@@ -93,7 +93,25 @@ export const validateRoll = (G: GameState, playerID: string): ValidationResult =
     if (!isValidPlayer(playerID, G)) {
         return { isValid: false, reason: "Invalid player" };
     }
-    // Basic validation: implicit via stage configuration.
-    // We assume if the move is available in the finite state machine, it's structurally valid.
+
+    if (G.rollStatus !== RollStatus.IDLE) {
+        return { isValid: false, reason: "Dice have already been rolled this turn." };
+    }
+
+    return { isValid: true };
+};
+
+/**
+ * Validates the "Resolve Roll" move.
+ */
+export const validateResolveRoll = (G: GameState, playerID: string): ValidationResult => {
+    if (!isValidPlayer(playerID, G)) {
+        return { isValid: false, reason: "Invalid player" };
+    }
+
+    if (G.rollStatus !== RollStatus.ROLLING) {
+        return { isValid: false, reason: "Game is not in ROLLING status." };
+    }
+
     return { isValid: true };
 };

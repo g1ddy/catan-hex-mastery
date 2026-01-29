@@ -1,7 +1,8 @@
 /** @jest-environment jsdom */
 import { enumerate } from './enumerator';
-import { GameState } from '../core/types';
+import { GameState, RollStatus } from '../core/types';
 import { STAGES } from '../core/constants';
+import { RuleEngine } from './validator';
 
 // Mock validator functions
 jest.mock('./validator', () => {
@@ -108,6 +109,7 @@ describe('ai.enumerate', () => {
         ctx = {
             activePlayers: { '0': STAGES.ACTING }
         };
+        (RuleEngine.validateMove as jest.Mock).mockReturnValue({ isValid: true });
     });
 
     afterEach(() => {
@@ -141,10 +143,34 @@ describe('ai.enumerate', () => {
         expect(moves).toContainEqual(expectedAction('endTurn', []));
     });
 
-    it('should enumerate rolling', () => {
+    it('should enumerate rolling when IDLE', () => {
         ctx.activePlayers['0'] = STAGES.ROLLING;
+        G.rollStatus = RollStatus.IDLE;
+
+        // Mock RuleEngine to allow rollDice but not resolveRoll when IDLE
+        (RuleEngine.validateMove as jest.Mock).mockImplementation((_G, _ctx, moveName) => {
+            if (moveName === 'rollDice') return { isValid: true };
+            return { isValid: false };
+        });
+
         const moves = enumerate(G, ctx, '0');
-        expect(moves).toEqual([expectedAction('rollDice', [])]);
+        expect(moves).toContainEqual(expectedAction('rollDice', []));
+        expect(moves).not.toContainEqual(expectedAction('resolveRoll', []));
+    });
+
+    it('should enumerate resolveRoll when ROLLING', () => {
+        ctx.activePlayers['0'] = STAGES.ROLLING;
+        G.rollStatus = RollStatus.ROLLING;
+
+        // Mock RuleEngine to allow resolveRoll but not rollDice when ROLLING
+        (RuleEngine.validateMove as jest.Mock).mockImplementation((_G, _ctx, moveName) => {
+            if (moveName === 'resolveRoll') return { isValid: true };
+            return { isValid: false };
+        });
+
+        const moves = enumerate(G, ctx, '0');
+        expect(moves).toContainEqual(expectedAction('resolveRoll', []));
+        expect(moves).not.toContainEqual(expectedAction('rollDice', []));
     });
 
     it('should enumerate dismissRobber with valid targets', () => {

@@ -2,6 +2,7 @@ import { rollDice, resolveRoll } from './roll';
 import { GameState, RollStatus } from '../core/types';
 import { createTestGameState } from '../testUtils';
 import { STAGES } from '../core/constants';
+import { RuleEngine } from '../rules/validator';
 
 // Define strict interfaces for mocks to avoid 'any'
 interface MockRandom {
@@ -60,6 +61,7 @@ describe('Dice Moves', () => {
         mockRandom.Shuffle.mockClear();
         mockEvents.endStage.mockReset();
         mockEvents.setActivePlayers.mockReset();
+        (RuleEngine.validateMoveOrThrow as jest.Mock).mockReset();
     });
 
     describe('rollDice', () => {
@@ -98,11 +100,14 @@ describe('Dice Moves', () => {
             expect(mockEvents.setActivePlayers).toHaveBeenCalledWith({ currentPlayer: STAGES.ROBBER });
         });
 
-        it('should throw if called when not ROLLING', () => {
+        it('should throw if RuleEngine rejects the move', () => {
+            (RuleEngine.validateMoveOrThrow as jest.Mock).mockImplementation(() => {
+                throw new Error("Game is not in ROLLING status.");
+            });
             G.rollStatus = RollStatus.IDLE;
             expect(() => {
                 resolveRollMove({ G, random: mockRandom, events: mockEvents, ctx: mockCtx });
-            }).toThrow("Cannot resolve roll: Game is not in ROLLING status.");
+            }).toThrow("Game is not in ROLLING status.");
         });
     });
 });
