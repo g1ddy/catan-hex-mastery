@@ -17,7 +17,7 @@ test.describe('Game Layout and Navigation', () => {
     // 2. Verify Initial State (Sidebar Open)
     const collapseBtn = page.getByRole('button', { name: 'Collapse Sidebar' });
     await expect(collapseBtn).toBeVisible();
-    await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
+    await expect(page.locator('#analyst-dashboard').getByText('Analyst Dashboard', { exact: true })).toBeVisible();
 
     // 3. Collapse Sidebar
     await collapseBtn.click();
@@ -57,7 +57,7 @@ test.describe('Game Layout and Navigation', () => {
 
     // 4. Verify Drawer Open
     await expect(closeBtn).toBeVisible();
-    await expect(page.getByText('Analyst Dashboard', { exact: true })).toBeVisible();
+    await expect(page.locator('#analyst-dashboard').getByText('Analyst Dashboard', { exact: true })).toBeVisible();
 
     // 5. Close Drawer
     // Click should wait for stability
