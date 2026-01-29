@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { GameNotification } from './GameNotification';
 import { GameState, RollStatus } from '../../../game/core/types';
 import '@testing-library/jest-dom';

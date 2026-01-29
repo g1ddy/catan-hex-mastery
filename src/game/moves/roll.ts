@@ -13,7 +13,7 @@ export const rollDice: Move<GameState> = ({ G, ctx }) => {
     G.notification = null; // Clear previous event
 };
 
-export const resolveRoll: Move<GameState> = ({ G, ctx, random, events }) => {
+export const resolveRoll: Move<GameState> = ({ G, random, events }) => {
      // Ensure we are in the correct state
      if (G.rollStatus !== RollStatus.ROLLING) {
          // Should we throw or just ignore?

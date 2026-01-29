@@ -1,5 +1,5 @@
 import { rollDice, resolveRoll } from './roll';
-import { GameState, RollStatus, Resources } from '../core/types';
+import { GameState, RollStatus } from '../core/types';
 import { createTestGameState } from '../testUtils';
 import { STAGES } from '../core/constants';
 
