@@ -2,6 +2,7 @@ import React from 'react';
 import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { X, ChevronRight } from 'lucide-react';
 import { Z_INDEX_OVERLAY_PANEL } from '../../shared/constants/z-indices';
+import { UI_LABELS } from '../../shared/constants/labels';
 
 interface CoachShellProps {
   children: React.ReactNode;
@@ -28,7 +29,7 @@ export const CoachShell: React.FC<CoachShellProps> = ({ children, isOpen, onTogg
       >
          {/* Desktop Header */}
          <div className="flex items-center justify-between p-4 pb-2 border-b border-slate-700/50">
-            <span className="font-bold text-lg text-amber-400">Coach Bot</span>
+            <span className="font-bold text-lg text-amber-400">{UI_LABELS.COACH_BOT}</span>
             <button
                 onClick={onToggle}
                 className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
@@ -73,7 +74,7 @@ export const CoachShell: React.FC<CoachShellProps> = ({ children, isOpen, onTogg
       >
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
-           <span className="font-bold text-lg text-amber-400">Coach Bot</span>
+           <span className="font-bold text-lg text-amber-400">{UI_LABELS.COACH_BOT}</span>
            <button
              onClick={onToggle}
              className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"

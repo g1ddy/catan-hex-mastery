@@ -2,6 +2,7 @@ import React from 'react';
 import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { X, ChevronLeft } from 'lucide-react';
 import { Z_INDEX_OVERLAY_PANEL } from '../../shared/constants/z-indices';
+import { UI_LABELS } from '../../shared/constants/labels';
 
 interface AnalystShellProps {
   children: React.ReactNode;
@@ -28,7 +29,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
       >
          {/* Desktop Header */}
          <div className="flex items-center justify-between p-4 pb-2 border-b border-slate-700/50">
-            <span className="font-bold text-lg text-amber-400">Analyst Dashboard</span>
+            <span className="font-bold text-lg text-amber-400">{UI_LABELS.ANALYST_DASHBOARD}</span>
             <button
                 onClick={onToggle}
                 className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
@@ -73,7 +74,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
       >
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
-           <span className="font-bold text-lg text-amber-400">Analyst Dashboard</span>
+           <span className="font-bold text-lg text-amber-400">{UI_LABELS.ANALYST_DASHBOARD}</span>
            <button
              onClick={onToggle}
              className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"

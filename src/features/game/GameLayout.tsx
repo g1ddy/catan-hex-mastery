@@ -14,6 +14,7 @@ import { useIsMobile } from '../shared/hooks/useIsMobile';
 import { useViewportDvh } from './hooks/useViewportDvh';
 import { Resources } from '../../game/core/types';
 import { RESOURCE_META } from '../shared/config/uiConfig';
+import { UI_LABELS } from '../shared/constants/labels';
 import { AnalystShell } from '../coach/components/AnalystShell';
 import { CoachShell } from '../coach/components/CoachShell';
 import { DiceIcons } from '../shared/components/DiceIcons';
@@ -139,11 +140,11 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
         onClick={() => togglePanel('analyst')}
-        aria-label="Toggle Analyst Dashboard"
+        aria-label={`Toggle ${UI_LABELS.ANALYST_DASHBOARD}`}
         aria-expanded={activePanel === 'analyst'}
         aria-controls="analyst-dashboard"
         data-tooltip-id="ui-tooltip"
-        data-tooltip-content="Analyst Dashboard"
+        data-tooltip-content={UI_LABELS.ANALYST_DASHBOARD}
     >
         <BarChart2 size={24} />
     </button>
@@ -159,11 +160,11 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
         onClick={() => togglePanel('coach')}
-        aria-label="Toggle Coach Bot"
+        aria-label={`Toggle ${UI_LABELS.COACH_BOT}`}
         aria-expanded={activePanel === 'coach'}
         aria-controls="coach-bot-panel"
         data-tooltip-id="ui-tooltip"
-        data-tooltip-content="Coach Bot"
+        data-tooltip-content={UI_LABELS.COACH_BOT}
     >
         <Bot size={24} />
     </button>
