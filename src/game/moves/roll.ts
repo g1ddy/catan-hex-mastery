@@ -13,14 +13,9 @@ export const rollDice: Move<GameState> = ({ G, ctx }) => {
     G.notification = null; // Clear previous event
 };
 
-export const resolveRoll: Move<GameState> = ({ G, random, events }) => {
-     // Ensure we are in the correct state
-     if (G.rollStatus !== RollStatus.ROLLING) {
-         // Should we throw or just ignore?
-         // If called directly via console, it might be weird.
-         // But let's enforce it.
-         throw new Error("Cannot resolve roll: Game is not in ROLLING status.");
-     }
+export const resolveRoll: Move<GameState> = ({ G, ctx, random, events }) => {
+     // Validate the move using the centralized RuleEngine
+     RuleEngine.validateMoveOrThrow(G, ctx, 'resolveRoll', []);
 
      const d1 = random.Die(6);
      const d2 = random.Die(6);
