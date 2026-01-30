@@ -7,7 +7,7 @@ import { useTradeLogic } from '../hud/hooks/useTradeLogic';
 import { useCoachData } from '../coach/hooks/useCoachData';
 import { GAME_MESSAGES } from './constants';
 import { useGameScreenState } from './hooks/useGameScreenState';
-import { useRollAnimation } from './hooks/useRollAnimation';
+import { useAutoResolveRoll } from './hooks/useAutoResolveRoll';
 
 // Feature Layers
 import { BoardLayer } from '../board/BoardLayer';
@@ -53,7 +53,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
     const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
 
     // 5. Roll Animation Enforcement
-    useRollAnimation(G, ctx, moves as ClientMoves, playerID);
+    useAutoResolveRoll(G, ctx, moves as ClientMoves, playerID);
 
     return (
         <GameLayout
