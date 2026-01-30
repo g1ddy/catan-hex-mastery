@@ -43,7 +43,7 @@ export class CatanBot extends Bot {
         return index;
     }
 
-    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<{ action: MakeMoveAction; metadata: { message: string } } | undefined> {
         const { G, ctx } = state;
 
         // 0. Safety: Never attempt a move if it's not our turn
