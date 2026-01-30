@@ -3,10 +3,16 @@ import { test, expect } from '@playwright/test';
 test.describe('Bot Auto Play', () => {
     test('Game runs with 3 bots without console errors', async ({ page }) => {
         const consoleErrors: string[] = [];
+        let rollCount = 0;
+
         page.on('console', msg => {
+            const text = msg.text();
             if (msg.type() === 'error') {
                 // Ignore network errors or similar if needed, but for now capture all
-                consoleErrors.push(msg.text());
+                consoleErrors.push(text);
+            }
+            if (text.includes('[GAME] Dice rolled:')) {
+                rollCount++;
             }
         });
 
@@ -38,5 +44,8 @@ test.describe('Bot Auto Play', () => {
         );
 
         expect(criticalErrors).toEqual([]);
+
+        // 6. Assert that dice rolling occurred
+        expect(rollCount).toBeGreaterThan(0);
     });
 });

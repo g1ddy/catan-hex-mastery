@@ -22,6 +22,7 @@ export const resolveRoll: Move<GameState> = ({ G, ctx, random, events }) => {
      const rollValue = d1 + d2;
 
      G.lastRoll = [d1, d2];
+     console.info(`[GAME] Dice rolled: ${rollValue}`);
      G.notification = { type: 'production', rewards: distributeResources(G, rollValue), rollValue };
      G.rollStatus = RollStatus.RESOLVED;
 

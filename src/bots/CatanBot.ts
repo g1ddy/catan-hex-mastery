@@ -86,6 +86,7 @@ export class CatanBot extends Bot {
         // 4. Handle Resolution Delay (sync with UI animations)
         const moveName = ActionUtils.getMoveName(selectedMove);
         if (moveName === 'resolveRoll') {
+            console.info(`CatanBot (${playerID}): Waiting for roll animation...`);
             await new Promise(resolve => setTimeout(resolve, RESOLVE_ROLL_DELAY_MS));
         }
 
