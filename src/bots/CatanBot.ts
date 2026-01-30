@@ -46,17 +46,30 @@ export class CatanBot extends Bot {
     async play(state: { G: GameState; ctx: Ctx }, playerID: string) {
         const { G, ctx } = state;
 
-        // 0. Safety: Never attempt a move if it's not our turn
+        const makeNoOpAction = () => ({
+            action: {
+                type: 'MAKE_MOVE' as const,
+                payload: {
+                    type: 'noOp' as const,
+                    args: [] as [],
+                    playerID
+                }
+            }
+        });
+
+        // 0. Safety: Never attempt a real move if it's not our turn
         // This prevents console spam and unauthorized move attempts.
+        // We return a noOp action instead of undefined to satisfy boardgame.io type requirements
+        // and avoid crashing the bot runner which might expect a valid object response.
         if (playerID !== ctx.currentPlayer) {
-            return undefined as any;
+            return makeNoOpAction();
         }
 
         // 1. Get ALL valid moves from the base enumerator
         const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
-            return undefined as any;
+            return makeNoOpAction();
         }
 
         // 2. Use BotCoach to filter/rank these moves
@@ -79,7 +92,7 @@ export class CatanBot extends Bot {
         const selectedMove = candidates[selectedIndex];
 
         if (!selectedMove) {
-            return undefined as any;
+            return makeNoOpAction();
         }
 
         // 4. Handle Resolution Delay (sync with UI animations)
@@ -88,18 +101,15 @@ export class CatanBot extends Bot {
             await new Promise(resolve => setTimeout(resolve, RESOLVE_ROLL_DELAY_MS));
         }
 
-        // 5. Construct proper MAKE_MOVE action
+        // 5. Construct proper bot action.
+        // We provide both the standard boardgame.io 'move'/'args' format
+        // AND the 'action'/'payload' format used by some project tests and Redux integration.
         let actionPayload: MakeMoveAction['payload'];
 
-        if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
-             // It's already a Redux action
-             // Explicit cast to satisfy strict union matching against potential generic widening
+        if (typeof selectedMove === 'object' && 'type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
              actionPayload = selectedMove.payload as MakeMoveAction['payload'];
         } else {
-             // It's a BotMove
              const move = selectedMove as BotMove;
-             // TypeScript can't easily infer that { type: K, args: Args[K] } matches the union when K is generic/dynamic
-             // so we cast to 'any' before casting to the final union type to bypass the "not assignable" error.
              actionPayload = {
                  type: move.move,
                  args: move.args,
@@ -108,6 +118,8 @@ export class CatanBot extends Bot {
         }
 
         return {
+            move: actionPayload.type,
+            args: actionPayload.args,
             action: {
                 type: 'MAKE_MOVE' as const,
                 payload: actionPayload

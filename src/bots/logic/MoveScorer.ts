@@ -22,6 +22,7 @@ export interface ScoringContext {
 export class MoveScorer {
     public getWeightedScore(move: GameAction, context: ScoringContext): number {
         const name = ActionUtils.getMoveName(move) as string;
+        if (!name) return 0;
         let weight = 0;
 
         // Base Weight from Profile

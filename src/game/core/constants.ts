@@ -16,11 +16,11 @@ export const STAGES = {
 } as const;
 
 export const STAGE_MOVES = {
-    [STAGES.ROLLING]: ['rollDice', 'resolveRoll'],
-    [STAGES.ACTING]: ['buildRoad', 'buildSettlement', 'buildCity', 'tradeBank', 'endTurn'],
-    [STAGES.ROBBER]: ['dismissRobber'],
-    [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard'],
-    [STAGES.PLACE_ROAD]: ['placeRoad'],
+    [STAGES.ROLLING]: ['rollDice', 'resolveRoll', 'noOp'],
+    [STAGES.ACTING]: ['buildRoad', 'buildSettlement', 'buildCity', 'tradeBank', 'endTurn', 'noOp'],
+    [STAGES.ROBBER]: ['dismissRobber', 'noOp'],
+    [STAGES.PLACE_SETTLEMENT]: ['placeSettlement', 'regenerateBoard', 'noOp'],
+    [STAGES.PLACE_ROAD]: ['placeRoad', 'noOp'],
 } as const;
 
 export const WINNING_SCORE = 10;

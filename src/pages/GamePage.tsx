@@ -35,10 +35,10 @@ export function GamePage() {
   const matchID = MATCH_ID_REGEX.test(rawMatchID) ? rawMatchID : 'default';
 
   // Determine initial playerID
-  // If ALL players are bots, start as spectator (null).
-  // Otherwise default to '0'.
+  // In Local mode, we always start as Player 0 to ensure the client has authority
+  // to execute bot moves, even in Auto Play scenarios.
   const isAutoPlay = numBots === numPlayers;
-  const initialPlayerID = isAutoPlay ? null : '0';
+  const initialPlayerID = '0';
 
   const [playerID, setPlayerID] = useState<string | null>(initialPlayerID);
 
@@ -83,6 +83,7 @@ export function GamePage() {
         playerID={playerID}
         onPlayerChange={(id) => setPlayerID(id)}
         mode={mode}
+        isAutoPlay={isAutoPlay}
         bots={bots}
         setupData={setupData}
       />

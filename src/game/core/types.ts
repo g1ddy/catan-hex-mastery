@@ -122,6 +122,7 @@ export interface MoveArguments {
   regenerateBoard: [];
   dismissRobber: [string, string?]; // hexID, victimID (optional)
   buyDevCard: []; // Included for forward compatibility/BotCoach references
+  noOp: [];
 }
 
 // Strict Discriminated Union for Bot Moves

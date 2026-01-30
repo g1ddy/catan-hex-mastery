@@ -16,9 +16,10 @@ import { CoachLayer } from '../coach/CoachLayer';
 
 export interface GameScreenProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
+  isAutoPlay?: boolean;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID, onPlayerChange, isAutoPlay }) => {
     // 1. Core State & Logic (Extracted)
     const {
         showResourceHeatmap,
@@ -53,7 +54,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
     const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
 
     // 5. Roll Animation Enforcement
-    useRollAnimation(G, moves as ClientMoves);
+    useRollAnimation(G, moves as ClientMoves, playerID, ctx);
+
+    // 6. AutoPlay Player Synchronization
+    // In Local mode AutoPlay, the client needs to match the currentPlayer to have authority
+    // to execute bot moves. We dynamically switch the playerID to follow the turn.
+    React.useEffect(() => {
+        if (isAutoPlay && onPlayerChange && ctx.currentPlayer !== playerID) {
+            onPlayerChange(ctx.currentPlayer);
+        }
+    }, [isAutoPlay, ctx.currentPlayer, playerID, onPlayerChange]);
 
     return (
         <GameLayout

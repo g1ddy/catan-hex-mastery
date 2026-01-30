@@ -17,7 +17,8 @@ import { stripHtml } from '../game/core/utils/sanitize';
 
 const MOVE_MAP = {
     rollDice, resolveRoll, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,
-    placeSettlement, placeRoad, regenerateBoard, dismissRobber
+    placeSettlement, placeRoad, regenerateBoard, dismissRobber,
+    noOp: () => {}
 };
 
 const getMovesForStage = (stage: keyof typeof STAGE_MOVES) => {

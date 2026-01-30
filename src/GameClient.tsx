@@ -15,6 +15,7 @@ interface GameClientProps {
   // 'singleplayer' enables the debug panel and specific dev features.
   // 'local' is the standard multiplayer backend (used for Pass & Play, AutoBot, VsBot).
   mode?: 'local' | 'singleplayer';
+  isAutoPlay?: boolean;
 
   // Optional configuration for bots in 'local' mode
   // If provided, these specific bots are assigned to seats.
@@ -88,6 +89,7 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
     <ConfiguredClient
         {...clientProps}
         playerID={finalPlayerID}
+        isAutoPlay={props.isAutoPlay}
     />
   );
 };

@@ -45,7 +45,7 @@ export class BotCoach {
         // Extract candidate IDs (e.g. vertex IDs)
         // We filter out undefined values to ensure type safety, assuming spatial moves always have 1 arg (the ID)
         const candidateIds = specificMoves
-            .map(m => ActionUtils.getMoveArgs(m)[0])
+            .map(m => (ActionUtils.getMoveArgs(m) || [])[0])
             .filter((id): id is string => typeof id === 'string');
 
         // Get scores from Coach
@@ -54,8 +54,8 @@ export class BotCoach {
 
         // Find the single best move
         const bestMove = specificMoves.reduce((best, current) => {
-            const vBest = ActionUtils.getMoveArgs(best)[0];
-            const vCurrent = ActionUtils.getMoveArgs(current)[0];
+            const vBest = (ActionUtils.getMoveArgs(best) || [])[0];
+            const vCurrent = (ActionUtils.getMoveArgs(current) || [])[0];
 
             // Safety check for indices
             if (typeof vBest !== 'string' || typeof vCurrent !== 'string') return best;
@@ -110,7 +110,7 @@ export class BotCoach {
             const movesByVertex = new Map<string, GameAction>();
             allMoves.forEach(m => {
                 if (ActionUtils.getMoveName(m) === 'placeSettlement') {
-                    const args = ActionUtils.getMoveArgs(m);
+                    const args = ActionUtils.getMoveArgs(m) || [];
                     // Safely access first argument (vertexID)
                     const vId = args[0];
                     if (typeof vId === 'string') {

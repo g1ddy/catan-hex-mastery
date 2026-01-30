@@ -19,7 +19,7 @@ describe('CatanBot', () => {
         } as any;
     });
 
-    test('should return undefined when called for a player whose turn it is not', async () => {
+    test('should return noOp when called for a player whose turn it is not', async () => {
         const mockEnumerate = jest.fn().mockReturnValue([{ move: 'rollDice', args: [] }]);
         const bot = new CatanBot({ enumerate: mockEnumerate });
 
@@ -27,9 +27,10 @@ describe('CatanBot', () => {
         ctx.currentPlayer = '0';
 
         // But we call play for player 1
-        const result = await bot.play({ G, ctx }, '1');
+        const result = await bot.play({ G, ctx }, '1') as any;
 
-        expect(result).toBeUndefined();
+        expect(result).toBeDefined();
+        expect(result.action.payload.type).toBe('noOp');
         // Enumerate should not even be called if we return early
         expect(mockEnumerate).not.toHaveBeenCalled();
     });
@@ -39,7 +40,7 @@ describe('CatanBot', () => {
         const bot = new CatanBot({ enumerate: mockEnumerate });
 
         ctx.currentPlayer = '0';
-        const result = await bot.play({ G, ctx }, '0');
+        const result = await bot.play({ G, ctx }, '0') as any;
 
         expect(result).toBeDefined();
         expect(result.action.payload.type).toBe('rollDice');
