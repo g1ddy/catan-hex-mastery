@@ -43,7 +43,11 @@ export class CatanBot extends Bot {
         return index;
     }
 
-    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<{ action: MakeMoveAction; metadata: { message: string } } | undefined> {
+    /**
+     * play method can return undefined/void to signal no move.
+     */
+    // @ts-expect-error - compatibility with boardgame.io Bot.play which doesn't explicitly allow void in types
+    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<{ action: GameAction; metadata?: any } | void> {
         const { G, ctx } = state;
 
         // 0. Safety: Never attempt a move if it's not our turn

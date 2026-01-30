@@ -13,10 +13,10 @@ const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 
 // Bot Cycling Order: Balanced -> Aggressive -> Defensive -> Expansive -> Random -> MCTS
 const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
-    { class: BalancedBot, name: 'Balanced Bot' },
-    { class: AggressiveBot, name: 'Aggressive Bot' },
-    { class: DefensiveBot, name: 'Defensive Bot' },
-    { class: ExpansiveBot, name: 'Expansive Bot' },
+    { class: BalancedBot as any, name: 'Balanced Bot' },
+    { class: AggressiveBot as any, name: 'Aggressive Bot' },
+    { class: DefensiveBot as any, name: 'Defensive Bot' },
+    { class: ExpansiveBot as any, name: 'Expansive Bot' },
     { class: RandomBot, name: 'Random Bot' },
     { class: CatanMCTSBot, name: 'MCTS Bot' }
 ];

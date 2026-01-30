@@ -64,7 +64,7 @@ describe('Game Simulation with CatanBot', () => {
         const enhancedCtx = { ...state.ctx, coach: CoachPlugin.api({ G: state.G, ctx: state.ctx }) };
         const enhancedState = { ...state, ctx: enhancedCtx };
 
-        const result = await bot.play(enhancedState, playerID);
+        const result = (await bot.play(enhancedState, playerID)) as any;
         if (result && result.action) {
           const { action } = result;
           const moveName = 'payload' in action ? action.payload.type : action.move;
