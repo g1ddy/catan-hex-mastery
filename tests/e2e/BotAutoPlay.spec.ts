@@ -3,10 +3,16 @@ import { test, expect } from '@playwright/test';
 test.describe('Bot Auto Play', () => {
     test('Game runs with 3 bots without console errors', async ({ page }) => {
         const consoleErrors: string[] = [];
+        const moveLogs: string[] = [];
+
         page.on('console', msg => {
+            const text = msg.text();
             if (msg.type() === 'error') {
-                // Ignore network errors or similar if needed, but for now capture all
-                consoleErrors.push(msg.text());
+                consoleErrors.push(text);
+            }
+            if (text.includes('[Move]')) {
+                moveLogs.push(text);
+                console.log(`[Browser] ${text}`);
             }
         });
 
@@ -21,22 +27,27 @@ test.describe('Bot Auto Play', () => {
         await expect(gameLayout).toBeVisible({ timeout: 10000 });
 
         // 4. Wait for game progression
-        // We wait 20 seconds to allow for several turns and rolling phases.
-        // Bots have a 1s delay for rolling, plus other moves.
-        await page.waitForTimeout(20000);
+        // We wait 30 seconds to allow for several turns and rolling phases.
+        await page.waitForTimeout(30000);
 
         // 5. Assert no critical errors
-        // We filter for the specific errors reported, or just fail on any error.
-        // The reported errors were:
-        // - invalid move object: resolveRoll
-        // - player not active
-        // - Cannot read properties of undefined (reading 'action')
         const criticalErrors = consoleErrors.filter(err =>
             err.includes('invalid move object') ||
             err.includes('player not active') ||
             err.includes('Cannot read properties of undefined')
         );
 
+        if (criticalErrors.length > 0) {
+            console.error('Critical Errors found:', criticalErrors);
+        }
         expect(criticalErrors).toEqual([]);
+
+        // 6. Verify rolls occurred
+        const rollDiceCount = moveLogs.filter(l => l.includes('rollDice')).length;
+        const resolveRollCount = moveLogs.filter(l => l.includes('resolveRoll')).length;
+
+        console.log(`Roll Stats: rollDice=${rollDiceCount}, resolveRoll=${resolveRollCount}`);
+        expect(rollDiceCount).toBeGreaterThan(0);
+        expect(resolveRollCount).toBeGreaterThan(0);
     });
 });
