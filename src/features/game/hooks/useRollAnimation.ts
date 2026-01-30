@@ -11,6 +11,7 @@ export const useRollAnimation = (G: GameState, ctx: Ctx, moves: ClientMoves, pla
             // Also prevents "invalid move object" errors if the bot has already resolved it.
             if (playerID === ctx.currentPlayer) {
                 // Wait 1 second for the animation to complete
+                const ROLL_ANIMATION_DURATION = 1000;
                 const timer = setTimeout(() => {
                     // Trigger the resolution move
                     // We use 'resolveRoll' which must exist in moves
@@ -19,7 +20,7 @@ export const useRollAnimation = (G: GameState, ctx: Ctx, moves: ClientMoves, pla
                     } else {
                         console.error("resolveRoll move not found!");
                     }
-                }, 1000);
+                }, ROLL_ANIMATION_DURATION);
 
                 return () => clearTimeout(timer);
             }

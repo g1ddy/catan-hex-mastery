@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Bot Auto Play', () => {
-    test('Game runs with 4 bots without console errors', async ({ page }) => {
+    test('Game runs with 3 bots without console errors', async ({ page }) => {
         const consoleErrors: string[] = [];
         page.on('console', msg => {
             if (msg.type() === 'error') {
