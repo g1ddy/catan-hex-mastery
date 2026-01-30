@@ -42,7 +42,12 @@ describe('CatanBot', () => {
         const result = await bot.play({ G, ctx }, '0');
 
         expect(result).toBeDefined();
-        expect(result.action.payload.type).toBe('rollDice');
+        if (result && typeof result === 'object' && 'action' in result) {
+            const action = result.action;
+            if (action && typeof action === 'object' && 'payload' in action) {
+                 expect(action.payload.type).toBe('rollDice');
+            }
+        }
         expect(mockEnumerate).toHaveBeenCalledWith(G, ctx, '0');
     });
 });

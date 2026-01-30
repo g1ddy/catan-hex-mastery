@@ -43,20 +43,20 @@ export class CatanBot extends Bot {
         return index;
     }
 
-    async play(state: { G: GameState; ctx: Ctx }, playerID: string) {
+    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
         const { G, ctx } = state;
 
         // 0. Safety: Never attempt a move if it's not our turn
         // This prevents console spam and unauthorized move attempts.
         if (playerID !== ctx.currentPlayer) {
-            return undefined as any;
+            return;
         }
 
         // 1. Get ALL valid moves from the base enumerator
         const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
-            return undefined as any;
+            return;
         }
 
         // 2. Use BotCoach to filter/rank these moves
@@ -80,7 +80,7 @@ export class CatanBot extends Bot {
 
         if (!selectedMove) {
             console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.activePlayers?.[playerID]}'.`);
-            return undefined as any;
+            return;
         }
 
         // 4. Handle Resolution Delay (sync with UI animations)
