@@ -8,6 +8,8 @@ export const rollDice: Move<GameState> = ({ G, ctx }) => {
     // Validate the move using the centralized RuleEngine
     RuleEngine.validateMoveOrThrow(G, ctx, 'rollDice', []);
 
+    console.log('[Move] rollDice');
+
     // Set status to ROLLING. Actual roll happens in resolveRoll.
     G.rollStatus = RollStatus.ROLLING;
     G.notification = null; // Clear previous event
@@ -20,6 +22,8 @@ export const resolveRoll: Move<GameState> = ({ G, ctx, random, events }) => {
      const d1 = random.Die(6);
      const d2 = random.Die(6);
      const rollValue = d1 + d2;
+
+     console.log(`[Move] resolveRoll: ${rollValue}`);
 
      G.lastRoll = [d1, d2];
      G.notification = { type: 'production', rewards: distributeResources(G, rollValue), rollValue };
