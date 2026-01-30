@@ -47,7 +47,8 @@ test.describe('Bot Auto Play', () => {
         const resolveRollCount = moveLogs.filter(l => l.includes('resolveRoll')).length;
 
         console.log(`Roll Stats: rollDice=${rollDiceCount}, resolveRoll=${resolveRollCount}`);
-        expect(rollDiceCount).toBeGreaterThan(0);
-        expect(resolveRollCount).toBeGreaterThan(0);
+        // Assert that game is progressing significantly (more than 1 turn)
+        expect(rollDiceCount).toBeGreaterThan(2);
+        expect(resolveRollCount).toBeGreaterThan(2);
     });
 });
