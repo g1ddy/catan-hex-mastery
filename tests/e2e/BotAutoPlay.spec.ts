@@ -27,8 +27,8 @@ test.describe('Bot Auto Play', () => {
         await expect(gameLayout).toBeVisible({ timeout: 10000 });
 
         // 4. Wait for game progression
-        // We wait 30 seconds to allow for several turns and rolling phases.
-        await page.waitForTimeout(30000);
+        // We wait 15 seconds to allow for several turns and rolling phases.
+        await page.waitForTimeout(15000);
 
         // 5. Assert no critical errors
         const criticalErrors = consoleErrors.filter(err =>

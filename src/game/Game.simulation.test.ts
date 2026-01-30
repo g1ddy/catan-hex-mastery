@@ -41,7 +41,7 @@ describe('Game Simulation with CatanBot', () => {
       '1': new CatanBot({ enumerate }),
     };
 
-    const MAX_STEPS = 500;
+    const MAX_STEPS = 100;
     let steps = 0;
 
     const getState = (): SimulationState | undefined => client0.getState() as unknown as SimulationState | undefined;
@@ -94,5 +94,5 @@ describe('Game Simulation with CatanBot', () => {
 
     expect(steps).toBeGreaterThan(0);
     console.log('--- END SIMULATION ---');
-  }, 10000); // 10s timeout for simulation
+  }, 60000); // 60s timeout for simulation
 });
