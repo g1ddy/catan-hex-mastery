@@ -62,6 +62,7 @@ export class CatanBot extends Bot {
         // 2. Use BotCoach to filter/rank these moves
         let coach = (ctx as CoachCtx).coach;
         if (!coach) {
+            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
             coach = new Coach(G);
         }
 

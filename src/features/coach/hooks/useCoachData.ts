@@ -39,6 +39,9 @@ export const useCoachData = (
 
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
         const coach = (ctx as CoachCtx).coach;
+        if (!coach) {
+            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
+        }
         const coachInstance = coach || new Coach(G);
 
         let allScores: CoachRecommendation[] = [];
