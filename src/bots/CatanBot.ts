@@ -1,6 +1,6 @@
 import { Bot } from 'boardgame.io/ai';
 import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/core/types';
-import { Coach } from '../game/analysis/coach';
+import { Coach, CoachCtx } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
@@ -60,9 +60,9 @@ export class CatanBot extends Bot {
         }
 
         // 2. Use BotCoach to filter/rank these moves
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let coach = (ctx as any).coach;
+        let coach = (ctx as CoachCtx).coach;
         if (!coach) {
+            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
             coach = new Coach(G);
         }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
-import { CoachRecommendation, Coach } from '../../../game/analysis/coach';
+import { CoachRecommendation, Coach, CoachCtx } from '../../../game/analysis/coach';
 import { PHASES } from '../../../game/core/constants';
 import { BuildMode, UiMode } from '../../shared/types';
 import { Ctx } from 'boardgame.io';
@@ -38,9 +38,10 @@ export const useCoachData = (
         }
 
         // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-        // Casting ctx to any because standard boardgame.io Ctx doesn't have plugins typed yet
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const coach = (ctx as any).coach as Coach;
+        const coach = (ctx as CoachCtx).coach;
+        if (!coach) {
+            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
+        }
         const coachInstance = coach || new Coach(G);
 
         let allScores: CoachRecommendation[] = [];
