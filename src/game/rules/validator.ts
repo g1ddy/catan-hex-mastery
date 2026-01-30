@@ -50,6 +50,9 @@ export const RuleEngine = {
             case 'resolveRoll':
                 return validateResolveRoll(G, playerID);
 
+            case 'noOp':
+                return { isValid: true };
+
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };
         }

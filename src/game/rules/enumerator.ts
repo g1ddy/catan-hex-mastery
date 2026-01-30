@@ -62,6 +62,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
 
     // Iterate through ALL potential moves for this stage
     moveTypesList.forEach(moveName => {
+        if (moveName === 'noOp') return; // Skip noOp in enumeration
+
         const spots = moveSpotMapping[moveName];
 
         if (spots) {
