@@ -4,7 +4,6 @@ import { Coach, CoachCtx } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
-import { ActionUtils } from './utils/ActionUtils';
 
 const DEFAULT_GREED_FACTOR = 0.6;
 
