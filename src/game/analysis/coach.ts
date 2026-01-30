@@ -25,6 +25,10 @@ export interface StrategicAdvice {
     recommendedMoves: string[];
 }
 
+export interface CoachCtx extends Ctx {
+    coach?: Coach;
+}
+
 export interface CoachConfig {
     scarcityThreshold: number;
     scarcityMultiplier: number;
