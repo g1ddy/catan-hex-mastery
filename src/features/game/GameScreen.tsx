@@ -53,7 +53,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
     const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
 
     // 5. Roll Animation Enforcement
-    useRollAnimation(G, moves as ClientMoves);
+    useRollAnimation(G, ctx, moves as ClientMoves, playerID);
 
     return (
         <GameLayout
