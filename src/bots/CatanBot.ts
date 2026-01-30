@@ -79,6 +79,7 @@ export class CatanBot extends Bot {
         const selectedMove = candidates[selectedIndex];
 
         if (!selectedMove) {
+            console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.activePlayers?.[playerID]}'.`);
             return undefined as any;
         }
 

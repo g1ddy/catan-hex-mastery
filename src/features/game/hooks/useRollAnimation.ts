@@ -9,7 +9,8 @@ export const useRollAnimation = (G: GameState, ctx: Ctx, moves: ClientMoves, pla
             // This prevents spectators or non-active players from attempting to resolve,
             // which causes "player not active" errors.
             // Also prevents "invalid move object" errors if the bot has already resolved it.
-            if (playerID === ctx.currentPlayer) {
+            // Explicitly check for non-null playerID to exclude spectators.
+            if (playerID !== null && playerID === ctx.currentPlayer) {
                 // Wait 1 second for the animation to complete
                 const ROLL_ANIMATION_DURATION = 1000;
                 const timer = setTimeout(() => {
