@@ -4,10 +4,8 @@ import { Coach, CoachCtx } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
 import { Ctx } from 'boardgame.io';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
-import { ActionUtils } from './utils/ActionUtils';
 
 const DEFAULT_GREED_FACTOR = 0.6;
-const RESOLVE_ROLL_DELAY_MS = 1000;
 
 export type CatanBotConfig = {
     enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
@@ -83,13 +81,7 @@ export class CatanBot extends Bot {
             return;
         }
 
-        // 4. Handle Resolution Delay (sync with UI animations)
-        const moveName = ActionUtils.getMoveName(selectedMove);
-        if (moveName === 'resolveRoll') {
-            await new Promise(resolve => setTimeout(resolve, RESOLVE_ROLL_DELAY_MS));
-        }
-
-        // 5. Construct proper MAKE_MOVE action
+        // 4. Construct proper MAKE_MOVE action
         let actionPayload: MakeMoveAction['payload'];
 
         if ('type' in selectedMove && selectedMove.type === 'MAKE_MOVE') {
