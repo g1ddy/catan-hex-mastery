@@ -4,37 +4,50 @@
 import { stripHtml } from './sanitize';
 
 describe('stripHtml (Node Environment)', () => {
-    // ... existing tests ...
+    it('should remove HTML tags from a string', () => {
+        const input = '<p>Hello, <strong>World!</strong></p>';
+        const expected = 'Hello, World!';
+        expect(stripHtml(input)).toEqual(expected);
+    });
 
-    // Reproduction of tag reconstruction
+    it('should remove script tags and their content', () => {
+        const input = '<script>alert("XSS")</script>Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
+    it('should remove style tags and their content', () => {
+        const input = '<style>body { color: red; }</style>Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
+    it('should handle strings with no HTML', () => {
+        const input = 'Just a regular string.';
+        expect(stripHtml(input)).toEqual(input);
+    });
+
+    it('should remove script tags with spaces in closing tag', () => {
+        const input = '<script>alert("XSS")</script >Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
+    it('should remove script tags with malformed closing tag', () => {
+        const input = '<script>alert("XSS")</script\t\n bar>Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
     it('should prevent tag reconstruction via nested inputs', () => {
-        // Input designed to reconstruct <script> after one pass of stripping
-        const input = '<<script>script>alert(1)</script>';
-        // 1. Script stripper looks for <script... /script>.
-        //    It finds <script>alert(1)</script>.
-        //    Replaces with "".
-        //    Result: "<script>" (The outer layer).
-        // 2. Generic stripper looks for <...>.
-        //    It finds <script>.
-        //    Replaces with "".
-        //    Result: "".
-        //    Wait, my logic above says it works.
+        // Attack: Nested tags designed to reconstruct <script> after one pass of stripping
+        const input = '<scr<script>ipt>alert(1)</script>';
 
-        // Let's try one where the generic stripper is the one being fooled.
-        // <scr<script>ipt>
-        // Script stripper: No match (no valid script tag pair).
-        // Generic stripper: Matches <script>. Removes it.
-        // Result: <script>
+        const result = stripHtml(input);
 
-        const input2 = '<scr<script>ipt>alert(1)</script>';
-        const expected = 'alert(1)'; // The content might remain, but the TAG should be gone.
-        // If result contains "<script>", it fails security check.
-
-        const result = stripHtml(input2);
+        // We expect the script tag to be gone. The content might remain depending on the stripper logic,
+        // but the DANGEROUS tag must be gone.
         expect(result).not.toContain('<script');
         expect(result).not.toContain('</script');
-
-        // This is the specific case CodeQL hates:
-        // "This string may still contain [<script]"
     });
 });
