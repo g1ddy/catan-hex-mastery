@@ -4,14 +4,9 @@
 import { stripHtml } from './sanitize';
 
 describe('stripHtml (Node Environment)', () => {
-    // In node environment, document is undefined, so the fallback regex logic is used.
-
     it('should remove HTML tags from a string', () => {
         const input = '<p>Hello, <strong>World!</strong></p>';
         const expected = 'Hello, World!';
-        // Regex replacement is simple, might leave extra spaces depending on implementation?
-        // My implementation: replace tags with empty string.
-        // <p>Hello, <strong>World!</strong></p> -> Hello, World!
         expect(stripHtml(input)).toEqual(expected);
     });
 
@@ -30,5 +25,18 @@ describe('stripHtml (Node Environment)', () => {
     it('should handle strings with no HTML', () => {
         const input = 'Just a regular string.';
         expect(stripHtml(input)).toEqual(input);
+    });
+
+    // New tests for CodeQL findings
+    it('should remove script tags with spaces in closing tag', () => {
+        const input = '<script>alert("XSS")</script >Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
+    it('should remove style tags with spaces in closing tag', () => {
+        const input = '<style>body { color: red; }</style >Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
     });
 });
