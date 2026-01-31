@@ -13,17 +13,27 @@ export const stripHtml = (str: string): string => {
     }
 
     // Fallback for non-DOM environments (e.g. Node.js)
-    // 1. Remove script and style tags and their content
-    // Improved regex to handle spaces and garbage in closing tags (CodeQL compliance)
-    // <\/\s*script[^>]*> matches:
-    // </script>
-    // </script >
-    // </script foo="bar">
-    // </script \n>
-    let sanitized = str.replace(/<script\b[^>]*>([\s\S]*?)<\/\s*script[^>]*>/gim, "")
-                       .replace(/<style\b[^>]*>([\s\S]*?)<\/\s*style[^>]*>/gim, "");
-    // 2. Remove all other HTML tags
-    sanitized = sanitized.replace(/<[^>]+>/gm, '');
+    let sanitized = str;
+    let previous = "";
+
+    // Loop to handle nested tags (e.g. <<script>script>) and prevent reconstruction attacks.
+    // We limit iterations to prevent potential DoS (infinite loops).
+    let iterations = 0;
+    const MAX_ITERATIONS = 5;
+
+    while (sanitized !== previous && iterations < MAX_ITERATIONS) {
+        previous = sanitized;
+
+        // 1. Remove script and style tags and their content
+        // <\/\s*script[^>]*> matches </script>, </script >, etc.
+        sanitized = sanitized.replace(/<script\b[^>]*>([\s\S]*?)<\/\s*script[^>]*>/gim, "")
+                           .replace(/<style\b[^>]*>([\s\S]*?)<\/\s*style[^>]*>/gim, "");
+
+        // 2. Remove all other HTML tags
+        sanitized = sanitized.replace(/<[^>]+>/gm, '');
+
+        iterations++;
+    }
 
     return sanitized;
 };

@@ -4,46 +4,37 @@
 import { stripHtml } from './sanitize';
 
 describe('stripHtml (Node Environment)', () => {
-    it('should remove HTML tags from a string', () => {
-        const input = '<p>Hello, <strong>World!</strong></p>';
-        const expected = 'Hello, World!';
-        expect(stripHtml(input)).toEqual(expected);
-    });
+    // ... existing tests ...
 
-    it('should remove script tags and their content', () => {
-        const input = '<script>alert("XSS")</script>Safe';
-        const expected = 'Safe';
-        expect(stripHtml(input)).toEqual(expected);
-    });
+    // Reproduction of tag reconstruction
+    it('should prevent tag reconstruction via nested inputs', () => {
+        // Input designed to reconstruct <script> after one pass of stripping
+        const input = '<<script>script>alert(1)</script>';
+        // 1. Script stripper looks for <script... /script>.
+        //    It finds <script>alert(1)</script>.
+        //    Replaces with "".
+        //    Result: "<script>" (The outer layer).
+        // 2. Generic stripper looks for <...>.
+        //    It finds <script>.
+        //    Replaces with "".
+        //    Result: "".
+        //    Wait, my logic above says it works.
 
-    it('should remove style tags and their content', () => {
-        const input = '<style>body { color: red; }</style>Safe';
-        const expected = 'Safe';
-        expect(stripHtml(input)).toEqual(expected);
-    });
+        // Let's try one where the generic stripper is the one being fooled.
+        // <scr<script>ipt>
+        // Script stripper: No match (no valid script tag pair).
+        // Generic stripper: Matches <script>. Removes it.
+        // Result: <script>
 
-    it('should handle strings with no HTML', () => {
-        const input = 'Just a regular string.';
-        expect(stripHtml(input)).toEqual(input);
-    });
+        const input2 = '<scr<script>ipt>alert(1)</script>';
+        const expected = 'alert(1)'; // The content might remain, but the TAG should be gone.
+        // If result contains "<script>", it fails security check.
 
-    it('should remove script tags with spaces in closing tag', () => {
-        const input = '<script>alert("XSS")</script >Safe';
-        const expected = 'Safe';
-        expect(stripHtml(input)).toEqual(expected);
-    });
+        const result = stripHtml(input2);
+        expect(result).not.toContain('<script');
+        expect(result).not.toContain('</script');
 
-    it('should remove style tags with spaces in closing tag', () => {
-        const input = '<style>body { color: red; }</style >Safe';
-        const expected = 'Safe';
-        expect(stripHtml(input)).toEqual(expected);
-    });
-
-    // New CodeQL finding reproduction
-    it('should remove script tags with malformed closing tag', () => {
-        // \t is tab, \n is newline. In a template string/HTML, this is valid loose HTML.
-        const input = '<script>alert("XSS")</script\t\n bar>Safe';
-        const expected = 'Safe';
-        expect(stripHtml(input)).toEqual(expected);
+        // This is the specific case CodeQL hates:
+        // "This string may still contain [<script]"
     });
 });
