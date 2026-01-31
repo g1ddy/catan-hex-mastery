@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { Ctx } from 'boardgame.io';
 import { GameState, RollStatus, ClientMoves } from '../../../game/core/types';
 
+// The duration of the visual dice roll animation
+const ROLL_ANIMATION_DURATION = 1000;
+
 /**
  * Automatically triggers the 'resolveRoll' move after a delay when the game is in the ROLLING state.
  * This is strictly for the ACTIVE LOCAL PLAYER to allow for a visual dice roll animation.
@@ -21,9 +24,6 @@ export const useAutoResolveRoll = (G: GameState, ctx: Ctx, moves: ClientMoves, p
             // 3. Double-firing if multiple clients are open for the same player (though less critical here)
             if (playerID !== null && playerID === ctx.currentPlayer) {
 
-                // The duration of the visual dice roll animation
-                const ROLL_ANIMATION_DURATION = 1000;
-
                 const timer = setTimeout(() => {
                     // Safety check: ensure the move exists before calling
                     if (moves.resolveRoll) {
@@ -36,5 +36,6 @@ export const useAutoResolveRoll = (G: GameState, ctx: Ctx, moves: ClientMoves, p
                 return () => clearTimeout(timer);
             }
         }
-    }, [G.rollStatus, moves, ctx.currentPlayer, playerID]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [G.rollStatus, ctx.currentPlayer, playerID]);
 };
