@@ -27,7 +27,6 @@ describe('stripHtml (Node Environment)', () => {
         expect(stripHtml(input)).toEqual(input);
     });
 
-    // New tests for CodeQL findings
     it('should remove script tags with spaces in closing tag', () => {
         const input = '<script>alert("XSS")</script >Safe';
         const expected = 'Safe';
@@ -36,6 +35,14 @@ describe('stripHtml (Node Environment)', () => {
 
     it('should remove style tags with spaces in closing tag', () => {
         const input = '<style>body { color: red; }</style >Safe';
+        const expected = 'Safe';
+        expect(stripHtml(input)).toEqual(expected);
+    });
+
+    // New CodeQL finding reproduction
+    it('should remove script tags with malformed closing tag', () => {
+        // \t is tab, \n is newline. In a template string/HTML, this is valid loose HTML.
+        const input = '<script>alert("XSS")</script\t\n bar>Safe';
         const expected = 'Safe';
         expect(stripHtml(input)).toEqual(expected);
     });

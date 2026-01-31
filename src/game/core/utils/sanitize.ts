@@ -14,9 +14,14 @@ export const stripHtml = (str: string): string => {
 
     // Fallback for non-DOM environments (e.g. Node.js)
     // 1. Remove script and style tags and their content
-    // Improved regex to handle spaces in closing tags (CodeQL compliance)
-    let sanitized = str.replace(/<script\b[^>]*>([\s\S]*?)<\/\s*script\s*>/gim, "")
-                       .replace(/<style\b[^>]*>([\s\S]*?)<\/\s*style\s*>/gim, "");
+    // Improved regex to handle spaces and garbage in closing tags (CodeQL compliance)
+    // <\/\s*script[^>]*> matches:
+    // </script>
+    // </script >
+    // </script foo="bar">
+    // </script \n>
+    let sanitized = str.replace(/<script\b[^>]*>([\s\S]*?)<\/\s*script[^>]*>/gim, "")
+                       .replace(/<style\b[^>]*>([\s\S]*?)<\/\s*style[^>]*>/gim, "");
     // 2. Remove all other HTML tags
     sanitized = sanitized.replace(/<[^>]+>/gm, '');
 
