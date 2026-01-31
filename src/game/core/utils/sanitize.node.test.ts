@@ -50,4 +50,14 @@ describe('stripHtml (Node Environment)', () => {
         expect(result).not.toContain('<script');
         expect(result).not.toContain('</script');
     });
+
+    it('should not corrupt strings with angle brackets', () => {
+        const input = 'a < b';
+        expect(stripHtml(input)).toEqual('a < b');
+    });
+
+    it('should not corrupt strings with a less-than sign', () => {
+        const input = 'Player <3';
+        expect(stripHtml(input)).toEqual('Player <3');
+    });
 });

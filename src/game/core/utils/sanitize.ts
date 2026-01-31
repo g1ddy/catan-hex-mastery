@@ -5,11 +5,11 @@
  */
 export const stripHtml = (str: string): string => {
     if (typeof document !== 'undefined') {
-        const el = document.createElement('div');
-        el.innerHTML = str;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(str, 'text/html');
         // Also remove script and style tags and their content to prevent JS execution if the string is used in an unsafe context.
-        el.querySelectorAll('script, style').forEach(tag => tag.remove());
-        return el.textContent || '';
+        doc.querySelectorAll('script, style').forEach(tag => tag.remove());
+        return doc.body.textContent || '';
     }
 
     // Fallback for non-DOM environments (e.g. Node.js)
