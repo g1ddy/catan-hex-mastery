@@ -1,0 +1,93 @@
+import React from 'react';
+import { BoardProps } from 'boardgame.io/react';
+import { GameState, ClientMoves } from '../../../game/core/types';
+import { BuildMode, UiMode } from '../../shared/types';
+import { safeMove } from '../../shared/utils/feedback';
+import { safeGet, safeCheck } from '../../../game/core/utils/objectUtils';
+import { PHASES, STAGES } from '../../../game/core/constants';
+import { HEX_CORNERS } from '../../../game/geometry/staticGeometry';
+import { OverlayEdge } from './OverlayEdge';
+import { Port } from './Port';
+
+interface HexEdgesProps {
+    edges: { id: string; parts: string[]; x: number; y: number }[];
+    G: GameState;
+    ctx: BoardProps<GameState>['ctx'];
+    moves: ClientMoves;
+    buildMode: BuildMode;
+    setBuildMode: (mode: BuildMode) => void;
+    uiMode: UiMode;
+    setUiMode: (mode: UiMode) => void;
+    validRoads: Set<string>;
+    highlightedPortEdgeId?: string;
+    currentHexIdStr: string;
+}
+
+export const HexEdges: React.FC<HexEdgesProps> = ({
+    edges, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode,
+    validRoads, highlightedPortEdgeId, currentHexIdStr
+}) => {
+
+    const getPrimaryHexOwner = (parts: string[]): string => {
+        return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0];
+    };
+
+    return (
+        <>
+            {edges.map((eData, i) => {
+                const { id: eId, parts } = eData;
+                if (getPrimaryHexOwner(parts) !== currentHexIdStr) return null;
+
+                const nextCorner = HEX_CORNERS[(i + 1) % 6];
+                const midX = (eData.x + nextCorner.x) / 2;
+                const midY = (eData.y + nextCorner.y) / 2;
+                const angle = Math.atan2(nextCorner.y - eData.y, nextCorner.x - eData.x) * 180 / Math.PI;
+
+                const edge = safeGet(G.board.edges, eId);
+                const ownerColor = edge ? G.players[edge.owner]?.color : null;
+                const port = safeGet(G.board.ports, eId);
+
+                let portElement = null;
+                if (port) {
+                    const portOwner = port.vertices.map(vId => safeGet(G.board.vertices, vId)?.owner).find(Boolean);
+                    portElement = (
+                        <Port key={`port-${eId}`} cx={midX} cy={midY} angle={angle} type={port.type}
+                              ownerColor={portOwner ? G.players[portOwner]?.color : null}
+                              isActive={eId === highlightedPortEdgeId} />
+                    );
+                }
+
+                const isSetup = ctx.phase === PHASES.SETUP;
+                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
+
+                let isClickable = false;
+                let isGhost = false;
+                let clickAction = () => {};
+
+                if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
+                    (isActingStage && buildMode === 'road')) {
+                    if (validRoads.has(eId)) {
+                        isClickable = true;
+                        isGhost = true;
+                        clickAction = () => {
+                            const move = isSetup ? moves.placeRoad : moves.buildRoad;
+                            safeMove(() => move(eId));
+                            if (isSetup) setUiMode('viewing');
+                            else setBuildMode(null);
+                        };
+                    }
+                }
+
+                return (
+                    <React.Fragment key={eId}>
+                        <OverlayEdge cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
+                                     ownerColor={ownerColor} isClickable={isClickable}
+                                     isGhost={isGhost} onClick={clickAction} />
+                        {portElement}
+                    </React.Fragment>
+                );
+            })}
+        </>
+    );
+};
