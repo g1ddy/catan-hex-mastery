@@ -4,9 +4,10 @@ import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
 import { getHeatmapColor, CoachRecommendation } from '../../../game/analysis/coach';
 import { safeMove } from '../../shared/utils/feedback';
-import { safeGet, safeCheck } from '../../../game/core/utils/objectUtils';
+import { safeGet } from '../../../game/core/utils/objectUtils';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { OverlayVertex } from './OverlayVertex';
+import { getPrimaryHexOwner } from './helpers';
 
 export interface CoachData {
     recommendations: Map<string, CoachRecommendation>;
@@ -35,15 +36,11 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
     validSettlements, validCities, coachData, showResourceHeatmap, currentHexIdStr
 }) => {
 
-    const getPrimaryHexOwner = (parts: string[]): string => {
-        return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0];
-    };
-
     return (
         <>
             {vertices.map((vData) => {
                 const { id: vId, parts } = vData;
-                if (getPrimaryHexOwner(parts) !== currentHexIdStr) return null;
+                if (getPrimaryHexOwner(parts, G) !== currentHexIdStr) return null;
 
                 const vertex = safeGet(G.board.vertices, vId);
                 const ownerColor = vertex ? G.players[vertex.owner]?.color : null;

@@ -3,11 +3,12 @@ import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
 import { safeMove } from '../../shared/utils/feedback';
-import { safeGet, safeCheck } from '../../../game/core/utils/objectUtils';
+import { safeGet } from '../../../game/core/utils/objectUtils';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { HEX_CORNERS } from '../../../game/geometry/staticGeometry';
 import { OverlayEdge } from './OverlayEdge';
 import { Port } from './Port';
+import { getPrimaryHexOwner } from './helpers';
 
 interface HexEdgesProps {
     edges: { id: string; parts: string[]; x: number; y: number }[];
@@ -28,15 +29,11 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
     validRoads, highlightedPortEdgeId, currentHexIdStr
 }) => {
 
-    const getPrimaryHexOwner = (parts: string[]): string => {
-        return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0];
-    };
-
     return (
         <>
             {edges.map((eData, i) => {
                 const { id: eId, parts } = eData;
-                if (getPrimaryHexOwner(parts) !== currentHexIdStr) return null;
+                if (getPrimaryHexOwner(parts, G) !== currentHexIdStr) return null;
 
                 const nextCorner = HEX_CORNERS[(i + 1) % 6];
                 const midX = (eData.x + nextCorner.x) / 2;
