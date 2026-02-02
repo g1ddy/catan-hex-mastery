@@ -7,7 +7,7 @@ import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 
 export interface CoachRecommendation {
-    vertexId: string;
+    vertexId: string; // The ID of the element (Vertex or Edge)
     score: number;
     reason: string;
     details: {
@@ -89,6 +89,14 @@ export class Coach {
      */
     public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
         return this.spatialAdvisor.getBestCitySpots(playerID, ctx, candidates);
+    }
+
+    /**
+     * Scores a list of specific edges for Road placement.
+     * Delegates to SpatialAdvisor.
+     */
+    public getBestRoadSpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+        return this.spatialAdvisor.getBestRoadSpots(playerID, ctx, candidates);
     }
 
     public getBestSettlementSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {

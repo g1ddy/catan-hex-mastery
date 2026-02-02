@@ -1,10 +1,11 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, TerrainType } from '../../core/types';
 import { getValidSetupSettlementSpots } from '../../rules/queries';
+import { validateSettlementLocation } from '../../rules/spatial';
 import { isValidPlayer } from '../../core/validation';
 import { getPips } from '../../mechanics/scoring';
 import { TERRAIN_TO_RESOURCE } from '../../mechanics/resources';
-import { getHexesForVertex } from '../../geometry/hexUtils';
+import { getHexesForVertex, getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
 import { CoachRecommendation, CoachConfig } from '../coach';
 import { safeGet } from '../../../game/core/utils/objectUtils';
 
@@ -205,5 +206,115 @@ export class SpatialAdvisor {
             .filter((r): r is CoachRecommendation => r !== null);
 
         return recommendations.sort((a, b) => b.score - a.score);
+    }
+
+    public getBestRoadSpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+        if (playerID !== ctx.currentPlayer) {
+            return [];
+        }
+
+        const scarcityMap = this.calculateScarcityMap();
+        const existingResources = this.getExistingResources(playerID);
+        const MAX_DEPTH = 3;
+
+        // Cache for vertex scores
+        const vertexScoreCache = new Map<string, number>();
+        const getVertexScore = (vId: string) => {
+             if (vertexScoreCache.has(vId)) return vertexScoreCache.get(vId)!;
+             if (safeGet(this.G.board.vertices, vId)) { // Occupied
+                 vertexScoreCache.set(vId, 0);
+                 return 0;
+             }
+             // Valid location?
+             const validation = validateSettlementLocation(this.G, vId);
+             if (!validation.isValid) {
+                 vertexScoreCache.set(vId, 0);
+                 return 0;
+             }
+             const rec = this.scoreVertex(vId, playerID, scarcityMap, existingResources);
+             vertexScoreCache.set(vId, rec.score);
+             return rec.score;
+        };
+
+        return candidates.map(roadId => {
+             let totalScore = 0;
+             let reasonsSet = new Set<string>();
+
+             // BFS
+             const queue: { edgeId: string; dist: number }[] = [{ edgeId: roadId, dist: 0 }];
+             const visitedEdges = new Set<string>([roadId]);
+             const visitedVertices = new Set<string>();
+
+             while (queue.length > 0) {
+                 const { edgeId, dist } = queue.shift()!;
+                 const endpoints = getVerticesForEdge(edgeId);
+
+                 for (const vId of endpoints) {
+                     // Check blockage by opponent vertex
+                     const v = safeGet(this.G.board.vertices, vId);
+                     if (v && v.owner !== playerID) continue;
+
+                     if (!visitedVertices.has(vId)) {
+                         visitedVertices.add(vId);
+
+                         // Score Settlement Spot
+                         const vScore = getVertexScore(vId);
+                         if (vScore > 0) {
+                             const discounted = vScore / (dist + 1);
+                             totalScore += discounted;
+                             reasonsSet.add(`Leads to settlement`);
+                         }
+
+                         // Score Port
+                         const adjEdges = getEdgesForVertex(vId);
+                         for (const eId of adjEdges) {
+                             const port = safeGet(this.G.board.ports, eId);
+                             if (port) {
+                                 const portVal = port.type === '3:1' ? 2 : 4;
+                                 totalScore += portVal / (dist + 1);
+                                 reasonsSet.add(`Leads to ${port.type} Port`);
+                             }
+                         }
+                     }
+
+                     // Expand BFS
+                     if (dist < MAX_DEPTH) {
+                         const adjEdges = getEdgesForVertex(vId);
+                         for (const nextEdgeId of adjEdges) {
+                             if (!visitedEdges.has(nextEdgeId)) {
+                                 // Check if edge is occupied by opponent?
+                                 // If occupied by opponent, we can't build.
+                                 const edge = safeGet(this.G.board.edges, nextEdgeId);
+                                 if (edge && edge.owner !== playerID) {
+                                     continue;
+                                 }
+                                 // If empty or ours, we can traverse?
+                                 // Actually if it's ours, we already have access.
+                                 // But we want to find NEW access.
+                                 // So we only expand into empty edges.
+                                 if (!edge) {
+                                     visitedEdges.add(nextEdgeId);
+                                     queue.push({ edgeId: nextEdgeId, dist: dist + 1 });
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+
+             return {
+                 vertexId: roadId,
+                 score: Math.round(totalScore * 10) / 10,
+                 reason: Array.from(reasonsSet).slice(0, 3).join(', '),
+                 details: {
+                     pips: 0,
+                     scarcityBonus: false,
+                     scarceResources: [],
+                     diversityBonus: false,
+                     synergyBonus: false,
+                     neededResources: []
+                 }
+             };
+        }).sort((a, b) => b.score - a.score);
     }
 }

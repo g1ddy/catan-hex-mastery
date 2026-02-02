@@ -1,9 +1,10 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
 import { CoachRecommendation, Coach, CoachCtx } from '../../../game/analysis/coach';
-import { PHASES } from '../../../game/core/constants';
+import { PHASES, STAGES } from '../../../game/core/constants';
 import { BuildMode, UiMode } from '../../shared/types';
 import { Ctx } from 'boardgame.io';
+import { getValidRoadSpots, getValidSetupRoadSpots } from '../../../game/rules/queries';
 
 export interface CoachData {
     recommendations: Map<string, CoachRecommendation>;
@@ -22,18 +23,24 @@ export const useCoachData = (
     isCoachModeEnabled: boolean
 ): CoachData => {
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
+    const currentPlayerRoads = G.players[ctx.currentPlayer]?.roads;
 
     return React.useMemo(() => {
         if (!isCoachModeEnabled) {
             return EMPTY_COACH_DATA;
         }
 
+        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
         // Active when placing settlement in Setup OR Gameplay, OR City in Gameplay
-        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
+        const isSetupPlacingSettlement = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_SETTLEMENT;
+        const isSetupPlacingRoad = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_ROAD;
+
         const isGameSettlement = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
         const isGameCity = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'city';
+        const isGameRoad = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'road';
 
-        if (!isSetupPlacing && !isGameSettlement && !isGameCity) {
+        if (!isSetupPlacingSettlement && !isGameSettlement && !isGameCity && !isSetupPlacingRoad && !isGameRoad) {
             return EMPTY_COACH_DATA;
         }
 
@@ -51,6 +58,14 @@ export const useCoachData = (
             if (typeof coachInstance.getBestCitySpots === 'function') {
                 allScores = coachInstance.getBestCitySpots(ctx.currentPlayer, ctx, candidates);
             }
+        } else if (isSetupPlacingRoad || isGameRoad) {
+            const candidates = isSetupPlacingRoad
+                ? Array.from(getValidSetupRoadSpots(G, ctx.currentPlayer))
+                : Array.from(getValidRoadSpots(G, ctx.currentPlayer));
+
+            if (candidates.length > 0 && typeof coachInstance.getBestRoadSpots === 'function') {
+                allScores = coachInstance.getBestRoadSpots(ctx.currentPlayer, ctx, candidates);
+            }
         } else {
             if (typeof coachInstance.getAllSettlementScores === 'function') {
                 allScores = coachInstance.getAllSettlementScores(ctx.currentPlayer, ctx);
@@ -63,7 +78,10 @@ export const useCoachData = (
 
         const vals = allScores.map(s => s.score);
         const sorted = [...allScores].sort((a, b) => b.score - a.score);
-        const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+
+        // Top 2 for Roads, Top 3 for Settlements/Cities
+        const topCount = (isSetupPlacingRoad || isGameRoad) ? 2 : 3;
+        const top3Ids = sorted.slice(0, topCount).map(s => s.vertexId);
 
         // Convert to Map for O(1) Lookup
         const recMap = new Map(allScores.map(rec => [rec.vertexId, rec]));
@@ -74,5 +92,5 @@ export const useCoachData = (
             maxScore: Math.max(...vals),
             top3Set: new Set(top3Ids)
         };
-    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements]);
+    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements, currentPlayerRoads]);
 };

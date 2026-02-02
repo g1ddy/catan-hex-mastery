@@ -172,7 +172,19 @@ export const HexOverlays = React.memo(({
 
                 let isClickable = false;
                 let isGhost = false;
+                let recommendationData: CoachRecommendation | undefined;
+                let heatmapColor = "";
+                let isTop2 = false;
                 let clickAction = () => {};
+
+                const applyCoachRec = () => {
+                    const rec = coachData.recommendations.get(eId);
+                    if (rec) {
+                        recommendationData = rec;
+                        heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
+                        isTop2 = coachData.top3Set.has(eId);
+                    }
+                };
 
                 if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
                     (isActingStage && buildMode === 'road')) {
@@ -185,6 +197,7 @@ export const HexOverlays = React.memo(({
                             if (isSetup) setUiMode('viewing');
                             else setBuildMode(null);
                         };
+                        applyCoachRec();
                     }
                 }
 
@@ -192,7 +205,9 @@ export const HexOverlays = React.memo(({
                     <React.Fragment key={eId}>
                         <OverlayEdge cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
                                      ownerColor={ownerColor} isClickable={isClickable}
-                                     isGhost={isGhost} onClick={clickAction} />
+                                     isGhost={isGhost} onClick={clickAction}
+                                     recommendation={recommendationData ? { heatmapColor, isTop2, data: recommendationData } : undefined}
+                        />
                         {portElement}
                     </React.Fragment>
                 );
