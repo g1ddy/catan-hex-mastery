@@ -51,7 +51,7 @@ export class BotCoach {
 
         // Get scores from Coach
         const recommendations = scoreFn(candidateIds);
-        const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+        const recommendationMap = new Map(recommendations.map(r => [r.edgeId || r.vertexId || '', r.score]));
 
         // Shuffle candidates if profile requests randomization to break ties
         if (this.profile.randomize) {

@@ -67,7 +67,6 @@ export class RoadAdvisor {
             if (bestTarget.score > 0) {
                 recommendations.push({
                     edgeId: startEdge,
-                    vertexId: startEdge, // FIXME: Refactor CoachRecommendation to make vertexId optional for edge-based advice
                     score: bestTarget.score,
                     reason: bestTarget.reason,
                     details: {
@@ -86,31 +85,12 @@ export class RoadAdvisor {
     }
 
     private findBestTarget(startEdge: string, playerID: string, playerProduction: Record<string, number>) {
-        // BFS to find reachable targets
-        // State: { vertexId, distance }
-        // We start from the endpoints of the startEdge that are NOT connected to our existing road network?
-        // No, we traverse *outwards* from the road we just built.
-        // The startEdge has 2 vertices. One (or both) connects to our network. The other (or both) leads to new territory.
-        // We should BFS from *both* endpoints, but treating the startEdge as the first step (Distance 0? No, Distance 1).
-        // Actually, simpler: BFS on Edges.
-        // Start Edge is Distance 0 (it's the one we are building).
-        // Vertices touched by Start Edge are reachable at "End of this road".
-        // If a Vertex has a target, Score = TargetScore * Decay^0 ?
-        // If we consider the road *leads to* the vertex, then yes.
-
-        // Queue: { edgeId, distance }?
-        // Better: Queue of Vertices to explore?
-        // Let's explore Vertices.
-        // Initial Frontier: The 2 vertices of startEdge.
-        // But we must respect "direction". We don't want to go back into our own network.
-        // Actually, it doesn't matter. If we go back, we hit our own existing roads/buildings, which are not "new targets".
-        // The only targets are *unclaimed* spots.
-        // So BFS from both endpoints is fine.
-
         let maxScore = 0;
         let bestReason = '';
 
+        // Queue implementation using pointer for O(1) dequeue
         const queue: { vId: string, dist: number }[] = [];
+        let head = 0;
         const visited = new Set<string>();
 
         const endpoints = getVerticesForEdge(startEdge);
@@ -119,34 +99,20 @@ export class RoadAdvisor {
             visited.add(v);
         });
 
-        // Also mark other vertices of our network as visited to avoid backtracking?
-        // Not strictly necessary if we only score *unowned* things, but good for optimization.
-        // For now, simple visited set is enough.
-
-        while (queue.length > 0) {
-            const { vId, dist } = queue.shift()!;
+        while (head < queue.length) {
+            const { vId, dist } = queue[head++];
 
             // 1. Evaluate this Vertex as a Target
             const vertex = this.G.board.vertices[vId];
             const owner = vertex?.owner;
 
             // Block check: If occupied by opponent, we can't pass through AND we can't build here.
-            // But if we just *reached* it (dist > 0), and it's occupied, it's a "Wall".
-            // We can't score it (it's not a valid target) and we can't extend from it.
-            // So we stop this branch.
             if (owner && owner !== playerID) {
                 continue;
             }
 
             // If it's valid spot (Empty), score it.
             if (!owner) {
-                // Check if it's a valid settlement spot
-                // We use a simplified check: is it empty? (Already checked !owner)
-                // SpatialAdvisor.scoreVertex handles logic.
-                // But we should only score it if it's a valid *placement* (Distance rule).
-                // However, SpatialAdvisor might return score even if invalid?
-                // Let's try scoring it.
-
                 // Port Score
                 const portScore = this.getPortScore(vId, playerID, playerProduction);
                 if (portScore) {
@@ -158,9 +124,6 @@ export class RoadAdvisor {
                 }
 
                 // Settlement Score
-                // We assume we can build here if we reach it.
-                // Note: SpatialAdvisor.scoreVertex usually assumes setup or relies on queries.
-                // We'll trust it returns a score based on pips/resources.
                 try {
                     const rec = this.spatialAdvisor.scoreVertex(vId, playerID);
                     if (rec.score > 0) {
@@ -186,10 +149,6 @@ export class RoadAdvisor {
                     // Don't go back to startEdge
                     if (eId === startEdge) continue;
 
-                    // Don't traverse existing roads (ours or others)
-                    // Wait, if it's OUR road, we effectively already "reached" the other side, so distance shouldn't increase?
-                    // But we are looking for *new* extensions.
-                    // If we run into our own road, we've looped back. No new value there usually.
                     const edge = this.G.board.edges[eId];
                     if (edge) continue; // Occupied edge
 
