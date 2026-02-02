@@ -15,6 +15,7 @@ const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
 export class BotCoach {
+    // Bot logic using Coach recommendations
     private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
