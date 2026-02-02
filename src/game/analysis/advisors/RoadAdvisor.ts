@@ -2,9 +2,7 @@ import { GameState } from '../../core/types';
 import { CoachRecommendation } from '../coach';
 import { SpatialAdvisor } from './SpatialAdvisor';
 import { calculatePlayerPotentialPips } from '../analyst';
-import { getVerticesForEdge, getEdgesForVertex, getHexesForVertex } from '../../geometry/hexUtils';
-import { safeGet } from '../../core/utils/objectUtils';
-import { TERRAIN_TO_RESOURCE } from '../../mechanics/resources';
+import { getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
 
 const DECAY_FACTOR = 0.8;
 const PORT_RESOURCE_MULTIPLIER = 2.0;

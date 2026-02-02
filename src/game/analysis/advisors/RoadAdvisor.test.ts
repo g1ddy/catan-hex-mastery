@@ -2,7 +2,6 @@ import { RoadAdvisor } from './RoadAdvisor';
 import { SpatialAdvisor } from './SpatialAdvisor';
 import { GameState } from '../../core/types';
 import { calculatePlayerPotentialPips } from '../analyst';
-import { CoachRecommendation } from '../coach';
 
 // Mock dependencies
 jest.mock('./SpatialAdvisor');
