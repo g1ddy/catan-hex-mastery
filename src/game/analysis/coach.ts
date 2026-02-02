@@ -1,13 +1,16 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, GameAction, BotMove } from '../core/types';
 import { isValidPlayer } from '../core/validation';
-import { STAGES } from '../core/constants';
+import { PHASES, STAGES } from '../core/constants';
+import { getValidRoadSpots, getValidSetupRoadSpots } from '../rules/queries';
 import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
+import { RoadAdvisor } from './advisors/RoadAdvisor';
 
 export interface CoachRecommendation {
     vertexId: string;
+    edgeId?: string;
     score: number;
     reason: string;
     details: {
@@ -59,12 +62,14 @@ export class Coach {
     private config: CoachConfig;
     private tradeAdvisor: TradeAdvisor;
     private spatialAdvisor: SpatialAdvisor;
+    private roadAdvisor: RoadAdvisor;
 
     constructor(G: GameState, config: Partial<CoachConfig> = {}) {
         this.G = G;
         this.config = { ...DEFAULT_CONFIG, ...config };
         this.tradeAdvisor = new TradeAdvisor(G);
         this.spatialAdvisor = new SpatialAdvisor(G, this.config);
+        this.roadAdvisor = new RoadAdvisor(G, this.spatialAdvisor);
     }
 
     /**
@@ -95,6 +100,25 @@ export class Coach {
         return this.getAllSettlementScores(playerID, ctx)
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
+    }
+
+    /**
+     * Calculates scores for all valid road spots.
+     */
+    public getBestRoadSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
+            return [];
+        }
+
+        let validRoads: Set<string> = new Set();
+        if (ctx.phase === PHASES.SETUP) {
+            validRoads = getValidSetupRoadSpots(this.G, playerID);
+        } else {
+            // Check cost = false to show all potential good spots even if currently unaffordable
+            validRoads = getValidRoadSpots(this.G, playerID, false);
+        }
+
+        return this.roadAdvisor.getRoadRecommendations(playerID, Array.from(validRoads));
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {

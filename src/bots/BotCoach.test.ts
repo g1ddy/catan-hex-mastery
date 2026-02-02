@@ -59,6 +59,17 @@ describe('BotCoach', () => {
             recommendedMoves: []
         });
 
+        // Ensure getBestRoadSpots returns array to prevent crashes
+        if (!coach.getBestRoadSpots) {
+             coach.getBestRoadSpots = jest.fn();
+        }
+        (coach.getBestRoadSpots as jest.Mock).mockReturnValue([]);
+
+        // Ensure other methods return arrays
+        (coach.getBestCitySpots as jest.Mock).mockReturnValue([]);
+        (coach.getAllSettlementScores as jest.Mock).mockReturnValue([]);
+        (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
+
         botCoach = new BotCoach(G, coach);
         mockCtx = { currentPlayer: '0' } as Ctx;
     });

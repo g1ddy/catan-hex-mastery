@@ -101,6 +101,7 @@ export const HexOverlays = React.memo(({
                 validRoads={validRoads}
                 highlightedPortEdgeId={highlightedPortEdgeId}
                 currentHexIdStr={currentHexIdStr}
+                coachData={coachData}
             />
         </Hexagon>
     );

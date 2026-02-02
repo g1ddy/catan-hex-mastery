@@ -183,6 +183,23 @@ export class BotCoach {
         );
         if (refinedCities) return refinedCities;
 
+        // Refine Roads (pick best spot)
+        const refinedRoads = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'buildRoad',
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+        );
+        if (refinedRoads) return refinedRoads;
+
+        const refinedSetupRoads = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'placeRoad',
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+        );
+        if (refinedSetupRoads) return refinedSetupRoads;
+
         // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
         // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
         const topMoveNames = topMoves.map(m => ActionUtils.getMoveName(m));

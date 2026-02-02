@@ -11,18 +11,29 @@ export interface OverlayEdgeProps {
     isClickable: boolean;
     isGhost: boolean;
     onClick: () => void;
+    // Recommendations
+    isRecommended?: boolean;
+    heatmapColor?: string;
+    tooltip?: string;
 }
 
 export const OverlayEdge = React.memo(({
     cx, cy, angle, isOccupied, ownerColor,
-    isClickable, isGhost, onClick
+    isClickable, isGhost, onClick,
+    isRecommended, heatmapColor, tooltip
 }: OverlayEdgeProps) => {
+
+    const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
+    const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
 
     return (
          <g onClick={(e) => {
             e.stopPropagation();
             if (isClickable) onClick();
-        }}>
+        }}
+        data-tooltip-id={tooltip ? "ui-tooltip" : undefined}
+        data-tooltip-content={tooltip}
+        >
             <circle cx={cx} cy={cy} r={2.5} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
             {isOccupied && (
                 <rect
@@ -37,7 +48,7 @@ export const OverlayEdge = React.memo(({
                 <rect
                     x={cx - 3} y={cy - 1}
                     width={6} height={2}
-                    fill="white" opacity={0.5}
+                    fill={ghostFill} opacity={ghostOpacity}
                     transform={`rotate(${angle} ${cx} ${cy})`}
                     data-testid="ghost-edge"
                 />
