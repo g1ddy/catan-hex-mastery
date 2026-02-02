@@ -88,7 +88,7 @@ export class RoadAdvisor {
         let maxScore = 0;
         let bestReason = '';
 
-        // Queue implementation using pointer for O(1) dequeue
+        // Optimized BFS: Queue implementation using pointer for O(1) dequeue
         const queue: { vId: string, dist: number }[] = [];
         let head = 0;
         const visited = new Set<string>();
