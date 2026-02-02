@@ -7,21 +7,9 @@ import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 import { RoadAdvisor } from './advisors/RoadAdvisor';
+import { CoachRecommendation } from './types';
 
-export interface CoachRecommendation {
-    vertexId: string;
-    edgeId?: string;
-    score: number;
-    reason: string;
-    details: {
-        pips: number;
-        scarcityBonus: boolean;
-        scarceResources: string[];
-        diversityBonus: boolean;
-        synergyBonus: boolean;
-        neededResources: string[];
-    };
-}
+export type { CoachRecommendation } from './types';
 
 export interface StrategicAdvice {
     text: string;

@@ -1,5 +1,5 @@
 import { GameState } from '../../core/types';
-import { CoachRecommendation } from '../coach';
+import { CoachRecommendation } from '../types';
 import { SpatialAdvisor } from './SpatialAdvisor';
 import { calculatePlayerPotentialPips } from '../analyst';
 import { getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
@@ -58,20 +58,6 @@ export class RoadAdvisor {
 
         const recommendations: CoachRecommendation[] = [];
 
-        // 1. Pre-calculate targets
-        // Settlement Spots (using SpatialAdvisor to get scores for ALL valid spots)
-        // We use getAllSettlementScores but we need to ensure we only consider 'vacant' ones as targets
-        // actually getAllSettlementScores returns scores for ValidSetupSettlementSpots which are vacant.
-        // However, we want strict gameplay validity (distance rule)?
-        // No, for "reaching", we want to know if a spot is a good *candidate* for the future.
-        // Even if it currently violates distance rule against *unbuilt* things?
-        // No, validSetupSettlementSpots respects distance to *existing* buildings.
-        // So these are valid places to build.
-        // NOTE: We need to pass a context. We can mock one or just use G if SpatialAdvisor allows.
-        // SpatialAdvisor.getAllSettlementScores requires ctx for currentPlayer check, but mostly relies on G.
-        // We can manually call scoreVertex for specific spots found during BFS to avoid context mocking issues if we want.
-        // Or better: SpatialAdvisor.scoreVertex is public.
-
         const playerProduction = calculatePlayerPotentialPips(this.G)[playerID] || {};
 
         // 2. Evaluate each candidate road
@@ -80,8 +66,8 @@ export class RoadAdvisor {
 
             if (bestTarget.score > 0) {
                 recommendations.push({
-                    vertexId: startEdge, // Using edgeId in vertexId field as per plan (or we will add edgeId field)
-                    // We will handle the type mapping in the UI/Coach integration
+                    edgeId: startEdge,
+                    vertexId: startEdge, // FIXME: Refactor CoachRecommendation to make vertexId optional for edge-based advice
                     score: bestTarget.score,
                     reason: bestTarget.reason,
                     details: {
@@ -185,7 +171,10 @@ export class RoadAdvisor {
                          }
                     }
                 } catch (e) {
-                    // Ignore (e.g. invalid player)
+                    // Log error only if it's unexpected (e.g. not just invalid player)
+                    if (e instanceof Error && e.message !== 'Invalid playerID') {
+                        console.warn(`RoadAdvisor: Error scoring vertex ${vId}`, e);
+                    }
                 }
             }
 

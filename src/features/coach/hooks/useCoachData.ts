@@ -73,11 +73,19 @@ export const useCoachData = (
         const vals = allScores.map(s => s.score);
         const sorted = [...allScores].sort((a, b) => b.score - a.score);
         // Identify top 3 based on ID (could be vertex or edge)
-        const top3Ids = sorted.slice(0, 3).map(s => s.edgeId || s.vertexId);
+        const top3Ids = sorted.slice(0, 3)
+            .map(s => s.edgeId || s.vertexId || '')
+            .filter(Boolean);
 
         // Convert to Map for O(1) Lookup
         // We prioritize edgeId if available, otherwise vertexId
-        const recMap = new Map(allScores.map(rec => [rec.edgeId || rec.vertexId, rec]));
+        const recMap = new Map<string, CoachRecommendation>();
+        allScores.forEach(rec => {
+            const id = rec.edgeId || rec.vertexId;
+            if (id) {
+                recMap.set(id, rec);
+            }
+        });
 
         return {
             recommendations: recMap,

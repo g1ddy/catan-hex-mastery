@@ -1,6 +1,7 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, GameAction, BotMove } from '../game/core/types';
-import { Coach, CoachRecommendation } from '../game/analysis/coach';
+import { Coach } from '../game/analysis/coach';
+import { CoachRecommendation } from '../game/analysis/types';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
@@ -51,6 +52,15 @@ export class BotCoach {
         // Get scores from Coach
         const recommendations = scoreFn(candidateIds);
         const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+
+        // Shuffle candidates if profile requests randomization to break ties
+        if (this.profile.randomize) {
+            for (let i = specificMoves.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                // eslint-disable-next-line security/detect-object-injection
+                [specificMoves[i], specificMoves[j]] = [specificMoves[j], specificMoves[i]];
+            }
+        }
 
         // Find the single best move
         const bestMove = specificMoves.reduce((best, current) => {
@@ -120,8 +130,11 @@ export class BotCoach {
             });
             const rankedMoves: GameAction[] = [];
             bestSpots.forEach(spot => {
-                const move = movesByVertex.get(spot.vertexId);
-                if (move) rankedMoves.push(move);
+                // vertexId is mandatory for settlement spots, but safety check anyway
+                if (spot.vertexId) {
+                    const move = movesByVertex.get(spot.vertexId);
+                    if (move) rankedMoves.push(move);
+                }
             });
             return rankedMoves.length > 0 ? rankedMoves : allMoves;
         }

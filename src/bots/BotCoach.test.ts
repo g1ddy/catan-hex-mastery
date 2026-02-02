@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 import { Ctx } from 'boardgame.io';
 import { BotCoach } from './BotCoach';
-import { GameState, MakeMoveAction, MoveArguments } from '../game/core/types';
+import { GameState, MakeMoveAction } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
-import { BotProfile } from './profiles/BotProfile';
+import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 // Mock dependencies
 jest.mock('../game/analysis/coach');
@@ -27,7 +27,7 @@ jest.mock('../game/geometry/hexUtils', () => ({
 }));
 
 // Helper to create mock Redux actions (simplified)
-const mockAction = <K extends keyof MoveArguments>(moveType: K, args: MoveArguments[K] = [] as any): MakeMoveAction => ({
+const mockAction = (moveType: string, args: any[] = []): MakeMoveAction => ({
     type: 'MAKE_MOVE',
     payload: { type: moveType, args, playerID: '0' } as any
 });
@@ -69,6 +69,7 @@ describe('BotCoach', () => {
         (coach.getBestCitySpots as jest.Mock).mockReturnValue([]);
         (coach.getAllSettlementScores as jest.Mock).mockReturnValue([]);
         (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
+        (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
 
         botCoach = new BotCoach(G, coach);
         mockCtx = { currentPlayer: '0' } as Ctx;
@@ -257,6 +258,155 @@ describe('BotCoach', () => {
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('buildRoad');
+        });
+    });
+
+    describe('Dynamic Logic', () => {
+        let player: any;
+
+        beforeEach(() => {
+            player = G.players['0'];
+            // Reset mocks for specific tests
+            (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
+        });
+
+        it('should penalize road building when suffering from road fatigue', () => {
+            player.roads = new Array(10).fill('r');
+            player.settlements = ['s1'];
+
+            const moves = [
+                mockAction('buildRoad', ['e1']),
+                mockAction('endTurn')
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            // Road penalized heavily
+            expect(actions[0].payload.type).toBe('endTurn');
+        });
+
+        it('should NOT penalize road building when ratio is healthy', () => {
+            player.roads = ['r1', 'r2'];
+            player.settlements = ['s1'];
+
+            const moves = [
+                mockAction('buildRoad', ['e1']),
+                mockAction('endTurn')
+            ];
+
+            // Use Aggro profile where Road > EndTurn
+            const aggroProfile: BotProfile = {
+                ...BALANCED_PROFILE,
+                weights: { ...BALANCED_PROFILE.weights, buildRoad: 2.0 }
+            };
+            const aggroCoach = new BotCoach(G, coach, aggroProfile);
+
+            const result = aggroCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('buildRoad');
+        });
+
+        it('should boost settlement building when affordable', () => {
+            // Override affordable check
+            const costsMock = require('../game/mechanics/costs');
+            costsMock.getAffordableBuilds.mockReturnValue({
+                settlement: true, city: false, road: false, devCard: false
+            });
+
+            const moves = [
+                mockAction('endTurn'),
+                mockAction('buildSettlement', ['v1'])
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('buildSettlement');
+        });
+
+        it('should boost tradeBank when settlement is needed but not affordable', () => {
+            const costsMock = require('../game/mechanics/costs');
+            costsMock.getAffordableBuilds.mockReturnValue({
+                settlement: false, city: false, road: false, devCard: false
+            });
+
+            const moves = [
+                mockAction('endTurn'),
+                mockAction('tradeBank')
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('tradeBank');
+        });
+
+        it('should shuffle road moves to provide variety', () => {
+            const aggroProfile: BotProfile = {
+                ...BALANCED_PROFILE,
+                weights: { ...BALANCED_PROFILE.weights, buildRoad: 2.0 }
+            };
+            const aggroCoach = new BotCoach(G, coach, aggroProfile);
+
+            const moves = [
+                mockAction('buildRoad', ['e1']),
+                mockAction('buildRoad', ['e2']),
+                mockAction('buildRoad', ['e3']),
+                mockAction('buildRoad', ['e4']),
+                mockAction('buildRoad', ['e5']),
+            ];
+
+            const results = new Set<string>();
+            for (let i = 0; i < 20; i++) {
+                const res = aggroCoach.filterOptimalMoves([...moves], '0', mockCtx) as MakeMoveAction[];
+                if (res[0].payload.type === 'buildRoad') {
+                    // Extract args safely
+                    const args = res[0].payload.args as string[];
+                    results.add(args[0]);
+                }
+            }
+
+            expect(results.size).toBeGreaterThan(1);
+        });
+
+        it('should ban tradeBank if coach evaluates unsafe', () => {
+            (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: false, reason: 'Unsafe' });
+
+            const costsMock = require('../game/mechanics/costs');
+            costsMock.getAffordableBuilds.mockReturnValue({
+                settlement: false, city: false, road: false, devCard: false
+            });
+
+            const moves = [
+                mockAction('endTurn'),
+                mockAction('tradeBank')
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('endTurn');
+        });
+
+        it('should ALLOW tradeBank if coach evaluates safe', () => {
+            (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
+
+            const costsMock = require('../game/mechanics/costs');
+            costsMock.getAffordableBuilds.mockReturnValue({
+                settlement: false, city: false, road: false, devCard: false
+            });
+
+            const moves = [
+                mockAction('endTurn'),
+                mockAction('tradeBank')
+            ];
+
+            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const actions = result as MakeMoveAction[];
+
+            expect(actions[0].payload.type).toBe('tradeBank');
         });
     });
 });
