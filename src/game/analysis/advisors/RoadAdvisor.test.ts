@@ -13,6 +13,7 @@ jest.mock('../../geometry/hexUtils', () => ({
 }));
 
 describe('RoadAdvisor', () => {
+    // Tests for RoadAdvisor logic including BFS and scoring
     let G: GameState;
     let spatialAdvisor: jest.Mocked<SpatialAdvisor>;
     let roadAdvisor: RoadAdvisor;
