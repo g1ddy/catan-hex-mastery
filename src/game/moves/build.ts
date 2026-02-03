@@ -68,7 +68,10 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     player.resources.wheat -= cost.wheat;
 };
 
-export const endTurn: Move<GameState> = ({ events }) => {
+export const endTurn: Move<GameState> = ({ G, ctx, events }) => {
+    // 1. Delegate Validation to Rule Engine
+    RuleEngine.validateMoveOrThrow(G, ctx, 'endTurn', []);
+
     if (events && events.endTurn) {
         events.endTurn();
     }
