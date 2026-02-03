@@ -14,7 +14,7 @@ export interface OverlayVertexProps {
     // Interaction
     isClickable: boolean;
     isGhost: boolean;
-    onClick: () => void;
+    onClick: (vId: string) => void;
     buildMode: BuildMode;
     // Coach
     recommendation?: {
@@ -36,7 +36,7 @@ export const OverlayVertex = React.memo(({
     return (
         <g className="group" onClick={(e) => {
             e.stopPropagation();
-            if (isClickable) onClick();
+            if (isClickable) onClick(vId);
         }}>
             <circle
                 cx={cx} cy={cy}

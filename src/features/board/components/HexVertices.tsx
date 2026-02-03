@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
@@ -35,6 +35,28 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
     vertices, G, ctx, moves, buildMode, setBuildMode, uiMode,
     validSettlements, validCities, coachData, showResourceHeatmap, currentHexIdStr
 }) => {
+    // Stable handler setup
+    const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities });
+    stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities };
+
+    const handleVertexClick = useCallback((vId: string) => {
+        const { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities } = stateRef.current;
+        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const isSetup = ctx.phase === PHASES.SETUP;
+        const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
+
+        if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
+            safeMove(() => moves.placeSettlement(vId));
+        } else if (isActingStage) {
+            if (buildMode === 'settlement' && validSettlements.has(vId)) {
+                safeMove(() => moves.buildSettlement(vId));
+                setBuildMode(null);
+            } else if (buildMode === 'city' && validCities.has(vId)) {
+                safeMove(() => moves.buildCity(vId));
+                setBuildMode(null);
+            }
+        }
+    }, []);
 
     return (
         <>
@@ -53,7 +75,6 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                 let recommendationData: CoachRecommendation | undefined;
                 let heatmapColor = "";
                 let isTop3 = false;
-                let clickAction = () => {};
 
                 const applyCoachRec = () => {
                     const rec = coachData.recommendations.get(vId);
@@ -67,23 +88,14 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                 if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
                     isClickable = true;
                     isGhost = true;
-                    clickAction = () => safeMove(() => moves.placeSettlement(vId));
                     applyCoachRec();
                 } else if (isActingStage) {
                     if (buildMode === 'settlement' && validSettlements.has(vId)) {
                          isClickable = true;
                          isGhost = true;
-                         clickAction = () => {
-                             safeMove(() => moves.buildSettlement(vId));
-                             setBuildMode(null);
-                         };
                          applyCoachRec();
                     } else if (buildMode === 'city' && validCities.has(vId)) {
                          isClickable = true;
-                         clickAction = () => {
-                              safeMove(() => moves.buildCity(vId));
-                              setBuildMode(null);
-                         };
                          applyCoachRec();
                     }
                 }
@@ -92,7 +104,7 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                     <OverlayVertex
                         key={vId} vId={vId} cx={vData.x} cy={vData.y} vertex={vertex}
                         ownerColor={ownerColor} isClickable={isClickable} isGhost={isGhost}
-                        onClick={clickAction} buildMode={buildMode}
+                        onClick={handleVertexClick} buildMode={buildMode}
                         recommendation={recommendationData ? { heatmapColor, isTop3, data: recommendationData } : undefined}
                         showResourceHeatmap={showResourceHeatmap}
                     />
