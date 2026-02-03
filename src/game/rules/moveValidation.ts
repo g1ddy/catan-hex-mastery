@@ -1,4 +1,6 @@
 import { GameState, RollStatus } from '../core/types';
+import { Ctx } from 'boardgame.io';
+import { STAGES } from '../core/constants';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './economy';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
 import { calculateTrade, TradeResult, getExchangeRates } from '../mechanics/trade';
@@ -81,6 +83,22 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
             }
             return { isValid: false, reason: "The chosen victim has no resources to steal." };
         }
+    }
+
+    return { isValid: true };
+};
+
+/**
+ * Validates the "End Turn" move.
+ */
+export const validateEndTurn = (G: GameState, ctx: Ctx, playerID: string): ValidationResult => {
+    if (!isValidPlayer(playerID, G)) {
+        return { isValid: false, reason: "Invalid player" };
+    }
+
+    const stage = ctx.activePlayers?.[playerID];
+    if (stage !== STAGES.ACTING) {
+        return { isValid: false, reason: "You can only end your turn during the acting phase." };
     }
 
     return { isValid: true };

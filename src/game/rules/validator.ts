@@ -1,6 +1,6 @@
 import { GameState, MoveArguments } from '../core/types';
 import { Ctx } from 'boardgame.io';
-import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll, validateResolveRoll } from './moveValidation';
+import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll, validateResolveRoll, validateEndTurn } from './moveValidation';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -51,7 +51,7 @@ export const RuleEngine = {
                 return validateResolveRoll(G, playerID);
 
             case 'endTurn':
-                return { isValid: true };
+                return validateEndTurn(G, ctx, playerID);
 
             default:
                 return { isValid: false, reason: `Unknown move: ${moveName}` };
