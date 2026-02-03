@@ -6,7 +6,7 @@ import { safeCheck } from '../../../game/core/utils/objectUtils';
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export const getPrimaryHexOwner = (parts: string[], G: GameState): string => {
-    return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0];
+    return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0] || '';
 };
 
 export const renderTooltipContent = (coachData: CoachData) => ({ content }: { content: string | null; activeAnchor: HTMLElement | null }): React.ReactNode => {
