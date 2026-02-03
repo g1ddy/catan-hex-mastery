@@ -117,10 +117,15 @@ export class RoadAdvisor {
                 // Port Score
                 const portScore = this.getPortScore(vId, playerID, playerProduction);
                 if (portScore) {
-                    const decayed = portScore.score * Math.pow(DECAY_FACTOR, dist - 1);
-                    if (decayed > maxScore) {
-                        maxScore = decayed;
-                        bestReason = `${portScore.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
+                    // Ensure the port location is a valid settlement spot
+                    const validity = validateSettlementLocation(this.G, vId);
+
+                    if (validity.isValid) {
+                        const decayed = portScore.score * Math.pow(DECAY_FACTOR, dist - 1);
+                        if (decayed > maxScore) {
+                            maxScore = decayed;
+                            bestReason = `${portScore.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
+                        }
                     }
                 }
 
