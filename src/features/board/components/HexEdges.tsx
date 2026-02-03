@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
@@ -31,6 +31,23 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
     edges, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode,
     validRoads, highlightedPortEdgeId, currentHexIdStr, coachData
 }) => {
+    // Stable handler setup
+    const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads });
+    stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads };
+
+    const handleEdgeClick = useCallback((eId: string) => {
+        const { ctx, moves, setBuildMode, setUiMode } = stateRef.current;
+        const isSetup = ctx.phase === PHASES.SETUP;
+
+        const move = isSetup ? moves.placeRoad : moves.buildRoad;
+        safeMove(() => move(eId));
+
+        if (isSetup) {
+            setUiMode('viewing');
+        } else {
+            setBuildMode(null);
+        }
+    }, []);
 
     return (
         <>
@@ -63,7 +80,6 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
 
                 let isClickable = false;
                 let isGhost = false;
-                let clickAction = () => {};
                 let isRecommended = false;
                 let heatmapColor: string | undefined;
                 let tooltip: string | undefined;
@@ -82,21 +98,14 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                                 tooltip = `${rec.reason} (Score: ${rec.score})`;
                             }
                         }
-
-                        clickAction = () => {
-                            const move = isSetup ? moves.placeRoad : moves.buildRoad;
-                            safeMove(() => move(eId));
-                            if (isSetup) setUiMode('viewing');
-                            else setBuildMode(null);
-                        };
                     }
                 }
 
                 return (
                     <React.Fragment key={eId}>
-                        <OverlayEdge cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
+                        <OverlayEdge eId={eId} cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
                                      ownerColor={ownerColor} isClickable={isClickable}
-                                     isGhost={isGhost} onClick={clickAction}
+                                     isGhost={isGhost} onClick={handleEdgeClick}
                                      isRecommended={isRecommended}
                                      heatmapColor={heatmapColor}
                                      tooltip={tooltip} />

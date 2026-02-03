@@ -1,6 +1,7 @@
 import React from 'react';
 
 export interface OverlayEdgeProps {
+    eId: string;
     cx: number;
     cy: number;
     angle: number;
@@ -10,7 +11,7 @@ export interface OverlayEdgeProps {
     // Interaction
     isClickable: boolean;
     isGhost: boolean;
-    onClick: () => void;
+    onClick: (eId: string) => void;
     // Recommendations
     isRecommended?: boolean;
     heatmapColor?: string;
@@ -18,7 +19,7 @@ export interface OverlayEdgeProps {
 }
 
 export const OverlayEdge = React.memo(({
-    cx, cy, angle, isOccupied, ownerColor,
+    eId, cx, cy, angle, isOccupied, ownerColor,
     isClickable, isGhost, onClick,
     isRecommended, heatmapColor, tooltip
 }: OverlayEdgeProps) => {
@@ -29,7 +30,7 @@ export const OverlayEdge = React.memo(({
     return (
          <g onClick={(e) => {
             e.stopPropagation();
-            if (isClickable) onClick();
+            if (isClickable) onClick(eId);
         }}
         data-tooltip-id={tooltip ? "ui-tooltip" : undefined}
         data-tooltip-content={tooltip}
