@@ -97,6 +97,9 @@ export const validateEndTurn = (G: GameState, ctx: Ctx, playerID: string): Valid
     }
 
     const stage = ctx.activePlayers?.[playerID];
+    if (!stage) {
+        return { isValid: false, reason: "It is not your turn to act." };
+    }
     if (stage !== STAGES.ACTING) {
         return { isValid: false, reason: "You can only end your turn during the acting phase." };
     }

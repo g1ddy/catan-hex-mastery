@@ -46,6 +46,6 @@ describe('endTurn validation', () => {
         ctx.activePlayers = { '1': STAGES.ACTING };
         const result = RuleEngine.validateMove(G, ctx, 'endTurn', []);
         expect(result.isValid).toBe(false);
-        expect(result.reason).toContain('acting phase');
+        expect(result.reason).toBe("It is not your turn to act.");
     });
 });
