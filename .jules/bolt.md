@@ -9,3 +9,7 @@
 ## 2024-10-24 - Hoisting Global Calculations from List Items
 **Learning:** Calling hooks that scan the entire game state (e.g., `useBoardInteractions`) inside a list item component (e.g., `HexOverlays`) causes O(N) redundant calculations on every render.
 **Action:** Lift the calculation to the parent list container (`BoardLayer`) and pass the result down. Use granular checks in `React.memo`'s comparison function to prevent re-renders when the global result changes but the local item is unaffected.
+
+## 2025-02-18 - Stable Event Handlers in Hex Lists
+**Learning:** `HexVertices` and `HexEdges` were defeating `React.memo` in their children (`OverlayVertex`, `OverlayEdge`) by creating new `onClick` closures in every render loop.
+**Action:** Pass item IDs to a stable `useCallback` handler instead of creating inline arrow functions for each item.

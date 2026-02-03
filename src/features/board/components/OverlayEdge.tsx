@@ -1,6 +1,7 @@
 import React from 'react';
 
 export interface OverlayEdgeProps {
+    eId: string;
     cx: number;
     cy: number;
     angle: number;
@@ -10,18 +11,18 @@ export interface OverlayEdgeProps {
     // Interaction
     isClickable: boolean;
     isGhost: boolean;
-    onClick: () => void;
+    onClick: (eId: string) => void;
 }
 
 export const OverlayEdge = React.memo(({
-    cx, cy, angle, isOccupied, ownerColor,
+    eId, cx, cy, angle, isOccupied, ownerColor,
     isClickable, isGhost, onClick
 }: OverlayEdgeProps) => {
 
     return (
          <g onClick={(e) => {
             e.stopPropagation();
-            if (isClickable) onClick();
+            if (isClickable) onClick(eId);
         }}>
             <circle cx={cx} cy={cy} r={2.5} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />
             {isOccupied && (
