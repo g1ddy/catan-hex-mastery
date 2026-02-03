@@ -165,7 +165,7 @@ describe('RoadAdvisor', () => {
         });
 
         // But v2 is invalid (too close to another settlement)
-        (validateSettlementLocation as jest.Mock).mockImplementation((state, vId) => {
+        (validateSettlementLocation as jest.Mock).mockImplementation((_, vId) => {
             if (vId === 'v2') return { isValid: false };
             return { isValid: true };
         });
