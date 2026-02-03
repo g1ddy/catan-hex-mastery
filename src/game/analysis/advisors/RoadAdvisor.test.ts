@@ -3,6 +3,7 @@ import { SpatialAdvisor } from './SpatialAdvisor';
 import { GameState } from '../../core/types';
 import { calculatePlayerPotentialPips } from '../analyst';
 import { getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
+import { validateSettlementLocation } from '../../rules/spatial';
 
 // Mock dependencies
 jest.mock('./SpatialAdvisor');
@@ -10,6 +11,9 @@ jest.mock('../analyst');
 jest.mock('../../geometry/hexUtils', () => ({
     getVerticesForEdge: jest.fn(),
     getEdgesForVertex: jest.fn(),
+}));
+jest.mock('../../rules/spatial', () => ({
+    validateSettlementLocation: jest.fn()
 }));
 
 describe('RoadAdvisor', () => {
@@ -43,6 +47,9 @@ describe('RoadAdvisor', () => {
         (calculatePlayerPotentialPips as jest.Mock).mockReturnValue({
             '0': { wood: 5, brick: 0 }
         });
+
+        // Default: everything is valid
+        (validateSettlementLocation as jest.Mock).mockReturnValue({ isValid: true });
 
         roadAdvisor = new RoadAdvisor(G, spatialAdvisor);
 
@@ -82,17 +89,7 @@ describe('RoadAdvisor', () => {
         const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
 
         expect(result.length).toBeGreaterThan(0);
-        // Distance 1: e_start connects to v1.
-        // Distance 2: v1 connects to v2 (via e2).
-        // e_start -> v1 (dist 1) -> e2 -> v2 (dist 2).
-        // Wait, logic:
-        // BFS starts at v1 (dist 1).
-        // v1 has no score.
-        // Neighbors of v1: v2 (dist 2).
-        // v2 score 10.
-        // Decayed score: 10 * 0.8^(2-1) = 10 * 0.8 = 8.
-
-        expect(result[0].score).toBeCloseTo(8);
+        expect(result[0].score).toBeCloseTo(8); // 10 * 0.8
         expect(result[0].edgeId).toBe('e_start');
     });
 
@@ -101,16 +98,10 @@ describe('RoadAdvisor', () => {
         // e_start -> v1 -> e2 -> v2 -> e3 -> v3
         G.board.ports['p_wood'] = { vertices: ['v3'], type: 'wood' } as any;
 
-        // Player has surplus wood (mocked in beforeEach)
-
         const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
 
-        // Port score: 5 (wood prod) * 2.0 (multiplier) = 10.
-        // Distance: v3 is dist 3.
-        // Decay: 10 * 0.8^(3-1) = 10 * 0.64 = 6.4.
-
         expect(result.length).toBeGreaterThan(0);
-        expect(result[0].score).toBeCloseTo(6.4);
+        expect(result[0].score).toBeCloseTo(6.4); // 10 * 0.8^2
         expect(result[0].reason).toContain('Leads to wood Port');
     });
 
@@ -126,8 +117,6 @@ describe('RoadAdvisor', () => {
 
         const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
 
-        // BFS should hit v2 (opponent), stop, and NOT queue v3.
-        // Should find nothing.
         expect(result).toEqual([]);
     });
 
@@ -143,8 +132,6 @@ describe('RoadAdvisor', () => {
 
         const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
 
-        // Should reach v3.
-        // Dist 3. Score 10 * 0.64 = 6.4.
         expect(result.length).toBeGreaterThan(0);
         expect(result[0].score).toBeCloseTo(6.4);
     });
@@ -152,12 +139,10 @@ describe('RoadAdvisor', () => {
     test('should respect MAX_DEPTH', () => {
         // Create a long chain
         (getEdgesForVertex as jest.Mock).mockImplementation((v) => {
-            // v0->e0->v1->e1->v2 ...
             const idx = parseInt(v.replace('v', ''));
             return [`e${idx-1}`, `e${idx}`];
         });
         (getVerticesForEdge as jest.Mock).mockImplementation((e) => {
-            // e0 connects v0, v1
             const idx = parseInt(e.replace('e', ''));
             return [`v${idx}`, `v${idx+1}`];
         });
@@ -169,8 +154,31 @@ describe('RoadAdvisor', () => {
         });
 
         const result = roadAdvisor.getRoadRecommendations('0', ['e0']);
+        expect(result).toEqual([]);
+    });
 
-        // MAX_DEPTH is 6. v10 is too far.
+    test('should NOT score high pip vertex if it is too close to another settlement', () => {
+        // Setup: v2 is a high score spot
+        (spatialAdvisor.scoreVertex as jest.Mock).mockImplementation((v) => {
+            if (v === 'v2') return { score: 100, reason: 'Amazing Spot' };
+            return { score: 0 };
+        });
+
+        // But v2 is invalid (too close to another settlement)
+        (validateSettlementLocation as jest.Mock).mockImplementation((_, vId) => {
+            if (vId === 'v2') return { isValid: false };
+            return { isValid: true };
+        });
+
+        const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
+
+        // e_start -> v1 -> e2 -> v2
+        // We evaluate v2.
+        // scoreVertex says 100.
+        // validateSettlementLocation says false.
+        // Should NOT count 100.
+
+        // Should return empty (if nothing else) or score 0
         expect(result).toEqual([]);
     });
 });
