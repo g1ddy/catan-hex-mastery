@@ -181,4 +181,25 @@ describe('RoadAdvisor', () => {
         // Should return empty (if nothing else) or score 0
         expect(result).toEqual([]);
     });
+
+    test('should NOT score port if it is an invalid settlement location', () => {
+        // Setup: v3 is a port (distance 3)
+        // e_start -> v1 -> e2 -> v2 -> e3 -> v3
+        G.board.ports['p_wood'] = { vertices: ['v3'], type: 'wood' } as any;
+
+        // Make v3 an invalid settlement location (e.g., too close to another settlement)
+        (validateSettlementLocation as jest.Mock).mockImplementation((_, vId) => {
+            if (vId === 'v3') return { isValid: false, reason: 'Too close' };
+            return { isValid: true };
+        });
+
+        // Ensure no other scores interfere
+        (spatialAdvisor.scoreVertex as jest.Mock).mockReturnValue({ score: 0 });
+
+        const result = roadAdvisor.getRoadRecommendations('0', ['e_start']);
+
+        // Current behavior (bug): It will return a score because it sees the port and ignores validateSettlementLocation
+        // Desired behavior (fix): It should return empty recommendations
+        expect(result).toEqual([]);
+    });
 });
