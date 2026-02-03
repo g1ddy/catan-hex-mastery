@@ -9,6 +9,8 @@ import { HEX_CORNERS } from '../../../game/geometry/staticGeometry';
 import { OverlayEdge } from './OverlayEdge';
 import { Port } from './Port';
 import { getPrimaryHexOwner } from './helpers';
+import { CoachData } from './HexOverlays';
+import { getHeatmapColor } from '../../../game/analysis/coach';
 
 interface HexEdgesProps {
     edges: { id: string; parts: string[]; x: number; y: number }[];
@@ -22,11 +24,12 @@ interface HexEdgesProps {
     validRoads: Set<string>;
     highlightedPortEdgeId?: string;
     currentHexIdStr: string;
+    coachData?: CoachData;
 }
 
 export const HexEdges: React.FC<HexEdgesProps> = ({
     edges, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode,
-    validRoads, highlightedPortEdgeId, currentHexIdStr
+    validRoads, highlightedPortEdgeId, currentHexIdStr, coachData
 }) => {
 
     return (
@@ -61,12 +64,25 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                 let isClickable = false;
                 let isGhost = false;
                 let clickAction = () => {};
+                let isRecommended = false;
+                let heatmapColor: string | undefined;
+                let tooltip: string | undefined;
 
                 if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
                     (isActingStage && buildMode === 'road')) {
                     if (validRoads.has(eId)) {
                         isClickable = true;
                         isGhost = true;
+
+                        if (coachData) {
+                            const rec = coachData.recommendations.get(eId);
+                            if (rec) {
+                                isRecommended = coachData.top3Set.has(eId);
+                                heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
+                                tooltip = `${rec.reason} (Score: ${rec.score})`;
+                            }
+                        }
+
                         clickAction = () => {
                             const move = isSetup ? moves.placeRoad : moves.buildRoad;
                             safeMove(() => move(eId));
@@ -80,7 +96,10 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                     <React.Fragment key={eId}>
                         <OverlayEdge cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
                                      ownerColor={ownerColor} isClickable={isClickable}
-                                     isGhost={isGhost} onClick={clickAction} />
+                                     isGhost={isGhost} onClick={clickAction}
+                                     isRecommended={isRecommended}
+                                     heatmapColor={heatmapColor}
+                                     tooltip={tooltip} />
                         {portElement}
                     </React.Fragment>
                 );

@@ -12,6 +12,7 @@ export interface BotProfile {
     };
 
     // Strategic Preferences
+    randomize?: boolean; // Whether to randomize tied moves (default: false/undefined)
     expansion: {
         // How much does it value blocking others? (0-1)
         aggressiveness: number;
@@ -22,6 +23,7 @@ export interface BotProfile {
 
 export const BALANCED_PROFILE: BotProfile = {
     name: "Balanced",
+    randomize: true,
     description: "A balanced bot that prioritizes Cities and Settlements but builds Roads when needed.",
     weights: {
         buildCity: 100,

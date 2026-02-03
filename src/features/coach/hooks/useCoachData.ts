@@ -1,7 +1,7 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
 import { CoachRecommendation, Coach, CoachCtx } from '../../../game/analysis/coach';
-import { PHASES } from '../../../game/core/constants';
+import { PHASES, STAGES } from '../../../game/core/constants';
 import { BuildMode, UiMode } from '../../shared/types';
 import { Ctx } from 'boardgame.io';
 
@@ -28,12 +28,16 @@ export const useCoachData = (
             return EMPTY_COACH_DATA;
         }
 
-        // Active when placing settlement in Setup OR Gameplay, OR City in Gameplay
-        const isSetupPlacing = ctx.phase === PHASES.SETUP && uiMode === 'placing';
+        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+
+        // Active modes
+        const isSetupSettlement = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_SETTLEMENT;
+        const isSetupRoad = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_ROAD;
         const isGameSettlement = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
         const isGameCity = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'city';
+        const isGameRoad = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'road';
 
-        if (!isSetupPlacing && !isGameSettlement && !isGameCity) {
+        if (!isSetupSettlement && !isSetupRoad && !isGameSettlement && !isGameCity && !isGameRoad) {
             return EMPTY_COACH_DATA;
         }
 
@@ -51,7 +55,12 @@ export const useCoachData = (
             if (typeof coachInstance.getBestCitySpots === 'function') {
                 allScores = coachInstance.getBestCitySpots(ctx.currentPlayer, ctx, candidates);
             }
+        } else if (isSetupRoad || isGameRoad) {
+            if (typeof coachInstance.getBestRoadSpots === 'function') {
+                allScores = coachInstance.getBestRoadSpots(ctx.currentPlayer, ctx);
+            }
         } else {
+            // Default to Settlement Logic (Setup or Gameplay)
             if (typeof coachInstance.getAllSettlementScores === 'function') {
                 allScores = coachInstance.getAllSettlementScores(ctx.currentPlayer, ctx);
             }
@@ -63,10 +72,20 @@ export const useCoachData = (
 
         const vals = allScores.map(s => s.score);
         const sorted = [...allScores].sort((a, b) => b.score - a.score);
-        const top3Ids = sorted.slice(0, 3).map(s => s.vertexId);
+        // Identify top 3 based on ID (could be vertex or edge)
+        const top3Ids = sorted.slice(0, 3)
+            .map(s => s.edgeId || s.vertexId || '')
+            .filter(Boolean);
 
         // Convert to Map for O(1) Lookup
-        const recMap = new Map(allScores.map(rec => [rec.vertexId, rec]));
+        // We prioritize edgeId if available, otherwise vertexId
+        const recMap = new Map<string, CoachRecommendation>();
+        allScores.forEach(rec => {
+            const id = rec.edgeId || rec.vertexId;
+            if (id) {
+                recMap.set(id, rec);
+            }
+        });
 
         return {
             recommendations: recMap,

@@ -1,6 +1,7 @@
 import { Ctx } from 'boardgame.io';
 import { GameState, GameAction, BotMove } from '../game/core/types';
-import { Coach, CoachRecommendation } from '../game/analysis/coach';
+import { Coach } from '../game/analysis/coach';
+import { CoachRecommendation } from '../game/analysis/types';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { isValidPlayer } from '../game/core/validation';
 import { getAffordableBuilds } from '../game/mechanics/costs';
@@ -14,6 +15,7 @@ const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
 export class BotCoach {
+    // Bot logic using Coach recommendations
     private G: GameState;
     private coach: Coach;
     private profile: BotProfile;
@@ -50,7 +52,16 @@ export class BotCoach {
 
         // Get scores from Coach
         const recommendations = scoreFn(candidateIds);
-        const recommendationMap = new Map(recommendations.map(r => [r.vertexId, r.score]));
+        const recommendationMap = new Map(recommendations.map(r => [r.edgeId || r.vertexId || '', r.score]));
+
+        // Shuffle candidates if profile requests randomization to break ties
+        if (this.profile.randomize) {
+            for (let i = specificMoves.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                // eslint-disable-next-line security/detect-object-injection
+                [specificMoves[i], specificMoves[j]] = [specificMoves[j], specificMoves[i]];
+            }
+        }
 
         // Find the single best move
         const bestMove = specificMoves.reduce((best, current) => {
@@ -120,8 +131,11 @@ export class BotCoach {
             });
             const rankedMoves: GameAction[] = [];
             bestSpots.forEach(spot => {
-                const move = movesByVertex.get(spot.vertexId);
-                if (move) rankedMoves.push(move);
+                // vertexId is mandatory for settlement spots, but safety check anyway
+                if (spot.vertexId) {
+                    const move = movesByVertex.get(spot.vertexId);
+                    if (move) rankedMoves.push(move);
+                }
             });
             return rankedMoves.length > 0 ? rankedMoves : allMoves;
         }
@@ -182,6 +196,23 @@ export class BotCoach {
             (candidates) => this.coach.getBestCitySpots(playerID, ctx, candidates)
         );
         if (refinedCities) return refinedCities;
+
+        // Refine Roads (pick best spot)
+        const refinedRoads = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'buildRoad',
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+        );
+        if (refinedRoads) return refinedRoads;
+
+        const refinedSetupRoads = this.refineTopMoves(
+            topMoves,
+            sortedMoves,
+            'placeRoad',
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+        );
+        if (refinedSetupRoads) return refinedSetupRoads;
 
         // Shuffle ties for Top Tier moves if no specific refinement (e.g. Roads)
         // Only shuffle if ALL top moves are roads to avoid mixing types incorrectly.
