@@ -3,6 +3,7 @@ import { CoachRecommendation } from '../types';
 import { SpatialAdvisor } from './SpatialAdvisor';
 import { calculatePlayerPotentialPips } from '../analyst';
 import { getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
+import { validateSettlementLocation } from '../../rules/spatial';
 
 const DECAY_FACTOR = 0.8;
 const PORT_RESOURCE_MULTIPLIER = 2.0;
@@ -125,13 +126,18 @@ export class RoadAdvisor {
 
                 // Settlement Score
                 try {
-                    const rec = this.spatialAdvisor.scoreVertex(vId, playerID);
-                    if (rec.score > 0) {
-                         const decayed = rec.score * Math.pow(DECAY_FACTOR, dist - 1);
-                         if (decayed > maxScore) {
-                            maxScore = decayed;
-                            bestReason = `${rec.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
-                         }
+                    // Check if it's a valid settlement spot (distance rule)
+                    const validity = validateSettlementLocation(this.G, vId);
+
+                    if (validity.isValid) {
+                        const rec = this.spatialAdvisor.scoreVertex(vId, playerID);
+                        if (rec.score > 0) {
+                             const decayed = rec.score * Math.pow(DECAY_FACTOR, dist - 1);
+                             if (decayed > maxScore) {
+                                maxScore = decayed;
+                                bestReason = `${rec.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
+                             }
+                        }
                     }
                 } catch (e) {
                     // Log error only if it's unexpected (e.g. not just invalid player)

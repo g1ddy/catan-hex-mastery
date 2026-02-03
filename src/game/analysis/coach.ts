@@ -8,6 +8,7 @@ import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 import { RoadAdvisor } from './advisors/RoadAdvisor';
 import { CoachRecommendation } from './types';
+import { getEdgesForHex } from '../geometry/hexUtils';
 
 export type { CoachRecommendation } from './types';
 
@@ -107,6 +108,24 @@ export class Coach {
         }
 
         return this.roadAdvisor.getRoadRecommendations(playerID, Array.from(validRoads));
+    }
+
+    /**
+     * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
+     */
+    public getAllRoadScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G)) {
+            return [];
+        }
+
+        const allEdges = new Set<string>();
+        Object.values(this.G.board.hexes).forEach(hex => {
+            getEdgesForHex(hex.coords).forEach(eId => allEdges.add(eId));
+        });
+
+        const validUnoccupiedEdges = Array.from(allEdges).filter(eId => !this.G.board.edges[eId]);
+
+        return this.roadAdvisor.getRoadRecommendations(playerID, validUnoccupiedEdges);
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
