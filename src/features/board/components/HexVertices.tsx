@@ -40,7 +40,7 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities };
 
     const handleVertexClick = useCallback((vId: string) => {
-        const { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities } = stateRef.current;
+        const { ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities } = stateRef.current;
         const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
         const isSetup = ctx.phase === PHASES.SETUP;
         const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
