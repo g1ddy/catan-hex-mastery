@@ -40,18 +40,16 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities };
 
     const handleVertexClick = useCallback((vId: string) => {
-        const { ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities } = stateRef.current;
-        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const { ctx, moves, buildMode, setBuildMode } = stateRef.current;
         const isSetup = ctx.phase === PHASES.SETUP;
-        const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
-        if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
+        if (isSetup) {
             safeMove(() => moves.placeSettlement(vId));
-        } else if (isActingStage) {
-            if (buildMode === 'settlement' && validSettlements.has(vId)) {
+        } else {
+            if (buildMode === 'settlement') {
                 safeMove(() => moves.buildSettlement(vId));
                 setBuildMode(null);
-            } else if (buildMode === 'city' && validCities.has(vId)) {
+            } else if (buildMode === 'city') {
                 safeMove(() => moves.buildCity(vId));
                 setBuildMode(null);
             }

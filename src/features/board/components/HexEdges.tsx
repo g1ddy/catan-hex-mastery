@@ -36,19 +36,16 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads };
 
     const handleEdgeClick = useCallback((eId: string) => {
-        const { ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads } = stateRef.current;
+        const { ctx, moves, setBuildMode, setUiMode } = stateRef.current;
         const isSetup = ctx.phase === PHASES.SETUP;
-        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-        const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
-        if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
-            (isActingStage && buildMode === 'road')) {
-            if (validRoads.has(eId)) {
-                const move = isSetup ? moves.placeRoad : moves.buildRoad;
-                safeMove(() => move(eId));
-                if (isSetup) setUiMode('viewing');
-                else setBuildMode(null);
-            }
+        const move = isSetup ? moves.placeRoad : moves.buildRoad;
+        safeMove(() => move(eId));
+
+        if (isSetup) {
+            setUiMode('viewing');
+        } else {
+            setBuildMode(null);
         }
     }, []);
 
