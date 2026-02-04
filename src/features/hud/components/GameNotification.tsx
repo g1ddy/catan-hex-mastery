@@ -31,8 +31,12 @@ export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
                 return <ProductionNotification evt={displayNotification} players={G.players} isRolling={isRolling} />;
             case 'robber':
                 return <RobberNotification evt={displayNotification} players={G.players} />;
-            default:
-                return null;
+            default: {
+                // This ensures all `GameEvent` types are handled. If a new one is added,
+                // TypeScript will throw a compile-time error here.
+                const _exhaustiveCheck: never = displayNotification;
+                return _exhaustiveCheck;
+            }
         }
     };
 
