@@ -63,12 +63,15 @@ export const TurnControls: React.FC<TurnControlsProps> = ({
 
             {showLastRoll && (
                     <div
-                    className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50 cursor-help"
+                    className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50 cursor-help focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     data-tooltip-id="dice-tooltip"
                     data-tooltip-content={JSON.stringify({ d1: lastRoll[0], d2: lastRoll[1] })}
+                    tabIndex={0}
+                    role="img"
+                    aria-label={`Last roll: ${lastRollSum}`}
                     >
-                        <Dice className="text-blue-400" size={20} />
-                        <span className="text-xl font-bold text-white">{lastRollSum}</span>
+                        <Dice className="text-blue-400" size={20} aria-hidden="true" />
+                        <span className="text-xl font-bold text-white" aria-hidden="true">{lastRollSum}</span>
                     </div>
             )}
         </>
