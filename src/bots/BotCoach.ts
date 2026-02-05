@@ -202,7 +202,7 @@ export class BotCoach {
             topMoves,
             sortedMoves,
             'buildRoad',
-            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx, this.profile)
         );
         if (refinedRoads) return refinedRoads;
 
@@ -210,7 +210,7 @@ export class BotCoach {
             topMoves,
             sortedMoves,
             'placeRoad',
-            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx)
+            (_candidates) => this.coach.getBestRoadSpots(playerID, ctx, this.profile)
         );
         if (refinedSetupRoads) return refinedSetupRoads;
 

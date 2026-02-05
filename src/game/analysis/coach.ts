@@ -7,7 +7,7 @@ import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 import { RoadAdvisor } from './advisors/RoadAdvisor';
-import { CoachRecommendation } from './types';
+import { CoachRecommendation, AnalysisProfile } from './types';
 import { getEdgesForHex } from '../geometry/hexUtils';
 
 export type { CoachRecommendation } from './types';
@@ -94,7 +94,7 @@ export class Coach {
     /**
      * Calculates scores for all valid road spots.
      */
-    public getBestRoadSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+    public getBestRoadSpots(playerID: string, ctx: Ctx, profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -107,13 +107,13 @@ export class Coach {
             validRoads = getValidRoadSpots(this.G, playerID, false);
         }
 
-        return this.roadAdvisor.getRoadRecommendations(playerID, Array.from(validRoads));
+        return this.roadAdvisor.getRoadRecommendations(playerID, Array.from(validRoads), profile?.expansion.aggressiveness);
     }
 
     /**
      * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
      */
-    public getAllRoadScores(playerID: string, _ctx: Ctx): CoachRecommendation[] {
+    public getAllRoadScores(playerID: string, _ctx: Ctx, profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G)) {
             return [];
         }
@@ -125,7 +125,7 @@ export class Coach {
 
         const validUnoccupiedEdges = Array.from(allEdges).filter(eId => !this.G.board.edges[eId]);
 
-        return this.roadAdvisor.getRoadRecommendations(playerID, validUnoccupiedEdges);
+        return this.roadAdvisor.getRoadRecommendations(playerID, validUnoccupiedEdges, profile?.expansion.aggressiveness);
     }
 
     public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {

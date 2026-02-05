@@ -12,3 +12,10 @@ export interface CoachRecommendation {
         neededResources: string[];
     };
 }
+
+export interface AnalysisProfile {
+    expansion: {
+        aggressiveness: number;
+        diversityPreference?: number;
+    };
+}
