@@ -1,7 +1,6 @@
 import { RoadAdvisor } from './RoadAdvisor';
 import { SpatialAdvisor } from './SpatialAdvisor';
-import { GameState, BoardState, Hex, Player } from '../../core/types';
-import { CoachRecommendation } from '../types';
+import { GameState, BoardState, Player } from '../../core/types';
 import { safeSet } from '../../../game/core/utils/objectUtils';
 
 // Mock SpatialAdvisor
