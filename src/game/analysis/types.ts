@@ -5,6 +5,8 @@ export interface CoachRecommendation {
     reason: string;
     details: {
         pips: number;
+        distance?: number; // Added for Road Analysis
+        rawScore?: number; // Added for Road Analysis
         scarcityBonus: boolean;
         scarceResources: string[];
         diversityBonus: boolean;

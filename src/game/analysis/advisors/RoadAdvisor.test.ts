@@ -91,16 +91,38 @@ describe('RoadAdvisor', () => {
         roadAdvisor = new RoadAdvisor(G, mockSpatialAdvisor);
     });
 
-    test('Defensive profile should favor Near target (Wood)', () => {
-        const recs = roadAdvisor.getRoadRecommendations('0', ['e0'], 0.1);
-        expect(recs.length).toBeGreaterThan(0);
-        expect(recs[0].reason).toContain('wood');
-    });
+    test('Should return recommendations with raw scores and distances', () => {
+        const recs = roadAdvisor.getRoadRecommendations('0', ['e0']);
 
-    test('Aggressive profile should favor Far target (Ore)', () => {
-        const recs = roadAdvisor.getRoadRecommendations('0', ['e0'], 0.9);
         expect(recs.length).toBeGreaterThan(0);
-        expect(recs[0].reason).toContain('ore');
+
+        // Should find Ore (Far, 4 hops) and Wood (Near, 2 hops)
+        // Capitalization matters: RoadAdvisor outputs 'Leads to ${port.type} Port'
+        // But our test mock `calculatePlayerPotentialPips` returns lowercase keys 'wood', 'ore'.
+        // RoadAdvisor uses `port.type` from `G.board.ports`. In our mock `G`, ports are { type: 'wood' }.
+        // So output should be 'Leads to wood Port'.
+
+        // Let's inspect what we got if it fails
+        if (recs.length > 0 && !recs.some(r => r.reason.includes('wood'))) {
+             console.log('Recs:', JSON.stringify(recs, null, 2));
+        }
+
+        const oreRec = recs.find(r => r.reason.includes('ore'));
+        const woodRec = recs.find(r => r.reason.includes('wood'));
+
+        expect(woodRec).toBeDefined();
+        if (woodRec) {
+            expect(woodRec.details.distance).toBe(2);
+            // Prod (5) * Mult (2.0) = 10
+            expect(woodRec.details.rawScore).toBe(10);
+        }
+
+        expect(oreRec).toBeDefined();
+        if (oreRec) {
+            expect(oreRec.details.distance).toBe(4);
+            // Prod (7.5) * Mult (2.0) = 15
+            expect(oreRec.details.rawScore).toBe(15);
+        }
     });
 
     test('Should not pass through or build on opponent vertices', () => {
