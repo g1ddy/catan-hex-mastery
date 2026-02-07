@@ -7,7 +7,7 @@ import { STRATEGIC_ADVICE } from './adviceConstants';
 import { TradeAdvisor } from './advisors/TradeAdvisor';
 import { SpatialAdvisor } from './advisors/SpatialAdvisor';
 import { RoadAdvisor } from './advisors/RoadAdvisor';
-import { CoachRecommendation } from './types';
+import { CoachRecommendation, AnalysisProfile } from './types';
 import { getEdgesForHex } from '../geometry/hexUtils';
 
 export type { CoachRecommendation } from './types';
@@ -94,7 +94,7 @@ export class Coach {
     /**
      * Calculates scores for all valid road spots.
      */
-    public getBestRoadSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+    public getBestRoadSpots(playerID: string, ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -107,13 +107,16 @@ export class Coach {
             validRoads = getValidRoadSpots(this.G, playerID, false);
         }
 
+        // RoadAdvisor now returns multiple targets per edge (with raw scores/distances)
+        // It does not accept profile/aggressiveness anymore.
+        // Consumer (e.g. BotCoach) is responsible for applying decay logic.
         return this.roadAdvisor.getRoadRecommendations(playerID, Array.from(validRoads));
     }
 
     /**
      * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
      */
-    public getAllRoadScores(playerID: string, _ctx: Ctx): CoachRecommendation[] {
+    public getAllRoadScores(playerID: string, _ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G)) {
             return [];
         }

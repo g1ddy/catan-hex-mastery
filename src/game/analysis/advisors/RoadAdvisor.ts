@@ -5,10 +5,10 @@ import { calculatePlayerPotentialPips } from '../analyst';
 import { getVerticesForEdge, getEdgesForVertex } from '../../geometry/hexUtils';
 import { validateSettlementLocation } from '../../rules/spatial';
 
-const DECAY_FACTOR = 0.8;
 const PORT_RESOURCE_MULTIPLIER = 2.0;
 const PORT_GENERIC_MULTIPLIER = 0.5;
 const MAX_DEPTH = 6; // Max road segments to look ahead
+const SETTLEMENT_SECONDARY_SCORE_MULTIPLIER = 0.5;
 
 export class RoadAdvisor {
     private G: GameState;
@@ -63,33 +63,48 @@ export class RoadAdvisor {
 
         // 2. Evaluate each candidate road
         for (const startEdge of validRoadEdges) {
-            const bestTarget = this.findBestTarget(startEdge, playerID, playerProduction);
+            const significantTargets = this.findSignificantTargets(startEdge, playerID, playerProduction);
 
-            if (bestTarget.score > 0) {
-                recommendations.push({
-                    edgeId: startEdge,
-                    score: bestTarget.score,
-                    reason: bestTarget.reason,
-                    details: {
-                        pips: 0, // Not relevant for road
-                        scarcityBonus: false,
-                        scarceResources: [],
-                        diversityBonus: false,
-                        synergyBonus: false,
-                        neededResources: []
-                    }
-                });
-            }
+            significantTargets.forEach(target => {
+                if (target.rawScore > 0) {
+                    recommendations.push({
+                        edgeId: startEdge,
+                        score: target.rawScore, // Initially return raw score (decay handled by consumer)
+                        reason: target.reason,
+                        details: {
+                            pips: 0, // Not relevant for road
+                            distance: target.distance,
+                            rawScore: target.rawScore,
+                            scarcityBonus: false,
+                            scarceResources: [],
+                            diversityBonus: false,
+                            synergyBonus: false,
+                            neededResources: []
+                        }
+                    });
+                }
+            });
         }
 
         return recommendations.sort((a, b) => b.score - a.score);
     }
 
-    private findBestTarget(startEdge: string, playerID: string, playerProduction: Record<string, number>) {
-        let maxScore = 0;
-        let bestReason = '';
+    // Made public for testing
+    // Modified to return a list of significant targets (e.g. best per branch/distance)
+    public findSignificantTargets(startEdge: string, playerID: string, playerProduction: Record<string, number>) {
+        const significantTargets: { rawScore: number, distance: number, reason: string }[] = [];
 
-        // Optimized BFS: Queue implementation using pointer for O(1) dequeue
+        // Track best score found so far to filter out redundant weak targets further away?
+        // Actually, sometimes a weaker target further away is NOT redundant if it's different.
+        // But for simplification, let's collect ALL valid targets, then maybe filter?
+        // Or better: Collect the best target found at EACH distance.
+        // Or simpler: Just return everything that has a score > 0.
+
+        // To avoid exploding the list, let's return:
+        // 1. The highest scoring target overall.
+        // 2. Any target closer than the best one that has a "decent" score (e.g. > 50% of best).
+        // 3. Or just all of them. Let's try all non-zero targets.
+
         const queue: { vId: string, dist: number }[] = [];
         let head = 0;
         const visited = new Set<string>();
@@ -123,31 +138,39 @@ export class RoadAdvisor {
                 }
 
                 if (isSettlementLocationValid) {
+                    let currentScore = 0;
+                    let currentReason = '';
+
                     // Port Score
                     const portScore = this.getPortScore(vId, playerID, playerProduction);
                     if (portScore) {
-                        const decayed = portScore.score * Math.pow(DECAY_FACTOR, dist - 1);
-                        if (decayed > maxScore) {
-                            maxScore = decayed;
-                            bestReason = `${portScore.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
-                        }
+                        currentScore = portScore.score;
+                        currentReason = portScore.reason;
                     }
 
                     // Settlement Score
                     try {
                         const rec = this.spatialAdvisor.scoreVertex(vId, playerID);
-                        if (rec.score > 0) {
-                            const decayed = rec.score * Math.pow(DECAY_FACTOR, dist - 1);
-                            if (decayed > maxScore) {
-                                maxScore = decayed;
-                                bestReason = `${rec.reason} (${dist} hop${dist > 1 ? 's' : ''})`;
-                            }
+                        if (rec.score > currentScore) {
+                            currentScore = Math.max(currentScore, rec.score);
+                            currentReason = rec.reason;
+                        } else if (rec.score > 0) {
+                             currentScore += rec.score * SETTLEMENT_SECONDARY_SCORE_MULTIPLIER;
+                             currentReason += ' + Settlement';
                         }
                     } catch (e) {
-                        // Log error only if it's unexpected (e.g. not just invalid player)
                         if (e instanceof Error && e.message !== 'Invalid playerID') {
                             console.warn(`RoadAdvisor: Error scoring vertex ${vId}`, e);
                         }
+                    }
+
+                    if (currentScore > 0) {
+                        // Push to results
+                        significantTargets.push({
+                            rawScore: currentScore,
+                            distance: dist,
+                            reason: `${currentReason} (${dist} hop${dist > 1 ? 's' : ''})`
+                        });
                     }
                 }
             }
@@ -175,6 +198,25 @@ export class RoadAdvisor {
             }
         }
 
-        return { score: maxScore, reason: bestReason };
+        // Post-processing: Filter to keep only "Pareto optimal" targets?
+        // A target is dominated if there exists another target that is Closer AND Better.
+        // If T1 is (Dist 2, Score 10) and T2 is (Dist 4, Score 15) -> Both kept.
+        // If T1 is (Dist 2, Score 20) and T2 is (Dist 4, Score 15) -> T2 is dominated (Further and Worse).
+
+        // Sort by distance (ascending)
+        significantTargets.sort((a, b) => a.distance - b.distance);
+
+        const filteredTargets: typeof significantTargets = [];
+        let maxScoreSoFar = -1;
+
+        for (const target of significantTargets) {
+            // Keep it if it offers a better score than anything closer
+            if (target.rawScore > maxScoreSoFar) {
+                filteredTargets.push(target);
+                maxScoreSoFar = target.rawScore;
+            }
+        }
+
+        return filteredTargets;
     }
 }

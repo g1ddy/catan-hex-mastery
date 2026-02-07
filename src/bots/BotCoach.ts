@@ -14,6 +14,10 @@ const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
+// Road Strategy Constants
+const MIN_ROAD_DECAY_FACTOR = 0.7;
+const ROAD_DECAY_AGGRESSIVENESS_SCALE = 0.25;
+
 export class BotCoach {
     // Bot logic using Coach recommendations
     private G: GameState;
@@ -51,8 +55,40 @@ export class BotCoach {
             .filter((id): id is string => typeof id === 'string');
 
         // Get scores from Coach
-        const recommendations = scoreFn(candidateIds);
-        const recommendationMap = new Map(recommendations.map(r => [r.edgeId || r.vertexId || '', r.score]));
+        let recommendations = scoreFn(candidateIds);
+
+        // Special handling for Roads: Apply Strategy (Distance Decay) here
+        // This decouples the "Bot Personality" from the "Coach Analysis"
+        if (moveType === 'buildRoad' || moveType === 'placeRoad') {
+            const decayFactor = MIN_ROAD_DECAY_FACTOR + (this.profile.expansion.aggressiveness * ROAD_DECAY_AGGRESSIVENESS_SCALE);
+            recommendations = recommendations.map(rec => {
+                const dist = rec.details.distance || 1;
+                const raw = rec.details.rawScore || rec.score;
+                // Apply decay: Score = Raw * (Factor ^ (Distance - 1))
+                // Dist 1 = Factor^0 = 1. No decay.
+                // Dist 2 = Factor^1.
+                const decayedScore = raw * Math.pow(decayFactor, dist - 1);
+                return {
+                    ...rec,
+                    score: decayedScore
+                };
+            }).sort((a, b) => b.score - a.score);
+        }
+
+        // Map recommendations to scores.
+        // For road moves, recommendations may contain multiple entries per edge (targets at different distances).
+        // Since `recommendations` is sorted High-to-Low by score, we must ensure we keep the HIGHEST score for each edge.
+        // A simple Map(iterable) constructor overwrites if keys duplicate.
+        // So we want to process in reverse (Low-to-High) so High overwrites Low,
+        // OR manually loop and `set` only if `!has`.
+        const recommendationMap = new Map<string, number>();
+        for (const r of recommendations) {
+            const id = r.edgeId || r.vertexId || '';
+            // Since recommendations are sorted descending, the first time we see an ID, it's the best score.
+            if (!recommendationMap.has(id)) {
+                recommendationMap.set(id, r.score);
+            }
+        }
 
         // Shuffle candidates if profile requests randomization to break ties
         if (this.profile.randomize) {
