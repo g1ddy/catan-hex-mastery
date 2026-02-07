@@ -24,8 +24,9 @@ export const stripHtml = (str: string): string => {
 
     while (iterations < MAX_ITERATIONS) {
         const oldText = text;
-        text = text.replace(scriptRegex, "");
-        text = text.replace(styleRegex, "");
+        // Replace with a space to prevent tag reconstruction (e.g. <scr<script>ipt>)
+        text = text.replace(scriptRegex, " ");
+        text = text.replace(styleRegex, " ");
         if (text === oldText) break;
         iterations++;
     }
@@ -36,10 +37,12 @@ export const stripHtml = (str: string): string => {
     const tagRegex = /<[^>]*>/g;
     while (iterations < MAX_ITERATIONS) {
         const oldText = text;
-        text = text.replace(tagRegex, "");
+        // Replace with a space to break adjacent tags and prevent reconstruction
+        text = text.replace(tagRegex, " ");
         if (text === oldText) break;
         iterations++;
     }
 
-    return text.trim();
+    // Clean up excessive whitespace created by replacements
+    return text.replace(/\s+/g, " ").trim();
 };
