@@ -14,6 +14,10 @@ const TOP_TIER_WEIGHT_THRESHOLD = 0.9;
 const ROAD_FATIGUE_SETTLEMENT_MULTIPLIER = 2;
 const ROAD_FATIGUE_BASE_ALLOWANCE = 2;
 
+// Road Strategy Constants
+const MIN_ROAD_DECAY_FACTOR = 0.7;
+const ROAD_DECAY_AGGRESSIVENESS_SCALE = 0.25;
+
 export class BotCoach {
     // Bot logic using Coach recommendations
     private G: GameState;
@@ -56,7 +60,7 @@ export class BotCoach {
         // Special handling for Roads: Apply Strategy (Distance Decay) here
         // This decouples the "Bot Personality" from the "Coach Analysis"
         if (moveType === 'buildRoad' || moveType === 'placeRoad') {
-            const decayFactor = 0.7 + (this.profile.expansion.aggressiveness * 0.25);
+            const decayFactor = MIN_ROAD_DECAY_FACTOR + (this.profile.expansion.aggressiveness * ROAD_DECAY_AGGRESSIVENESS_SCALE);
             recommendations = recommendations.map(rec => {
                 const dist = rec.details.distance || 1;
                 const raw = rec.details.rawScore || rec.score;

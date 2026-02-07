@@ -8,6 +8,7 @@ import { validateSettlementLocation } from '../../rules/spatial';
 const PORT_RESOURCE_MULTIPLIER = 2.0;
 const PORT_GENERIC_MULTIPLIER = 0.5;
 const MAX_DEPTH = 6; // Max road segments to look ahead
+const SETTLEMENT_SECONDARY_SCORE_MULTIPLIER = 0.5;
 
 export class RoadAdvisor {
     private G: GameState;
@@ -154,7 +155,7 @@ export class RoadAdvisor {
                             currentScore = Math.max(currentScore, rec.score);
                             currentReason = rec.reason;
                         } else if (rec.score > 0) {
-                             currentScore += rec.score * 0.5;
+                             currentScore += rec.score * SETTLEMENT_SECONDARY_SCORE_MULTIPLIER;
                              currentReason += ' + Settlement';
                         }
                     } catch (e) {
