@@ -1,5 +1,5 @@
 /**
- * Removes HTML tags from a string using a regex-based approach.
+ * Removes HTML tags from a string using an iterative regex-based approach.
  * Works in both browser and Node.js environments.
  * @param str The string to sanitize.
  * @returns The sanitized string.
@@ -7,14 +7,39 @@
 export const stripHtml = (str: string): string => {
     if (!str || typeof str !== 'string') return '';
 
-    // Remove script and style tags and their content first to prevent XSS/injection
-    // 1. Remove script tags and content
-    let text = str.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
-    // 2. Remove style tags and content
-    text = text.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gim, "");
+    let text = str;
 
-    // 3. Remove all other HTML tags
-    text = text.replace(/<[^>]+>/g, "");
+    // Use a loop to remove nested script/style tags and handle malformed ones
+    // We limit iterations to prevent infinite loops (DoS protection)
+    let iterations = 0;
+    const MAX_ITERATIONS = 50;
+
+    // Regex to remove script and style blocks entirely (including content)
+    // Matches <script ... > ... </script ... >
+    // The [\s\S]*? is non-greedy match for content
+    // We use [^>]* to match attributes, which is not perfect but generally sufficient for stripping
+    // We use <\/\s*script[^>]*> to match closing tags with whitespace/attributes
+    const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/\s*script[^>]*>/gim;
+    const styleRegex = /<style\b[^>]*>([\s\S]*?)<\/\s*style[^>]*>/gim;
+
+    while (iterations < MAX_ITERATIONS) {
+        const oldText = text;
+        text = text.replace(scriptRegex, "");
+        text = text.replace(styleRegex, "");
+        if (text === oldText) break;
+        iterations++;
+    }
+
+    // Now strip remaining HTML tags
+    // Also loop here to handle nested tags like <<img ...>>
+    iterations = 0;
+    const tagRegex = /<[^>]*>/g;
+    while (iterations < MAX_ITERATIONS) {
+        const oldText = text;
+        text = text.replace(tagRegex, "");
+        if (text === oldText) break;
+        iterations++;
+    }
 
     return text.trim();
 };
