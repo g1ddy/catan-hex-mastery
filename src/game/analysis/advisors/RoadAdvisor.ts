@@ -122,7 +122,7 @@ export class RoadAdvisor {
             }
         } catch (e) {
             // Ignore expected errors during speculative scoring
-            if (e instanceof Error && e.message !== 'Invalid playerID') {
+            if (e instanceof Error && e.message.endsWith('not found')) {
                 console.warn(`RoadAdvisor: Error scoring vertex ${vertexId}`, e);
             }
         }
