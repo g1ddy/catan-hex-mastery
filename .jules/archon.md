@@ -12,3 +12,7 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-02-01 - [Monolithic Component]
 **Observation:** `HexOverlays.tsx` had high complexity (Score 94.5) due to mixing vertex, edge, and port rendering logic.
 **Strategy:** Extracted `HexVertices` and `HexEdges` components. Score reduced to 78.3.
+
+## 2026-02-08 - [High Complexity Logic]
+**Observation:** `RoadAdvisor.ts` had high complexity (Score 99.8, Max Complexity 23) due to monolithic `findSignificantTargets` method mixing BFS, scoring, and filtering.
+**Strategy:** Refactored into specialized methods (`bfsFindTargets`, `scoreTargetVertex`, `filterParetoOptimalTargets`). Score reduced to 83.6, Max Complexity to 15.

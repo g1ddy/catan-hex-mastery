@@ -92,7 +92,7 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-02-02
+**Last Updated:** 2026-02-08
 
 ### 🏥 Repository Health Score: **87.0 / 100**
 
@@ -104,27 +104,27 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **89.9** | 224 | 18 | 7 | 0.88 |
-| `src/bots/BotCoach.ts` | **89.7** | 222 | 18 | 7 | 0.88 |
+| `src/bots/BotCoach.ts` | **94.7** | 272 | 18 | 7 | 0.88 |
 | `src/features/game/GameLayout.tsx` | **87.2** | 290 | 10 | 10 | 0.91 |
-| `src/features/board/components/HexEdges.tsx` | **79.3** | 110 | 14 | 11 | 0.92 |
+| `src/game/analysis/advisors/RoadAdvisor.ts` | **83.6** | 221 | 15 | 7 | 0.88 |
+| `src/features/board/components/HexEdges.tsx` | **80.2** | 119 | 14 | 11 | 0.92 |
+| `src/features/coach/hooks/useCoachData.ts` | **77.2** | 98 | 24 | 4 | 0.57 |
 | `src/features/board/components/HexOverlays.tsx` | **76.5** | 109 | 18 | 7 | 0.78 |
-| `src/features/coach/hooks/useCoachData.ts` | **76.4** | 90 | 24 | 4 | 0.57 |
+| `src/features/board/components/HexVertices.tsx` | **73.2** | 114 | 14 | 8 | 0.89 |
 | `src/game/Game.ts` | **72.8** | 121 | 7 | 14 | 0.93 |
-| `src/features/board/components/HexVertices.tsx` | **72.2** | 104 | 14 | 8 | 0.89 |
 | `src/features/hud/hooks/useGameStatusMessage.ts` | **71.5** | 135 | 20 | 3 | 0.6 |
 | `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/features/coach/hooks/useCoachData.ts` | **24** | 90 |
+| `src/features/coach/hooks/useCoachData.ts` | **24** | 98 |
 | `src/features/hud/hooks/useGameStatusMessage.ts` | **20** | 135 |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **18** | 224 |
-| `src/bots/BotCoach.ts` | **18** | 222 |
+| `src/bots/BotCoach.ts` | **18** | 272 |
 | `src/bots/logic/MoveScorer.ts` | **18** | 72 |
 | `src/features/board/components/HexOverlays.tsx` | **18** | 109 |
-| `src/features/board/components/HexEdges.tsx` | **14** | 110 |
-| `src/features/board/components/HexVertices.tsx` | **14** | 104 |
+| `src/game/analysis/advisors/RoadAdvisor.ts` | **15** | 221 |
+| `src/features/board/components/HexEdges.tsx` | **14** | 119 |
+| `src/features/board/components/HexVertices.tsx` | **14** | 114 |
 | `src/features/board/components/OverlayVertex.tsx` | **14** | 104 |
-| `src/features/hud/components/controls/TurnControls.tsx` | **11** | 77 |
+| `src/features/hud/components/controls/TurnControls.tsx` | **11** | 80 |
