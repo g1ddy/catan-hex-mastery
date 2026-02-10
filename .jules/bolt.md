@@ -13,3 +13,7 @@
 ## 2025-01-29 - Stable Event Handlers in Large Lists
 **Learning:** Passing inline arrow functions (e.g., `onClick={() => action(id)}`) to memoized list items (`OverlayVertex`, `OverlayEdge`) breaks `React.memo` optimization because the function reference changes on every parent render. This forces hundreds of SVG elements to re-render unnecessarily even when their props haven't changed.
 **Action:** Use a `useRef` to hold the latest mutable state (e.g., `G`, `ctx`) and a stable `useCallback` handler that reads from the ref. This allows the handler identity to remain constant across renders while still accessing fresh state, preserving `React.memo` benefits.
+
+## 2025-02-03 - Object Literals in Render Loops Break Memoization
+**Learning:** Passing derived data as new object literals (e.g., `recommendation={{ color, ... }}`) to memoized list items (`OverlayVertex`) defeats `React.memo` because the object reference changes on every parent render.
+**Action:** Flatten derived data into individual primitive props (e.g., `recommendationColor`, `isRecommended`) so `React.memo` can perform efficient shallow comparisons.

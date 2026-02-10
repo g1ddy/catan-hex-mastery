@@ -17,21 +17,18 @@ export interface OverlayVertexProps {
     onClick: (vId: string) => void;
     buildMode: BuildMode;
     // Coach
-    recommendation?: {
-        heatmapColor: string;
-        isTop3: boolean;
-        data: CoachRecommendation;
-    };
+    recommendationData?: CoachRecommendation;
+    heatmapColor?: string;
+    isTop3?: boolean;
     showResourceHeatmap: boolean;
 }
 
 export const OverlayVertex = React.memo(({
     vId, cx, cy, vertex, ownerColor,
     isClickable, isGhost, onClick, buildMode,
-    recommendation, showResourceHeatmap
+    recommendationData, heatmapColor, isTop3, showResourceHeatmap
 }: OverlayVertexProps) => {
     const isOccupied = !!vertex;
-    const { heatmapColor, isTop3, data: recommendationData } = recommendation || {};
 
     return (
         <g className="group" onClick={(e) => {
@@ -61,7 +58,7 @@ export const OverlayVertex = React.memo(({
                  <circle cx={cx} cy={cy} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse motion-reduce:animate-none" />
             )}
 
-            {recommendation && (
+            {recommendationData && (
                  <g
                     className={`coach-highlight transition-opacity duration-200 ${
                         isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
