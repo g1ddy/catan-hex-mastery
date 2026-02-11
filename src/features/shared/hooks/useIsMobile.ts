@@ -1,32 +1,43 @@
 import { useState, useEffect } from 'react';
 
-const MOBILE_BREAKPOINT = 768;
-
+/**
+ * Hook to detect if the viewport is mobile sized.
+ * Uses window.matchMedia for performant and accurate detection.
+ * Breakpoint: < 768px (Tailwind 'md' is 768px, so mobile is max-width: 767px)
+ */
 export const useIsMobile = () => {
-  // Initialize state based on window.innerWidth if available (client-side)
-  // Otherwise default to false (SSR safe, though this is a SPA)
+  // Use matchMedia query for mobile breakpoint
+  // Tailwind 'md' starts at 768px, so strictly less than 768px is mobile
+  const query = '(max-width: 767px)';
+
   const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth < MOBILE_BREAKPOINT;
-    }
-    return false;
+    // SSR safe check
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
   });
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-      }, 150); // Debounce resize events for 150ms
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia(query);
+
+    // Handler for changes
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
     };
 
-    window.addEventListener('resize', handleResize);
+    // Modern browsers use addEventListener
+    mediaQuery.addEventListener('change', handleChange);
+
+    // Ensure state is in sync (in case of changes between init and effect)
+    if (mediaQuery.matches !== isMobile) {
+        setIsMobile(mediaQuery.matches);
+    }
+
     return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', handleResize);
+      mediaQuery.removeEventListener('change', handleChange);
     };
-  }, []);
+  }, []); // Query is constant
 
   return isMobile;
 };
