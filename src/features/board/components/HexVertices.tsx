@@ -71,7 +71,7 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                 let isClickable = false;
                 let isGhost = false;
                 let recommendationData: CoachRecommendation | undefined;
-                let heatmapColor = "";
+                let heatmapColor: string | undefined;
                 let isTop3 = false;
 
                 const applyCoachRec = () => {
@@ -103,7 +103,9 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                         key={vId} vId={vId} cx={vData.x} cy={vData.y} vertex={vertex}
                         ownerColor={ownerColor} isClickable={isClickable} isGhost={isGhost}
                         onClick={handleVertexClick} buildMode={buildMode}
-                        recommendation={recommendationData ? { heatmapColor, isTop3, data: recommendationData } : undefined}
+                        recommendationData={recommendationData}
+                        heatmapColor={heatmapColor}
+                        isTop3={isTop3}
                         showResourceHeatmap={showResourceHeatmap}
                     />
                 );
