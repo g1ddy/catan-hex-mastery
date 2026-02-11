@@ -7,30 +7,8 @@ import { useIsMobile } from './useIsMobile';
 describe('useIsMobile', () => {
     let matchMediaMock: jest.Mock;
 
-    // We need to store listeners to simulate events
-    let listeners: Record<string, Function[]> = {};
-
     beforeEach(() => {
-        listeners = {};
-
-        matchMediaMock = jest.fn().mockImplementation((query) => ({
-            matches: false, // Default: Desktop
-            media: query,
-            onchange: null,
-            addListener: jest.fn(), // Deprecated
-            removeListener: jest.fn(), // Deprecated
-            addEventListener: jest.fn((event: string, handler: Function) => {
-                if (!listeners[event]) listeners[event] = [];
-                listeners[event].push(handler);
-            }),
-            removeEventListener: jest.fn((event: string, handler: Function) => {
-                if (listeners[event]) {
-                    listeners[event] = listeners[event].filter(h => h !== handler);
-                }
-            }),
-            dispatchEvent: jest.fn(),
-        }));
-
+        matchMediaMock = jest.fn();
         Object.defineProperty(window, 'matchMedia', {
             writable: true,
             value: matchMediaMock,
