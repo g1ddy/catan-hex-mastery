@@ -24,7 +24,7 @@ describe('BuildBar Accessibility', () => {
         buildMode: null,
         setBuildMode: jest.fn(),
         canTrade: false,
-        tradeResult: { give: null, receive: null, giveAmount: 0 } as TradeResult,
+        tradeResult: { give: 'wood', receive: 'brick', giveAmount: 0, canTrade: false } as TradeResult,
         onTrade: jest.fn(),
         isCoachModeEnabled: false,
         advice: null,
