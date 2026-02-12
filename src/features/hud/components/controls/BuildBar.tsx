@@ -50,7 +50,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
         }
 
         if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
-        return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed`;
+        return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 aria-disabled:text-slate-500 aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none`;
     };
 
     const toggleBuildMode = (mode: BuildMode) => {
@@ -78,8 +78,8 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                 data-testid="trade-button-container"
             >
                 <button
-                    onClick={onTrade}
-                    disabled={!canTradeAllowed}
+                    onClick={() => canTradeAllowed && onTrade()}
+                    aria-disabled={!canTradeAllowed}
                     aria-label="Trade 4:1"
                     className={`p-3 rounded-lg flex items-center justify-center transition-all ${
                         canTradeAllowed
@@ -114,8 +114,8 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                 return (
                     <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
                         <button
-                            onClick={() => toggleBuildMode(type)}
-                            disabled={!isEnabled}
+                            onClick={() => isEnabled && toggleBuildMode(type)}
+                            aria-disabled={!isEnabled}
                             aria-label={`${ariaPrefix} (${costString(type)})`}
                             aria-pressed={buildMode === type}
                             className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, isRecommended)}`}
