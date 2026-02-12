@@ -73,9 +73,9 @@ describe('useIsMobile', () => {
 
         // Simulate change back to Desktop
         act(() => {
-             if (changeHandler) {
-                 changeHandler({ matches: false });
-             }
+            if (changeHandler) {
+                changeHandler({ matches: false });
+            }
         });
 
         expect(result.current).toBe(false);
