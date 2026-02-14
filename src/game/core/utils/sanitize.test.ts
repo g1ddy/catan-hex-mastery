@@ -41,4 +41,23 @@ describe('stripHtml', () => {
         const input = 'Player <3';
         expect(stripHtml(input)).toEqual('Player <3');
     });
+
+    it('should truncate strings exceeding default max length (1000)', () => {
+        const longString = 'a'.repeat(2000);
+        // Default limit is 1000
+        expect(stripHtml(longString).length).toBe(1000);
+    });
+
+    it('should truncate strings exceeding custom max length', () => {
+        const input = '1234567890';
+        expect(stripHtml(input, 5)).toBe('12345');
+    });
+
+    it('should handle truncation before tag stripping', () => {
+        // If we truncate inside a tag, it might leave partial tag
+        const input = '<div>Safe</div>';
+        // Truncate to 4: "<div"
+        // stripHtml regex requires ">", so "<div" is treated as text
+        expect(stripHtml(input, 4)).toBe('<div');
+    });
 });

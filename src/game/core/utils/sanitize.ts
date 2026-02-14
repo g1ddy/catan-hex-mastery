@@ -2,12 +2,17 @@
  * Removes HTML tags from a string using an iterative regex-based approach.
  * Works in both browser and Node.js environments.
  * @param str The string to sanitize.
+ * @param maxLength Optional maximum length of the string (default 1000). Truncates input to prevent ReDoS/DoS.
  * @returns The sanitized string.
  */
-export const stripHtml = (str: string): string => {
+export const stripHtml = (str: string, maxLength: number = 1000): string => {
     if (!str || typeof str !== 'string') return '';
 
+    // Truncate input to prevent regex-based DoS attacks on extremely large strings
     let text = str;
+    if (text.length > maxLength) {
+        text = text.substring(0, maxLength);
+    }
 
     // Use a loop to remove nested script/style tags and handle malformed ones
     // We limit iterations to prevent infinite loops (DoS protection)
