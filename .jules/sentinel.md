@@ -7,3 +7,8 @@
 **Vulnerability:** Regex-based sanitization in `stripHtml` scanned inputs O(N) or worse (iterative) without length limits. Extremely large inputs (10^6+ chars) could cause DoS.
 **Learning:** Regex performance on untrusted input is unpredictable without constraints. Iterative regex usage amplifies the risk.
 **Prevention:** Always enforce strict maximum length limits on inputs *before* passing them to regex-based processing functions.
+
+## 2025-02-12 - Partial Tag Injection via Truncation
+**Vulnerability:** Truncating strings to a fixed length can split HTML tags (e.g. `<script>` becomes `<scrip`), which bypasses regex-based sanitizers that expect complete tags but might be executed by browsers or reconstructed later.
+**Learning:** Security controls like length limits must be "sanitization-aware." Naive truncation is dangerous when combined with structured data like HTML.
+**Prevention:** When truncating, check for and remove trailing partial structures (like open tags) to fail safe.

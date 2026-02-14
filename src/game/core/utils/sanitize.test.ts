@@ -45,7 +45,9 @@ describe('stripHtml', () => {
     it('should truncate strings exceeding default max length (1000)', () => {
         const longString = 'a'.repeat(2000);
         // Default limit is 1000
-        expect(stripHtml(longString).length).toBe(1000);
+        const result = stripHtml(longString);
+        expect(result.length).toBe(1000);
+        expect(result).toBe('a'.repeat(1000));
     });
 
     it('should truncate strings exceeding custom max length', () => {
@@ -53,11 +55,24 @@ describe('stripHtml', () => {
         expect(stripHtml(input, 5)).toBe('12345');
     });
 
-    it('should handle truncation before tag stripping', () => {
-        // If we truncate inside a tag, it might leave partial tag
-        const input = '<div>Safe</div>';
+    it('should remove partial tags resulting from truncation', () => {
         // Truncate to 4: "<div"
-        // stripHtml regex requires ">", so "<div" is treated as text
-        expect(stripHtml(input, 4)).toBe('<div');
+        // The logic should detect the partial tag and remove it, resulting in empty string
+        const input = '<div>Safe</div>';
+        expect(stripHtml(input, 4)).toBe('');
+    });
+
+    it('should remove partial tags even with text before them', () => {
+        // Truncate to 7: "Hi <scr"
+        // Should remove "<scr" leaving "Hi " which trims to "Hi"
+        const input = 'Hi <script>alert(1)</script>';
+        expect(stripHtml(input, 7)).toBe('Hi');
+    });
+
+    it('should not remove content if truncation happens after a complete tag', () => {
+        // Truncate to 11: "<b>Hi</b> P"
+        // Should keep "Hi P"
+        const input = '<b>Hi</b> Player';
+        expect(stripHtml(input, 11)).toBe('Hi P');
     });
 });
