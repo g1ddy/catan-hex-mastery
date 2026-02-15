@@ -14,7 +14,8 @@ export const useCoachData = (
     ctx: Ctx,
     buildMode: BuildMode,
     uiMode: UiMode,
-    isCoachModeEnabled: boolean
+    isCoachModeEnabled: boolean,
+    playerID: string | null // Added playerID to ensure security
 ): CoachData => {
     // We only depend on the relevant parts of G to prevent unnecessary re-runs
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
@@ -40,11 +41,11 @@ export const useCoachData = (
             // console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
         }
 
-        // 3. Fetch Recommendations
-        const allScores = fetchRecommendations(coach, mode, G, ctx);
+        // 3. Fetch Recommendations (Pass playerID for security check)
+        const allScores = fetchRecommendations(coach, mode, G, ctx, playerID);
 
         // 4. Process & Return
         return processRecommendations(allScores);
 
-    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements, activeStage]);
+    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements, activeStage, playerID]);
 };

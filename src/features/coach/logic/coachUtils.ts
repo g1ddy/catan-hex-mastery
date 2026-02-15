@@ -35,14 +35,21 @@ export const getCoachMode = (
 
 /**
  * Fetches raw recommendations from the Coach instance based on the mode.
+ * Securely checks that the requesting player is the current player.
  */
 export const fetchRecommendations = (
     coach: Coach,
     mode: CoachMode,
     G: GameState,
-    ctx: Ctx
+    ctx: Ctx,
+    requestingPlayerID: string | null
 ): CoachRecommendation[] => {
     if (!mode) return [];
+
+    // Security Check: Only allow recommendations if it's the player's turn
+    if (requestingPlayerID !== ctx.currentPlayer) {
+        return [];
+    }
 
     const playerID = ctx.currentPlayer;
 
