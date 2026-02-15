@@ -587,6 +587,8 @@
         "src/bots/logic/MoveScorer.ts",
         "src/features/game/GameScreen.tsx",
         "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/coach/types.ts",
         "src/features/board/components/HexOverlays.tsx",
         "src/features/board/components/HexEdges.tsx",
         "src/features/board/components/HexVertices.tsx",
@@ -606,7 +608,7 @@
         "src/game/analysis/coach.ts",
         "src/game/rules/queries.ts",
         "src/bots/CatanMCTSBot.ts",
-        "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
         "src/features/board/components/HexEdges.tsx",
         "src/features/board/components/HexVertices.tsx",
         "src/features/hud/hooks/useGameControls.ts",
@@ -650,6 +652,7 @@
         "src/features/game/GameScreen.tsx",
         "src/features/board/BoardLayer.tsx",
         "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
         "src/features/board/components/GameHex.tsx",
         "src/features/shared/config/uiConfig.tsx",
         "src/features/board/components/helpers.tsx",
@@ -2903,6 +2906,132 @@
         },
         {
           "dynamic": false,
+          "module": "../../../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "preCompilationOnly": true,
+          "resolved": "src/game/core/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../../shared/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "preCompilationOnly": true,
+          "resolved": "src/features/shared/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../logic/coachUtils",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/features/coach/logic/coachUtils.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/features/coach/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/features/game/GameScreen.tsx",
+        "src/features/board/BoardLayer.tsx",
+        "src/features/board/components/helpers.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/shared/types.ts",
+      "dependencies": [],
+      "dependents": [
+        "src/features/board/BoardLayer.tsx",
+        "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/board/components/HexOverlays.tsx",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/components/GameControls.tsx",
+        "src/features/hud/hooks/useGameControls.ts",
+        "src/features/hud/components/controls/BuildBar.tsx",
+        "src/features/hud/components/controls/SetupControls.tsx",
+        "src/features/hud/components/GameStatusBanner.tsx",
+        "src/features/hud/hooks/useGameStatusMessage.ts",
+        "src/features/game/hooks/useGameScreenState.ts"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/features/coach/logic/coachUtils.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../../game/analysis/coach",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "preCompilationOnly": true,
+          "resolved": "src/game/analysis/coach.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
           "module": "../../../game/core/constants",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
@@ -2956,32 +3085,58 @@
           "matchesDoNotFollow": false,
           "circular": false,
           "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/features/coach/types.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
         }
       ],
       "dependents": [
-        "src/features/game/GameScreen.tsx",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/board/components/helpers.tsx"
+        "src/features/coach/hooks/useCoachData.ts"
       ],
       "orphan": false,
       "valid": true
     },
     {
-      "source": "src/features/shared/types.ts",
-      "dependencies": [],
+      "source": "src/features/coach/types.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../../game/analysis/coach",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "preCompilationOnly": true,
+          "resolved": "src/game/analysis/coach.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
       "dependents": [
-        "src/features/board/BoardLayer.tsx",
         "src/features/coach/hooks/useCoachData.ts",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/components/GameControls.tsx",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/components/controls/BuildBar.tsx",
-        "src/features/hud/components/controls/SetupControls.tsx",
-        "src/features/hud/components/GameStatusBanner.tsx",
-        "src/features/hud/hooks/useGameStatusMessage.ts",
-        "src/features/game/hooks/useGameScreenState.ts"
+        "src/features/coach/logic/coachUtils.ts"
       ],
       "orphan": false,
       "valid": true
@@ -7555,8 +7710,8 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 108,
-    "totalDependenciesCruised": 336,
+    "totalCruised": 110,
+    "totalDependenciesCruised": 343,
     "optionsUsed": {
       "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
