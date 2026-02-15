@@ -47,7 +47,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
     }, [G, ctx, isCoachModeEnabled]);
 
     // 3. Derived State (Coach Visuals)
-    const coachData = useCoachData(G, ctx, buildMode, uiMode, isCoachModeEnabled);
+    // Pass playerID to ensure players can only see their own recommendations
+    const coachData = useCoachData(G, ctx, buildMode, uiMode, isCoachModeEnabled, playerID);
 
     // 4. Derived State (Trade Highlighting)
     const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
