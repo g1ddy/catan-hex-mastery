@@ -25,9 +25,7 @@ export const getCoachMode = (
 
     // Gameplay Phase
     if (ctx.phase === PHASES.GAMEPLAY) {
-        if (buildMode === 'settlement') return 'settlement';
-        if (buildMode === 'city') return 'city';
-        if (buildMode === 'road') return 'road';
+        return buildMode;
     }
 
     return null;
