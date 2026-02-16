@@ -9,7 +9,7 @@ def verify_coach_panel():
         # 1. Navigate to game
         print("Navigating to game...")
         try:
-            page.goto("http://localhost:3000/catan-hex-mastery/")
+            page.goto("http://localhost:5173/catan-hex-mastery/")
         except Exception as e:
             print(f"Error navigating: {e}")
             return
@@ -23,7 +23,7 @@ def verify_coach_panel():
             page.get_by_role("button", name="3 Players (No Bots)").click(force=True)
         except Exception:
              print("Retrying navigation or click...")
-             page.goto("http://localhost:3000/")
+             page.goto("http://localhost:5173/catan-hex-mastery/")
              page.add_style_tag(content=".debug-panel { display: none !important; }")
              page.get_by_role("button", name="3 Players (No Bots)").click(force=True)
 

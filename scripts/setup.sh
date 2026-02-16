@@ -12,6 +12,18 @@ npx playwright install chromium webkit
 # This handles libraries like libgtk, libgstreamer, etc.
 npx playwright install-deps
 
+# Install Python Playwright dependencies (for verify_*.py scripts)
+echo "Installing Python Playwright dependencies..."
+if command -v pip3 &> /dev/null; then
+  pip3 install playwright
+  playwright install chromium
+elif command -v pip &> /dev/null; then
+  pip install playwright
+  playwright install chromium
+else
+  echo "Python pip not found. Skipping Python Playwright installation."
+fi
+
 # Install Graphviz for dependency graph generation
 if command -v apt-get &> /dev/null; then
   echo "Installing Graphviz..."
