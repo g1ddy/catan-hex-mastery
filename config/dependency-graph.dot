@@ -144,9 +144,18 @@ strict digraph "dependency-cruiser output"{
     "src/features/coach/components/ResourceDistribution.tsx" -> "src/features/shared/config/uiConfig.tsx"
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/hooks" {label="hooks" "src/features/coach/hooks/useCoachData.ts" [label=<useCoachData.ts> tooltip="useCoachData.ts" URL="src/features/coach/hooks/useCoachData.ts" fillcolor="#ddfeff"] } } } }
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/analysis/coach.ts"
-    "src/features/coach/hooks/useCoachData.ts" -> "src/game/core/constants.ts"
     "src/features/coach/hooks/useCoachData.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     "src/features/coach/hooks/useCoachData.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/hooks/useCoachData.ts" -> "src/features/coach/logic/coachUtils.ts"
+    "src/features/coach/hooks/useCoachData.ts" -> "src/features/coach/types.ts"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" subgraph "cluster_src/features/coach/logic" {label="logic" "src/features/coach/logic/coachUtils.ts" [label=<coachUtils.ts> tooltip="coachUtils.ts" URL="src/features/coach/logic/coachUtils.ts" fillcolor="#ddfeff"] } } } }
+    "src/features/coach/logic/coachUtils.ts" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/logic/coachUtils.ts" -> "src/game/core/constants.ts"
+    "src/features/coach/logic/coachUtils.ts" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/logic/coachUtils.ts" -> "src/features/shared/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
+    "src/features/coach/logic/coachUtils.ts" -> "src/features/coach/types.ts"
+    subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/coach" {label="coach" "src/features/coach/types.ts" [label=<types.ts> tooltip="types.ts" URL="src/features/coach/types.ts" fillcolor="#ddfeff"] } } }
+    "src/features/coach/types.ts" -> "src/game/analysis/coach.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]
     subgraph "cluster_src" {label="src" subgraph "cluster_src/features" {label="features" subgraph "cluster_src/features/game" {label="game" "src/features/game/GameLayout.tsx" [label=<GameLayout.tsx> tooltip="GameLayout.tsx" URL="src/features/game/GameLayout.tsx" fillcolor="#bbfeff"] } } }
     "src/features/game/GameLayout.tsx" -> "src/game/core/config.ts"
     "src/features/game/GameLayout.tsx" -> "src/game/core/types.ts" [arrowhead="onormal" penwidth="1.0" style="dashed" color="#aaaaaa"]

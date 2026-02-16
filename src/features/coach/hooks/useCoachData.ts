@@ -1,97 +1,51 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
-import { CoachRecommendation, Coach, CoachCtx } from '../../../game/analysis/coach';
-import { PHASES, STAGES } from '../../../game/core/constants';
+import { Coach, CoachCtx } from '../../../game/analysis/coach';
 import { BuildMode, UiMode } from '../../shared/types';
 import { Ctx } from 'boardgame.io';
+import { CoachData, EMPTY_COACH_DATA } from '../types';
+import { getCoachMode, fetchRecommendations, processRecommendations } from '../logic/coachUtils';
 
-export interface CoachData {
-    recommendations: Map<string, CoachRecommendation>;
-    minScore: number;
-    maxScore: number;
-    top3Set: Set<string>;
-}
-
-const EMPTY_COACH_DATA: CoachData = { recommendations: new Map(), minScore: 0, maxScore: 0, top3Set: new Set<string>() };
+// Export CoachData to maintain backward compatibility if other files import it from here
+export type { CoachData };
 
 export const useCoachData = (
     G: GameState,
     ctx: Ctx,
     buildMode: BuildMode,
     uiMode: UiMode,
-    isCoachModeEnabled: boolean
+    isCoachModeEnabled: boolean,
+    playerID: string | null // Added playerID to ensure security
 ): CoachData => {
+    // We only depend on the relevant parts of G to prevent unnecessary re-runs
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
+    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
 
     return React.useMemo(() => {
         if (!isCoachModeEnabled) {
             return EMPTY_COACH_DATA;
         }
 
-        const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-
-        // Active modes
-        const isSetupSettlement = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_SETTLEMENT;
-        const isSetupRoad = ctx.phase === PHASES.SETUP && uiMode === 'placing' && currentStage === STAGES.PLACE_ROAD;
-        const isGameSettlement = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'settlement';
-        const isGameCity = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'city';
-        const isGameRoad = (ctx.phase === PHASES.GAMEPLAY) && buildMode === 'road';
-
-        if (!isSetupSettlement && !isSetupRoad && !isGameSettlement && !isGameCity && !isGameRoad) {
+        // 1. Determine Mode
+        const mode = getCoachMode(ctx, uiMode, buildMode);
+        if (!mode) {
             return EMPTY_COACH_DATA;
         }
 
-        // Use ctx.coach if available (Plugin), otherwise fall back to creating a transient instance
-        const coach = (ctx as CoachCtx).coach;
-        if (!coach) {
-            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
-        }
-        const coachInstance = coach || new Coach(G);
-
-        let allScores: CoachRecommendation[] = [];
-
-        if (isGameCity) {
-            const candidates = G.players[ctx.currentPlayer]?.settlements || [];
-            if (typeof coachInstance.getBestCitySpots === 'function') {
-                allScores = coachInstance.getBestCitySpots(ctx.currentPlayer, ctx, candidates);
-            }
-        } else if (isSetupRoad || isGameRoad) {
-            if (typeof coachInstance.getBestRoadSpots === 'function') {
-                allScores = coachInstance.getBestRoadSpots(ctx.currentPlayer, ctx);
-            }
-        } else {
-            // Default to Settlement Logic (Setup or Gameplay)
-            if (typeof coachInstance.getAllSettlementScores === 'function') {
-                allScores = coachInstance.getAllSettlementScores(ctx.currentPlayer, ctx);
-            }
+        // 2. Get Coach Instance
+        // Use ctx.coach if available (Plugin), otherwise fall back to transient instance
+        const coach = (ctx as CoachCtx).coach || new Coach(G);
+        if (!(ctx as CoachCtx).coach) {
+            // Only warn if we really expected a plugin but didn't find one.
+            // However, often Coach is just transient.
+            // console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
         }
 
-        if (allScores.length === 0) {
-            return EMPTY_COACH_DATA;
-        }
+        // 3. Fetch Recommendations (Pass playerID for security check)
+        const allScores = fetchRecommendations(coach, mode, G, ctx, playerID);
 
-        const vals = allScores.map(s => s.score);
-        const sorted = [...allScores].sort((a, b) => b.score - a.score);
-        // Identify top 3 based on ID (could be vertex or edge)
-        const top3Ids = sorted.slice(0, 3)
-            .map(s => s.edgeId || s.vertexId || '')
-            .filter(Boolean);
+        // 4. Process & Return
+        return processRecommendations(allScores);
 
-        // Convert to Map for O(1) Lookup
-        // We prioritize edgeId if available, otherwise vertexId
-        const recMap = new Map<string, CoachRecommendation>();
-        allScores.forEach(rec => {
-            const id = rec.edgeId || rec.vertexId;
-            if (id) {
-                recMap.set(id, rec);
-            }
-        });
-
-        return {
-            recommendations: recMap,
-            minScore: Math.min(...vals),
-            maxScore: Math.max(...vals),
-            top3Set: new Set(top3Ids)
-        };
-    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements]);
+    }, [G, ctx, isCoachModeEnabled, buildMode, uiMode, currentPlayerSettlements, activeStage, playerID]);
 };
