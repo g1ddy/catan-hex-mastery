@@ -1,6 +1,8 @@
 import time
 from playwright.sync_api import sync_playwright
 
+BASE_URL = "http://localhost:5173/catan-hex-mastery/"
+
 def verify_coach_panel():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -9,7 +11,7 @@ def verify_coach_panel():
         # 1. Navigate to game
         print("Navigating to game...")
         try:
-            page.goto("http://localhost:5173/catan-hex-mastery/")
+            page.goto(BASE_URL)
         except Exception as e:
             print(f"Error navigating: {e}")
             return
@@ -23,7 +25,7 @@ def verify_coach_panel():
             page.get_by_role("button", name="3 Players (No Bots)").click(force=True)
         except Exception:
              print("Retrying navigation or click...")
-             page.goto("http://localhost:5173/catan-hex-mastery/")
+             page.goto(BASE_URL)
              page.add_style_tag(content=".debug-panel { display: none !important; }")
              page.get_by_role("button", name="3 Players (No Bots)").click(force=True)
 

@@ -14,11 +14,16 @@ npx playwright install-deps
 
 # Install Python Playwright dependencies (for verify_*.py scripts)
 echo "Installing Python Playwright dependencies..."
+PIP_CMD=""
+
 if command -v pip3 &> /dev/null; then
-  pip3 install playwright
-  playwright install chromium
+  PIP_CMD="pip3"
 elif command -v pip &> /dev/null; then
-  pip install playwright
+  PIP_CMD="pip"
+fi
+
+if [ -n "$PIP_CMD" ]; then
+  $PIP_CMD install playwright
   playwright install chromium
 else
   echo "Python pip not found. Skipping Python Playwright installation."
