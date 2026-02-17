@@ -9,6 +9,20 @@ import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge }
  */
 export const HEX_CORNERS = Array.from({ length: 6 }, (_, i) => hexCornerOffset(i));
 
+/**
+ * Static lookup table for hex edge geometry (midpoint and angle).
+ * Since all hexes have the same size and orientation, these values are constant relative to the hex center.
+ * This avoids calculating `Math.atan2`, `midpoint` etc. 6 times per hex on every render.
+ */
+export const HEX_EDGE_GEOMETRY = HEX_CORNERS.map((corner, i) => {
+    const nextCorner = HEX_CORNERS[(i + 1) % 6];
+    return {
+        x: (corner.x + nextCorner.x) / 2,
+        y: (corner.y + nextCorner.y) / 2,
+        angle: Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI
+    };
+});
+
 export interface CachedHexGeometry {
     vertices: { id: string; parts: string[]; x: number; y: number }[];
     edges: { id: string; parts: string[]; x: number; y: number }[];
