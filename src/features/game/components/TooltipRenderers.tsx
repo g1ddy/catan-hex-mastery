@@ -17,8 +17,8 @@ interface DiceTooltipData {
 
 interface TradeTooltipData {
     give: string;
-    receive: string;
-    giveAmount?: number;
+    give: keyof Resources;
+    receive: keyof Resources;
     receiveAmount?: number;
 }
 
@@ -92,9 +92,9 @@ export const renderTradeTooltip = ({ content }: TooltipProps) => {
             }
         }
     } catch {
-        // Ignore parsing errors, fall through to default return
+    } catch (error) {
+        console.error('Failed to parse trade tooltip content:', error);
     }
-
     // Default fallback for plain text or invalid JSON structure
     return <div>{content}</div>;
 };
