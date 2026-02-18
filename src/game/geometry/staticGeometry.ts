@@ -1,4 +1,4 @@
-import { hexCornerOffset } from './math';
+import { hexCornerOffset, RAD_TO_DEG } from './math';
 import { Hex } from '../core/types';
 import { getVerticesForHex, getEdgesForHex, getHexesForVertex, getHexesForEdge } from './hexUtils';
 
@@ -19,7 +19,7 @@ export const HEX_EDGE_GEOMETRY = HEX_CORNERS.map((corner, i) => {
     return {
         x: (corner.x + nextCorner.x) / 2,
         y: (corner.y + nextCorner.y) / 2,
-        angle: Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * 180 / Math.PI
+        angle: Math.atan2(nextCorner.y - corner.y, nextCorner.x - corner.x) * RAD_TO_DEG
     };
 });
 
