@@ -17,8 +17,8 @@ interface DiceTooltipData {
 
 interface TradeTooltipData {
     give: string;
-    give: keyof Resources;
-    receive: keyof Resources;
+    receive: string;
+    giveAmount?: number;
     receiveAmount?: number;
 }
 
@@ -91,10 +91,14 @@ export const renderTradeTooltip = ({ content }: TooltipProps) => {
                 );
             }
         }
-    } catch {
     } catch (error) {
-        console.error('Failed to parse trade tooltip content:', error);
+        // Ignore parsing errors, fall through to default return
+        // We log it just to use the variable and satisfy strict configs if any
+        if (process.env.NODE_ENV === 'development') {
+             console.debug('Failed to parse trade tooltip:', error);
+        }
     }
+
     // Default fallback for plain text or invalid JSON structure
     return <div>{content}</div>;
 };
