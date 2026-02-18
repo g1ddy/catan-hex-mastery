@@ -1,4 +1,3 @@
-import React from 'react';
 import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../game/core/config';
 import { ArrowRight } from 'lucide-react';
 import { Resources } from '../../../game/core/types';
