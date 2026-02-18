@@ -1,4 +1,6 @@
 export const HEX_SIZE = 8;
+export const RAD_TO_DEG = 180 / Math.PI;
+export const DEG_TO_RAD = Math.PI / 180;
 
 // Pointy Top Angles: Top, Top-Right, Bottom-Right, Bottom, Bottom-Left, Top-Left
 // 270 (-90), 330 (-30), 30, 90, 150, 210
@@ -6,7 +8,7 @@ export const POINTY_TOP_ANGLES = [270, 330, 30, 90, 150, 210];
 
 export const hexCornerOffset = (index: number, size: number = HEX_SIZE) => {
     const angleDeg = POINTY_TOP_ANGLES[index % 6];
-    const angleRad = (angleDeg * Math.PI) / 180;
+    const angleRad = angleDeg * DEG_TO_RAD;
     return {
         x: size * Math.cos(angleRad),
         y: size * Math.sin(angleRad)

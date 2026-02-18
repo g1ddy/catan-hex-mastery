@@ -5,7 +5,7 @@ import { BuildMode, UiMode } from '../../shared/types';
 import { safeMove } from '../../shared/utils/feedback';
 import { safeGet } from '../../../game/core/utils/objectUtils';
 import { PHASES, STAGES } from '../../../game/core/constants';
-import { HEX_CORNERS } from '../../../game/geometry/staticGeometry';
+import { HEX_EDGE_GEOMETRY } from '../../../game/geometry/staticGeometry';
 import { OverlayEdge } from './OverlayEdge';
 import { Port } from './Port';
 import { getPrimaryHexOwner } from './helpers';
@@ -55,10 +55,8 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                 const { id: eId, parts } = eData;
                 if (getPrimaryHexOwner(parts, G) !== currentHexIdStr) return null;
 
-                const nextCorner = HEX_CORNERS[(i + 1) % 6];
-                const midX = (eData.x + nextCorner.x) / 2;
-                const midY = (eData.y + nextCorner.y) / 2;
-                const angle = Math.atan2(nextCorner.y - eData.y, nextCorner.x - eData.x) * 180 / Math.PI;
+                // Use pre-calculated geometry for performance
+                const { x: midX, y: midY, angle } = HEX_EDGE_GEOMETRY[i];
 
                 const edge = safeGet(G.board.edges, eId);
                 const ownerColor = edge ? G.players[edge.owner]?.color : null;
