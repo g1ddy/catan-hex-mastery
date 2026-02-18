@@ -1,23 +1,20 @@
 import React from 'react';
-import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../game/core/config';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
     Z_INDEX_GAME_CONTROLS_CONTAINER,
     Z_INDEX_FLOATING_UI
 } from '../shared/constants/z-indices';
-import { BarChart2, Bot, ArrowRight } from 'lucide-react';
+import { BarChart2, Bot } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { useIsMobile } from '../shared/hooks/useIsMobile';
 import { useViewportDvh } from './hooks/useViewportDvh';
-import { Resources } from '../../game/core/types';
-import { RESOURCE_META } from '../shared/config/uiConfig';
 import { UI_LABELS } from '../shared/constants/labels';
 import { AnalystShell } from '../coach/components/AnalystShell';
 import { CoachShell } from '../coach/components/CoachShell';
-import { DiceIcons } from '../shared/components/DiceIcons';
+import { renderCostTooltip, renderDiceTooltip, renderTradeTooltip } from './components/TooltipRenderers';
 
 interface GameLayoutProps {
   board: React.ReactNode;
@@ -30,83 +27,6 @@ interface GameLayoutProps {
   activePanel: 'analyst' | 'coach' | null;
   onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
 }
-
-const renderCostTooltip = ({ content }: { content: string | null }) => {
-  if (!content) return null;
-
-  try {
-    const cost = JSON.parse(content) as Partial<Resources>;
-    const hasCost = Object.values(cost).some((val) => val && val > 0);
-
-    if (!hasCost) return null;
-
-    return (
-      <div className="flex gap-2">
-        {RESOURCE_META.map(({ name, Icon, color }) => {
-          const amount = cost[name];
-          if (!amount) return null;
-          return (
-            <span key={name} className="flex items-center gap-1">
-              <Icon className={color} size={16} />
-              {amount}
-            </span>
-          );
-        })}
-      </div>
-    );
-  } catch (error) {
-    console.error('Failed to parse tooltip content:', error);
-    return null;
-  }
-};
-
-const renderDiceTooltip = ({ content }: { content: string | null }) => {
-    if (!content) return null;
-
-    try {
-        const parsed = JSON.parse(content);
-        if (parsed && typeof parsed.d1 === 'number' && typeof parsed.d2 === 'number') {
-            return <DiceIcons d1={parsed.d1} d2={parsed.d2} size={24} className="text-white" />;
-        }
-        return null;
-    } catch (error) {
-        console.error('Failed to parse dice tooltip content:', error);
-        return null;
-    }
-};
-
-const renderTradeTooltip = ({ content }: { content: string | null }) => {
-    if (!content) return null;
-
-    try {
-        const parsed = JSON.parse(content);
-        if (parsed && parsed.give && parsed.receive) {
-            const giveMeta = RESOURCE_META.find(r => r.name === parsed.give);
-            const receiveMeta = RESOURCE_META.find(r => r.name === parsed.receive);
-
-            if (giveMeta && receiveMeta) {
-                return (
-                    <div className="flex items-center gap-2">
-                        <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.giveAmount || BANK_TRADE_GIVE_AMOUNT}</span>
-                            <giveMeta.Icon className={giveMeta.color} size={16} />
-                        </span>
-                        <ArrowRight size={16} className="text-slate-400" />
-                        <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.receiveAmount || BANK_TRADE_RECEIVE_AMOUNT}</span>
-                            <receiveMeta.Icon className={receiveMeta.color} size={16} />
-                        </span>
-                    </div>
-                );
-            }
-        }
-    } catch {
-        // Ignore parsing errors, fall through to default return
-    }
-
-    // Default fallback for plain text or invalid JSON structure
-    return <div>{content}</div>;
-};
 
 export const GameLayout: React.FC<GameLayoutProps> = ({
   board,
