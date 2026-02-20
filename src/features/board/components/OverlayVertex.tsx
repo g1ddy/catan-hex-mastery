@@ -64,7 +64,7 @@ export const OverlayVertex = React.memo(({
                         isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                     }`}
                     data-tooltip-id="coach-tooltip"
-                    data-tooltip-content={recommendationData ? vId : ""}
+                    data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
                  >
                     <circle
                         cx={cx} cy={cy}
