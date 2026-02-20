@@ -14,10 +14,9 @@ test('Verify Coach Panel Rendering', async ({ page }) => {
   try {
     await noBotsButton.click({ timeout: 5000 });
   } catch (e) {
-    console.log('Retrying navigation/click...');
-    await page.goto('/');
+    await page.reload();
     await page.addStyleTag({ content: '.debug-panel { display: none !important; }' });
-    await noBotsButton.click();
+    await noBotsButton.click({ timeout: 5000 });
   }
 
   // Wait for game layout
@@ -32,9 +31,7 @@ test('Verify Coach Panel Rendering', async ({ page }) => {
 
   // Logic to open panel if not visible
   if (!(await panelText.isVisible())) {
-    if (await toggleBtn.isVisible()) {
-      await toggleBtn.click();
-    }
+    await toggleBtn.click();
   }
 
   // Wait for panel content
