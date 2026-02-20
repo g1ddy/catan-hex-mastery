@@ -158,7 +158,10 @@ export const renderCoachTooltip = ({ content }: TooltipProps) => {
                 )}
             </div>
         );
-    } catch {
+    } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+            console.debug('Failed to parse coach tooltip content:', error, content);
+        }
         return <div>{content}</div>;
     }
 };
