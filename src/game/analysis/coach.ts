@@ -116,8 +116,8 @@ export class Coach {
     /**
      * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
      */
-    public getAllRoadScores(playerID: string, _ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
-        if (!isValidPlayer(playerID, this.G)) {
+    public getAllRoadScores(playerID: string, ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
 
