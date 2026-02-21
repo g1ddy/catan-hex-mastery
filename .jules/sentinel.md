@@ -12,3 +12,8 @@
 **Vulnerability:** Truncating strings to a fixed length can split HTML tags (e.g. `<script>` becomes `<scrip`), which bypasses regex-based sanitizers that expect complete tags but might be executed by browsers or reconstructed later.
 **Learning:** Security controls like length limits must be "sanitization-aware." Naive truncation is dangerous when combined with structured data like HTML.
 **Prevention:** When truncating, check for and remove trailing partial structures (like open tags) to fail safe.
+
+## 2025-05-27 - Unauthorized Game Analysis
+**Vulnerability:** `Coach.getAllRoadScores` allowed any player to compute hypothetical road scores for any other player, potentially revealing opponent strategy.
+**Learning:** Analysis/Advisory methods that take `playerID` as an argument must explicitly validate it against `ctx.currentPlayer` if the result contains strategic information.
+**Prevention:** Enforce `playerID === ctx.currentPlayer` checks in all "Coach" or "Advisor" public methods exposed to the client.
