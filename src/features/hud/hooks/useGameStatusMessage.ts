@@ -1,13 +1,17 @@
 import { useMemo } from 'react';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from '../../shared/types';
-import { PHASES, STAGES } from '../../../game/core/constants';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../components/constants/emojis';
+import {
+    getCustomMessage,
+    getGameOverMessage,
+    getSetupMessage,
+    getGameplayMessage,
+    CustomMessage,
+    StatusMessage
+} from '../logic/statusMessageUtils';
 
-export interface CustomMessage {
-    text: string;
-    type: 'success' | 'info' | 'error';
-}
+export type { CustomMessage };
 
 export function useGameStatusMessage(
     ctx: Ctx,
@@ -15,7 +19,7 @@ export function useGameStatusMessage(
     uiMode: UiMode,
     buildMode: BuildMode,
     customMessage?: CustomMessage | null
-): { message: string; colorClass: string } {
+): StatusMessage {
 
     // Memoize Game Over Emoji
     const gameOverEmoji = useMemo(() => {
@@ -39,44 +43,13 @@ export function useGameStatusMessage(
     return useMemo(() => {
         // 1. Priority: Custom Message
         if (customMessage) {
-            let colorClass = "text-amber-400";
-            switch (customMessage.type) {
-                case 'success':
-                    colorClass = "text-green-400";
-                    break;
-                case 'error':
-                    colorClass = "text-red-400";
-                    break;
-                case 'info':
-                default:
-                    colorClass = "text-amber-400";
-                    break;
-            }
-            return { message: customMessage.text, colorClass };
+            return getCustomMessage(customMessage);
         }
 
         // 2. Priority: Game Over
-        if (ctx.gameover) {
-            if (ctx.gameover.draw) {
-                return {
-                    message: `Draw! ${gameOverEmoji}`,
-                    colorClass: "text-slate-200"
-                };
-            }
-            if (ctx.gameover.winner) {
-                if (ctx.gameover.winner === playerID) {
-                    return {
-                        message: `You Win!!! ${gameOverEmoji}`,
-                        colorClass: "text-amber-400 animate-pulse motion-reduce:animate-none"
-                    };
-                } else {
-                    return {
-                        message: `You Lose ${gameOverEmoji}`,
-                        colorClass: "text-red-400"
-                    };
-                }
-            }
-            return { message: "Game Over", colorClass: "text-slate-200" };
+        const gameOverMsg = getGameOverMessage(ctx, playerID, gameOverEmoji);
+        if (gameOverMsg) {
+            return gameOverMsg;
         }
 
         // 3. Priority: Regular Gameplay
@@ -88,43 +61,15 @@ export function useGameStatusMessage(
         const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
 
         // Setup Phase
-        if (ctx.phase === PHASES.SETUP) {
-            const setupInstructions: Record<string, string> = {
-                [STAGES.PLACE_SETTLEMENT]: "Place Settlement",
-                [STAGES.PLACE_ROAD]: "Place Road",
-            };
-
-            if (activeStage && setupInstructions[activeStage]) {
-                const message = uiMode === 'placing' ? setupInstructions[activeStage] : "Start Placement";
-                return { message, colorClass: "text-amber-400" };
-            }
-            return { message: "Waiting...", colorClass: "text-amber-400" };
+        const setupMsg = getSetupMessage(ctx, activeStage, uiMode);
+        if (setupMsg) {
+            return setupMsg;
         }
 
         // Gameplay Phase
-        if (ctx.phase === PHASES.GAMEPLAY) {
-            if (activeStage === STAGES.ROLLING) {
-                return { message: "Roll Dice", colorClass: "text-amber-400" };
-            }
-
-            if (activeStage === STAGES.ACTING) {
-                const buildModeInstructions: Record<string, string> = {
-                    road: "Place Road",
-                    settlement: "Place Settlement",
-                    city: "Build City",
-                };
-                const message = (buildMode && buildModeInstructions[buildMode]) || "Your Turn";
-                return { message, colorClass: "text-amber-400" };
-            }
-
-            if (activeStage === STAGES.ROBBER) {
-                return {
-                    message: `Robber! ${getRandomEmoji(LOSE_EMOJIS)}`,
-                    colorClass: "text-red-400 font-bold animate-bounce"
-                };
-            }
-
-            return { message: "Waiting...", colorClass: "text-amber-400" };
+        const gameplayMsg = getGameplayMessage(ctx, activeStage, buildMode);
+        if (gameplayMsg) {
+            return gameplayMsg;
         }
 
         // Default Fallback
