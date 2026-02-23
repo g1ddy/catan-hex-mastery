@@ -1,14 +1,15 @@
 import { BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../game/core/config';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Zap, Gem, Layers, BarChart } from 'lucide-react';
 import { Resources } from '../../../game/core/types';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 import { DiceIcons } from '../../shared/components/DiceIcons';
+import { CoachRecommendation } from '../../../game/analysis/types';
 
 interface TooltipProps {
   content: string | null;
 }
 
-interface CostTooltipData extends Partial<Resources> {}
+type CostTooltipData = Partial<Resources>;
 
 interface DiceTooltipData {
     d1: number;
@@ -34,6 +35,7 @@ export const renderCostTooltip = ({ content }: TooltipProps) => {
     return (
       <div className="flex gap-2">
         {RESOURCE_META.map(({ name, Icon, color }) => {
+          // eslint-disable-next-line security/detect-object-injection
           const amount = cost[name];
           if (!amount) return null;
           return (
@@ -101,4 +103,65 @@ export const renderTradeTooltip = ({ content }: TooltipProps) => {
 
     // Default fallback for plain text or invalid JSON structure
     return <div>{content}</div>;
+};
+
+export const renderCoachTooltip = ({ content }: TooltipProps) => {
+    if (!content) return null;
+
+    try {
+        const rec = JSON.parse(content) as CoachRecommendation;
+        if (!rec || !rec.details) return <div>{content}</div>;
+
+        return (
+            <div className="flex flex-col gap-2 max-w-[200px]">
+                <div className="font-bold text-amber-400 border-b border-slate-600 pb-1 mb-1">
+                    {rec.reason}
+                </div>
+
+                <div className="flex items-center gap-2 text-sm">
+                    <BarChart size={14} className="text-blue-400" />
+                    <span>Score: {rec.score.toFixed(1)}</span>
+                    <span className="text-slate-400">({rec.details.pips} pips)</span>
+                </div>
+
+                {/* Bonuses */}
+                <div className="flex flex-wrap gap-1">
+                    {rec.details.scarcityBonus && (
+                        <span className="flex items-center gap-1 text-xs bg-purple-900/50 text-purple-200 px-1.5 py-0.5 rounded border border-purple-700/50">
+                            <Gem size={10} /> Scarcity
+                        </span>
+                    )}
+                    {rec.details.diversityBonus && (
+                        <span className="flex items-center gap-1 text-xs bg-green-900/50 text-green-200 px-1.5 py-0.5 rounded border border-green-700/50">
+                            <Layers size={10} /> Diversity
+                        </span>
+                    )}
+                    {rec.details.synergyBonus && (
+                        <span className="flex items-center gap-1 text-xs bg-amber-900/50 text-amber-200 px-1.5 py-0.5 rounded border border-amber-700/50">
+                            <Zap size={10} /> Synergy
+                        </span>
+                    )}
+                </div>
+
+                {/* Needed Resources */}
+                {rec.details.neededResources && rec.details.neededResources.length > 0 && (
+                     <div className="flex items-center gap-1 mt-1 pt-1 border-t border-slate-700/50">
+                        <span className="text-xs text-slate-400">Needs:</span>
+                        <div className="flex gap-1">
+                            {rec.details.neededResources.map(r => {
+                                const meta = RESOURCE_META.find(m => m.name === r);
+                                if (!meta) return null;
+                                return <meta.Icon key={r} size={12} className={meta.color} />;
+                            })}
+                        </div>
+                     </div>
+                )}
+            </div>
+        );
+    } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+            console.debug('Failed to parse coach tooltip content:', error, content);
+        }
+        return <div>{content}</div>;
+    }
 };
