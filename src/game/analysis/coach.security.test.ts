@@ -83,4 +83,16 @@ describe('Coach Security', () => {
         // Expectation: Should be empty array if secure
         expect(results).toEqual([]);
     });
+
+    test('evaluateTrade should NOT return analysis for other players', () => {
+        const G = createMockState();
+        const coach = new Coach(G);
+
+        // Player 0 asks for Player 1's trade evaluation
+        const result = coach.evaluateTrade('1', mockCtx);
+
+        // Expectation: Should be marked unsafe/unauthorized
+        expect(result.isSafe).toBe(false);
+        expect(result.reason).toBe('Unauthorized');
+    });
 });
