@@ -39,19 +39,19 @@ export const getGameOverMessage = (
 
     if (ctx.gameover.draw) {
         return {
-            message: `Draw! ${emoji || ''}`,
+            message: `Draw! ${emoji}`,
             colorClass: "text-slate-200"
         };
     }
     if (ctx.gameover.winner) {
         if (ctx.gameover.winner === playerID) {
             return {
-                message: `You Win!!! ${emoji || ''}`,
+                message: `You Win!!! ${emoji}`,
                 colorClass: "text-amber-400 animate-pulse motion-reduce:animate-none"
             };
         } else {
             return {
-                message: `You Lose ${emoji || ''}`,
+                message: `You Lose ${emoji}`,
                 colorClass: "text-red-400"
             };
         }
