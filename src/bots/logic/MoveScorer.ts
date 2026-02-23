@@ -1,3 +1,4 @@
+import { Ctx } from 'boardgame.io';
 import { GameAction } from '../../game/core/types';
 import { BotProfile } from '../profiles/BotProfile';
 import { Coach } from '../../game/analysis/coach';
@@ -17,6 +18,7 @@ export interface ScoringContext {
     isRoadFatigued: boolean;
     coach: Coach;
     playerID: string;
+    ctx: Ctx;
 }
 
 export class MoveScorer {
@@ -60,7 +62,7 @@ export class MoveScorer {
             }
 
             // Smart Ban: Protect Ore (City bottleneck) using shared Coach logic
-            const tradeEvaluation = context.coach.evaluateTrade(context.playerID);
+            const tradeEvaluation = context.coach.evaluateTrade(context.playerID, context.ctx);
             if (!tradeEvaluation.isSafe) {
                 weight = 0;
             }

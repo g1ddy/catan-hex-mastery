@@ -198,7 +198,8 @@ export class BotCoach {
             affordable,
             isRoadFatigued,
             coach: this.coach,
-            playerID
+            playerID,
+            ctx
         };
 
         // Capture weights to handle tie-breaking/shuffling later

@@ -65,7 +65,10 @@ export class Coach {
      * Evaluates if a Bank Trade is safe or advisable for the player.
      * Delegates to TradeAdvisor.
      */
-    public evaluateTrade(playerID: string): { isSafe: boolean, reason?: string } {
+    public evaluateTrade(playerID: string, ctx: Ctx): { isSafe: boolean, reason?: string } {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
+            return { isSafe: false, reason: "Unauthorized" };
+        }
         return this.tradeAdvisor.evaluateTrade(playerID);
     }
 
@@ -116,8 +119,8 @@ export class Coach {
     /**
      * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
      */
-    public getAllRoadScores(playerID: string, _ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
-        if (!isValidPlayer(playerID, this.G)) {
+    public getAllRoadScores(playerID: string, ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
 
