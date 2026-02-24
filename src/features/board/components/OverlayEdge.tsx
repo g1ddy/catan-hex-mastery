@@ -27,12 +27,14 @@ export const OverlayEdge = React.memo(({
     const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
     const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
 
+    const tooltipId = isRecommended ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+
     return (
          <g onClick={(e) => {
             e.stopPropagation();
             if (isClickable) onClick(eId);
         }}
-        data-tooltip-id={tooltip ? "ui-tooltip" : undefined}
+        data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         >
             <circle cx={cx} cy={cy} r={2.5} fill="transparent" style={{ cursor: isClickable ? 'pointer' : 'default' }} />

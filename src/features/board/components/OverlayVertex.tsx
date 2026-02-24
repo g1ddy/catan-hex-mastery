@@ -1,6 +1,5 @@
 import React from 'react';
 import { BuildingIcon } from './BuildingIcon';
-import { CoachRecommendation } from '../../../game/analysis/coach';
 import { BOARD_CONFIG } from '../../../game/core/config';
 import { BuildMode } from '../../hud/components/GameControls';
 
@@ -17,7 +16,7 @@ export interface OverlayVertexProps {
     onClick: (vId: string) => void;
     buildMode: BuildMode;
     // Coach
-    recommendationData?: CoachRecommendation;
+    hasRecommendation: boolean;
     heatmapColor?: string;
     isTop3?: boolean;
     showResourceHeatmap: boolean;
@@ -26,7 +25,7 @@ export interface OverlayVertexProps {
 export const OverlayVertex = React.memo(({
     vId, cx, cy, vertex, ownerColor,
     isClickable, isGhost, onClick, buildMode,
-    recommendationData, heatmapColor, isTop3, showResourceHeatmap
+    hasRecommendation, heatmapColor, isTop3, showResourceHeatmap
 }: OverlayVertexProps) => {
     const isOccupied = !!vertex;
 
@@ -58,13 +57,13 @@ export const OverlayVertex = React.memo(({
                  <circle cx={cx} cy={cy} r={4} fill="none" stroke="white" strokeWidth={1} className="animate-pulse motion-reduce:animate-none" />
             )}
 
-            {recommendationData && (
+            {hasRecommendation && (
                  <g
                     className={`coach-highlight transition-opacity duration-200 ${
                         isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                     }`}
                     data-tooltip-id="coach-tooltip"
-                    data-tooltip-content={recommendationData ? JSON.stringify(recommendationData) : ""}
+                    data-tooltip-content={vId}
                  >
                     <circle
                         cx={cx} cy={cy}
