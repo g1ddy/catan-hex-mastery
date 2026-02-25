@@ -62,6 +62,14 @@ describe('useIsMobile', () => {
 
         // Simulate change to Mobile
         expect(changeHandler).toBeTruthy();
+
+        // Update mock implementation so getSnapshot sees new value
+        matchMediaMock.mockImplementation((_query) => ({
+            matches: true,
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+        }));
+
         act(() => {
             if (changeHandler) {
                 // Simulate event object
@@ -70,6 +78,13 @@ describe('useIsMobile', () => {
         });
 
         expect(result.current).toBe(true);
+
+        // Update mock implementation back to false
+        matchMediaMock.mockImplementation((_query) => ({
+            matches: false,
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+        }));
 
         // Simulate change back to Desktop
         act(() => {
