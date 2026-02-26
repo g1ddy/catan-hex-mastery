@@ -123,12 +123,12 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={tradeG} />);
 
-        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+        const tradeButton = screen.getByLabelText('Trade 4:1');
 
         // Check content
-        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
+        expect(tradeButton).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
 
-        const content = tradeButtonContainer?.getAttribute('data-tooltip-content');
+        const content = tradeButton?.getAttribute('data-tooltip-content');
         expect(content).toBeDefined();
 
         const parsed = JSON.parse(content!);
@@ -153,9 +153,9 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={noResourcesG} />);
 
-        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+        const tradeButton = screen.getByLabelText('Trade 4:1');
 
-        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource (or less with ports) to trade');
+        expect(tradeButton).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource (or less with ports) to trade');
     });
 
     test('Roll button shows "Rolling..." when status is ROLLING', () => {
