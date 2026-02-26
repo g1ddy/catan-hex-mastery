@@ -94,4 +94,18 @@ describe('BuildBar Accessibility', () => {
         fireEvent.click(roadButton);
         expect(enabledProps.setBuildMode).toHaveBeenCalledWith('road');
     });
+
+    test('Trade button has tooltip attributes directly for keyboard accessibility', () => {
+        render(<BuildBar {...mockProps} />);
+        const tradeButton = screen.getByLabelText('Trade 4:1');
+
+        expect(tradeButton).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
+    });
+
+    test('Build buttons have tooltip attributes directly for keyboard accessibility', () => {
+        render(<BuildBar {...mockProps} />);
+        const roadButton = screen.getByLabelText(/Build Road/i);
+
+        expect(roadButton).toHaveAttribute('data-tooltip-id', 'cost-tooltip');
+    });
 });
