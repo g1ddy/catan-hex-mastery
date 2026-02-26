@@ -27,7 +27,9 @@ export const OverlayEdge = React.memo(({
     const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
     const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
 
-    const tooltipId = isRecommended ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+    // Use heatmapColor as the indicator for any recommendation, not just top 3 (isRecommended)
+    const hasRecommendation = isRecommended || !!heatmapColor;
+    const tooltipId = hasRecommendation ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
 
     return (
          <g onClick={(e) => {

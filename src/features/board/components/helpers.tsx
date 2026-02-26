@@ -48,7 +48,7 @@ export const renderTooltipContent = (coachData: CoachData) => ({ content }: { co
             </div>
 
             {/* Needed Resources */}
-            {details.neededResources && details.neededResources.length > 0 && (
+            {details.neededResources.length > 0 && (
                  <div className="flex items-center gap-1 mt-1 pt-1 border-t border-slate-700/50">
                     <span className="text-xs text-slate-400">Needs:</span>
                     <div className="flex gap-1">
