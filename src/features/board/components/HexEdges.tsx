@@ -93,7 +93,7 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                             if (rec) {
                                 isRecommended = coachData.top3Set.has(eId);
                                 heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
-                                tooltip = `${rec.reason} (Score: ${rec.score})`;
+                                tooltip = eId;
                             }
                         }
                     }

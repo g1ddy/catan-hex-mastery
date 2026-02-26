@@ -14,7 +14,7 @@ import { useViewportDvh } from './hooks/useViewportDvh';
 import { UI_LABELS } from '../shared/constants/labels';
 import { AnalystShell } from '../coach/components/AnalystShell';
 import { CoachShell } from '../coach/components/CoachShell';
-import { renderCoachTooltip, renderCostTooltip, renderDiceTooltip, renderTradeTooltip } from './components/TooltipRenderers';
+import { renderCostTooltip, renderDiceTooltip, renderTradeTooltip } from './components/TooltipRenderers';
 
 interface GameLayoutProps {
   board: React.ReactNode;
@@ -118,12 +118,6 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           place="top"
           style={{ zIndex: Z_INDEX_TOOLTIP }}
           render={renderTradeTooltip}
-      />
-      <Tooltip
-          id="coach-tooltip"
-          place="top"
-          style={{ zIndex: Z_INDEX_TOOLTIP }}
-          render={renderCoachTooltip}
       />
       <Tooltip
           id="ui-tooltip"

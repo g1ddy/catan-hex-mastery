@@ -103,7 +103,7 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                         key={vId} vId={vId} cx={vData.x} cy={vData.y} vertex={vertex}
                         ownerColor={ownerColor} isClickable={isClickable} isGhost={isGhost}
                         onClick={handleVertexClick} buildMode={buildMode}
-                        recommendationData={recommendationData}
+                        hasRecommendation={!!recommendationData}
                         heatmapColor={heatmapColor}
                         isTop3={isTop3}
                         showResourceHeatmap={showResourceHeatmap}
