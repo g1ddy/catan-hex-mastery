@@ -60,12 +60,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
     // Trade Logic
     const canTradeAllowed = canTrade && isMoveAllowed('tradeBank');
     const tradeTooltip = canTradeAllowed
-        ? JSON.stringify({
-            give: tradeResult.give,
-            receive: tradeResult.receive,
-            giveAmount: tradeResult.giveAmount,
-            receiveAmount: BANK_TRADE_RECEIVE_AMOUNT
-        })
+        ? `Trade ${tradeResult.giveAmount} ${tradeResult.give} for ${BANK_TRADE_RECEIVE_AMOUNT} ${tradeResult.receive}`
         : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade`;
 
     return (
@@ -116,7 +111,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                         <button
                             onClick={() => isEnabled && toggleBuildMode(type)}
                             data-tooltip-id="cost-tooltip"
-                            data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}
+                            data-tooltip-content={costString(type)}
                             aria-disabled={!isEnabled}
                             aria-label={`${ariaPrefix} (${costString(type)})`}
                             aria-pressed={buildMode === type}
