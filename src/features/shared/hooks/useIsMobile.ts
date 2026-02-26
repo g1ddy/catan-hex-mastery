@@ -4,16 +4,27 @@ import { useSyncExternalStore } from 'react';
 // Tailwind 'md' starts at 768px, so strictly less than 768px is mobile
 const MOBILE_QUERY = '(max-width: 767px)';
 
+let mediaQuery: MediaQueryList | null = null;
+
+function getMediaQuery(): MediaQueryList | null {
+  if (typeof window === 'undefined') return null;
+  if (!mediaQuery) {
+    mediaQuery = window.matchMedia(MOBILE_QUERY);
+  }
+  return mediaQuery;
+}
+
 function subscribe(callback: () => void) {
-  if (typeof window === 'undefined') return () => {};
-  const mediaQuery = window.matchMedia(MOBILE_QUERY);
-  mediaQuery.addEventListener('change', callback);
-  return () => mediaQuery.removeEventListener('change', callback);
+  const mq = getMediaQuery();
+  if (!mq) return () => {};
+
+  mq.addEventListener('change', callback);
+  return () => mq.removeEventListener('change', callback);
 }
 
 function getSnapshot() {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia(MOBILE_QUERY).matches;
+  const mq = getMediaQuery();
+  return mq ? mq.matches : false;
 }
 
 function getServerSnapshot() {
