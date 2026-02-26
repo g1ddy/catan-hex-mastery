@@ -110,7 +110,7 @@ describe('GameControls Accessibility', () => {
         expect(screen.getByLabelText(/Build Road/i)).toHaveAttribute('aria-pressed', 'true');
     });
 
-    test('Trade tooltip contains JSON when trade is possible', () => {
+    test('Trade tooltip contains readable string when trade is possible', () => {
         const tradeG = {
             ...mockG,
             players: {
@@ -123,21 +123,13 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={tradeG} />);
 
-        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+        const tradeButton = screen.getByLabelText('Trade 4:1');
 
         // Check content
-        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
+        expect(tradeButton).toHaveAttribute('data-tooltip-id', 'trade-tooltip');
 
-        const content = tradeButtonContainer?.getAttribute('data-tooltip-content');
-        expect(content).toBeDefined();
-
-        const parsed = JSON.parse(content!);
-        expect(parsed).toEqual({
-            give: 'wood',
-            receive: 'brick',
-            giveAmount: 4,
-            receiveAmount: 1
-        });
+        const content = tradeButton?.getAttribute('data-tooltip-content');
+        expect(content).toBe("Trade 4 wood for 1 brick");
     });
 
     test('Trade tooltip shows text when trade is not possible', () => {
@@ -153,9 +145,9 @@ describe('GameControls Accessibility', () => {
 
         render(<GameControls {...props} G={noResourcesG} />);
 
-        const tradeButtonContainer = screen.getByTestId('trade-button-container');
+        const tradeButton = screen.getByLabelText('Trade 4:1');
 
-        expect(tradeButtonContainer).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource (or less with ports) to trade');
+        expect(tradeButton).toHaveAttribute('data-tooltip-content', 'Need 4 of a resource (or less with ports) to trade');
     });
 
     test('Roll button shows "Rolling..." when status is ROLLING', () => {

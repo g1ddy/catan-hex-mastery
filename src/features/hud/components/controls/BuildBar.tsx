@@ -50,7 +50,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
         }
 
         if (buildMode === mode) return `${base} bg-amber-500 text-slate-900 shadow-[0_0_10px_rgba(245,158,11,0.5)]`;
-        return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 aria-disabled:text-slate-500 aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none`;
+        return `${base} bg-slate-800 text-slate-300 hover:bg-slate-700 aria-disabled:text-slate-500 aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:hover:bg-slate-800`;
     };
 
     const toggleBuildMode = (mode: BuildMode) => {
@@ -60,12 +60,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
     // Trade Logic
     const canTradeAllowed = canTrade && isMoveAllowed('tradeBank');
     const tradeTooltip = canTradeAllowed
-        ? JSON.stringify({
-            give: tradeResult.give,
-            receive: tradeResult.receive,
-            giveAmount: tradeResult.giveAmount,
-            receiveAmount: BANK_TRADE_RECEIVE_AMOUNT
-        })
+        ? `Trade ${tradeResult.giveAmount} ${tradeResult.give} for ${BANK_TRADE_RECEIVE_AMOUNT} ${tradeResult.receive}`
         : `Need ${BANK_TRADE_GIVE_AMOUNT} of a resource (or less with ports) to trade`;
 
     return (
@@ -73,12 +68,12 @@ export const BuildBar: React.FC<BuildBarProps> = ({
             {/* Trade Button */}
             <div
                 className="inline-block flex-shrink-0 border-r border-slate-700/50 pr-1"
-                data-tooltip-id="trade-tooltip"
-                data-tooltip-content={tradeTooltip}
                 data-testid="trade-button-container"
             >
                 <button
                     onClick={() => canTradeAllowed && onTrade()}
+                    data-tooltip-id="trade-tooltip"
+                    data-tooltip-content={tradeTooltip}
                     aria-disabled={!canTradeAllowed}
                     aria-label="Trade 4:1"
                     className={`p-3 rounded-lg flex items-center justify-center transition-all ${
@@ -112,9 +107,11 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                 );
 
                 return (
-                    <div key={type} className="inline-block" data-tooltip-id="cost-tooltip" data-tooltip-content={JSON.stringify(BUILD_COSTS[type])}>
+                    <div key={type} className="inline-block">
                         <button
                             onClick={() => isEnabled && toggleBuildMode(type)}
+                            data-tooltip-id="cost-tooltip"
+                            data-tooltip-content={costString(type)}
                             aria-disabled={!isEnabled}
                             aria-label={`${ariaPrefix} (${costString(type)})`}
                             aria-pressed={buildMode === type}
