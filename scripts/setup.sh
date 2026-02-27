@@ -4,18 +4,9 @@ set -e
 # Install Node.js dependencies
 npm install
 
-# Install Python dependencies if requirements.txt exists
-if [ -f requirements.txt ]; then
-  echo "Installing Python dependencies..."
-  pip install -r requirements.txt
-
-  # Install Playwright browsers for Python
-  echo "Installing Playwright browsers for Python..."
-  python3 -m playwright install chromium
-fi
-
 # Install Playwright browsers (Chromium and others if needed)
 # Installing WebKit is required for Mobile Safari tests
+# Also install Mobile Chrome (Pixel 5) emulation support via standard chromium
 npx playwright install chromium webkit
 
 # Install system dependencies required for browsers
