@@ -92,7 +92,7 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-02-22
+**Last Updated:** 2026-03-01
 
 ### 🏥 Repository Health Score: **88.0 / 100**
 
@@ -104,27 +104,27 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/bots/BotCoach.ts` | **97** | 272 | 18 | 8 | 0.89 |
 | `src/game/analysis/advisors/RoadAdvisor.ts` | **81.2** | 221 | 15 | 6 | 0.86 |
 | `src/features/board/components/HexEdges.tsx` | **80** | 117 | 14 | 11 | 0.92 |
 | `src/features/board/components/HexOverlays.tsx` | **76.5** | 109 | 18 | 7 | 0.78 |
 | `src/features/game/GameLayout.tsx` | **73.2** | 210 | 7 | 10 | 0.91 |
 | `src/game/Game.ts` | **72.8** | 121 | 7 | 14 | 0.93 |
 | `src/features/board/components/HexVertices.tsx` | **71.4** | 116 | 13 | 8 | 0.89 |
-| `src/bots/logic/MoveScorer.ts` | **69.9** | 72 | 18 | 5 | 0.83 |
-| `src/game/analysis/coach.ts` | **69.8** | 197 | 10 | 11 | 0.41 |
+| `src/game/analysis/coach.ts` | **70.1** | 200 | 10 | 11 | 0.41 |
+| `src/bots/logic/MoveScorer.ts` | **70.1** | 74 | 18 | 5 | 0.83 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **69.5** | 211 | 7 | 9 | 0.82 |
+| `src/game/rules/moveValidation.ts` | **64.1** | 139 | 6 | 10 | 0.91 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/bots/BotCoach.ts` | **18** | 272 |
-| `src/bots/logic/MoveScorer.ts` | **18** | 72 |
+| `src/bots/logic/MoveScorer.ts` | **18** | 74 |
 | `src/features/board/components/HexOverlays.tsx` | **18** | 109 |
 | `src/game/analysis/advisors/RoadAdvisor.ts` | **15** | 221 |
 | `src/features/board/components/HexEdges.tsx` | **14** | 117 |
 | `src/features/board/components/HexVertices.tsx` | **13** | 116 |
-| `src/features/board/components/OverlayVertex.tsx` | **13** | 101 |
+| `src/features/board/components/OverlayEdge.tsx` | **12** | 66 |
+| `src/features/board/components/OverlayVertex.tsx` | **12** | 100 |
 | `src/features/coach/logic/coachUtils.ts` | **11** | 120 |
 | `src/features/hud/components/controls/TurnControls.tsx` | **11** | 80 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |

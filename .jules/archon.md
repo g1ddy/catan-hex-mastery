@@ -16,3 +16,4 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-02-08 - [High Complexity Logic]
 **Observation:** `RoadAdvisor.ts` had high complexity (Score 99.8, Max Complexity 23) due to monolithic `findSignificantTargets` method mixing BFS, scoring, and filtering.
 **Strategy:** Refactored into specialized methods (`bfsFindTargets`, `scoreTargetVertex`, `filterParetoOptimalTargets`). Score reduced to 83.6, Max Complexity to 15.
+## 2026-03-01 - [High Complexity Component] **Observation:** `BotCoach.ts` had high complexity (Score 97.1, Complexity 18) due to containing both the BotCoach class logic and optimal move filtering. **Strategy:** Refactored by extracting `filterOptimalMoves` and `refineTopMoves` logic into `OptimalMoveFilter.ts`. Reduced complexity significantly; file dropped out of Top 10.
