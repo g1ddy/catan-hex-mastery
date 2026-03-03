@@ -22,7 +22,7 @@ const GEOMETRY = {
   STROKE_WIDTH: 0.2,
 };
 
-export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
+export const NumberToken: React.FC<NumberTokenProps> = React.memo(({ value, pips }) => {
   const isRed = value === 6 || value === 8;
   const color = isRed ? TOKEN_COLORS.RED : TOKEN_COLORS.DEFAULT;
 
@@ -70,4 +70,6 @@ export const NumberToken: React.FC<NumberTokenProps> = ({ value, pips }) => {
       </g>
     </g>
   );
-};
+});
+
+NumberToken.displayName = 'NumberToken';
