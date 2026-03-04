@@ -1,22 +1,24 @@
 import React from 'react';
 
-interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ActionButtonProps extends React.ComponentProps<'button'> {
     label?: string;
 }
 
-export const ActionButton: React.FC<ActionButtonProps> = ({
+export function ActionButton({
     onClick,
     className,
     label = "Begin Placement",
     disabled,
     ...props
-}) => (
-    <button
-        onClick={onClick}
-        className={className}
-        disabled={disabled}
-        {...props}
-    >
-        <span className="text-base font-bold">{label}</span>
-    </button>
-);
+}: ActionButtonProps) {
+    return (
+        <button
+            onClick={onClick}
+            className={className}
+            disabled={disabled}
+            {...props}
+        >
+            <span className="text-base font-bold">{label}</span>
+        </button>
+    );
+}
