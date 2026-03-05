@@ -35,7 +35,7 @@ export const CoachShell: React.FC<CoachShellProps> = ({ children, isOpen, onTogg
                 className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
                 aria-label="Collapse Coach Panel"
             >
-                <ChevronRight size={24} />
+                <ChevronRight size={24} aria-hidden="true" />
             </button>
          </div>
 
@@ -80,7 +80,7 @@ export const CoachShell: React.FC<CoachShellProps> = ({ children, isOpen, onTogg
              className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
              aria-label="Close Coach Panel"
            >
-             <X size={24} />
+             <X size={24} aria-hidden="true" />
            </button>
         </div>
 

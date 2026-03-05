@@ -25,10 +25,10 @@ export const TurnControls: React.FC<TurnControlsProps> = ({
 }) => {
     const endTurnLabel = isEndingTurn ? "Ending..." : "End";
     const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
-    const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <ArrowRight size={16} />;
+    const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />;
 
     const rollLabel = isRolling ? "Rolling..." : "Roll";
-    const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" /> : <Dice size={16} />;
+    const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <Dice size={16} aria-hidden="true" />;
 
     const lastRollSum = lastRoll[0] + lastRoll[1];
     const showLastRoll = !isMoveAllowed('rollDice') && lastRollSum > 0;
