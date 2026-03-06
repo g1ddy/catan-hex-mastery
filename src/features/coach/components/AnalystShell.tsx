@@ -35,7 +35,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
                 className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
                 aria-label="Collapse Sidebar"
             >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={24} aria-hidden="true" />
             </button>
          </div>
 
@@ -80,7 +80,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
              className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
              aria-label="Close Analyst Panel"
            >
-             <X size={24} />
+             <X size={24} aria-hidden="true" />
            </button>
         </div>
 

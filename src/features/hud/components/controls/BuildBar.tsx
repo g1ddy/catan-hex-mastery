@@ -82,7 +82,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                         : "bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed"
                     }`}
                 >
-                    <Handshake size={20} />
+                    <Handshake size={20} aria-hidden="true" />
                 </button>
             </div>
 
@@ -117,7 +117,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
                             aria-pressed={buildMode === type}
                             className={`p-3 rounded-lg transition-all flex items-center justify-center ${getButtonClass(type, isRecommended)}`}
                         >
-                            <Icon size={20} />
+                            <Icon size={20} aria-hidden="true" />
                         </button>
                     </div>
                 );
