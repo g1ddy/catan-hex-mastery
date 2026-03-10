@@ -10,11 +10,6 @@ interface TooltipProps {
 
 type CostTooltipData = Partial<Resources>;
 
-interface DiceTooltipData {
-    d1: number;
-    d2: number;
-}
-
 interface TradeTooltipData {
     give: string;
     receive: string;
@@ -55,16 +50,15 @@ export const renderCostTooltip = ({ content }: TooltipProps) => {
 export const renderDiceTooltip = ({ content }: TooltipProps) => {
     if (!content) return null;
 
-    try {
-        const parsed = JSON.parse(content) as DiceTooltipData;
-        if (parsed && typeof parsed.d1 === 'number' && typeof parsed.d2 === 'number') {
-            return <DiceIcons d1={parsed.d1} d2={parsed.d2} size={24} className="text-white" />;
-        }
-        return null;
-    } catch (error) {
-        console.error('Failed to parse dice tooltip content:', error);
-        return null;
+    const [d1Str, d2Str] = content.split(',');
+    const d1 = parseInt(d1Str, 10);
+    const d2 = parseInt(d2Str, 10);
+
+    if (!isNaN(d1) && !isNaN(d2)) {
+        return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
     }
+
+    return null;
 };
 
 export const renderTradeTooltip = ({ content }: TooltipProps) => {

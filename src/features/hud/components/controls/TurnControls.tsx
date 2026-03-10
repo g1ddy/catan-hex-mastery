@@ -65,7 +65,7 @@ export const TurnControls: React.FC<TurnControlsProps> = ({
                     <div
                     className="flex items-center gap-2 ml-1 px-2 py-1 border-l border-slate-700/50 cursor-help focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                     data-tooltip-id="dice-tooltip"
-                    data-tooltip-content={JSON.stringify({ d1: lastRoll[0], d2: lastRoll[1] })}
+                    data-tooltip-content={`${lastRoll[0]},${lastRoll[1]}`}
                     tabIndex={0}
                     role="img"
                     aria-label={`Last roll: ${lastRollSum}`}
