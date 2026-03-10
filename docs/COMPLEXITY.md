@@ -92,9 +92,9 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-03-01
+**Last Updated:** 2026-03-08
 
-### 🏥 Repository Health Score: **88.0 / 100**
+### 🏥 Repository Health Score: **89.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Files Scanned**: 109
@@ -111,14 +111,13 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/Game.ts` | **72.8** | 121 | 7 | 14 | 0.93 |
 | `src/features/board/components/HexVertices.tsx` | **71.4** | 116 | 13 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **70.1** | 200 | 10 | 11 | 0.41 |
-| `src/bots/logic/MoveScorer.ts` | **70.1** | 74 | 18 | 5 | 0.83 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **69.5** | 211 | 7 | 9 | 0.82 |
 | `src/game/rules/moveValidation.ts` | **64.1** | 139 | 6 | 10 | 0.91 |
+| `src/game/rules/queries.ts` | **62.2** | 234 | 7 | 7 | 0.54 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/bots/logic/MoveScorer.ts` | **18** | 74 |
 | `src/features/board/components/HexOverlays.tsx` | **18** | 109 |
 | `src/game/analysis/advisors/RoadAdvisor.ts` | **15** | 221 |
 | `src/features/board/components/HexEdges.tsx` | **14** | 117 |
@@ -128,3 +127,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/coach/logic/coachUtils.ts` | **11** | 120 |
 | `src/features/hud/components/controls/TurnControls.tsx` | **11** | 80 |
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |
+| `src/game/rules/validator.ts` | **11** | 75 |

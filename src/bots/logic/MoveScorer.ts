@@ -10,6 +10,8 @@ const STRATEGIC_ADVICE_BOOST = 1.5;
 const AFFORDABLE_BOOST = 10.0;
 const ROAD_FATIGUE_PENALTY = 0.01;
 const TRADE_BOOST = 5.0;
+const END_TURN_WEIGHT = 1.0;
+const DEFAULT_UNKNOWN_MOVE_WEIGHT = 0.5;
 
 export interface ScoringContext {
     profile: BotProfile;
@@ -24,26 +26,30 @@ export interface ScoringContext {
 export class MoveScorer {
     public getWeightedScore(move: GameAction, context: ScoringContext): number {
         const name = ActionUtils.getMoveName(move) as string;
-        let weight = 0;
-
-        // Base Weight from Profile
-        switch (name) {
-            case 'buildCity': weight = context.profile.weights.buildCity; break;
-            case 'buildSettlement': weight = context.profile.weights.buildSettlement; break;
-            case 'buildRoad': weight = context.profile.weights.buildRoad; break;
-            case 'placeRoad': weight = context.profile.weights.buildRoad; break;
-            case 'buyDevCard': weight = context.profile.weights.buyDevCard; break;
-            case 'endTurn': weight = 1.0; break;
-            case 'tradeBank': weight = context.profile.weights.tradeBank; break;
-            default: weight = 0.5; break;
-        }
+        let weight = this.getBaseWeight(name, context.profile);
 
         // Coach Strategic Multiplier
         if (context.advisedMoves.has(name)) {
             weight *= STRATEGIC_ADVICE_BOOST;
         }
 
-        // Dynamic Logic Multipliers
+        return this.applyDynamicMultipliers(weight, name, context);
+    }
+
+    private getBaseWeight(name: string, profile: BotProfile): number {
+        switch (name) {
+            case 'buildCity': return profile.weights.buildCity;
+            case 'buildSettlement': return profile.weights.buildSettlement;
+            case 'buildRoad':
+            case 'placeRoad': return profile.weights.buildRoad;
+            case 'buyDevCard': return profile.weights.buyDevCard;
+            case 'endTurn': return END_TURN_WEIGHT;
+            case 'tradeBank': return profile.weights.tradeBank;
+            default: return DEFAULT_UNKNOWN_MOVE_WEIGHT;
+        }
+    }
+
+    private applyDynamicMultipliers(weight: number, name: string, context: ScoringContext): number {
         if (name === 'buildSettlement' && context.affordable.settlement) {
             weight *= AFFORDABLE_BOOST;
         }
