@@ -10,6 +10,8 @@ const STRATEGIC_ADVICE_BOOST = 1.5;
 const AFFORDABLE_BOOST = 10.0;
 const ROAD_FATIGUE_PENALTY = 0.01;
 const TRADE_BOOST = 5.0;
+const END_TURN_WEIGHT = 1.0;
+const DEFAULT_UNKNOWN_MOVE_WEIGHT = 0.5;
 
 export interface ScoringContext {
     profile: BotProfile;
@@ -41,15 +43,13 @@ export class MoveScorer {
             case 'buildRoad':
             case 'placeRoad': return profile.weights.buildRoad;
             case 'buyDevCard': return profile.weights.buyDevCard;
-            case 'endTurn': return 1.0;
+            case 'endTurn': return END_TURN_WEIGHT;
             case 'tradeBank': return profile.weights.tradeBank;
-            default: return 0.5;
+            default: return DEFAULT_UNKNOWN_MOVE_WEIGHT;
         }
     }
 
-    private applyDynamicMultipliers(baseWeight: number, name: string, context: ScoringContext): number {
-        let weight = baseWeight;
-
+    private applyDynamicMultipliers(weight: number, name: string, context: ScoringContext): number {
         if (name === 'buildSettlement' && context.affordable.settlement) {
             weight *= AFFORDABLE_BOOST;
         }
