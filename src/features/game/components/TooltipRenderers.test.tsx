@@ -62,10 +62,11 @@ describe('TooltipRenderers', () => {
         it('returns null for invalid content', () => {
             expect(renderDiceTooltip({ content: null })).toBeNull();
             expect(renderDiceTooltip({ content: 'invalid' })).toBeNull();
+            expect(renderDiceTooltip({ content: 'invalid,string' })).toBeNull();
         });
 
         it('renders DiceIcons for valid content', () => {
-            const content = JSON.stringify({ d1: 3, d2: 4 });
+            const content = '3,4';
             const result = renderDiceTooltip({ content });
             expect(result).not.toBeNull();
             render(result!);
