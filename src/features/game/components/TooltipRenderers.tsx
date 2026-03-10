@@ -50,15 +50,14 @@ export const renderCostTooltip = ({ content }: TooltipProps) => {
 export const renderDiceTooltip = ({ content }: TooltipProps) => {
     if (!content) return null;
 
-    const [d1Str, d2Str] = content.split(',');
-    const d1 = parseInt(d1Str, 10);
-    const d2 = parseInt(d2Str, 10);
+    const parts = content.split(',');
+    if (parts.length !== 2) return null;
 
-    if (!isNaN(d1) && !isNaN(d2)) {
-        return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
-    }
+    const [d1, d2] = parts.map((p) => parseInt(p, 10));
 
-    return null;
+    if (isNaN(d1) || isNaN(d2)) return null;
+
+    return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
 };
 
 export const renderTradeTooltip = ({ content }: TooltipProps) => {
