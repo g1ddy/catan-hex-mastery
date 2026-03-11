@@ -16,9 +16,9 @@ const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
     wheat: <Wheat size={14} className="text-yellow-500" />,
     ore: <Mountain size={14} className="text-slate-400" />,
     sheep: <Cloud size={14} className="text-blue-300" />
-};
+}
 
-export const ProductionNotification: React.FC<ProductionNotificationProps> = ({ evt, players, isRolling }) => {
+export function ProductionNotification({ evt, players, isRolling }: ProductionNotificationProps) {
     const hasAnyResources = useMemo(() => {
         return Object.values(evt.rewards).some(res =>
             Object.values(res).some(amount => (amount || 0) > 0)
@@ -72,4 +72,4 @@ export const ProductionNotification: React.FC<ProductionNotificationProps> = ({ 
             )}
         </div>
     );
-};
+}
