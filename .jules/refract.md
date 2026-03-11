@@ -1,0 +1,1 @@
+## 2026-03-11 - [Legacy React.FC Usage] **Observation:** Usage of React.FC instead of semantic function declarations. **Strategy:** Prefer semantic function declarations (e.g., export function Component(props: Props)) over React.FC as per React 19 standards.
