@@ -24,6 +24,7 @@ export interface GameControlsProps {
     isCoachModeEnabled?: boolean;
     advice?: StrategicAdvice | null;
     pendingRobberHex?: string | null;
+    playerID?: string | null;
 }
 
 export const GameControls: React.FC<GameControlsProps> = ({
@@ -37,7 +38,8 @@ export const GameControls: React.FC<GameControlsProps> = ({
     className = '',
     isCoachModeEnabled = false,
     advice = null,
-    pendingRobberHex
+    pendingRobberHex,
+    playerID = null
 }) => {
     const {
         isSetup,
@@ -64,6 +66,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
                 setUiMode={setUiMode}
                 activeStage={activeStage}
                 className={className}
+                isMyTurn={playerID !== null && playerID === ctx.currentPlayer}
             />
         );
     }

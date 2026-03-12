@@ -8,15 +8,17 @@ interface SetupControlsProps {
     setUiMode: (mode: UiMode) => void;
     activeStage: string | undefined;
     className?: string;
+    isMyTurn?: boolean;
 }
 
 export const SetupControls: React.FC<SetupControlsProps> = ({
     uiMode,
     setUiMode,
     activeStage,
-    className = ''
+    className = '',
+    isMyTurn = true
 }) => {
-    const canInteract = activeStage === STAGES.PLACE_SETTLEMENT || activeStage === STAGES.PLACE_ROAD;
+    const canInteract = isMyTurn && (activeStage === STAGES.PLACE_SETTLEMENT || activeStage === STAGES.PLACE_ROAD);
 
     const handleClick = () => {
         if (canInteract && uiMode === 'viewing') {
@@ -29,7 +31,13 @@ export const SetupControls: React.FC<SetupControlsProps> = ({
             <div className={`flex-grow flex pointer-events-auto ${className}`}>
                 <ActionButton
                     onClick={handleClick}
-                    className="w-full h-full flex items-center justify-center text-white px-4 py-3 bg-blue-600 hover:bg-blue-500 backdrop-blur-md border border-blue-400/50 rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring animate-pulse motion-reduce:animate-none"
+                    disabled={!canInteract}
+                    className={`w-full h-full flex items-center justify-center text-white px-4 py-3 backdrop-blur-md rounded-xl shadow-lg transition-all active:scale-95 btn-focus-ring ${
+                        canInteract
+                        ? "bg-blue-600 hover:bg-blue-500 border border-blue-400/50 animate-pulse motion-reduce:animate-none"
+                        : "bg-slate-700 cursor-not-allowed text-slate-400 border border-slate-600"
+                    }`}
+                    label={canInteract ? "Begin Placement" : "Waiting for Opponent..."}
                 />
             </div>
          );
