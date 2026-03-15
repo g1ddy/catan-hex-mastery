@@ -103,6 +103,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID,
                     isCoachModeEnabled={isCoachModeEnabled}
                     advice={strategicAdvice}
                     pendingRobberHex={pendingRobberHex}
+                    playerID={playerID}
                 />
             }
             dashboard={
