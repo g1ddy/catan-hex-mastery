@@ -52,7 +52,7 @@ function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): b
 
 function checkVerticesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, vertices: { id: string }[]): boolean {
     for (const v of vertices) {
-        if (safeGet(prev.G.board.vertices, v.id) !== safeGet(next.G.board.vertices, v.id)) return false;
+        if (safeGet(prev.G.board.vertices, v.id)?.owner !== safeGet(next.G.board.vertices, v.id)?.owner) return false;
         if (prev.validSettlements.has(v.id) !== next.validSettlements.has(v.id)) return false;
         if (prev.validCities.has(v.id) !== next.validCities.has(v.id)) return false;
     }
@@ -61,8 +61,15 @@ function checkVerticesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, vert
 
 function checkEdgesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, edges: { id: string }[]): boolean {
     for (const e of edges) {
-        if (safeGet(prev.G.board.edges, e.id) !== safeGet(next.G.board.edges, e.id)) return false;
-        if (safeGet(prev.G.board.ports, e.id) !== safeGet(next.G.board.ports, e.id)) return false;
+        if (safeGet(prev.G.board.edges, e.id)?.owner !== safeGet(next.G.board.edges, e.id)?.owner) return false;
+
+        const port = safeGet(prev.G.board.ports, e.id);
+        if (port) {
+            for (const vId of port.vertices) {
+                if (safeGet(prev.G.board.vertices, vId)?.owner !== safeGet(next.G.board.vertices, vId)?.owner) return false;
+            }
+        }
+
         if (prev.validRoads.has(e.id) !== next.validRoads.has(e.id)) return false;
     }
     return true;
