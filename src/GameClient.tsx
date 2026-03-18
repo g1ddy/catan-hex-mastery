@@ -24,7 +24,7 @@ interface GameClientProps {
   setupData?: { botNames?: Record<string, string> };
 }
 
-export const GameClient: React.FC<GameClientProps> = (props) => {
+export function GameClient(props: GameClientProps) {
   const { mode = 'local', numPlayers, bots, setupData, ...clientProps } = props;
 
   // Configuration Logic
@@ -90,4 +90,4 @@ export const GameClient: React.FC<GameClientProps> = (props) => {
         playerID={finalPlayerID}
     />
   );
-};
+}
