@@ -33,8 +33,7 @@ interface HexOverlaysProps {
     validRoads: Set<string>;
 }
 
-// Custom memoization to prevent re-renders when board state changes unnecessarily
-function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
+function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
     if (prev.hex.id !== next.hex.id) return false;
 
     if (prev.buildMode !== next.buildMode ||
@@ -48,21 +47,43 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
         return false;
     }
 
-    // This is the key: only re-render if the relevant parts of the board have changed for this hex
-    const { vertices: prevV, edges: prevE } = getHexGeometry(prev.hex);
+    return true;
+}
 
-    for (const v of prevV) {
-        if (safeGet(prev.G.board.vertices, v.id) !== safeGet(next.G.board.vertices, v.id)) return false;
-        // Check if settlement/city validity changed for this vertex
+function checkVerticesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, vertices: { id: string }[]): boolean {
+    for (const v of vertices) {
+        if (safeGet(prev.G.board.vertices, v.id)?.owner !== safeGet(next.G.board.vertices, v.id)?.owner) return false;
         if (prev.validSettlements.has(v.id) !== next.validSettlements.has(v.id)) return false;
         if (prev.validCities.has(v.id) !== next.validCities.has(v.id)) return false;
     }
-    for (const e of prevE) {
-        if (safeGet(prev.G.board.edges, e.id) !== safeGet(next.G.board.edges, e.id)) return false;
-        if (safeGet(prev.G.board.ports, e.id) !== safeGet(next.G.board.ports, e.id)) return false;
-        // Check if road validity changed for this edge
+    return true;
+}
+
+function checkEdgesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, edges: { id: string }[]): boolean {
+    for (const e of edges) {
+        if (safeGet(prev.G.board.edges, e.id)?.owner !== safeGet(next.G.board.edges, e.id)?.owner) return false;
+
+        const port = safeGet(prev.G.board.ports, e.id);
+        if (port) {
+            for (const vId of port.vertices) {
+                if (safeGet(prev.G.board.vertices, vId)?.owner !== safeGet(next.G.board.vertices, vId)?.owner) return false;
+            }
+        }
+
         if (prev.validRoads.has(e.id) !== next.validRoads.has(e.id)) return false;
     }
+    return true;
+}
+
+// Custom memoization to prevent re-renders when board state changes unnecessarily
+function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
+    if (!checkBasicPropsEqual(prev, next)) return false;
+
+    // This is the key: only re-render if the relevant parts of the board have changed for this hex
+    const { vertices: prevV, edges: prevE } = getHexGeometry(prev.hex);
+
+    if (!checkVerticesEqual(prev, next, prevV)) return false;
+    if (!checkEdgesEqual(prev, next, prevE)) return false;
 
     return true;
 }
