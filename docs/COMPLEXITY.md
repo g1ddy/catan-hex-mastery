@@ -92,9 +92,9 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-03-15
+**Last Updated:** 2026-03-22
 
-### 🏥 Repository Health Score: **90.0 / 100**
+### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Files Scanned**: 109
@@ -104,21 +104,20 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **81.2** | 221 | 15 | 6 | 0.86 |
 | `src/features/board/components/HexEdges.tsx` | **80** | 117 | 14 | 11 | 0.92 |
 | `src/features/game/GameLayout.tsx` | **73.2** | 210 | 7 | 10 | 0.91 |
 | `src/game/Game.ts` | **72.8** | 121 | 7 | 14 | 0.93 |
 | `src/features/board/components/HexVertices.tsx` | **71.4** | 116 | 13 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **70.1** | 200 | 10 | 11 | 0.41 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **69.5** | 211 | 7 | 9 | 0.82 |
+| `src/game/analysis/advisors/RoadAdvisor.ts` | **68.9** | 238 | 8 | 6 | 0.86 |
 | `src/game/rules/moveValidation.ts` | **64.1** | 139 | 6 | 10 | 0.91 |
+| `src/features/board/components/HexOverlays.tsx` | **62.6** | 130 | 10 | 7 | 0.78 |
 | `src/game/rules/queries.ts` | **62.2** | 234 | 7 | 7 | 0.54 |
-| `src/features/board/components/HexOverlays.tsx` | **61.9** | 123 | 10 | 7 | 0.78 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **15** | 221 |
 | `src/features/board/components/HexEdges.tsx` | **14** | 117 |
 | `src/features/board/components/HexVertices.tsx` | **13** | 116 |
 | `src/features/board/components/OverlayEdge.tsx` | **12** | 66 |
@@ -128,3 +127,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/hud/components/PlayerPanel.tsx` | **11** | 127 |
 | `src/game/rules/validator.ts` | **11** | 75 |
 | `src/game/rules/enumerator.ts` | **11** | 109 |
+| `src/game/analysis/coach.ts` | **10** | 200 |
