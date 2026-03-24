@@ -17,3 +17,7 @@
 ## 2025-02-03 - Object Literals in Render Loops Break Memoization
 **Learning:** Passing derived data as new object literals (e.g., `recommendation={{ color, ... }}`) to memoized list items (`OverlayVertex`) defeats `React.memo` because the object reference changes on every parent render.
 **Action:** Flatten derived data into individual primitive props (e.g., `recommendationColor`, `isRecommended`) so `React.memo` can perform efficient shallow comparisons.
+
+## 2025-02-17 - Reference Equality on Large Derived Objects
+**Learning:** Checking strict reference equality (`prev.coachData !== next.coachData`) inside a custom memoization function for list items (`HexOverlays`) forces an O(N) re-render of all items when the derived object regenerates, completely defeating the memoization.
+**Action:** Use granular checks for the specific slice of the derived object that the item depends on (e.g., checking `coachData.top3Set.has(id)` instead of the whole object reference).
