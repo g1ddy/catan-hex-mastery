@@ -131,13 +131,7 @@ export function SetupPage() {
                         data-tooltip-content={isDisabled ? LOCAL_MODE_WARNING : undefined}
                     >
                         <button
-                            onClick={(e) => {
-                                if (isDisabled) {
-                                    e.preventDefault();
-                                    return;
-                                }
-                                handlePlayerSelection(num);
-                            }}
+                            onClick={() => !isDisabled && handlePlayerSelection(num)}
                             aria-label={`Start game with ${num} players`}
                             className={`
                                 w-full h-full py-4 px-6
