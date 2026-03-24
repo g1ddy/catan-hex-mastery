@@ -133,6 +133,48 @@ export class RoadAdvisor {
         return null;
     }
 
+    private evaluateVertex(vId: string, dist: number, playerID: string, playerProduction: Record<string, number>): RoadTarget | null {
+        let isSettlementLocationValid = false;
+        try {
+            const validity = validateSettlementLocation(this.G, vId);
+            isSettlementLocationValid = validity.isValid;
+        } catch (e) {
+            console.warn(`RoadAdvisor: Error validating vertex ${vId}`, e);
+        }
+
+        if (isSettlementLocationValid) {
+            const scoreResult = this.scoreTargetVertex(vId, playerID, playerProduction);
+            if (scoreResult) {
+                return {
+                    rawScore: scoreResult.score,
+                    distance: dist,
+                    reason: `${scoreResult.reason} (${dist} hop${dist > 1 ? 's' : ''})`
+                };
+            }
+        }
+        return null;
+    }
+
+    private expandVertex(vId: string, startEdge: string, visited: Set<string>): string[] {
+        const neighbors: string[] = [];
+        const adjEdges = getEdgesForVertex(vId);
+        for (const eId of adjEdges) {
+            if (eId === startEdge) continue; // Don't look back at start
+
+            const edge = this.G.board.edges[eId];
+            if (edge) continue; // Occupied edge
+
+            const vIds = getVerticesForEdge(eId);
+            const nextV = vIds.find(v => v !== vId);
+
+            if (nextV && !visited.has(nextV)) {
+                visited.add(nextV);
+                neighbors.push(nextV);
+            }
+        }
+        return neighbors;
+    }
+
     private bfsFindTargets(startEdge: string, playerID: string, playerProduction: Record<string, number>): RoadTarget[] {
         const targets: RoadTarget[] = [];
         const queue: { vId: string, dist: number }[] = [];
@@ -158,43 +200,18 @@ export class RoadAdvisor {
 
             // Evaluation: If it's a valid empty spot, score it.
             if (!owner) {
-                let isSettlementLocationValid = false;
-                try {
-                    const validity = validateSettlementLocation(this.G, vId);
-                    isSettlementLocationValid = validity.isValid;
-                } catch (e) {
-                    console.warn(`RoadAdvisor: Error validating vertex ${vId}`, e);
-                }
-
-                if (isSettlementLocationValid) {
-                    const scoreResult = this.scoreTargetVertex(vId, playerID, playerProduction);
-                    if (scoreResult) {
-                        targets.push({
-                            rawScore: scoreResult.score,
-                            distance: dist,
-                            reason: `${scoreResult.reason} (${dist} hop${dist > 1 ? 's' : ''})`
-                        });
-                    }
+                const target = this.evaluateVertex(vId, dist, playerID, playerProduction);
+                if (target) {
+                    targets.push(target);
                 }
             }
 
             // Expansion: If within depth, add neighbors
             if (dist < MAX_DEPTH) {
-                const adjEdges = getEdgesForVertex(vId);
-                for (const eId of adjEdges) {
-                    if (eId === startEdge) continue; // Don't look back at start
-
-                    const edge = this.G.board.edges[eId];
-                    if (edge) continue; // Occupied edge
-
-                    const vIds = getVerticesForEdge(eId);
-                    const nextV = vIds.find(v => v !== vId);
-
-                    if (nextV && !visited.has(nextV)) {
-                        visited.add(nextV);
-                        queue.push({ vId: nextV, dist: dist + 1 });
-                    }
-                }
+                const neighbors = this.expandVertex(vId, startEdge, visited);
+                neighbors.forEach(nextV => {
+                    queue.push({ vId: nextV, dist: dist + 1 });
+                });
             }
         }
 
