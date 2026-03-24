@@ -131,7 +131,7 @@ export function SetupPage() {
                         data-tooltip-content={isDisabled ? LOCAL_MODE_WARNING : undefined}
                     >
                         <button
-                            onClick={() => handlePlayerSelection(num)}
+                            onClick={() => !isDisabled && handlePlayerSelection(num)}
                             aria-label={`Start game with ${num} players`}
                             className={`
                                 w-full h-full py-4 px-6
@@ -139,9 +139,9 @@ export function SetupPage() {
                                 hover:bg-slate-700 hover:border-slate-500
                                 text-white text-lg font-bold rounded-xl shadow-lg
                                 transition-all transform hover:-translate-y-1 active:scale-95 btn-focus-ring
-                                disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-slate-800 disabled:hover:border-slate-600
+                                aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:transform-none aria-disabled:hover:bg-slate-800 aria-disabled:hover:border-slate-600
                             `}
-                            disabled={isDisabled}
+                            aria-disabled={isDisabled}
                         >
                             {num} Players
                         </button>
