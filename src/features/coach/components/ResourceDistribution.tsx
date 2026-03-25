@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Player } from '../../../game/core/types';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 
