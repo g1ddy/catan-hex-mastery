@@ -10,7 +10,7 @@ interface CoachShellProps {
   onToggle: () => void;
 }
 
-export const CoachShell: React.FC<CoachShellProps> = ({ children, isOpen, onToggle }) => {
+export function CoachShell({ children, isOpen, onToggle }: CoachShellProps) {
   const isMobile = useIsMobile();
 
   // Desktop: Right Sidebar

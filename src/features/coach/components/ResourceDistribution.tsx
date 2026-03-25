@@ -7,7 +7,7 @@ interface ResourceDistributionProps {
     players: Record<string, Player>;
 }
 
-export const ResourceDistribution: React.FC<ResourceDistributionProps> = ({ playerPotentials, players }) => {
+export function ResourceDistribution({ playerPotentials, players }: ResourceDistributionProps) {
     return (
         <div className="flex flex-col gap-3 mt-4">
             <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Resource Distribution</h4>
