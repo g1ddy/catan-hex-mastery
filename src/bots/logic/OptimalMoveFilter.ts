@@ -99,54 +99,29 @@ export class OptimalMoveFilter {
         return [bestMove, ...others];
     }
 
-    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
-        if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
-            return [];
-        }
-
-        if (playerID !== ctx.currentPlayer) {
-            console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
-            return [];
-        }
-
-        if (!isValidPlayer(playerID, this.G)) {
-            console.warn('Invalid playerID:', playerID);
-            return [];
-        }
-
-        if (!allMoves || allMoves.length === 0) return [];
-
-        // 1. Detect Roll Dice (always prioritize)
-        const isRolling = allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice');
-        if (isRolling) {
-            return allMoves;
-        }
-
-        // 2. Setup Phase Optimization
-        const isSetupSettlement = allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement');
-        if (isSetupSettlement) {
-            const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
-            const movesByVertex = new Map<string, GameAction>();
-            allMoves.forEach(m => {
-                if (ActionUtils.getMoveName(m) === 'placeSettlement') {
-                    const args = ActionUtils.getMoveArgs(m);
-                    const vId = args[0];
-                    if (typeof vId === 'string') {
-                        movesByVertex.set(vId, m);
-                    }
+    private handleSetupSettlements(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
+        const movesByVertex = new Map<string, GameAction>();
+        allMoves.forEach(m => {
+            if (ActionUtils.getMoveName(m) === 'placeSettlement') {
+                const args = ActionUtils.getMoveArgs(m);
+                const vId = args[0];
+                if (typeof vId === 'string') {
+                    movesByVertex.set(vId, m);
                 }
-            });
-            const rankedMoves: GameAction[] = [];
-            bestSpots.forEach(spot => {
-                if (spot.vertexId) {
-                    const move = movesByVertex.get(spot.vertexId);
-                    if (move) rankedMoves.push(move);
-                }
-            });
-            return rankedMoves.length > 0 ? rankedMoves : allMoves;
-        }
+            }
+        });
+        const rankedMoves: GameAction[] = [];
+        bestSpots.forEach(spot => {
+            if (spot.vertexId) {
+                const move = movesByVertex.get(spot.vertexId);
+                if (move) rankedMoves.push(move);
+            }
+        });
+        return rankedMoves.length > 0 ? rankedMoves : allMoves;
+    }
 
-        // 3. General Gameplay Evaluation
+    private scoreAndSortMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
         const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
         const advisedMoves = new Set(strategicAdvice.recommendedMoves);
 
@@ -171,11 +146,37 @@ export class OptimalMoveFilter {
         const moveWeights = new Map<GameAction, number>();
         allMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
 
-        const sortedMoves = [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
+        return [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
+    }
 
+    private refineBestMoves(sortedMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
         if (sortedMoves.length === 0) return [];
 
-        // 4. Refine Top Candidates (Spatial Logic)
+        // Recompute move weights slightly hacky since we lost the map, but it's okay because we're just checking top
+        const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
+        const advisedMoves = new Set(strategicAdvice.recommendedMoves);
+
+        // eslint-disable-next-line security/detect-object-injection
+        const player = this.G.players[playerID];
+        const affordable = getAffordableBuilds(player.resources);
+        const settlementCount = player.settlements.length;
+        const roadCount = player.roads.length;
+
+        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
+
+        const context: ScoringContext = {
+            profile: this.profile,
+            advisedMoves,
+            affordable,
+            isRoadFatigued,
+            coach: this.coach,
+            playerID,
+            ctx
+        };
+
+        const moveWeights = new Map<GameAction, number>();
+        sortedMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
+
         const topWeight = moveWeights.get(sortedMoves[0])!;
         const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
@@ -199,6 +200,7 @@ export class OptimalMoveFilter {
         if (allAreRoads && this.profile.randomize) {
             for (let i = topMoves.length - 1; i > 0; i--) {
                  const j = Math.floor(Math.random() * (i + 1));
+                 // eslint-disable-next-line security/detect-object-injection
                  [topMoves[i], topMoves[j]] = [topMoves[j], topMoves[i]];
              }
              const rest = sortedMoves.filter(m => !topMoves.includes(m));
@@ -206,5 +208,44 @@ export class OptimalMoveFilter {
         }
 
         return sortedMoves;
+    }
+
+    private validateContext(playerID: string, ctx: Ctx): boolean {
+        if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
+            return false;
+        }
+
+        if (playerID !== ctx.currentPlayer) {
+            console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
+            return false;
+        }
+
+        if (!isValidPlayer(playerID, this.G)) {
+            console.warn('Invalid playerID:', playerID);
+            return false;
+        }
+        return true;
+    }
+
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        if (!this.validateContext(playerID, ctx)) return [];
+        if (!allMoves || allMoves.length === 0) return [];
+
+        // 1. Detect Roll Dice (always prioritize)
+        if (allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice')) {
+            return allMoves;
+        }
+
+        // 2. Setup Phase Optimization
+        if (allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement')) {
+            return this.handleSetupSettlements(allMoves, playerID, ctx);
+        }
+
+        // 3. General Gameplay Evaluation
+        const sortedMoves = this.scoreAndSortMoves(allMoves, playerID, ctx);
+        if (sortedMoves.length === 0) return [];
+
+        // 4. Refine Top Candidates (Spatial Logic)
+        return this.refineBestMoves(sortedMoves, playerID, ctx);
     }
 }
