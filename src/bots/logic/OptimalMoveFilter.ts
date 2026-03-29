@@ -102,15 +102,15 @@ export class OptimalMoveFilter {
     private handleSetupSettlements(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
         const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
         const movesByVertex = new Map<string, GameAction>();
-        allMoves.forEach(m => {
-            if (ActionUtils.getMoveName(m) === 'placeSettlement') {
-                const args = ActionUtils.getMoveArgs(m);
-                const vId = args[0];
-                if (typeof vId === 'string') {
-                    movesByVertex.set(vId, m);
-                }
+        for (const m of allMoves) {
+            if (ActionUtils.getMoveName(m) !== 'placeSettlement') {
+                continue;
             }
-        });
+            const vId = ActionUtils.getMoveArgs(m)[0];
+            if (typeof vId === 'string') {
+                movesByVertex.set(vId, m);
+            }
+        }
         const rankedMoves: GameAction[] = [];
         bestSpots.forEach(spot => {
             if (spot.vertexId) {
