@@ -121,62 +121,12 @@ export class OptimalMoveFilter {
         return rankedMoves.length > 0 ? rankedMoves : allMoves;
     }
 
-    private scoreAndSortMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
-        const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
-        const advisedMoves = new Set(strategicAdvice.recommendedMoves);
-
-        // eslint-disable-next-line security/detect-object-injection
-        const player = this.G.players[playerID];
-        const affordable = getAffordableBuilds(player.resources);
-        const settlementCount = player.settlements.length;
-        const roadCount = player.roads.length;
-
-        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
-
-        const context: ScoringContext = {
-            profile: this.profile,
-            advisedMoves,
-            affordable,
-            isRoadFatigued,
-            coach: this.coach,
-            playerID,
-            ctx
-        };
-
-        const moveWeights = new Map<GameAction, number>();
-        allMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
-
-        return [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
-    }
-
-    private refineBestMoves(sortedMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
-        if (sortedMoves.length === 0) return [];
-
-        // Recompute move weights slightly hacky since we lost the map, but it's okay because we're just checking top
-        const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
-        const advisedMoves = new Set(strategicAdvice.recommendedMoves);
-
-        // eslint-disable-next-line security/detect-object-injection
-        const player = this.G.players[playerID];
-        const affordable = getAffordableBuilds(player.resources);
-        const settlementCount = player.settlements.length;
-        const roadCount = player.roads.length;
-
-        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
-
-        const context: ScoringContext = {
-            profile: this.profile,
-            advisedMoves,
-            affordable,
-            isRoadFatigued,
-            coach: this.coach,
-            playerID,
-            ctx
-        };
-
-        const moveWeights = new Map<GameAction, number>();
-        sortedMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
-
+    private refineCandidates(
+        sortedMoves: GameAction[],
+        moveWeights: Map<GameAction, number>,
+        playerID: string,
+        ctx: Ctx
+    ): GameAction[] {
         const topWeight = moveWeights.get(sortedMoves[0])!;
         const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
@@ -242,10 +192,35 @@ export class OptimalMoveFilter {
         }
 
         // 3. General Gameplay Evaluation
-        const sortedMoves = this.scoreAndSortMoves(allMoves, playerID, ctx);
+        const strategicAdvice = this.coach.getStrategicAdvice(playerID, ctx);
+        const advisedMoves = new Set(strategicAdvice.recommendedMoves);
+
+        // eslint-disable-next-line security/detect-object-injection
+        const player = this.G.players[playerID];
+        const affordable = getAffordableBuilds(player.resources);
+        const settlementCount = player.settlements.length;
+        const roadCount = player.roads.length;
+
+        const isRoadFatigued = roadCount > (settlementCount * ROAD_FATIGUE_SETTLEMENT_MULTIPLIER + ROAD_FATIGUE_BASE_ALLOWANCE);
+
+        const context: ScoringContext = {
+            profile: this.profile,
+            advisedMoves,
+            affordable,
+            isRoadFatigued,
+            coach: this.coach,
+            playerID,
+            ctx
+        };
+
+        const moveWeights = new Map<GameAction, number>();
+        allMoves.forEach(m => moveWeights.set(m, this.scorer.getWeightedScore(m, context)));
+
+        const sortedMoves = [...allMoves].sort((a, b) => (moveWeights.get(b)! - moveWeights.get(a)!));
+
         if (sortedMoves.length === 0) return [];
 
         // 4. Refine Top Candidates (Spatial Logic)
-        return this.refineBestMoves(sortedMoves, playerID, ctx);
+        return this.refineCandidates(sortedMoves, moveWeights, playerID, ctx);
     }
 }

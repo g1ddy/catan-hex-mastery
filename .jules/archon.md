@@ -22,4 +22,4 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-03-22 - [High Complexity Logic] **Observation:** `RoadAdvisor.ts` had high cyclomatic complexity (15) due to nested condition checking and complex inner loops within `bfsFindTargets`. **Strategy:** Extracted `evaluateVertex` and `expandVertex` helpers. Reduced cyclomatic complexity to below 10 and dropped out of top 10 most complex files.
 ## 2026-03-29 - [High Complexity Logic]
 **Observation:** `OptimalMoveFilter.ts` had high cyclomatic complexity (17) due to a monolithic `filterOptimalMoves` method that combined validation, setup phase logic, and dynamic scoring logic.
-**Strategy:** Extracted `validateContext`, `handleSetupSettlements`, `scoreAndSortMoves`, and `refineBestMoves` helpers. Reduced cyclomatic complexity below 10 and resolved ESLint warnings.
+**Strategy:** Extracted `validateContext`, `handleSetupSettlements`, and `refineCandidates` helpers, passing calculated `moveWeights` to avoid redundant O(N) recalculations. Reduced cyclomatic complexity below 10.
