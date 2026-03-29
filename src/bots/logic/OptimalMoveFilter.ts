@@ -99,51 +99,97 @@ export class OptimalMoveFilter {
         return [bestMove, ...others];
     }
 
-    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+    private handleSetupSettlements(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
+        const movesByVertex = new Map<string, GameAction>();
+        for (const m of allMoves) {
+            if (ActionUtils.getMoveName(m) !== 'placeSettlement') {
+                continue;
+            }
+            const vId = ActionUtils.getMoveArgs(m)[0];
+            if (typeof vId === 'string') {
+                movesByVertex.set(vId, m);
+            }
+        }
+        const rankedMoves: GameAction[] = [];
+        bestSpots.forEach(spot => {
+            if (spot.vertexId) {
+                const move = movesByVertex.get(spot.vertexId);
+                if (move) rankedMoves.push(move);
+            }
+        });
+        return rankedMoves.length > 0 ? rankedMoves : allMoves;
+    }
+
+    private refineCandidates(
+        sortedMoves: GameAction[],
+        moveWeights: Map<GameAction, number>,
+        playerID: string,
+        ctx: Ctx
+    ): GameAction[] {
+        const topWeight = moveWeights.get(sortedMoves[0])!;
+        const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
+
+        const bestRoadSpotsFn = (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx);
+        const refinements = [
+            { moveType: 'buildSettlement', scoreFn: (_: string[]) => this.coach.getAllSettlementScores(playerID, ctx) },
+            { moveType: 'buildCity', scoreFn: (c: string[]) => this.coach.getBestCitySpots(playerID, ctx, c) },
+            { moveType: 'buildRoad', scoreFn: bestRoadSpotsFn },
+            { moveType: 'placeRoad', scoreFn: bestRoadSpotsFn },
+        ];
+
+        for (const { moveType, scoreFn } of refinements) {
+            const refinedMoves = this.refineTopMoves(topMoves, sortedMoves, moveType, scoreFn);
+            if (refinedMoves) {
+                return refinedMoves;
+            }
+        }
+
+        const topMoveNames = topMoves.map(m => ActionUtils.getMoveName(m));
+        const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
+
+        if (allAreRoads && this.profile.randomize) {
+            for (let i = topMoves.length - 1; i > 0; i--) {
+                 const j = Math.floor(Math.random() * (i + 1));
+                 // eslint-disable-next-line security/detect-object-injection
+                 [topMoves[i], topMoves[j]] = [topMoves[j], topMoves[i]];
+             }
+             const rest = sortedMoves.filter(m => !topMoves.includes(m));
+             return [...topMoves, ...rest];
+        }
+
+        return sortedMoves;
+    }
+
+    private validateContext(playerID: string, ctx: Ctx): boolean {
         if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
-            return [];
+            return false;
         }
 
         if (playerID !== ctx.currentPlayer) {
             console.warn(`Attempted to get moves for player ${playerID} but current player is ${ctx.currentPlayer}`);
-            return [];
+            return false;
         }
 
         if (!isValidPlayer(playerID, this.G)) {
             console.warn('Invalid playerID:', playerID);
-            return [];
+            return false;
         }
+        return true;
+    }
 
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+        if (!this.validateContext(playerID, ctx)) return [];
         if (!allMoves || allMoves.length === 0) return [];
 
         // 1. Detect Roll Dice (always prioritize)
-        const isRolling = allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice');
-        if (isRolling) {
+        if (allMoves.some(m => ActionUtils.getMoveName(m) === 'rollDice')) {
             return allMoves;
         }
 
         // 2. Setup Phase Optimization
-        const isSetupSettlement = allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement');
-        if (isSetupSettlement) {
-            const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
-            const movesByVertex = new Map<string, GameAction>();
-            allMoves.forEach(m => {
-                if (ActionUtils.getMoveName(m) === 'placeSettlement') {
-                    const args = ActionUtils.getMoveArgs(m);
-                    const vId = args[0];
-                    if (typeof vId === 'string') {
-                        movesByVertex.set(vId, m);
-                    }
-                }
-            });
-            const rankedMoves: GameAction[] = [];
-            bestSpots.forEach(spot => {
-                if (spot.vertexId) {
-                    const move = movesByVertex.get(spot.vertexId);
-                    if (move) rankedMoves.push(move);
-                }
-            });
-            return rankedMoves.length > 0 ? rankedMoves : allMoves;
+        if (allMoves.some(m => ActionUtils.getMoveName(m) === 'placeSettlement')) {
+            return this.handleSetupSettlements(allMoves, playerID, ctx);
         }
 
         // 3. General Gameplay Evaluation
@@ -176,35 +222,6 @@ export class OptimalMoveFilter {
         if (sortedMoves.length === 0) return [];
 
         // 4. Refine Top Candidates (Spatial Logic)
-        const topWeight = moveWeights.get(sortedMoves[0])!;
-        const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
-
-        const refinements = [
-            { moveType: 'buildSettlement', scoreFn: (_: string[]) => this.coach.getAllSettlementScores(playerID, ctx) },
-            { moveType: 'buildCity', scoreFn: (c: string[]) => this.coach.getBestCitySpots(playerID, ctx, c) },
-            { moveType: 'buildRoad', scoreFn: (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx) },
-            { moveType: 'placeRoad', scoreFn: (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx) },
-        ];
-
-        for (const { moveType, scoreFn } of refinements) {
-            const refinedMoves = this.refineTopMoves(topMoves, sortedMoves, moveType, scoreFn);
-            if (refinedMoves) {
-                return refinedMoves;
-            }
-        }
-
-        const topMoveNames = topMoves.map(m => ActionUtils.getMoveName(m));
-        const allAreRoads = topMoveNames.every(name => name === 'buildRoad' || name === 'placeRoad');
-
-        if (allAreRoads && this.profile.randomize) {
-            for (let i = topMoves.length - 1; i > 0; i--) {
-                 const j = Math.floor(Math.random() * (i + 1));
-                 [topMoves[i], topMoves[j]] = [topMoves[j], topMoves[i]];
-             }
-             const rest = sortedMoves.filter(m => !topMoves.includes(m));
-             return [...topMoves, ...rest];
-        }
-
-        return sortedMoves;
+        return this.refineCandidates(sortedMoves, moveWeights, playerID, ctx);
     }
 }
