@@ -130,11 +130,12 @@ export class OptimalMoveFilter {
         const topWeight = moveWeights.get(sortedMoves[0])!;
         const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
 
+        const bestRoadSpotsFn = (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx);
         const refinements = [
             { moveType: 'buildSettlement', scoreFn: (_: string[]) => this.coach.getAllSettlementScores(playerID, ctx) },
             { moveType: 'buildCity', scoreFn: (c: string[]) => this.coach.getBestCitySpots(playerID, ctx, c) },
-            { moveType: 'buildRoad', scoreFn: (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx) },
-            { moveType: 'placeRoad', scoreFn: (_: string[]) => this.coach.getBestRoadSpots(playerID, ctx) },
+            { moveType: 'buildRoad', scoreFn: bestRoadSpotsFn },
+            { moveType: 'placeRoad', scoreFn: bestRoadSpotsFn },
         ];
 
         for (const { moveType, scoreFn } of refinements) {
