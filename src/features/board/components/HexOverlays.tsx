@@ -39,11 +39,15 @@ function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): b
     if (prev.buildMode !== next.buildMode ||
         prev.uiMode !== next.uiMode ||
         prev.showResourceHeatmap !== next.showResourceHeatmap ||
-        prev.coachData !== next.coachData ||
         prev.highlightedPortEdgeId !== next.highlightedPortEdgeId ||
         prev.ctx.phase !== next.ctx.phase ||
         prev.ctx.currentPlayer !== next.ctx.currentPlayer ||
         prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) {
+        return false;
+    }
+
+    if (prev.coachData?.minScore !== next.coachData?.minScore ||
+        prev.coachData?.maxScore !== next.coachData?.maxScore) {
         return false;
     }
 
@@ -55,6 +59,9 @@ function checkVerticesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, vert
         if (safeGet(prev.G.board.vertices, v.id)?.owner !== safeGet(next.G.board.vertices, v.id)?.owner) return false;
         if (prev.validSettlements.has(v.id) !== next.validSettlements.has(v.id)) return false;
         if (prev.validCities.has(v.id) !== next.validCities.has(v.id)) return false;
+
+        if (prev.coachData?.top3Set.has(v.id) !== next.coachData?.top3Set.has(v.id)) return false;
+        if (prev.coachData?.recommendations.get(v.id)?.score !== next.coachData?.recommendations.get(v.id)?.score) return false;
     }
     return true;
 }
@@ -71,6 +78,9 @@ function checkEdgesEqual(prev: HexOverlaysProps, next: HexOverlaysProps, edges: 
         }
 
         if (prev.validRoads.has(e.id) !== next.validRoads.has(e.id)) return false;
+
+        if (prev.coachData?.top3Set.has(e.id) !== next.coachData?.top3Set.has(e.id)) return false;
+        if (prev.coachData?.recommendations.get(e.id)?.score !== next.coachData?.recommendations.get(e.id)?.score) return false;
     }
     return true;
 }
