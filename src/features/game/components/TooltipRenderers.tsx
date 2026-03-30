@@ -29,7 +29,7 @@ export const renderCostTooltip = ({ content }: TooltipProps) => {
     return (
       <div className="flex gap-2">
         {RESOURCE_META.map(({ name, Icon, color }) => {
-          // eslint-disable-next-line security/detect-object-injection
+          // eslint-disable-next-line security/detect-object-injection -- 'name' is sourced from the static RESOURCE_META config
           const amount = cost[name];
           if (!amount) return null;
           return (
