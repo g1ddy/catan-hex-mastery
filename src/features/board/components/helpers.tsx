@@ -5,8 +5,26 @@ import { safeCheck } from '../../../game/core/utils/objectUtils';
 import { BarChart, Gem, Layers, Zap } from 'lucide-react';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 
+const primaryHexOwnerCache = new Map<string, string>();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let lastHexesReference: any = null;
+
 export const getPrimaryHexOwner = (parts: string[], G: GameState): string => {
-    return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0] || '';
+    // Invalidate cache if the board hexes object reference changes (e.g., new game/board generation)
+    if (lastHexesReference !== G.board.hexes) {
+        primaryHexOwnerCache.clear();
+        lastHexesReference = G.board.hexes;
+    }
+
+    const cacheKey = parts.join('|');
+    const cached = primaryHexOwnerCache.get(cacheKey);
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    const owner = parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0] || '';
+    primaryHexOwnerCache.set(cacheKey, owner);
+    return owner;
 };
 
 export const renderTooltipContent = (coachData: CoachData) => ({ content }: { content: string | null; activeAnchor: HTMLElement | null }): React.ReactNode => {
