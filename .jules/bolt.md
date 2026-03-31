@@ -22,6 +22,6 @@
 **Learning:** Checking strict reference equality (`prev.coachData !== next.coachData`) inside a custom memoization function for list items (`HexOverlays`) forces an O(N) re-render of all items when the derived object regenerates, completely defeating the memoization.
 **Action:** Use granular checks for the specific slice of the derived object that the item depends on (e.g., checking `coachData.top3Set.has(id)` instead of the whole object reference).
 
-## 2026-03-31 - Memoizing Deterministic State Lookups in Render Loops
-**Learning:** Iterating through string arrays and performing object property lookups (`safeCheck` on `G.board.hexes`) to determine UI ownership for hundreds of vertices/edges per frame causes a measurable performance drop. Because the board topology is effectively static during gameplay, these checks constantly yield the same result.
-**Action:** Use a simple JavaScript `Map` to cache the result of deterministic state lookups based on their input parameters (e.g., `parts.join('|')`). Invalidate the cache only when the underlying state reference (`G.board.hexes`) actually changes, rather than recalculating on every React render.
+## 2026-03-31 - Avoiding Closure Allocations in Hot Loops
+**Learning:** Defining inline arrow functions (e.g. `const applyCoachRec = () => {...}`) inside high-frequency `Array.prototype.map` loops during rendering allocates new function objects into memory for every piece of geometry on every render pass, triggering unnecessary Garbage Collection pressure and slowing down rendering.
+**Action:** Inline logic directly into the loop body or extract it outside of the render cycle. Do not define closures inside `.map` or `.forEach` loops inside React components if the loop iterates frequently.
