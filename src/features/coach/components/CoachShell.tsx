@@ -91,4 +91,4 @@ export function CoachShell({ children, isOpen, onToggle }: CoachShellProps) {
       </div>
     </>
   );
-};
+}
