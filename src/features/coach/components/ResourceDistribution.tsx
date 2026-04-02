@@ -62,4 +62,4 @@ export function ResourceDistribution({ playerPotentials, players }: ResourceDist
             </div>
         </div>
     );
-};
+}
