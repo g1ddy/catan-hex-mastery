@@ -72,18 +72,8 @@ describe('getPrimaryHexOwner', () => {
         // First call computes and caches
         expect(getPrimaryHexOwner(parts, mockG)).toBe('0,0,0');
 
-        // Second call should return from cache (we can verify this by modifying the mock object which should be ignored)
-        const newMockG = {
-            ...mockG,
-            board: {
-                hexes: {
-                    // Pretend 0,0,0 is gone, but we still pass the same reference mockG.board.hexes
-                    '1,-1,0': { id: '1,-1,0' }
-                }
-            }
-        } as unknown as GameState;
-
-        // However, our cache invalidation looks at G.board.hexes reference.
+        // Second call should return from cache
+        // Our cache invalidation looks at G.board.hexes reference.
         // Let's pass the exact same reference but mutate it, to prove it uses cache.
         const mutatedMockG = { board: { hexes: mockG.board.hexes } } as unknown as GameState;
         delete (mutatedMockG.board.hexes as any)['0,0,0'];
