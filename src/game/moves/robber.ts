@@ -29,10 +29,14 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
 
         // Collect victim's resources
         const availableResources: (keyof Resources)[] = [];
-        (Object.keys(victim.resources) as (keyof Resources)[]).forEach(res => {
-            if (victim.resources[res] > 0) {
+        const validResources: (keyof Resources)[] = ['wood', 'brick', 'sheep', 'wheat', 'ore'];
+
+        validResources.forEach(res => {
+            // eslint-disable-next-line security/detect-object-injection -- Key comes from explicit validResources array
+            const count = victim.resources[res];
+            if (count > 0) {
                 // Add resource type N times where N is the amount held
-                for (let i = 0; i < victim.resources[res]; i++) {
+                for (let i = 0; i < count; i++) {
                     availableResources.push(res);
                 }
             }
@@ -42,8 +46,15 @@ export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID
         if (availableResources.length > 0) {
             const stolenRes = random.Shuffle(availableResources)[0];
 
+            // Security: Validate the chosen resource to strictly prevent object injection
+            if (!validResources.includes(stolenRes)) {
+                throw new Error(`Invalid resource type selected for stealing: ${stolenRes}`);
+            }
+
             // Execute transfer
+            // eslint-disable-next-line security/detect-object-injection -- Key is explicitly validated above
             victim.resources[stolenRes]--;
+            // eslint-disable-next-line security/detect-object-injection -- Key is explicitly validated above
             thief.resources[stolenRes]++;
 
             // Record the steal event

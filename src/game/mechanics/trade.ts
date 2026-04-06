@@ -44,8 +44,11 @@ export const getExchangeRates = (G: GameState, playerID: string): ExchangeRates 
             if (port.type === '3:1') {
                 // Apply 3:1 to all resources, unless they already have a better rate (2:1)
                 RESOURCE_ORDER.forEach(res => {
+                    // eslint-disable-next-line security/detect-object-injection -- 'res' comes from static RESOURCE_ORDER
                     if (rates[res] > 3) {
+                        // eslint-disable-next-line security/detect-object-injection -- 'res' comes from static RESOURCE_ORDER
                         rates[res] = 3;
+                        // eslint-disable-next-line security/detect-object-injection -- 'res' comes from static RESOURCE_ORDER
                         portEdges[res] = port.edgeId;
                     }
                 });
@@ -53,7 +56,9 @@ export const getExchangeRates = (G: GameState, playerID: string): ExchangeRates 
                 // Specific resource port (2:1)
                 const res = port.type as keyof Resources;
                 // 2:1 is always better than 3:1 or 4:1
+                // eslint-disable-next-line security/detect-object-injection -- 'res' is validated by PortType enum
                 rates[res] = 2;
+                // eslint-disable-next-line security/detect-object-injection -- 'res' is validated by PortType enum
                 portEdges[res] = port.edgeId;
             }
         }
@@ -84,9 +89,12 @@ export const calculateTrade = (
 
     // 1. Identify valid trades
     const validTrades = RESOURCE_ORDER
+        // eslint-disable-next-line security/detect-object-injection -- 'res' is from strictly typed RESOURCE_ORDER constant
         .filter(res => resources[res] >= rates[res])
         .map(res => {
+            // eslint-disable-next-line security/detect-object-injection -- 'res' is from strictly typed RESOURCE_ORDER constant
             const cost = rates[res];
+            // eslint-disable-next-line security/detect-object-injection -- 'res' is from strictly typed RESOURCE_ORDER constant
             const quantity = resources[res];
             const remainder = quantity - cost;
             return {
@@ -124,9 +132,9 @@ export const calculateTrade = (
 
     // 3. Determine 'Receive'
     const otherResources = RESOURCE_ORDER.filter(r => r !== give);
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'r' is filtered from static RESOURCE_ORDER
     const minVal = Math.min(...otherResources.map(r => resources[r]));
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'r' is filtered from static RESOURCE_ORDER
     const receive = otherResources.find(r => resources[r] === minVal)!;
 
     return {
@@ -134,6 +142,7 @@ export const calculateTrade = (
         giveAmount,
         receive,
         canTrade: true,
+        // eslint-disable-next-line security/detect-object-injection -- 'give' is a validated keyof Resources
         usedPortEdgeId: portEdges ? portEdges[give] : undefined
     };
 };
