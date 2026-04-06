@@ -32,7 +32,7 @@ export function CoachShell({ children, isOpen, onToggle }: CoachShellProps) {
             <span className="font-bold text-lg text-amber-400">{UI_LABELS.COACH_BOT}</span>
             <button
                 onClick={onToggle}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors btn-focus-ring"
                 aria-label="Collapse Coach Panel"
             >
                 <ChevronRight size={24} aria-hidden="true" />
@@ -77,7 +77,7 @@ export function CoachShell({ children, isOpen, onToggle }: CoachShellProps) {
            <span className="font-bold text-lg text-amber-400">{UI_LABELS.COACH_BOT}</span>
            <button
              onClick={onToggle}
-             className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
+             className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors btn-focus-ring"
              aria-label="Close Coach Panel"
            >
              <X size={24} aria-hidden="true" />
@@ -91,4 +91,4 @@ export function CoachShell({ children, isOpen, onToggle }: CoachShellProps) {
       </div>
     </>
   );
-};
+}

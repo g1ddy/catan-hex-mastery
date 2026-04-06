@@ -32,7 +32,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
             <span className="font-bold text-lg text-amber-400">{UI_LABELS.ANALYST_DASHBOARD}</span>
             <button
                 onClick={onToggle}
-                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors btn-focus-ring"
                 aria-label="Collapse Sidebar"
             >
                 <ChevronLeft size={24} aria-hidden="true" />
@@ -77,7 +77,7 @@ export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, on
            <span className="font-bold text-lg text-amber-400">{UI_LABELS.ANALYST_DASHBOARD}</span>
            <button
              onClick={onToggle}
-             className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
+             className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors btn-focus-ring"
              aria-label="Close Analyst Panel"
            >
              <X size={24} aria-hidden="true" />

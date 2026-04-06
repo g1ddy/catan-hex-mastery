@@ -56,7 +56,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
             fixed top-4 left-4
             p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300
             hover:text-white hover:bg-slate-700 transition-all active:scale-95
-            border border-slate-700 shadow-lg
+            border border-slate-700 shadow-lg btn-focus-ring
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
         onClick={() => togglePanel('analyst')}
@@ -66,7 +66,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         data-tooltip-id="ui-tooltip"
         data-tooltip-content={UI_LABELS.ANALYST_DASHBOARD}
     >
-        <BarChart2 size={24} />
+        <BarChart2 size={24} aria-hidden="true" />
     </button>
   ) : null;
 
@@ -76,7 +76,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
             fixed top-4 right-4
             p-3 rounded-xl bg-slate-900/90 backdrop-blur-md text-slate-300
             hover:text-white hover:bg-slate-700 transition-all active:scale-95
-            border border-slate-700 shadow-lg
+            border border-slate-700 shadow-lg btn-focus-ring
         `}
         style={{ zIndex: Z_INDEX_FLOATING_UI }}
         onClick={() => togglePanel('coach')}
@@ -86,7 +86,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         data-tooltip-id="ui-tooltip"
         data-tooltip-content={UI_LABELS.COACH_BOT}
     >
-        <Bot size={24} />
+        <Bot size={24} aria-hidden="true" />
     </button>
   ) : null;
 
