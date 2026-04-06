@@ -74,29 +74,27 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
                 let heatmapColor: string | undefined;
                 let isTop3 = false;
 
-                let checkCoachRec = false;
-
-                if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
-                    isClickable = true;
-                    isGhost = true;
-                    checkCoachRec = true;
-                } else if (isActingStage) {
-                    if (buildMode === 'settlement' && validSettlements.has(vId)) {
-                         isClickable = true;
-                         isGhost = true;
-                         checkCoachRec = true;
-                    } else if (buildMode === 'city' && validCities.has(vId)) {
-                         isClickable = true;
-                         checkCoachRec = true;
-                    }
-                }
-
-                if (checkCoachRec) {
+                const applyCoachRec = () => {
                     const rec = coachData.recommendations.get(vId);
                     if (rec) {
                         recommendationData = rec;
                         heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
                         isTop3 = coachData.top3Set.has(vId);
+                    }
+                };
+
+                if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
+                    isClickable = true;
+                    isGhost = true;
+                    applyCoachRec();
+                } else if (isActingStage) {
+                    if (buildMode === 'settlement' && validSettlements.has(vId)) {
+                         isClickable = true;
+                         isGhost = true;
+                         applyCoachRec();
+                    } else if (buildMode === 'city' && validCities.has(vId)) {
+                         isClickable = true;
+                         applyCoachRec();
                     }
                 }
 
