@@ -23,3 +23,6 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-03-29 - [High Complexity Logic]
 **Observation:** `OptimalMoveFilter.ts` had high cyclomatic complexity (17) due to a monolithic `filterOptimalMoves` method that combined validation, setup phase logic, and dynamic scoring logic.
 **Strategy:** Extracted `validateContext`, `handleSetupSettlements`, and `refineCandidates` helpers, passing calculated `moveWeights` to avoid redundant O(N) recalculations. Reduced cyclomatic complexity below 10.
+## 2026-04-05 - [High Complexity Logic]
+**Observation:** `HexEdges.tsx` had high cyclomatic complexity (14) due to deeply nested inline conditional logic inside its `.map` rendering loop for determining interactive and ghost states.
+**Strategy:** Extracted the state determination logic into a pure helper function `getEdgeInteractiveState`. This decoupled state derivation from React rendering, reducing cyclomatic complexity below 10 and removing the file from the top 10 most complex list.

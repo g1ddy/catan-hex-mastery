@@ -12,6 +12,52 @@ import { getPrimaryHexOwner } from './helpers';
 import { CoachData } from './HexOverlays';
 import { getHeatmapColor } from '../../../game/analysis/coach';
 
+interface EdgeInteractiveState {
+    isClickable: boolean;
+    isGhost: boolean;
+    isRecommended: boolean;
+    heatmapColor?: string;
+    tooltip?: string;
+}
+
+function getEdgeInteractiveState(
+    eId: string,
+    ctx: BoardProps<GameState>['ctx'],
+    uiMode: UiMode,
+    buildMode: BuildMode,
+    validRoads: Set<string>,
+    coachData?: CoachData
+): EdgeInteractiveState {
+    let isClickable = false;
+    let isGhost = false;
+    let isRecommended = false;
+    let heatmapColor: string | undefined;
+    let tooltip: string | undefined;
+
+    const isSetup = ctx.phase === PHASES.SETUP;
+    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
+
+    if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
+        (isActingStage && buildMode === 'road')) {
+        if (validRoads.has(eId)) {
+            isClickable = true;
+            isGhost = true;
+
+            if (coachData) {
+                const rec = coachData.recommendations.get(eId);
+                if (rec) {
+                    isRecommended = coachData.top3Set.has(eId);
+                    heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
+                    tooltip = eId;
+                }
+            }
+        }
+    }
+
+    return { isClickable, isGhost, isRecommended, heatmapColor, tooltip };
+}
+
 interface HexEdgesProps {
     edges: { id: string; parts: string[]; x: number; y: number }[];
     G: GameState;
@@ -72,32 +118,9 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                     );
                 }
 
-                const isSetup = ctx.phase === PHASES.SETUP;
-                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
-
-                let isClickable = false;
-                let isGhost = false;
-                let isRecommended = false;
-                let heatmapColor: string | undefined;
-                let tooltip: string | undefined;
-
-                if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||
-                    (isActingStage && buildMode === 'road')) {
-                    if (validRoads.has(eId)) {
-                        isClickable = true;
-                        isGhost = true;
-
-                        if (coachData) {
-                            const rec = coachData.recommendations.get(eId);
-                            if (rec) {
-                                isRecommended = coachData.top3Set.has(eId);
-                                heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
-                                tooltip = eId;
-                            }
-                        }
-                    }
-                }
+                const { isClickable, isGhost, isRecommended, heatmapColor, tooltip } = getEdgeInteractiveState(
+                    eId, ctx, uiMode, buildMode, validRoads, coachData
+                );
 
                 return (
                     <React.Fragment key={eId}>
