@@ -27,9 +27,9 @@ export const DiceIcons: React.FC<DiceIconsProps> = ({
     className = '',
     ariaLabel
 }) => {
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'd1' is a number validated by typescript and gracefully falls back to default icon
     const Die1Icon = DICE_ICONS[d1] || Dices;
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- 'd2' is a number validated by typescript and gracefully falls back to default icon
     const Die2Icon = DICE_ICONS[d2] || Dices;
 
     return (

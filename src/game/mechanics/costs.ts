@@ -5,6 +5,7 @@ export type BuildType = keyof typeof BUILD_COSTS;
 
 export const canAfford = (resources: Resources, cost: Partial<Resources>): boolean => {
     return (Object.keys(cost) as Array<keyof Resources>).every(
+        // eslint-disable-next-line security/detect-object-injection -- key is sourced from Object.keys of the typed cost parameter
         resource => resources[resource] >= (cost[resource] || 0)
     );
 };

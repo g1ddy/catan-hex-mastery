@@ -12,9 +12,23 @@ export const getPrimaryHexOwner = (parts: string[], G: GameState): string => {
 export const renderTooltipContent = (coachData: CoachData) => ({ content }: { content: string | null; activeAnchor: HTMLElement | null }): React.ReactNode => {
     if (!content) return null;
     const rec = coachData.recommendations.get(content);
-    if (!rec || !rec.details) return <div>{content}</div>;
+    if (!rec) return <div>{content}</div>;
 
     const { score, details, reason } = rec;
+
+    if (!details) {
+        return (
+            <div className="flex flex-col gap-2 max-w-[200px]">
+                <div className="font-bold text-amber-400 border-b border-slate-600 pb-1 mb-1">
+                    {reason}
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                    <BarChart size={14} className="text-blue-400" />
+                    <span>Score: {score.toFixed(1)}</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-2 max-w-[200px]">

@@ -11,3 +11,6 @@
 ## 2024-05-27 - [BuildBar Tooltip Accessibility]
 **Learning:** Attaching `react-tooltip` to a non-focusable wrapper `div` breaks accessibility for keyboard users. Buttons rendered with `aria-disabled="true"` instead of `disabled` remain focusable, allowing tooltips to be placed directly on the button for better UX.
 **Action:** When implementing tooltips on disabled controls, use `aria-disabled` and attach tooltip attributes directly to the focusable element.
+## 2024-11-20 - Ensure Global Focus Visibility
+**Learning:** The custom `btn-focus-ring` utility class handles focus states effectively across the app, but floating UI controls (like panel toggles or overlays) often omit it. Furthermore, raw `lucide-react` icons inside accessible buttons (those with `aria-label`) often lack `aria-hidden="true"`, causing screen readers to misinterpret them.
+**Action:** Always apply `btn-focus-ring` to interactive elements and pass `aria-hidden="true"` to SVG icons inside labeled buttons.
