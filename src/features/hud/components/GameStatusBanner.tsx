@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from '../../shared/types';
 import { useGameStatusMessage, CustomMessage } from '../hooks/useGameStatusMessage';
