@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Ctx } from 'boardgame.io';
 import { UiMode, BuildMode } from '../../shared/types';
 import { useGameStatusMessage, CustomMessage } from '../hooks/useGameStatusMessage';
@@ -13,7 +13,7 @@ export interface GameStatusBannerProps {
     customMessageDuration?: number;
 }
 
-export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
+export function GameStatusBanner({
     ctx,
     playerID,
     uiMode,
@@ -21,7 +21,7 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
     customMessage,
     onCustomMessageClear,
     customMessageDuration = 3000
-}) => {
+}: GameStatusBannerProps) {
     // Auto-clear custom message
     useEffect(() => {
         if (customMessage && onCustomMessageClear) {
@@ -47,4 +47,4 @@ export const GameStatusBanner: React.FC<GameStatusBannerProps> = ({
             </span>
         </div>
     );
-};
+}
