@@ -56,6 +56,10 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
         }
     }, []);
 
+    const isSetup = ctx.phase === PHASES.SETUP;
+    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
+
     return (
         <>
             {vertices.map((vData) => {
@@ -64,37 +68,35 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
 
                 const vertex = safeGet(G.board.vertices, vId);
                 const ownerColor = vertex ? G.players[vertex.owner]?.color : null;
-                const isSetup = ctx.phase === PHASES.SETUP;
-                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
                 let isClickable = false;
                 let isGhost = false;
                 let recommendationData: CoachRecommendation | undefined;
                 let heatmapColor: string | undefined;
                 let isTop3 = false;
+                let shouldApplyCoachRec = false;
 
-                const applyCoachRec = () => {
+                if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
+                    isClickable = true;
+                    isGhost = true;
+                    shouldApplyCoachRec = true;
+                } else if (isActingStage) {
+                    if (buildMode === 'settlement' && validSettlements.has(vId)) {
+                         isClickable = true;
+                         isGhost = true;
+                         shouldApplyCoachRec = true;
+                    } else if (buildMode === 'city' && validCities.has(vId)) {
+                         isClickable = true;
+                         shouldApplyCoachRec = true;
+                    }
+                }
+
+                if (shouldApplyCoachRec) {
                     const rec = coachData.recommendations.get(vId);
                     if (rec) {
                         recommendationData = rec;
                         heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
                         isTop3 = coachData.top3Set.has(vId);
-                    }
-                };
-
-                if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
-                    isClickable = true;
-                    isGhost = true;
-                    applyCoachRec();
-                } else if (isActingStage) {
-                    if (buildMode === 'settlement' && validSettlements.has(vId)) {
-                         isClickable = true;
-                         isGhost = true;
-                         applyCoachRec();
-                    } else if (buildMode === 'city' && validCities.has(vId)) {
-                         isClickable = true;
-                         applyCoachRec();
                     }
                 }
 
