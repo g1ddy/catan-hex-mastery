@@ -32,14 +32,14 @@ describe('stripHtml', () => {
         expect(stripHtml(input)).toEqual(expected);
     });
 
-    it('should not corrupt strings with angle brackets', () => {
+    it('should securely encode strings with angle brackets', () => {
         const input = 'a < b';
-        expect(stripHtml(input)).toEqual('a < b');
+        expect(stripHtml(input)).toEqual('a &lt; b');
     });
 
-    it('should not corrupt strings with a less-than sign', () => {
+    it('should securely encode strings with a less-than sign', () => {
         const input = 'Player <3';
-        expect(stripHtml(input)).toEqual('Player <3');
+        expect(stripHtml(input)).toEqual('Player &lt;3');
     });
 
     it('should truncate strings exceeding default max length (1000)', () => {
