@@ -6,7 +6,7 @@ import { PlayerProductionPotential } from './PlayerProductionPotential';
 
 export interface CoachPanelProps {
     G?: GameState;
-    ctx: Ctx;
+    ctx?: Ctx;
     showResourceHeatmap: boolean;
     setShowResourceHeatmap: (show: boolean) => void;
     isCoachModeEnabled: boolean;
@@ -16,7 +16,6 @@ export interface CoachPanelProps {
 
 export function CoachPanel({
     G,
-    ctx,
     showResourceHeatmap,
     setShowResourceHeatmap,
     isCoachModeEnabled,
