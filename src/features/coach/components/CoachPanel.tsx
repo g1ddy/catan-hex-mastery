@@ -1,4 +1,3 @@
-import React from 'react';
 import { Ctx } from 'boardgame.io';
 import { GameState } from '../../../game/core/types';
 import { StrategicAdvice } from '../../../game/analysis/coach';
