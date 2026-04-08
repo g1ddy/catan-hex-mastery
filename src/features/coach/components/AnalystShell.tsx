@@ -1,4 +1,3 @@
-import React from 'react';
 import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { X, ChevronLeft } from 'lucide-react';
 import { Z_INDEX_OVERLAY_PANEL } from '../../shared/constants/z-indices';
@@ -10,7 +9,7 @@ interface AnalystShellProps {
   onToggle: () => void;
 }
 
-export const AnalystShell: React.FC<AnalystShellProps> = ({ children, isOpen, onToggle }) => {
+export function AnalystShell({ children, isOpen, onToggle }: AnalystShellProps) {
   const isMobile = useIsMobile();
 
   // Desktop: Sidebar

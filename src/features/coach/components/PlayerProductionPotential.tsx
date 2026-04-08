@@ -1,4 +1,3 @@
-import React from 'react';
 import { GameState } from '../../../game/core/types';
 import { calculatePlayerPotentialPips } from '../../../game/analysis/analyst';
 import { ResourceIconRow } from '../../shared/components/ResourceIconRow';
@@ -9,7 +8,7 @@ interface PlayerProductionPotentialProps {
     G?: GameState;
 }
 
-export const PlayerProductionPotential: React.FC<PlayerProductionPotentialProps> = ({ G }) => {
+export function PlayerProductionPotential({ G }: PlayerProductionPotentialProps) {
     if (!G) return null;
 
     const playerPotentials = calculatePlayerPotentialPips(G);

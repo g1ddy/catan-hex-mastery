@@ -14,14 +14,15 @@ export interface CoachPanelProps {
     advice?: StrategicAdvice | null;
 }
 
-export const CoachPanel: React.FC<CoachPanelProps> = ({
+export function CoachPanel({
     G,
+    ctx,
     showResourceHeatmap,
     setShowResourceHeatmap,
     isCoachModeEnabled,
     setIsCoachModeEnabled,
     advice
-}) => {
+}: CoachPanelProps) {
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">
 

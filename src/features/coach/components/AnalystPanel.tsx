@@ -1,4 +1,3 @@
-import React from 'react';
 import { BoardStats, GameState } from '../../../game/core/types';
 import { RefreshCw } from 'lucide-react';
 
@@ -9,7 +8,7 @@ export interface AnalystPanelProps {
   G?: GameState;
 }
 
-const AnalystPanel: React.FC<AnalystPanelProps> = ({ stats, onRegenerate, canRegenerate = true }) => {
+function AnalystPanel({ stats, onRegenerate, canRegenerate = true }: AnalystPanelProps) {
   const getFairnessColorClass = (score: number) => {
     if (score >= 90) return 'text-green-400';
     if (score >= 70) return 'text-orange-400';

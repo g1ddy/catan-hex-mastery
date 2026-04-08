@@ -1,4 +1,3 @@
-import React from 'react';
 import { Player } from '../../../game/core/types';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 
@@ -12,7 +11,7 @@ interface PlayerProductionRowProps {
     potentials: Record<string, number>;
 }
 
-const PlayerProductionRow: React.FC<PlayerProductionRowProps> = ({ player, potentials }) => {
+function PlayerProductionRow({ player, potentials }: PlayerProductionRowProps) {
     const resourcePips = RESOURCE_META.map(({ name, bgColor }) => ({
         name,
         color: bgColor,
@@ -60,9 +59,9 @@ const PlayerProductionRow: React.FC<PlayerProductionRowProps> = ({ player, poten
             </div>
         </div>
     );
-};
+}
 
-export const PlayerProduction: React.FC<PlayerProductionProps> = ({ playerPotentials, players }) => {
+export function PlayerProduction({ playerPotentials, players }: PlayerProductionProps) {
     return (
         <div className="flex flex-col gap-3 mt-4">
             <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Player Production</h4>
