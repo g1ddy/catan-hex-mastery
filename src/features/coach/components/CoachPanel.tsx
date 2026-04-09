@@ -27,7 +27,11 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
 
             <div className="flex flex-col gap-2">
                 {/* 0. Master Coach Toggle */}
-                <label className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 cursor-pointer hover:bg-slate-750 hover:border-slate-600 transition-colors group">
+                <label
+                    className="flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 cursor-pointer hover:bg-slate-750 hover:border-slate-600 transition-colors group"
+                    data-tooltip-id="ui-tooltip"
+                    data-tooltip-content="Enable the AI Coach to receive real-time strategic advice"
+                >
                     <span className="font-semibold text-sm text-amber-400 group-hover:text-amber-300 transition-colors">Coach Mode</span>
                     <div className="relative inline-flex items-center">
                         <input
@@ -42,7 +46,11 @@ export const CoachPanel: React.FC<CoachPanelProps> = ({
                 </label>
 
                 {/* 1. Resource Heatmap Toggle */}
-                <label className={`flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 transition-colors group ${!isCoachModeEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-750 hover:border-slate-600'}`}>
+                <label
+                    className={`flex items-center justify-between bg-slate-800 p-3 rounded border border-slate-700 transition-colors group ${!isCoachModeEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-750 hover:border-slate-600'}`}
+                    data-tooltip-id="ui-tooltip"
+                    data-tooltip-content={!isCoachModeEnabled ? "Requires Coach Mode to be enabled" : "Visualize winning moves directly on the board"}
+                >
                     <span className="font-semibold text-sm group-hover:text-blue-400 transition-colors">Resource Heatmap</span>
                     <div className="relative inline-flex items-center">
                         <input
