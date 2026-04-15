@@ -1,4 +1,3 @@
-import React from 'react';
 import { GameState, RollStatus } from '../../../game/core/types';
 import { Dices, Ghost } from 'lucide-react';
 import { DiceIcons } from '../../shared/components/DiceIcons';
@@ -10,7 +9,7 @@ export interface GameNotificationProps {
     G: GameState;
 }
 
-export const GameNotification: React.FC<GameNotificationProps> = ({ G }) => {
+export function GameNotification({ G }: GameNotificationProps) {
     const isRolling = G.rollStatus === RollStatus.ROLLING;
     const { visible, displayNotification } = useAutoDismissNotification(G.notification, isRolling);
 

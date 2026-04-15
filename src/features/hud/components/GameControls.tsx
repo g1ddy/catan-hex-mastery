@@ -1,4 +1,3 @@
-import React from 'react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { Ctx } from 'boardgame.io';
 import { safeMove } from '../../shared/utils/feedback';
@@ -27,7 +26,7 @@ export interface GameControlsProps {
     playerID?: string | null;
 }
 
-export const GameControls: React.FC<GameControlsProps> = ({
+export function GameControls({
     G,
     ctx,
     moves,
@@ -40,7 +39,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
     advice = null,
     pendingRobberHex,
     playerID = null
-}) => {
+}: GameControlsProps) {
     const {
         isSetup,
         isGameplay,

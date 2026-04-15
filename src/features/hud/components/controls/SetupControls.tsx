@@ -1,4 +1,3 @@
-import React from 'react';
 import { STAGES } from '../../../../game/core/constants';
 import { UiMode } from '../../../shared/types';
 import { ActionButton } from './ActionButton';
@@ -11,13 +10,13 @@ interface SetupControlsProps {
     isMyTurn: boolean;
 }
 
-export const SetupControls: React.FC<SetupControlsProps> = ({
+export function SetupControls({
     uiMode,
     setUiMode,
     activeStage,
     className = '',
     isMyTurn
-}) => {
+}: SetupControlsProps) {
     const canInteract = isMyTurn && (activeStage === STAGES.PLACE_SETTLEMENT || activeStage === STAGES.PLACE_ROAD);
 
     const handleClick = () => {

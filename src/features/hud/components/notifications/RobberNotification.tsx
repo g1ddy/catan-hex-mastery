@@ -1,4 +1,3 @@
-import React from 'react';
 import { RobberEvent, Player } from '../../../../game/core/types';
 import { safeGet } from '../../../../game/core/utils/objectUtils';
 import { ArrowRight } from 'lucide-react';
@@ -9,7 +8,7 @@ interface RobberNotificationProps {
     players: Record<string, Player>;
 }
 
-export const RobberNotification: React.FC<RobberNotificationProps> = ({ evt, players }) => {
+export function RobberNotification({ evt, players }: RobberNotificationProps) {
     // Validate players exist
     const thief = safeGet(players, evt.thief);
     const victim = safeGet(players, evt.victim);
