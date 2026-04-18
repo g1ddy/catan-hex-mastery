@@ -77,6 +77,9 @@ export class Coach {
      * Delegates to SpatialAdvisor.
      */
     public getAllSettlementScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
+            return [];
+        }
         return this.spatialAdvisor.getAllSettlementScores(playerID, ctx);
     }
 
@@ -85,10 +88,16 @@ export class Coach {
      * Delegates to SpatialAdvisor.
      */
     public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
+            return [];
+        }
         return this.spatialAdvisor.getBestCitySpots(playerID, ctx, candidates);
     }
 
     public getBestSettlementSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+        if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
+            return [];
+        }
         return this.getAllSettlementScores(playerID, ctx)
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
