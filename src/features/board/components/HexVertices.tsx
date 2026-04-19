@@ -9,6 +9,39 @@ import { PHASES, STAGES } from '../../../game/core/constants';
 import { OverlayVertex } from './OverlayVertex';
 import { getPrimaryHexOwner } from './helpers';
 
+
+export function getVertexInteractiveState(
+    vId: string,
+    isSetup: boolean,
+    currentStage: string | undefined,
+    isActingStage: boolean,
+    uiMode: UiMode,
+    buildMode: BuildMode,
+    validSettlements: Set<string>,
+    validCities: Set<string>
+): { isClickable: boolean; isGhost: boolean; shouldApplyRec: boolean } {
+    let isClickable = false;
+    let isGhost = false;
+    let shouldApplyRec = false;
+
+    if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
+        isClickable = true;
+        isGhost = true;
+        shouldApplyRec = true;
+    } else if (isActingStage) {
+        if (buildMode === 'settlement' && validSettlements.has(vId)) {
+             isClickable = true;
+             isGhost = true;
+             shouldApplyRec = true;
+        } else if (buildMode === 'city' && validCities.has(vId)) {
+             isClickable = true;
+             shouldApplyRec = true;
+        }
+    }
+
+    return { isClickable, isGhost, shouldApplyRec };
+}
+
 export interface CoachData {
     recommendations: Map<string, CoachRecommendation>;
     minScore: number;
@@ -56,6 +89,10 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
         }
     }, []);
 
+    const isSetup = ctx.phase === PHASES.SETUP;
+    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
+
     return (
         <>
             {vertices.map((vData) => {
@@ -64,37 +101,21 @@ export const HexVertices: React.FC<HexVerticesProps> = ({
 
                 const vertex = safeGet(G.board.vertices, vId);
                 const ownerColor = vertex ? G.players[vertex.owner]?.color : null;
-                const isSetup = ctx.phase === PHASES.SETUP;
-                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
-                const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
-                let isClickable = false;
-                let isGhost = false;
+                const { isClickable, isGhost, shouldApplyRec } = getVertexInteractiveState(
+                    vId, isSetup, currentStage, isActingStage, uiMode, buildMode, validSettlements, validCities
+                );
+
                 let recommendationData: CoachRecommendation | undefined;
                 let heatmapColor: string | undefined;
                 let isTop3 = false;
 
-                const applyCoachRec = () => {
+                if (shouldApplyRec) {
                     const rec = coachData.recommendations.get(vId);
                     if (rec) {
                         recommendationData = rec;
                         heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
                         isTop3 = coachData.top3Set.has(vId);
-                    }
-                };
-
-                if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
-                    isClickable = true;
-                    isGhost = true;
-                    applyCoachRec();
-                } else if (isActingStage) {
-                    if (buildMode === 'settlement' && validSettlements.has(vId)) {
-                         isClickable = true;
-                         isGhost = true;
-                         applyCoachRec();
-                    } else if (buildMode === 'city' && validCities.has(vId)) {
-                         isClickable = true;
-                         applyCoachRec();
                     }
                 }
 
