@@ -16,7 +16,14 @@ export interface CoachData {
     top3Set: Set<string>;
 }
 
-export function getVertexInteractiveState(
+function checkGameplayState(isActingStage: boolean, buildMode: BuildMode, validSettlements: Set<string>, validCities: Set<string>, vId: string) {
+    if (!isActingStage) return { isClickable: false, isGhost: false };
+    if (buildMode === 'settlement' && validSettlements.has(vId)) return { isClickable: true, isGhost: true };
+    if (buildMode === 'city' && validCities.has(vId)) return { isClickable: true, isGhost: false };
+    return { isClickable: false, isGhost: false };
+}
+
+function getVertexInteractiveState(
     vId: string,
     isSetup: boolean,
     isActingStage: boolean,
@@ -33,27 +40,23 @@ export function getVertexInteractiveState(
     let heatmapColor: string | undefined;
     let isTop3 = false;
 
-    const applyCoachRec = () => {
+    const isSetupMode = isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId);
+
+    if (isSetupMode) {
+        isClickable = true;
+        isGhost = true;
+    } else {
+        const gameplayState = checkGameplayState(isActingStage, buildMode, validSettlements, validCities, vId);
+        isClickable = gameplayState.isClickable;
+        isGhost = gameplayState.isGhost;
+    }
+
+    if (isClickable) {
         const rec = coachData.recommendations.get(vId);
         if (rec) {
             recommendationData = rec;
             heatmapColor = getHeatmapColor(rec.score, coachData.minScore, coachData.maxScore);
             isTop3 = coachData.top3Set.has(vId);
-        }
-    };
-
-    if (isSetup && currentStage === STAGES.PLACE_SETTLEMENT && uiMode === 'placing' && validSettlements.has(vId)) {
-        isClickable = true;
-        isGhost = true;
-        applyCoachRec();
-    } else if (isActingStage) {
-        if (buildMode === 'settlement' && validSettlements.has(vId)) {
-             isClickable = true;
-             isGhost = true;
-             applyCoachRec();
-        } else if (buildMode === 'city' && validCities.has(vId)) {
-             isClickable = true;
-             applyCoachRec();
         }
     }
 
