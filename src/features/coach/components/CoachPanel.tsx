@@ -1,4 +1,3 @@
-import React from 'react';
 import { Ctx } from 'boardgame.io';
 import { GameState } from '../../../game/core/types';
 import { StrategicAdvice } from '../../../game/analysis/coach';
@@ -6,7 +5,7 @@ import { PlayerProductionPotential } from './PlayerProductionPotential';
 
 export interface CoachPanelProps {
     G?: GameState;
-    ctx: Ctx;
+    ctx?: Ctx;
     showResourceHeatmap: boolean;
     setShowResourceHeatmap: (show: boolean) => void;
     isCoachModeEnabled: boolean;
@@ -14,14 +13,14 @@ export interface CoachPanelProps {
     advice?: StrategicAdvice | null;
 }
 
-export const CoachPanel: React.FC<CoachPanelProps> = ({
+export function CoachPanel({
     G,
     showResourceHeatmap,
     setShowResourceHeatmap,
     isCoachModeEnabled,
     setIsCoachModeEnabled,
     advice
-}) => {
+}: CoachPanelProps) {
     return (
         <div className="text-slate-100 h-full flex flex-col gap-6">
 
