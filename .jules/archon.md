@@ -26,3 +26,7 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-04-05 - [High Complexity Logic]
 **Observation:** `HexEdges.tsx` had high cyclomatic complexity (14) due to deeply nested inline conditional logic inside its `.map` rendering loop for determining interactive and ghost states.
 **Strategy:** Extracted the state determination logic into a pure helper function `getEdgeInteractiveState`. This decoupled state derivation from React rendering, reducing cyclomatic complexity below 10 and removing the file from the top 10 most complex list.
+
+## 2026-04-12 - [High Complexity Logic]
+**Observation:** `HexVertices.tsx` had high cyclomatic complexity (13) due to nested conditional logic inside its `.map` rendering loop for determining interactive and ghost states.
+**Strategy:** Extracted the state determination logic into a pure helper function `getVertexInteractiveState`. This decoupled state derivation from React rendering, reducing cyclomatic complexity below 10 and removing the file from the top 10 most complex list.
