@@ -1,4 +1,3 @@
-import React from 'react';
 import { Handshake } from 'lucide-react';
 import { BUILD_COSTS, BANK_TRADE_GIVE_AMOUNT, BANK_TRADE_RECEIVE_AMOUNT } from '../../../../game/core/config';
 import { BUILD_BUTTON_CONFIG } from '../../../shared/config/uiConfig';
@@ -18,7 +17,7 @@ interface BuildBarProps {
     advice: StrategicAdvice | null;
 }
 
-export const BuildBar: React.FC<BuildBarProps> = ({
+export function BuildBar({
     affordMap,
     isMoveAllowed,
     buildMode,
@@ -28,7 +27,7 @@ export const BuildBar: React.FC<BuildBarProps> = ({
     onTrade,
     isCoachModeEnabled,
     advice
-}) => {
+}: BuildBarProps) {
     const moveNameMap: Record<string, string> = {
         road: 'buildRoad',
         settlement: 'buildSettlement',

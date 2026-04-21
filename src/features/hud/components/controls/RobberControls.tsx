@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActionButton } from './ActionButton';
 
 interface RobberControlsProps {
@@ -7,11 +6,11 @@ interface RobberControlsProps {
     className?: string;
 }
 
-export const RobberControls: React.FC<RobberControlsProps> = ({
+export function RobberControls({
     pendingRobberHex,
     onConfirm,
     className = ''
-}) => {
+}: RobberControlsProps) {
     const hasSelection = !!pendingRobberHex;
 
     return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Loader2, ArrowRight, Dices as Dice } from 'lucide-react';
 import { RollStatus } from '../../../../game/core/types';
 
@@ -13,7 +12,7 @@ interface TurnControlsProps {
     isRollingStage: boolean;
 }
 
-export const TurnControls: React.FC<TurnControlsProps> = ({
+export function TurnControls({
     isMoveAllowed,
     isEndingTurn,
     onEndTurn,
@@ -22,7 +21,7 @@ export const TurnControls: React.FC<TurnControlsProps> = ({
     rollStatus,
     lastRoll,
     isRollingStage
-}) => {
+}: TurnControlsProps) {
     const endTurnLabel = isEndingTurn ? "Ending..." : "End";
     const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
     const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />;
