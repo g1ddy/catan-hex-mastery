@@ -24,5 +24,12 @@ export const stripHtml = (str: string, maxLength: number = 1000): string => {
     });
 
     // Clean up excessive whitespace
-    return text.replace(/\s+/g, ' ').trim();
+    let result = text.replace(/\s+/g, ' ').trim();
+
+    // Ensure final string respects maxLength (DOMPurify encoding can expand length)
+    if (result.length > maxLength) {
+        result = result.substring(0, maxLength);
+    }
+
+    return result;
 };
