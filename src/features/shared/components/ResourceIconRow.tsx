@@ -17,7 +17,7 @@ export const ResourceIconRow: React.FC<ResourceIconRowProps> = ({ resources, siz
   return (
     <div className={`flex items-center gap-2 ${textSize} ${className}`}>
         {RESOURCE_META.map(({ name, label, Icon, color }) => {
-            // eslint-disable-next-line security/detect-object-injection
+            // eslint-disable-next-line security/detect-object-injection -- 'name' is sourced from the static RESOURCE_META config
             const count = r[name] || 0;
             return (
                 <span

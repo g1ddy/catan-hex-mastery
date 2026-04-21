@@ -66,6 +66,51 @@ describe('getPrimaryHexOwner', () => {
         const parts: string[] = [];
         expect(getPrimaryHexOwner(parts, mockG)).toBe('');
     });
+
+    it('caches the result based on parts array', () => {
+        const parts = ['0,0,0', '1,-1,0'];
+        // First call computes and caches
+        expect(getPrimaryHexOwner(parts, mockG)).toBe('0,0,0');
+
+        // Second call should return from cache
+        // Our cache invalidation looks at G.board.hexes reference.
+        // Let's pass the exact same reference but mutate it, to prove it uses cache.
+        const mutatedMockG = { board: { hexes: mockG.board.hexes } } as unknown as GameState;
+        delete (mutatedMockG.board.hexes as any)['0,0,0'];
+
+        // It should still return '0,0,0' because the cache key '0,0,0|1,-1,0' is cached
+        // and G.board.hexes reference is the same.
+        expect(getPrimaryHexOwner(parts, mutatedMockG)).toBe('0,0,0');
+
+        // Restore mock
+        (mutatedMockG.board.hexes as any)['0,0,0'] = { id: '0,0,0' };
+    });
+
+    it('invalidates cache when board hexes reference changes', () => {
+        const parts = ['0,0,0', '1,-1,0'];
+
+        const initialMockG = {
+            board: {
+                hexes: {
+                    '0,0,0': { id: '0,0,0' },
+                    '1,-1,0': { id: '1,-1,0' }
+                }
+            }
+        } as unknown as GameState;
+
+        expect(getPrimaryHexOwner(parts, initialMockG)).toBe('0,0,0');
+
+        const newMockG = {
+            board: {
+                hexes: {
+                    '1,-1,0': { id: '1,-1,0' } // 0,0,0 is removed
+                }
+            }
+        } as unknown as GameState;
+
+        // It should recompute because newMockG.board.hexes !== initialMockG.board.hexes
+        expect(getPrimaryHexOwner(parts, newMockG)).toBe('1,-1,0');
+    });
 });
 
 describe('renderTooltipContent', () => {

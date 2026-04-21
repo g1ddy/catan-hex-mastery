@@ -5,16 +5,47 @@ import { safeCheck } from '../../../game/core/utils/objectUtils';
 import { BarChart, Gem, Layers, Zap } from 'lucide-react';
 import { RESOURCE_META } from '../../shared/config/uiConfig';
 
+const primaryHexOwnerCache = new Map<string, string>();
+let lastHexesReference: GameState['board']['hexes'] | null = null;
+
 export const getPrimaryHexOwner = (parts: string[], G: GameState): string => {
-    return parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0] || '';
+    // Invalidate cache if the board hexes object reference changes (e.g., new game/board generation)
+    if (lastHexesReference !== G.board.hexes) {
+        primaryHexOwnerCache.clear();
+        lastHexesReference = G.board.hexes;
+    }
+
+    const cacheKey = parts.join('|');
+    const cached = primaryHexOwnerCache.get(cacheKey);
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    const owner = parts.find(ownerId => safeCheck(G.board.hexes, ownerId)) || parts[0] || '';
+    primaryHexOwnerCache.set(cacheKey, owner);
+    return owner;
 };
 
 export const renderTooltipContent = (coachData: CoachData) => ({ content }: { content: string | null; activeAnchor: HTMLElement | null }): React.ReactNode => {
     if (!content) return null;
     const rec = coachData.recommendations.get(content);
-    if (!rec || !rec.details) return <div>{content}</div>;
+    if (!rec) return <div>{content}</div>;
 
     const { score, details, reason } = rec;
+
+    if (!details) {
+        return (
+            <div className="flex flex-col gap-2 max-w-[200px]">
+                <div className="font-bold text-amber-400 border-b border-slate-600 pb-1 mb-1">
+                    {reason}
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                    <BarChart size={14} className="text-blue-400" />
+                    <span>Score: {score.toFixed(1)}</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-2 max-w-[200px]">
