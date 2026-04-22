@@ -1,9 +1,8 @@
-import React from 'react';
 import {
     Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Dices, LucideIcon
 } from 'lucide-react';
 
-interface DiceIconsProps {
+export interface DiceIconsProps {
     d1: number;
     d2: number;
     size?: number;
@@ -20,13 +19,13 @@ const DICE_ICONS: Record<number, LucideIcon> = {
     6: Dice6
 };
 
-export const DiceIcons: React.FC<DiceIconsProps> = ({
+export function DiceIcons({
     d1,
     d2,
     size = 20,
     className = '',
     ariaLabel
-}) => {
+}: DiceIconsProps) {
     // eslint-disable-next-line security/detect-object-injection -- 'd1' is a number validated by typescript and gracefully falls back to default icon
     const Die1Icon = DICE_ICONS[d1] || Dices;
     // eslint-disable-next-line security/detect-object-injection -- 'd2' is a number validated by typescript and gracefully falls back to default icon
@@ -42,4 +41,4 @@ export const DiceIcons: React.FC<DiceIconsProps> = ({
             <Die2Icon size={size} className={className} aria-hidden="true" />
         </div>
     );
-};
+}
