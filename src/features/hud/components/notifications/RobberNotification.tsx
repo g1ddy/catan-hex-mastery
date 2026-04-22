@@ -56,4 +56,4 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
             )}
         </div>
     );
-};
+}

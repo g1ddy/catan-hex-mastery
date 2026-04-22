@@ -118,4 +118,4 @@ export function GameControls({
     }
 
     return null;
-};
+}
