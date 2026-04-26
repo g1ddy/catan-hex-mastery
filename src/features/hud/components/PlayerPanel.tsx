@@ -10,12 +10,17 @@ interface PlayerCardProps {
 // Regex to validate hex color codes (e.g., #E53935 or #E53)
 const HEX_COLOR_REGEX = /^#([0-9A-F]{3}){1,2}$/i;
 
+export function getPlayerCardStyles(isActive: boolean) {
+    const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
+    const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+    return { desktopBorder, mobileActive };
+}
+
 function PlayerCard({ player, isActive }: PlayerCardProps) {
   const totalResources = Object.values(player.resources).reduce((a, b) => a + b, 0);
 
   // Styles for active state differences
-  const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
-  const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+  const { desktopBorder, mobileActive } = getPlayerCardStyles(isActive);
 
   // Securely handle player color
   const isValidColor = HEX_COLOR_REGEX.test(player.color);
