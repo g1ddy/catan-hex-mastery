@@ -110,7 +110,14 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
 
                 let portElement = null;
                 if (port) {
-                    const portOwner = port.vertices.map(vId => safeGet(G.board.vertices, vId)?.owner).find(Boolean);
+                    let portOwner: string | undefined;
+                    for (const vId of port.vertices) {
+                        const owner = safeGet(G.board.vertices, vId)?.owner;
+                        if (owner) {
+                            portOwner = owner;
+                            break;
+                        }
+                    }
                     portElement = (
                         <Port key={`port-${eId}`} cx={midX} cy={midY} angle={angle} type={port.type}
                               ownerColor={portOwner ? G.players[portOwner]?.color : null}

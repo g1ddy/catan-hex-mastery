@@ -70,6 +70,6 @@ function AnalystPanel({ stats, onRegenerate, canRegenerate = true }: AnalystPane
       </div>
     </div>
   );
-};
+}
 
 export default AnalystPanel;
