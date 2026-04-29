@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { HexGrid, Layout } from 'react-hexgrid';
 import { Tooltip } from 'react-tooltip';

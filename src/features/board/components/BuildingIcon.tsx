@@ -1,4 +1,3 @@
-import React from 'react';
 import { Home, Castle } from 'lucide-react';
 
 const SETTLEMENT_ICON_SIZE = 5;

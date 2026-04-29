@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Dices, LucideIcon
 } from 'lucide-react';

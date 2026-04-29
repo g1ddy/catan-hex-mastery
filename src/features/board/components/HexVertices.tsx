@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
