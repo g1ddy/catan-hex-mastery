@@ -73,10 +73,10 @@ interface HexEdgesProps {
     coachData?: CoachData;
 }
 
-export const HexEdges: React.FC<HexEdgesProps> = ({
+export function HexEdges({
     edges, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode,
     validRoads, highlightedPortEdgeId, currentHexIdStr, coachData
-}) => {
+}: HexEdgesProps) {
     // Stable handler setup
     const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads });
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads };

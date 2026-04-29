@@ -28,7 +28,7 @@ interface GameLayoutProps {
   onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
 }
 
-export const GameLayout: React.FC<GameLayoutProps> = ({
+export function GameLayout({
   board,
   dashboard,
   playerPanel,
@@ -38,7 +38,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   coachPanel,
   activePanel,
   onPanelChange
-}) => {
+}: GameLayoutProps) {
   const isMobile = useIsMobile();
 
   const togglePanel = (panel: 'analyst' | 'coach') => {

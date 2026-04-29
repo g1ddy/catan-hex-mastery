@@ -25,7 +25,7 @@ const getPipsCount = (num: number): number => {
   return PIPS_MAP[num] || 0;
 };
 
-const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, hasRobber, isPendingRobber }) => {
+function GameHexComponent({ hex, onClick, isProducing, hasRobber, isPendingRobber }: GameHexProps) {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 

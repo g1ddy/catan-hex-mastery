@@ -30,7 +30,7 @@ interface BoardLayerProps {
     onHexClick: (hex: Hex) => void;
 }
 
-export const BoardLayer: React.FC<BoardLayerProps> = ({
+export function BoardLayer({
     G,
     ctx,
     moves,
@@ -43,7 +43,7 @@ export const BoardLayer: React.FC<BoardLayerProps> = ({
     highlightedPortEdgeId,
     pendingRobberHex,
     onHexClick
-}) => {
+}: BoardLayerProps) {
     const hexes = Object.values(G.board.hexes);
     const { producingHexIds } = useGameEffects(G);
     const { validSettlements, validCities, validRoads } = useBoardInteractions(G, ctx, ctx.currentPlayer);

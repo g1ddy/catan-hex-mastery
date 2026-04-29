@@ -78,10 +78,10 @@ interface HexVerticesProps {
     currentHexIdStr: string;
 }
 
-export const HexVertices: React.FC<HexVerticesProps> = ({
+export function HexVertices({
     vertices, G, ctx, moves, buildMode, setBuildMode, uiMode,
     validSettlements, validCities, coachData, showResourceHeatmap, currentHexIdStr
-}) => {
+}: HexVerticesProps) {
     // Stable handler setup
     const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities });
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities };
