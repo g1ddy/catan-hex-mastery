@@ -90,4 +90,4 @@ export function AnalystShell({ children, isOpen, onToggle }: AnalystShellProps) 
       </div>
     </>
   );
-};
+}

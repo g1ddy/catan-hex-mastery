@@ -11,11 +11,11 @@ interface ProductionNotificationProps {
 }
 
 const RESOURCE_ICONS: Record<keyof Resources, React.ReactNode> = {
-    wood: <Trees size={14} className="text-green-500" />,
-    brick: <BrickWall size={14} className="text-orange-500" />,
-    wheat: <Wheat size={14} className="text-yellow-500" />,
-    ore: <Mountain size={14} className="text-slate-400" />,
-    sheep: <Cloud size={14} className="text-blue-300" />
+    wood: <Trees size={14} className="text-green-500" aria-hidden="true" />,
+    brick: <BrickWall size={14} className="text-orange-500" aria-hidden="true" />,
+    wheat: <Wheat size={14} className="text-yellow-500" aria-hidden="true" />,
+    ore: <Mountain size={14} className="text-slate-400" aria-hidden="true" />,
+    sheep: <Cloud size={14} className="text-blue-300" aria-hidden="true" />
 }
 
 export function ProductionNotification({ evt, players, isRolling }: ProductionNotificationProps) {
@@ -50,8 +50,10 @@ export function ProductionNotification({ evt, players, isRolling }: ProductionNo
                             <div
                                 className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                                 style={{ backgroundColor: player.color }}
+                                aria-hidden="true"
                             />
-                            <span className="text-xs font-bold text-slate-300">P{Number(pid) + 1}</span>
+                            <span className="sr-only">Player {Number(pid) + 1} received </span>
+                            <span className="text-xs font-bold text-slate-300" aria-hidden="true">P{Number(pid) + 1}</span>
 
                             {/* Resources */}
                             <div className="flex items-center gap-1.5 ml-1">
@@ -59,7 +61,8 @@ export function ProductionNotification({ evt, players, isRolling }: ProductionNo
                                     if (!amount) return null;
                                     return (
                                         <span key={type} className="flex items-center gap-0.5 text-xs font-medium">
-                                            +{amount} {
+                                            <span className="sr-only">{amount} {type}</span>
+                                            <span aria-hidden="true">+{amount}</span> {
                                                 RESOURCE_ICONS[type as keyof Resources]
                                             }
                                         </span>

@@ -51,13 +51,13 @@ export function GameNotification({ G }: GameNotificationProps) {
                     {/* If Rolling, show spinner. Else if Production, show Dice. Else show Ghost. */}
                     {isRolling ? (
                          <>
-                            <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" />
+                            <Dices size={24} className="text-amber-400 animate-spin motion-reduce:animate-none" aria-hidden="true" />
                             <span className="font-bold text-lg text-amber-400">Rolling...</span>
                         </>
                     ) : (displayNotification?.type === 'production') ? (
                          <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" />
                     ) : (
-                        <Ghost size={24} className="text-purple-400" />
+                        <Ghost size={24} className="text-purple-400" aria-hidden="true" />
                     )}
                 </div>
 
@@ -69,4 +69,4 @@ export function GameNotification({ G }: GameNotificationProps) {
             </div>
         </div>
     );
-};
+}
