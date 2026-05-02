@@ -89,9 +89,8 @@ test.describe('Documentation Screenshots', () => {
     await goldRing.hover({ force: true });
 
     // Wait for tooltip to appear and contain the score, confirming dynamic content has rendered
-    const tooltip = page.locator('.react-tooltip');
+    const tooltip = page.locator('.react-tooltip').filter({ hasText: /score:/i });
     await expect(tooltip).toBeVisible();
-    await expect(tooltip.getByText(/score:/i)).toBeVisible();
 
     // Brief wait for a fade-in animation to complete.
     await page.waitForTimeout(500);
@@ -117,9 +116,8 @@ test.describe('Documentation Screenshots', () => {
     await goldRing.hover({ force: true });
 
     // Wait for tooltip to appear and contain the score
-    const tooltip = page.locator('.react-tooltip');
+    const tooltip = page.locator('.react-tooltip').filter({ hasText: /score:/i });
     await expect(tooltip).toBeVisible();
-    await expect(tooltip.getByText(/score:/i)).toBeVisible();
 
     // Brief wait for a fade-in animation to complete.
     await page.waitForTimeout(500);
