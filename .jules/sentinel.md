@@ -17,3 +17,7 @@
 **Vulnerability:** `Coach.getAllRoadScores` allowed any player to compute hypothetical road scores for any other player, potentially revealing opponent strategy.
 **Learning:** Analysis/Advisory methods that take `playerID` as an argument must explicitly validate it against `ctx.currentPlayer` if the result contains strategic information.
 **Prevention:** Enforce `playerID === ctx.currentPlayer` checks in all "Coach" or "Advisor" public methods exposed to the client.
+## 2024-05-24 - HTML Sanitization Double-Encoding Bug
+**Vulnerability:** A custom regex HTML stripper was replaced with isomorphic-dompurify for better security. However, since DOMPurify outputs HTML strings by default, it HTML-encoded special characters (like `<` to `&lt;`) causing display issues when rendering the output in React.
+**Learning:** Using regex to sanitize HTML is generally a poor idea due to bypasses. When using `DOMPurify` strictly for extracting plain text, returning its default string will result in HTML-encoded entities, breaking non-HTML UI elements.
+**Prevention:** Configure DOMPurify to return a DOM node (`{ RETURN_DOM: true }`) and then extract the `.textContent` to reliably strip HTML without accidentally double-encoding safe characters.
