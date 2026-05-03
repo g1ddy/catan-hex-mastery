@@ -31,6 +31,20 @@ export const getCoachMode = (
     return null;
 };
 
+function executeCoachMethod(coach: Coach, mode: CoachMode, playerID: string, ctx: Ctx, G: GameState) {
+    if (mode === 'city' && typeof coach.getBestCitySpots === 'function') {
+        const candidates = G.players[playerID]?.settlements || [];
+        return coach.getBestCitySpots(playerID, ctx, candidates);
+    }
+    if (mode === 'road' && typeof coach.getBestRoadSpots === 'function') {
+        return coach.getBestRoadSpots(playerID, ctx);
+    }
+    if ((mode === 'settlement' || !mode) && typeof coach.getAllSettlementScores === 'function') {
+        return coach.getAllSettlementScores(playerID, ctx);
+    }
+    return [];
+}
+
 /**
  * Fetches raw recommendations from the Coach instance based on the mode.
  * Securely checks that the requesting player is the current player.
@@ -52,29 +66,7 @@ export const fetchRecommendations = (
     const playerID = ctx.currentPlayer;
 
     try {
-        switch (mode) {
-            case 'city': {
-                const candidates = G.players[playerID]?.settlements || [];
-                // Check if method exists (runtime safety)
-                if (typeof coach.getBestCitySpots === 'function') {
-                    return coach.getBestCitySpots(playerID, ctx, candidates);
-                }
-                break;
-            }
-            case 'road': {
-                if (typeof coach.getBestRoadSpots === 'function') {
-                    return coach.getBestRoadSpots(playerID, ctx);
-                }
-                break;
-            }
-            case 'settlement':
-            default: {
-                if (typeof coach.getAllSettlementScores === 'function') {
-                    return coach.getAllSettlementScores(playerID, ctx);
-                }
-                break;
-            }
-        }
+        return executeCoachMethod(coach, mode, playerID, ctx, G);
     } catch (e) {
         console.error('Error fetching coach recommendations:', e);
     }

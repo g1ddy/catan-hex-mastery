@@ -12,6 +12,17 @@ interface TurnControlsProps {
     isRollingStage: boolean;
 }
 
+function getTurnControlState(isEndingTurn: boolean, isRolling: boolean) {
+    const endTurnLabel = isEndingTurn ? "Ending..." : "End";
+    const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
+    const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />;
+
+    const rollLabel = isRolling ? "Rolling..." : "Roll";
+    const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <Dice size={16} aria-hidden="true" />;
+
+    return { endTurnLabel, endTurnLabelDesktop, endTurnIcon, rollLabel, rollIcon };
+}
+
 export function TurnControls({
     isMoveAllowed,
     isEndingTurn,
@@ -22,12 +33,7 @@ export function TurnControls({
     lastRoll,
     isRollingStage
 }: TurnControlsProps) {
-    const endTurnLabel = isEndingTurn ? "Ending..." : "End";
-    const endTurnLabelDesktop = isEndingTurn ? "Ending Turn..." : "End Turn";
-    const endTurnIcon = isEndingTurn ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />;
-
-    const rollLabel = isRolling ? "Rolling..." : "Roll";
-    const rollIcon = isRolling ? <Loader2 size={16} className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <Dice size={16} aria-hidden="true" />;
+    const { endTurnLabel, endTurnLabelDesktop, endTurnIcon, rollLabel, rollIcon } = getTurnControlState(isEndingTurn, isRolling);
 
     const lastRollSum = lastRoll[0] + lastRoll[1];
     const showLastRoll = !isMoveAllowed('rollDice') && lastRollSum > 0;
@@ -75,4 +81,4 @@ export function TurnControls({
             )}
         </>
     );
-};
+}

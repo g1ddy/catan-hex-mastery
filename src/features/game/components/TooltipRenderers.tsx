@@ -60,39 +60,42 @@ export const renderDiceTooltip = ({ content }: TooltipProps) => {
     return <DiceIcons d1={d1} d2={d2} size={24} className="text-white" />;
 };
 
+function renderTradeRow(parsed: TradeTooltipData) {
+    const giveMeta = RESOURCE_META.find(r => r.name === parsed.give);
+    const receiveMeta = RESOURCE_META.find(r => r.name === parsed.receive);
+
+    if (giveMeta && receiveMeta) {
+        return (
+            <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
+                    <span className="font-bold">{parsed.giveAmount || BANK_TRADE_GIVE_AMOUNT}</span>
+                    <giveMeta.Icon className={giveMeta.color} size={16} />
+                </span>
+                <ArrowRight size={16} className="text-slate-400" />
+                <span className="flex items-center gap-1">
+                    <span className="font-bold">{parsed.receiveAmount || BANK_TRADE_RECEIVE_AMOUNT}</span>
+                    <receiveMeta.Icon className={receiveMeta.color} size={16} />
+                </span>
+            </div>
+        );
+    }
+    return null;
+}
+
 export const renderTradeTooltip = ({ content }: TooltipProps) => {
     if (!content) return null;
 
     try {
         const parsed = JSON.parse(content) as TradeTooltipData;
         if (parsed && parsed.give && parsed.receive) {
-            const giveMeta = RESOURCE_META.find(r => r.name === parsed.give);
-            const receiveMeta = RESOURCE_META.find(r => r.name === parsed.receive);
-
-            if (giveMeta && receiveMeta) {
-                return (
-                    <div className="flex items-center gap-2">
-                        <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.giveAmount || BANK_TRADE_GIVE_AMOUNT}</span>
-                            <giveMeta.Icon className={giveMeta.color} size={16} />
-                        </span>
-                        <ArrowRight size={16} className="text-slate-400" />
-                        <span className="flex items-center gap-1">
-                            <span className="font-bold">{parsed.receiveAmount || BANK_TRADE_RECEIVE_AMOUNT}</span>
-                            <receiveMeta.Icon className={receiveMeta.color} size={16} />
-                        </span>
-                    </div>
-                );
-            }
+            const row = renderTradeRow(parsed);
+            if (row) return row;
         }
     } catch (error) {
-        // Ignore parsing errors, fall through to default return
-        // We log it just to use the variable and satisfy strict configs if any
         if (process.env.NODE_ENV === 'development') {
              console.debug('Failed to parse trade tooltip:', error);
         }
     }
 
-    // Default fallback for plain text or invalid JSON structure
     return <div>{content}</div>;
 };

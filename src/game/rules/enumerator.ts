@@ -60,45 +60,47 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         'buildRoad': validSpots.validRoads,
     };
 
+    function handleRobberMoves(movesArray: GameAction[]) {
+         const validRobberSpots = getValidRobberSpots(G);
+         validRobberSpots.forEach(hexID => {
+             const potentialVictims = getValidRobberVictims(G, hexID, playerID);
+             if (potentialVictims.size > 0) {
+                 potentialVictims.forEach(victimID => {
+                     movesArray.push(makeMove('dismissRobber', [hexID, victimID]));
+                 });
+             } else {
+                 movesArray.push(makeMove('dismissRobber', [hexID]));
+             }
+         });
+    }
+
     // Iterate through ALL potential moves for this stage
     moveTypesList.forEach(moveName => {
+        // eslint-disable-next-line security/detect-object-injection
         const spots = moveSpotMapping[moveName];
+
+        function isSpatialMove(name: string): name is 'placeSettlement' | 'buildSettlement' | 'buildCity' | 'placeRoad' | 'buildRoad' {
+            return name === 'placeSettlement' || name === 'buildSettlement' || name === 'buildCity' || name === 'placeRoad' || name === 'buildRoad';
+        }
 
         if (spots) {
             // Handle Spatial Parameterized Moves (Simple args: [id])
-            if (moveName === 'placeSettlement' || moveName === 'buildSettlement' || moveName === 'buildCity' ||
-                moveName === 'placeRoad' || moveName === 'buildRoad') {
+            if (isSpatialMove(moveName)) {
                 spots.forEach(id => moves.push(makeMove(moveName, [id])));
             }
         } else if (moveName === 'dismissRobber') {
-            // Handle Robber: Enumerate Hexes AND Victims
-             const validRobberSpots = getValidRobberSpots(G);
-
-             validRobberSpots.forEach(hexID => {
-                 const potentialVictims = getValidRobberVictims(G, hexID, playerID);
-
-                 if (potentialVictims.size > 0) {
-                     // Must choose a victim
-                     potentialVictims.forEach(victimID => {
-                         moves.push(makeMove('dismissRobber', [hexID, victimID]));
-                     });
-                 } else {
-                     // No victims available, just move robber
-                     moves.push(makeMove('dismissRobber', [hexID]));
-                 }
-             });
-
+            handleRobberMoves(moves);
         } else if (moveName === 'tradeBank') {
             // Special Case: Transactional Move (0-arg but conditional)
-            // Delegate to RuleEngine for consistency
             if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
                 moves.push(makeMove('tradeBank', []));
             }
         } else {
             // Handle Non-Parameterized Moves (Everything else)
-            // Use RuleEngine for ALL non-parameterized moves to ensure correctness
             const moveKey = moveName as keyof MoveArguments;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if (RuleEngine.validateMove(G, ctx, moveKey, [] as any).isValid) {
+                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                  moves.push(makeMove(moveKey, [] as any));
             }
         }

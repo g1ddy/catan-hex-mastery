@@ -22,40 +22,25 @@ export const RuleEngine = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const safeArgs = args as any[];
 
-        switch (moveName) {
-            // Gameplay Moves
-            case 'buildRoad':
-                return validateBuildRoad(G, playerID, safeArgs[0]);
-            case 'buildSettlement':
-                return validateBuildSettlement(G, playerID, safeArgs[0]);
-            case 'buildCity':
-                return validateBuildCity(G, playerID, safeArgs[0]);
-            case 'tradeBank':
-                return validateTradeBank(G, playerID);
+        const validators: Record<string, () => ValidationResult> = {
+            'buildRoad': () => validateBuildRoad(G, playerID, safeArgs[0]),
+            'buildSettlement': () => validateBuildSettlement(G, playerID, safeArgs[0]),
+            'buildCity': () => validateBuildCity(G, playerID, safeArgs[0]),
+            'tradeBank': () => validateTradeBank(G, playerID),
+            'placeSettlement': () => validateSettlementLocation(G, safeArgs[0]),
+            'placeRoad': () => isValidSetupRoadPlacement(G, safeArgs[0], playerID),
+            'dismissRobber': () => validateRobberMove(G, playerID, safeArgs[0], safeArgs[1]),
+            'rollDice': () => validateRoll(G, playerID),
+            'resolveRoll': () => validateResolveRoll(G, playerID),
+            'endTurn': () => validateEndTurn(G, ctx, playerID),
+        };
 
-            // Setup Moves
-            case 'placeSettlement':
-                // In Setup, "placeSettlement" checks geometric rules but ignores cost/connectivity to road
-                return validateSettlementLocation(G, safeArgs[0]);
-            case 'placeRoad':
-                // In Setup, "placeRoad" must connect to the just-placed settlement
-                return isValidSetupRoadPlacement(G, safeArgs[0], playerID);
-
-            case 'dismissRobber':
-                return validateRobberMove(G, playerID, safeArgs[0], safeArgs[1]);
-
-            case 'rollDice':
-                return validateRoll(G, playerID);
-
-            case 'resolveRoll':
-                return validateResolveRoll(G, playerID);
-
-            case 'endTurn':
-                return validateEndTurn(G, ctx, playerID);
-
-            default:
-                return { isValid: false, reason: `Unknown move: ${moveName}` };
+        const validateFn = validators[moveName as string];
+        if (validateFn) {
+            return validateFn();
         }
+
+        return { isValid: false, reason: `Unknown move: ${moveName}` };
     },
 
     /**

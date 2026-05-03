@@ -33,18 +33,24 @@ interface HexOverlaysProps {
     validRoads: Set<string>;
 }
 
+function checkUiPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
+    return prev.buildMode === next.buildMode &&
+        prev.uiMode === next.uiMode &&
+        prev.showResourceHeatmap === next.showResourceHeatmap &&
+        prev.highlightedPortEdgeId === next.highlightedPortEdgeId;
+}
+
+function checkCtxPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
+    return prev.ctx.phase === next.ctx.phase &&
+        prev.ctx.currentPlayer === next.ctx.currentPlayer &&
+        prev.ctx.activePlayers?.[prev.ctx.currentPlayer] === next.ctx.activePlayers?.[next.ctx.currentPlayer];
+}
+
 function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
     if (prev.hex.id !== next.hex.id) return false;
 
-    if (prev.buildMode !== next.buildMode ||
-        prev.uiMode !== next.uiMode ||
-        prev.showResourceHeatmap !== next.showResourceHeatmap ||
-        prev.highlightedPortEdgeId !== next.highlightedPortEdgeId ||
-        prev.ctx.phase !== next.ctx.phase ||
-        prev.ctx.currentPlayer !== next.ctx.currentPlayer ||
-        prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) {
-        return false;
-    }
+    if (!checkUiPropsEqual(prev, next)) return false;
+    if (!checkCtxPropsEqual(prev, next)) return false;
 
     if (prev.coachData?.minScore !== next.coachData?.minScore ||
         prev.coachData?.maxScore !== next.coachData?.maxScore) {

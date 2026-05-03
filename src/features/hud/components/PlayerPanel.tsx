@@ -10,16 +10,21 @@ interface PlayerCardProps {
 // Regex to validate hex color codes (e.g., #E53935 or #E53)
 const HEX_COLOR_REGEX = /^#([0-9A-F]{3}){1,2}$/i;
 
+function getPlayerCardStyles(isActive: boolean, playerColor: string) {
+    const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
+    const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
+
+    // eslint-disable-next-line security/detect-unsafe-regex
+    const isValidColor = HEX_COLOR_REGEX.test(playerColor);
+    const playerColorStyle = isValidColor ? { backgroundColor: playerColor } : { backgroundColor: '#666' }; // Fallback gray
+
+    return { desktopBorder, mobileActive, playerColorStyle };
+}
+
 function PlayerCard({ player, isActive }: PlayerCardProps) {
   const totalResources = Object.values(player.resources).reduce((a, b) => a + b, 0);
 
-  // Styles for active state differences
-  const desktopBorder = isActive ? 'md:border-slate-400 md:bg-slate-800' : 'md:border-slate-700 md:bg-transparent';
-  const mobileActive = isActive ? 'bg-slate-800 border-slate-600' : 'bg-transparent border-transparent opacity-75';
-
-  // Securely handle player color
-  const isValidColor = HEX_COLOR_REGEX.test(player.color);
-  const playerColorStyle = isValidColor ? { backgroundColor: player.color } : { backgroundColor: '#666' }; // Fallback gray
+  const { desktopBorder, mobileActive, playerColorStyle } = getPlayerCardStyles(isActive, player.color);
 
   // Calculate player number once
   const playerNumber = parseInt(player.id, 10) + 1;
