@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { Skull } from 'lucide-react';
 import { Hex } from '../../../game/core/types';
@@ -25,7 +25,7 @@ const getPipsCount = (num: number): number => {
   return PIPS_MAP[num] || 0;
 };
 
-const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, hasRobber, isPendingRobber }) => {
+function GameHexComponent({ hex, onClick, isProducing, hasRobber, isPendingRobber }: GameHexProps) {
   const color = TERRAIN_COLORS[hex.terrain];
   const pips = getPipsCount(hex.tokenValue || 0);
 
@@ -60,4 +60,4 @@ const GameHexComponent: React.FC<GameHexProps> = ({ hex, onClick, isProducing, h
   );
 };
 
-export const GameHex = React.memo(GameHexComponent);
+export const GameHex = memo(GameHexComponent);

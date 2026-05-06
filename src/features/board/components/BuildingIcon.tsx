@@ -1,4 +1,3 @@
-import React from 'react';
 import { Home, Castle } from 'lucide-react';
 
 const SETTLEMENT_ICON_SIZE = 5;
@@ -10,7 +9,7 @@ interface BuildingIconProps {
     ownerColor: string | null | undefined;
 }
 
-export const BuildingIcon: React.FC<BuildingIconProps> = ({ vertex, corner, ownerColor }) => {
+export function BuildingIcon({ vertex, corner, ownerColor }: BuildingIconProps) {
     const isSettlement = vertex.type === 'settlement';
     const Icon = isSettlement ? Home : Castle;
     const size = isSettlement ? SETTLEMENT_ICON_SIZE : CITY_ICON_SIZE;

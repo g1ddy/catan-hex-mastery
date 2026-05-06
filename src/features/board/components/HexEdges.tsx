@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useCallback, Fragment } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
@@ -73,10 +73,10 @@ interface HexEdgesProps {
     coachData?: CoachData;
 }
 
-export const HexEdges: React.FC<HexEdgesProps> = ({
+export function HexEdges({
     edges, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode,
     validRoads, highlightedPortEdgeId, currentHexIdStr, coachData
-}) => {
+}: HexEdgesProps) {
     // Stable handler setup
     const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads });
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, validRoads };
@@ -123,7 +123,7 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                 );
 
                 return (
-                    <React.Fragment key={eId}>
+                    <Fragment key={eId}>
                         <OverlayEdge eId={eId} cx={midX} cy={midY} angle={angle} isOccupied={!!edge}
                                      ownerColor={ownerColor} isClickable={isClickable}
                                      isGhost={isGhost} onClick={handleEdgeClick}
@@ -131,7 +131,7 @@ export const HexEdges: React.FC<HexEdgesProps> = ({
                                      heatmapColor={heatmapColor}
                                      tooltip={tooltip} />
                         {portElement}
-                    </React.Fragment>
+                    </Fragment>
                 );
             })}
         </>

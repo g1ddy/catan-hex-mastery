@@ -1,4 +1,3 @@
-import React from 'react';
 import { Resources } from '../../../game/core/types';
 import { RESOURCE_META } from '../config/uiConfig';
 
@@ -8,7 +7,7 @@ interface ResourceIconRowProps {
   className?: string;
 }
 
-export const ResourceIconRow: React.FC<ResourceIconRowProps> = ({ resources, size = 'sm', className = '' }) => {
+export function ResourceIconRow({ resources, size = 'sm', className = '' }: ResourceIconRowProps) {
   const iconSize = size === 'sm' ? 12 : 16;
   const textSize = size === 'sm' ? 'text-xs' : 'text-sm';
 

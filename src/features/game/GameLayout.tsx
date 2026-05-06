@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import {
     Z_INDEX_BOARD,
     Z_INDEX_TOOLTIP,
@@ -17,18 +17,18 @@ import { CoachShell } from '../coach/components/CoachShell';
 import { renderCostTooltip, renderDiceTooltip, renderTradeTooltip } from './components/TooltipRenderers';
 
 interface GameLayoutProps {
-  board: React.ReactNode;
-  dashboard: React.ReactNode;
-  playerPanel: React.ReactNode;
-  gameControls: React.ReactNode;
-  gameStatus?: React.ReactNode;
-  gameNotification?: React.ReactNode;
-  coachPanel: React.ReactNode;
+  board: ReactNode;
+  dashboard: ReactNode;
+  playerPanel: ReactNode;
+  gameControls: ReactNode;
+  gameStatus?: ReactNode;
+  gameNotification?: ReactNode;
+  coachPanel: ReactNode;
   activePanel: 'analyst' | 'coach' | null;
   onPanelChange: (panel: 'analyst' | 'coach' | null) => void;
 }
 
-export const GameLayout: React.FC<GameLayoutProps> = ({
+export function GameLayout({
   board,
   dashboard,
   playerPanel,
@@ -38,7 +38,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   coachPanel,
   activePanel,
   onPanelChange
-}) => {
+}: GameLayoutProps) {
   const isMobile = useIsMobile();
 
   const togglePanel = (panel: 'analyst' | 'coach') => {
