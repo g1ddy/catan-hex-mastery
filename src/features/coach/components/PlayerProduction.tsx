@@ -76,4 +76,4 @@ export function PlayerProduction({ playerPotentials, players }: PlayerProduction
             </div>
         </div>
     );
-};
+}

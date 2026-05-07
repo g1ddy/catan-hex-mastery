@@ -47,7 +47,7 @@ export function GameNotification({ G }: GameNotificationProps) {
         >
             <div className="flex items-center gap-4 text-slate-100">
                 {/* Icon Section */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" aria-hidden="true">
                     {/* If Rolling, show spinner. Else if Production, show Dice. Else show Ghost. */}
                     {isRolling ? (
                          <>
@@ -62,11 +62,11 @@ export function GameNotification({ G }: GameNotificationProps) {
                 </div>
 
                 {/* Vertical Separator - Only if there is content to separate */}
-                {(!isRolling && displayNotification) && <div className="h-6 w-px bg-slate-600/50" />}
+                {(!isRolling && displayNotification) && <div className="h-6 w-px bg-slate-600/50" aria-hidden="true" />}
 
                 {/* Content Section */}
                 {renderNotificationContent()}
             </div>
         </div>
     );
-};
+}

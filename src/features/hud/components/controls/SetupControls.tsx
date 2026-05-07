@@ -50,4 +50,4 @@ export function SetupControls({
              />
          </div>
     );
-};
+}

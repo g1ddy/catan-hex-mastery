@@ -14,3 +14,6 @@
 ## 2024-11-20 - Ensure Global Focus Visibility
 **Learning:** The custom `btn-focus-ring` utility class handles focus states effectively across the app, but floating UI controls (like panel toggles or overlays) often omit it. Furthermore, raw `lucide-react` icons inside accessible buttons (those with `aria-label`) often lack `aria-hidden="true"`, causing screen readers to misinterpret them.
 **Action:** Always apply `btn-focus-ring` to interactive elements and pass `aria-hidden="true"` to SVG icons inside labeled buttons.
+## 2025-05-06 - Verbose aria-live Notifications
+**Learning:** Complex components containing icons and abbreviated text (e.g. '+1 Trees', 'P1') render as confusing, fragmented noise in `aria-live` regions. Screen reader users prefer complete sentences.
+**Action:** When building interactive notifications, construct a visually hidden `sr-only` sentence explaining the entire interaction, and add `aria-hidden="true"` to all the decorative and abbreviated visual fragments.

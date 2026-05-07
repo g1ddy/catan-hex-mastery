@@ -21,8 +21,12 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
 
     return (
         <div className="flex items-center gap-3">
+            <span className="sr-only">
+                {thief.name} stole {resourceMeta ? resourceMeta.name : 'a resource'} from {victim.name}.
+            </span>
+
             {/* Thief */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" aria-hidden="true">
                 <div
                     className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                     style={{ backgroundColor: thief.color }}
@@ -32,10 +36,10 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
                 </span>
             </div>
 
-            <ArrowRight size={14} className="text-slate-500" />
+            <ArrowRight size={14} className="text-slate-500" aria-hidden="true" />
 
             {/* Victim */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" aria-hidden="true">
                 <div
                     className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                     style={{ backgroundColor: victim.color }}
@@ -47,7 +51,7 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
 
             {/* Resource (if visible/known) */}
             {resourceMeta && (
-                <div className="flex items-center gap-1.5 ml-1 bg-slate-700/50 pl-2 pr-3 py-0.5 rounded-full">
+                <div className="flex items-center gap-1.5 ml-1 bg-slate-700/50 pl-2 pr-3 py-0.5 rounded-full" aria-hidden="true">
                     <resourceMeta.Icon size={14} className={resourceMeta.color} />
                     <span className="text-xs font-bold text-slate-300 capitalize">
                         {resourceMeta.name}
@@ -56,4 +60,4 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
             )}
         </div>
     );
-};
+}

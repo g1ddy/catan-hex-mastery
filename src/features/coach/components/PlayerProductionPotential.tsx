@@ -39,4 +39,4 @@ export function PlayerProductionPotential({ G }: PlayerProductionPotentialProps)
             <ResourceDistribution playerPotentials={playerPotentials} players={G.players} />
         </div>
     );
-};
+}

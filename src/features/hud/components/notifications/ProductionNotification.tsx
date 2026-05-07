@@ -46,15 +46,24 @@ export function ProductionNotification({ evt, players, isRolling }: ProductionNo
 
                     return (
                         <div key={pid} className="flex items-center gap-2 bg-slate-700/50 rounded-full px-2 py-0.5">
+                            {/* Accessible sentence for screen readers */}
+                            <span className="sr-only">
+                                {player.name} received {Object.entries(res)
+                                    .filter(([_, amount]) => (amount || 0) > 0)
+                                    .map(([type, amount]) => `${amount} ${type}`)
+                                    .join(', ')}.
+                            </span>
+
                             {/* Player Dot */}
                             <div
                                 className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                                 style={{ backgroundColor: player.color }}
+                                aria-hidden="true"
                             />
-                            <span className="text-xs font-bold text-slate-300">P{Number(pid) + 1}</span>
+                            <span className="text-xs font-bold text-slate-300" aria-hidden="true">P{Number(pid) + 1}</span>
 
                             {/* Resources */}
-                            <div className="flex items-center gap-1.5 ml-1">
+                            <div className="flex items-center gap-1.5 ml-1" aria-hidden="true">
                                 {Object.entries(res).map(([type, amount]) => {
                                     if (!amount) return null;
                                     return (
