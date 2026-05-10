@@ -18,24 +18,36 @@ export interface OverlayEdgeProps {
     tooltip?: string;
 }
 
-export const OverlayEdge = React.memo(({
+function getGhostFill(isRecommended: boolean | undefined, heatmapColor: string | undefined): string {
+    return isRecommended ? '#FFD700' : (heatmapColor || 'white');
+}
+
+function getGhostOpacity(isRecommended: boolean | undefined, heatmapColor: string | undefined): number {
+    return isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
+}
+
+function getTooltipId(isRecommended: boolean | undefined, heatmapColor: string | undefined, tooltip: string | undefined): string | undefined {
+    const hasRecommendation = isRecommended || !!heatmapColor;
+    return hasRecommendation ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+}
+
+function OverlayEdgeComponent({
     eId, cx, cy, angle, isOccupied, ownerColor,
     isClickable, isGhost, onClick,
     isRecommended, heatmapColor, tooltip
-}: OverlayEdgeProps) => {
+}: OverlayEdgeProps) {
 
-    const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
-    const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
+    const ghostFill = getGhostFill(isRecommended, heatmapColor);
+    const ghostOpacity = getGhostOpacity(isRecommended, heatmapColor);
+    const tooltipId = getTooltipId(isRecommended, heatmapColor, tooltip);
 
-    // Use heatmapColor as the indicator for any recommendation, not just top 3 (isRecommended)
-    const hasRecommendation = isRecommended || !!heatmapColor;
-    const tooltipId = hasRecommendation ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+    const handleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isClickable) onClick(eId);
+    };
 
     return (
-         <g onClick={(e) => {
-            e.stopPropagation();
-            if (isClickable) onClick(eId);
-        }}
+         <g onClick={handleClick}
         data-tooltip-id={tooltipId}
         data-tooltip-content={tooltip}
         >
@@ -60,6 +72,7 @@ export const OverlayEdge = React.memo(({
             )}
         </g>
     );
-});
+}
 
+export const OverlayEdge = React.memo(OverlayEdgeComponent);
 OverlayEdge.displayName = 'OverlayEdge';
