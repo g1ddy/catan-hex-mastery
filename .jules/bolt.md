@@ -25,3 +25,6 @@
 ## 2026-03-31 - Memoizing Deterministic State Lookups in Render Loops
 **Learning:** Iterating through string arrays and performing object property lookups (`safeCheck` on `G.board.hexes`) to determine UI ownership for hundreds of vertices/edges per frame causes a measurable performance drop. Because the board topology is effectively static during gameplay, these checks constantly yield the same result.
 **Action:** Use a simple JavaScript `Map` to cache the result of deterministic state lookups based on their input parameters (e.g., `parts.join('|')`). Invalidate the cache only when the underlying state reference (`G.board.hexes`) actually changes, rather than recalculating on every React render.
+## 2026-05-12 - Zero-Allocation Iteration in React Render Loops
+**Learning:** Chained array methods like `.map().find()` create unnecessary intermediate array allocations, adding Garbage Collection (GC) pressure inside high-frequency render loops.
+**Action:** Use zero-allocation `for...of` loops with early `break` statements when checking conditions or searching for items within frequently rendered lists (e.g. HexEdges or tooltips).
