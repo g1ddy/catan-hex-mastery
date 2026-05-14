@@ -11,11 +11,21 @@ export function ActionButton({
     disabled,
     ...props
 }: ActionButtonProps) {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (disabled) {
+            e.preventDefault();
+            return;
+        }
+        if (onClick) {
+            onClick(e);
+        }
+    };
+
     return (
         <button
-            onClick={onClick}
+            onClick={handleClick}
             className={className}
-            disabled={disabled}
+            aria-disabled={disabled ? "true" : undefined}
             {...props}
         >
             <span className="text-base font-bold">{label}</span>

@@ -36,6 +36,8 @@ export function SetupControls({
                     disabled={!canInteract}
                     className={`${baseClasses} ${canInteract ? interactiveClasses : disabledClasses}`}
                     label={canInteract ? "Begin Placement" : "Waiting for Opponent..."}
+                    data-tooltip-id={!canInteract ? "ui-tooltip" : undefined}
+                    data-tooltip-content={!canInteract ? "Waiting for opponent to finish their turn" : undefined}
                 />
             </div>
          );

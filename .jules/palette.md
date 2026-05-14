@@ -14,3 +14,7 @@
 ## 2024-11-20 - Ensure Global Focus Visibility
 **Learning:** The custom `btn-focus-ring` utility class handles focus states effectively across the app, but floating UI controls (like panel toggles or overlays) often omit it. Furthermore, raw `lucide-react` icons inside accessible buttons (those with `aria-label`) often lack `aria-hidden="true"`, causing screen readers to misinterpret them.
 **Action:** Always apply `btn-focus-ring` to interactive elements and pass `aria-hidden="true"` to SVG icons inside labeled buttons.
+
+## 2024-05-27 - Disabled Button Tooltips and Interaction Prevention
+**Learning:** When using `aria-disabled="true"` instead of the native `disabled` attribute to allow tooltips to appear on hover and focus, the element remains fully interactive to the browser (e.g., Space/Enter keys trigger clicks).
+**Action:** Always intercept the `onClick` event in the underlying component (like `ActionButton`) and conditionally call `e.preventDefault()` and exit early if the `disabled` prop is true, effectively mimicking native disabled behavior safely.

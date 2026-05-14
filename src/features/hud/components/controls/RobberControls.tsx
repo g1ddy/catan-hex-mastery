@@ -24,6 +24,8 @@ export function RobberControls({
                         : "bg-slate-700 cursor-not-allowed text-slate-400 border border-slate-600"
                 }`}
                 label={hasSelection ? "Confirm Robber Placement" : "Select New Location"}
+                data-tooltip-id={!hasSelection ? "ui-tooltip" : undefined}
+                data-tooltip-content={!hasSelection ? "Select a hex to place the robber" : undefined}
             />
         </div>
     );
