@@ -18,18 +18,30 @@ export interface OverlayEdgeProps {
     tooltip?: string;
 }
 
-export const OverlayEdge = React.memo(({
+interface EdgeDisplayState {
+    ghostFill: string;
+    ghostOpacity: number;
+    tooltipId?: string;
+}
+
+function getEdgeDisplayState(
+    isRecommended?: boolean,
+    heatmapColor?: string,
+    tooltip?: string
+): EdgeDisplayState {
+    const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
+    const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
+    const hasRecommendation = isRecommended || !!heatmapColor;
+    const tooltipId = hasRecommendation ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+    return { ghostFill, ghostOpacity, tooltipId };
+}
+
+function OverlayEdgeComponent({
     eId, cx, cy, angle, isOccupied, ownerColor,
     isClickable, isGhost, onClick,
     isRecommended, heatmapColor, tooltip
-}: OverlayEdgeProps) => {
-
-    const ghostFill = isRecommended ? '#FFD700' : (heatmapColor || 'white');
-    const ghostOpacity = isRecommended ? 0.8 : (heatmapColor ? 0.6 : 0.5);
-
-    // Use heatmapColor as the indicator for any recommendation, not just top 3 (isRecommended)
-    const hasRecommendation = isRecommended || !!heatmapColor;
-    const tooltipId = hasRecommendation ? "coach-tooltip" : (tooltip ? "ui-tooltip" : undefined);
+}: OverlayEdgeProps) {
+    const { ghostFill, ghostOpacity, tooltipId } = getEdgeDisplayState(isRecommended, heatmapColor, tooltip);
 
     return (
          <g onClick={(e) => {
@@ -60,6 +72,7 @@ export const OverlayEdge = React.memo(({
             )}
         </g>
     );
-});
+}
 
+export const OverlayEdge = React.memo(OverlayEdgeComponent);
 OverlayEdge.displayName = 'OverlayEdge';

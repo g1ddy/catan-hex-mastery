@@ -22,11 +22,16 @@ export interface OverlayVertexProps {
     showResourceHeatmap: boolean;
 }
 
-export const OverlayVertex = React.memo(({
+function getHighlightClass(isTop3?: boolean, showResourceHeatmap?: boolean) {
+    const opacityClass = isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
+    return "coach-highlight transition-opacity duration-200 " + opacityClass;
+}
+
+function OverlayVertexComponent({
     vId, cx, cy, vertex, ownerColor,
     isClickable, isGhost, onClick, buildMode,
     hasRecommendation, heatmapColor, isTop3, showResourceHeatmap
-}: OverlayVertexProps) => {
+}: OverlayVertexProps) {
     const isOccupied = !!vertex;
 
     return (
@@ -59,9 +64,7 @@ export const OverlayVertex = React.memo(({
 
             {hasRecommendation && (
                  <g
-                    className={`coach-highlight transition-opacity duration-200 ${
-                        isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                    }`}
+                    className={getHighlightClass(isTop3, showResourceHeatmap)}
                     data-tooltip-id="coach-tooltip"
                     data-tooltip-content={vId}
                  >
@@ -94,6 +97,7 @@ export const OverlayVertex = React.memo(({
             )}
         </g>
     );
-});
+}
 
+export const OverlayVertex = React.memo(OverlayVertexComponent);
 OverlayVertex.displayName = 'OverlayVertex';

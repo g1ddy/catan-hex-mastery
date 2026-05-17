@@ -30,3 +30,6 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-04-12 - [High Complexity Logic]
 **Observation:** `HexVertices.tsx` had high cyclomatic complexity (13) due to nested conditional logic inside its `.map` rendering loop for determining interactive and ghost states.
 **Strategy:** Extracted the state determination logic into a pure helper function `getVertexInteractiveState`. This decoupled state derivation from React rendering, reducing cyclomatic complexity below 10 and removing the file from the top 10 most complex list.
+## 2026-05-17 - [High Complexity Logic]
+**Observation:** `OverlayEdge.tsx` and `OverlayVertex.tsx` had high cyclomatic complexity (12) due to inline derivation of display states combined with inline arrow functions.
+**Strategy:** Extracted the component body into named functions before `React.memo` to properly attribute complexity, and extracted complex logic into helper functions. Reduced cyclomatic complexity to below 10 and removed them from the top 10 most complex list.
