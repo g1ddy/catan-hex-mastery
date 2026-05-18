@@ -18,7 +18,7 @@ export interface GameScreenProps extends BoardProps<GameState> {
   onPlayerChange?: (playerID: string) => void;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ G, ctx, moves, playerID, onPlayerChange }) => {
+export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScreenProps) {
     // 1. Core State & Logic (Extracted)
     const {
         showResourceHeatmap,

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
@@ -78,10 +78,10 @@ interface HexVerticesProps {
     currentHexIdStr: string;
 }
 
-export const HexVertices: React.FC<HexVerticesProps> = ({
+export function HexVertices({
     vertices, G, ctx, moves, buildMode, setBuildMode, uiMode,
     validSettlements, validCities, coachData, showResourceHeatmap, currentHexIdStr
-}) => {
+}: HexVerticesProps) {
     // Stable handler setup
     const stateRef = useRef({ G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities });
     stateRef.current = { G, ctx, moves, buildMode, setBuildMode, uiMode, validSettlements, validCities };
