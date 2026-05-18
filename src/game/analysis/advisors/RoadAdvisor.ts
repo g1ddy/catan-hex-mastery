@@ -134,25 +134,20 @@ export class RoadAdvisor {
     }
 
     private evaluateVertex(vId: string, dist: number, playerID: string, playerProduction: Record<string, number>): RoadTarget | null {
-        let isSettlementLocationValid = false;
-        try {
-            const validity = validateSettlementLocation(this.G, vId);
-            isSettlementLocationValid = validity.isValid;
-        } catch (e) {
-            console.warn(`RoadAdvisor: Error validating vertex ${vId}`, e);
+        if (!validateSettlementLocation(this.G, vId).isValid) {
+            return null;
         }
 
-        if (isSettlementLocationValid) {
-            const scoreResult = this.scoreTargetVertex(vId, playerID, playerProduction);
-            if (scoreResult) {
-                return {
-                    rawScore: scoreResult.score,
-                    distance: dist,
-                    reason: `${scoreResult.reason} (${dist} hop${dist > 1 ? 's' : ''})`
-                };
-            }
+        const scoreResult = this.scoreTargetVertex(vId, playerID, playerProduction);
+        if (!scoreResult) {
+            return null;
         }
-        return null;
+
+        return {
+            rawScore: scoreResult.score,
+            distance: dist,
+            reason: `${scoreResult.reason} (${dist} hop${dist > 1 ? 's' : ''})`
+        };
     }
 
     private expandVertex(vId: string, startEdge: string, visited: Set<string>): string[] {
