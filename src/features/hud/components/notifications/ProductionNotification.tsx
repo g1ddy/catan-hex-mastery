@@ -61,7 +61,7 @@ export function ProductionNotification({ evt, players, isRolling }: ProductionNo
                                     if (!amount) return null;
                                     return (
                                         <span key={type} className="flex items-center gap-0.5 text-xs font-medium">
-                                            <span className="sr-only">{amount} {type}</span>
+                                            <span className="sr-only">{amount} {type} </span>
                                             <span aria-hidden="true">+{amount}</span> {
                                                 RESOURCE_ICONS[type as keyof Resources]
                                             }

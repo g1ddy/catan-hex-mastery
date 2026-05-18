@@ -55,7 +55,7 @@ export function GameNotification({ G }: GameNotificationProps) {
                             <span className="font-bold text-lg text-amber-400">Rolling...</span>
                         </>
                     ) : (displayNotification?.type === 'production') ? (
-                         <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" />
+                         <DiceIcons d1={d1} d2={d2} size={20} className="text-amber-400" aria-hidden="true" />
                     ) : (
                         <Ghost size={24} className="text-purple-400" aria-hidden="true" />
                     )}
