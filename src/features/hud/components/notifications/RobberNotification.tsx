@@ -26,19 +26,22 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
                 <div
                     className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                     style={{ backgroundColor: thief.color }}
+                    aria-hidden="true"
                 />
                 <span className="font-bold text-sm text-slate-300">
                     {thief.name}
                 </span>
             </div>
 
-            <ArrowRight size={14} className="text-slate-500" />
+            <ArrowRight size={14} className="text-slate-500" aria-hidden="true" />
+            <span className="sr-only"> stole from </span>
 
             {/* Victim */}
             <div className="flex items-center gap-2">
                 <div
                     className="w-2.5 h-2.5 rounded-full ring-1 ring-white/20"
                     style={{ backgroundColor: victim.color }}
+                    aria-hidden="true"
                 />
                 <span className="font-bold text-sm text-slate-300">
                     {victim.name}
@@ -48,7 +51,8 @@ export function RobberNotification({ evt, players }: RobberNotificationProps) {
             {/* Resource (if visible/known) */}
             {resourceMeta && (
                 <div className="flex items-center gap-1.5 ml-1 bg-slate-700/50 pl-2 pr-3 py-0.5 rounded-full">
-                    <resourceMeta.Icon size={14} className={resourceMeta.color} />
+                    <span className="sr-only"> a </span>
+                    <resourceMeta.Icon size={14} className={resourceMeta.color} aria-hidden="true" />
                     <span className="text-xs font-bold text-slate-300 capitalize">
                         {resourceMeta.name}
                     </span>

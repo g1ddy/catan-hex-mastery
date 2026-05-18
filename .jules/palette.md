@@ -14,3 +14,7 @@
 ## 2024-11-20 - Ensure Global Focus Visibility
 **Learning:** The custom `btn-focus-ring` utility class handles focus states effectively across the app, but floating UI controls (like panel toggles or overlays) often omit it. Furthermore, raw `lucide-react` icons inside accessible buttons (those with `aria-label`) often lack `aria-hidden="true"`, causing screen readers to misinterpret them.
 **Action:** Always apply `btn-focus-ring` to interactive elements and pass `aria-hidden="true"` to SVG icons inside labeled buttons.
+
+## 2024-11-20 - Game Notifications aria-live structuring
+**Learning:** `aria-live` regions that mix raw text, shorthand visual identifiers (like "P1" or "+2"), and decorative SVGs create extremely confusing and unstructured screen reader announcements.
+**Action:** Always structure `aria-live` notifications to read as natural, full sentences. Hide all visual shorthands (like `+` signs, `P1`, and icons) with `aria-hidden="true"`, and interject `<span className="sr-only">` text to form coherent statements (e.g., "Player 1 received 2 wood").
