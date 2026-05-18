@@ -69,4 +69,4 @@ export function GameNotification({ G }: GameNotificationProps) {
             </div>
         </div>
     );
-};
+}

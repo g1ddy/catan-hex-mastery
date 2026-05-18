@@ -85,4 +85,4 @@ export function CoachPanel({
             </div>
         </div>
     );
-};
+}
