@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, ClientMoves } from '../../game/core/types';
 import { GameLayout } from './GameLayout';
@@ -40,7 +40,7 @@ export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScre
     } = useGameScreenState(G, ctx, playerID, onPlayerChange);
 
     // 2. Derived State (Coach Advice)
-    const strategicAdvice: StrategicAdvice | null = React.useMemo(() => {
+    const strategicAdvice: StrategicAdvice | null = useMemo(() => {
         if (!isCoachModeEnabled) return null;
         const coach = new Coach(G);
         return coach.getStrategicAdvice(ctx.currentPlayer, ctx);
