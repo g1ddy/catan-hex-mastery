@@ -22,12 +22,23 @@ export interface OverlayVertexProps {
     showResourceHeatmap: boolean;
 }
 
+export function getOverlayVertexStyles(
+    isClickable: boolean,
+    isTop3?: boolean,
+    showResourceHeatmap?: boolean
+) {
+    const cursor = isClickable ? 'pointer' : 'default';
+    const highlightOpacityClass = isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
+    return { cursor, highlightOpacityClass };
+}
+
 export const OverlayVertex = React.memo(({
     vId, cx, cy, vertex, ownerColor,
     isClickable, isGhost, onClick, buildMode,
     hasRecommendation, heatmapColor, isTop3, showResourceHeatmap
 }: OverlayVertexProps) => {
     const isOccupied = !!vertex;
+    const { cursor, highlightOpacityClass } = getOverlayVertexStyles(isClickable, isTop3, showResourceHeatmap);
 
     return (
         <g className="group" onClick={(e) => {
@@ -38,7 +49,7 @@ export const OverlayVertex = React.memo(({
                 cx={cx} cy={cy}
                 r={3}
                 fill="transparent"
-                style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                style={{ cursor }}
                 data-testid={isGhost ? "ghost-vertex" : undefined}
             />
             {isOccupied && vertex && (
@@ -59,9 +70,7 @@ export const OverlayVertex = React.memo(({
 
             {hasRecommendation && (
                  <g
-                    className={`coach-highlight transition-opacity duration-200 ${
-                        isTop3 || showResourceHeatmap ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                    }`}
+                    className={`coach-highlight transition-opacity duration-200 ${highlightOpacityClass}`}
                     data-tooltip-id="coach-tooltip"
                     data-tooltip-content={vId}
                  >
