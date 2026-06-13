@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 
 interface NumberTokenProps {
   value: number;
@@ -22,7 +22,7 @@ const GEOMETRY = {
   STROKE_WIDTH: 0.2,
 };
 
-export const NumberToken = React.memo<NumberTokenProps>(({ value, pips }) => {
+function NumberTokenComponent({ value, pips }: NumberTokenProps) {
   const isRed = value === 6 || value === 8;
   const color = isRed ? TOKEN_COLORS.RED : TOKEN_COLORS.DEFAULT;
 
@@ -70,6 +70,6 @@ export const NumberToken = React.memo<NumberTokenProps>(({ value, pips }) => {
       </g>
     </g>
   );
-});
+}
 
-NumberToken.displayName = 'NumberToken';
+export const NumberToken = memo(NumberTokenComponent);

@@ -110,4 +110,4 @@ export function BoardLayer({
             </HexGrid>
         </div>
     );
-};
+}

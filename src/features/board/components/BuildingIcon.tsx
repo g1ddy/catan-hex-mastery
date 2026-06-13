@@ -29,4 +29,4 @@ export function BuildingIcon({ vertex, corner, ownerColor }: BuildingIconProps) 
             role="img"
         />
     );
-};
+}

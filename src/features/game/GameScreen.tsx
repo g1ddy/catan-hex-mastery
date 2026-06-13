@@ -132,4 +132,4 @@ export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScre
             onPanelChange={setActivePanel}
         />
     );
-};
+}

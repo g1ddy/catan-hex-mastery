@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { Hexagon } from 'react-hexgrid';
 import { BoardProps } from 'boardgame.io/react';
 import { GameState, Hex, ClientMoves } from '../../../game/core/types';
@@ -98,10 +98,10 @@ function arePropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps) {
     return true;
 }
 
-export const HexOverlays = React.memo(({
+function HexOverlaysComponent({
     hex, G, ctx, moves, buildMode, setBuildMode, uiMode, setUiMode, showResourceHeatmap, coachData, highlightedPortEdgeId,
     validSettlements, validCities, validRoads
-}: HexOverlaysProps) => {
+}: HexOverlaysProps) {
     const { vertices, edges, currentHexIdStr } = useMemo(() => getHexGeometry(hex), [hex]);
 
     return (
@@ -136,4 +136,6 @@ export const HexOverlays = React.memo(({
             />
         </Hexagon>
     );
-}, arePropsEqual);
+}
+
+export const HexOverlays = memo(HexOverlaysComponent, arePropsEqual);

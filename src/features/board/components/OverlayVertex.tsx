@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { BuildingIcon } from './BuildingIcon';
 import { BOARD_CONFIG } from '../../../game/core/config';
 import { BuildMode } from '../../hud/components/GameControls';
@@ -32,11 +32,11 @@ export function getOverlayVertexStyles(
     return { cursor, highlightOpacityClass };
 }
 
-export const OverlayVertex = React.memo(({
+function OverlayVertexComponent({
     vId, cx, cy, vertex, ownerColor,
     isClickable, isGhost, onClick, buildMode,
     hasRecommendation, heatmapColor, isTop3, showResourceHeatmap
-}: OverlayVertexProps) => {
+}: OverlayVertexProps) {
     const isOccupied = !!vertex;
     const { cursor, highlightOpacityClass } = getOverlayVertexStyles(isClickable, isTop3, showResourceHeatmap);
 
@@ -103,6 +103,6 @@ export const OverlayVertex = React.memo(({
             )}
         </g>
     );
-});
+}
 
-OverlayVertex.displayName = 'OverlayVertex';
+export const OverlayVertex = memo(OverlayVertexComponent);
