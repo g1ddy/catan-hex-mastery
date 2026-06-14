@@ -58,6 +58,6 @@ function GameHexComponent({ hex, onClick, isProducing, hasRobber, isPendingRobbe
         </Hexagon>
     </g>
   );
-};
+}
 
 export const GameHex = memo(GameHexComponent);

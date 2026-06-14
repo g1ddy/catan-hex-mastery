@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { CircleHelp } from 'lucide-react';
 import { PortType, TerrainType } from '../../../game/core/types';
 import { RESOURCE_META, TERRAIN_COLORS, PORT_HIGHLIGHT_RADIUS, PORT_HIGHLIGHT_COLOR, PORT_HIGHLIGHT_WIDTH } from '../../shared/config/uiConfig';
@@ -21,7 +21,7 @@ const RESOURCE_TO_TERRAIN: Partial<Record<PortType, TerrainType>> = {
     'ore': TerrainType.Mountains,
 };
 
-export const Port = React.memo<PortProps>(({ cx, cy, type, ownerColor, isActive }) => {
+function PortComponent({ cx, cy, type, ownerColor, isActive }: PortProps) {
     // Position port slightly outside the edge
     // Since (cx, cy) is relative to hex center (0,0), we can just scale the vector.
     const dist = Math.sqrt(cx*cx + cy*cy);
@@ -96,6 +96,6 @@ export const Port = React.memo<PortProps>(({ cx, cy, type, ownerColor, isActive 
             */}
         </g>
     );
-});
+}
 
-Port.displayName = 'Port';
+export const Port = memo(PortComponent);

@@ -136,4 +136,4 @@ export function HexEdges({
             })}
         </>
     );
-};
+}

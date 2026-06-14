@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 
 export interface OverlayEdgeProps {
     eId: string;
@@ -33,11 +33,11 @@ export function getOverlayEdgeStyles(
     return { ghostFill, ghostOpacity, tooltipId, cursor };
 }
 
-export const OverlayEdge = React.memo(({
+function OverlayEdgeComponent({
     eId, cx, cy, angle, isOccupied, ownerColor,
     isClickable, isGhost, onClick,
     isRecommended, heatmapColor, tooltip
-}: OverlayEdgeProps) => {
+}: OverlayEdgeProps) {
 
     const { ghostFill, ghostOpacity, tooltipId, cursor } = getOverlayEdgeStyles(isRecommended, heatmapColor, tooltip, isClickable);
 
@@ -70,6 +70,6 @@ export const OverlayEdge = React.memo(({
             )}
         </g>
     );
-});
+}
 
-OverlayEdge.displayName = 'OverlayEdge';
+export const OverlayEdge = memo(OverlayEdgeComponent);
