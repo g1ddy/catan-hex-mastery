@@ -3,17 +3,10 @@
  */
 import { Client } from 'boardgame.io/client';
 import { Local } from 'boardgame.io/multiplayer';
-import { Ctx } from 'boardgame.io';
 import { CatanGame } from '../game/Game';
 import { CatanMCTSBot } from './CatanMCTSBot';
 import { MonteCatanoBot } from './MonteCatanoBot';
 import { enumerate } from '../game/rules/enumerator';
-import { GameState } from '../game/core/types';
-
-interface SimulationState {
-    G: GameState;
-    ctx: Ctx;
-}
 
 describe('MonteCatanoBot vs CatanMCTSBot Simulation', () => {
     // Increase timeout significantly for running matches
