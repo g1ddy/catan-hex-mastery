@@ -6,19 +6,21 @@ import { AggressiveBot } from '../bots/AggressiveBot';
 import { DefensiveBot } from '../bots/DefensiveBot';
 import { ExpansiveBot } from '../bots/ExpansiveBot';
 import { CatanMCTSBot } from '../bots/CatanMCTSBot';
+import { MonteCatanoBot } from '../bots/MonteCatanoBot';
 import { RandomBot } from 'boardgame.io/ai';
 import { Bot } from 'boardgame.io/ai';
 
 const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 
-// Bot Cycling Order: Balanced -> Aggressive -> Defensive -> Expansive -> Random -> MCTS
+// Bot Cycling Order: Balanced -> Aggressive -> Defensive -> Expansive -> Random -> MCTS -> MonteCatano
 const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
     { class: BalancedBot, name: 'Balanced Bot' },
     { class: AggressiveBot, name: 'Aggressive Bot' },
     { class: DefensiveBot, name: 'Defensive Bot' },
     { class: ExpansiveBot, name: 'Expansive Bot' },
     { class: RandomBot, name: 'Random Bot' },
-    { class: CatanMCTSBot, name: 'MCTS Bot' }
+    { class: CatanMCTSBot, name: 'MCTS Bot' },
+    { class: MonteCatanoBot, name: 'Monte Catano Bot' }
 ];
 
 export function GamePage() {
