@@ -33,6 +33,15 @@ interface HexOverlaysProps {
     validRoads: Set<string>;
 }
 
+function checkContextPropsEqual(prevCtx: HexOverlaysProps['ctx'], nextCtx: HexOverlaysProps['ctx']): boolean {
+    if (prevCtx.phase !== nextCtx.phase ||
+        prevCtx.currentPlayer !== nextCtx.currentPlayer ||
+        prevCtx.activePlayers?.[prevCtx.currentPlayer] !== nextCtx.activePlayers?.[nextCtx.currentPlayer]) {
+        return false;
+    }
+    return true;
+}
+
 function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
     if (prev.hex.id !== next.hex.id) return false;
 
@@ -40,9 +49,7 @@ function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): b
         prev.uiMode !== next.uiMode ||
         prev.showResourceHeatmap !== next.showResourceHeatmap ||
         prev.highlightedPortEdgeId !== next.highlightedPortEdgeId ||
-        prev.ctx.phase !== next.ctx.phase ||
-        prev.ctx.currentPlayer !== next.ctx.currentPlayer ||
-        prev.ctx.activePlayers?.[prev.ctx.currentPlayer] !== next.ctx.activePlayers?.[next.ctx.currentPlayer]) {
+        !checkContextPropsEqual(prev.ctx, next.ctx)) {
         return false;
     }
 
