@@ -34,12 +34,11 @@ interface HexOverlaysProps {
 }
 
 function checkContextPropsEqual(prevCtx: HexOverlaysProps['ctx'], nextCtx: HexOverlaysProps['ctx']): boolean {
-    if (prevCtx.phase !== nextCtx.phase ||
-        prevCtx.currentPlayer !== nextCtx.currentPlayer ||
-        prevCtx.activePlayers?.[prevCtx.currentPlayer] !== nextCtx.activePlayers?.[nextCtx.currentPlayer]) {
-        return false;
-    }
-    return true;
+    return (
+        prevCtx.phase === nextCtx.phase &&
+        prevCtx.currentPlayer === nextCtx.currentPlayer &&
+        prevCtx.activePlayers?.[prevCtx.currentPlayer] === nextCtx.activePlayers?.[nextCtx.currentPlayer]
+    );
 }
 
 function checkBasicPropsEqual(prev: HexOverlaysProps, next: HexOverlaysProps): boolean {
