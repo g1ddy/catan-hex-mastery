@@ -92,9 +92,9 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-04-26
+**Last Updated:** 2026-06-17
 
-### 🏥 Repository Health Score: **96.0 / 100**
+### 🏥 Repository Health Score: **97.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Files Scanned**: 112
@@ -109,17 +109,16 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/Game.ts` | **72.8** | 121 | 7 | 14 | 0.93 |
 | `src/game/analysis/coach.ts` | **71** | 209 | 10 | 11 | 0.41 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **69.5** | 211 | 7 | 9 | 0.82 |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **68.9** | 238 | 8 | 6 | 0.86 |
+| `src/game/analysis/advisors/RoadAdvisor.ts` | **68.4** | 233 | 8 | 6 | 0.86 |
 | `src/features/game/GameLayout.tsx` | **66.5** | 210 | 7 | 7 | 0.88 |
-| `src/features/board/components/HexOverlays.tsx` | **65.6** | 140 | 11 | 7 | 0.78 |
 | `src/game/rules/moveValidation.ts` | **64.1** | 139 | 6 | 10 | 0.91 |
+| `src/features/board/components/HexOverlays.tsx` | **62.5** | 149 | 9 | 7 | 0.78 |
 | `src/game/rules/queries.ts` | **62.2** | 234 | 7 | 7 | 0.54 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
 | `src/features/coach/logic/coachUtils.ts` | **11** | 120 |
-| `src/features/board/components/HexOverlays.tsx` | **11** | 140 |
 | `src/game/rules/validator.ts` | **11** | 75 |
 | `src/game/rules/enumerator.ts` | **11** | 109 |
 | `src/game/analysis/coach.ts` | **10** | 209 |
@@ -128,3 +127,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/board/components/HexEdges.tsx` | **10** | 140 |
 | `src/features/board/components/Port.tsx` | **10** | 102 |
 | `src/game/core/utils/sanitize.ts` | **10** | 73 |
+| `src/bots/CatanBot.ts` | **9** | 112 |
