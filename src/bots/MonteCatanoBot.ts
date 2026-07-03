@@ -4,6 +4,17 @@ import { GameState, GameAction } from '../game/core/types';
 import { WINNING_SCORE } from '../game/core/constants';
 import { calculatePlayerPotentialPips } from '../game/analysis/analyst';
 
+const pipsCache = new WeakMap<GameState, Record<string, Record<string, number>>>();
+
+function getPlayerPotentialPips(gameState: GameState): Record<string, Record<string, number>> {
+    let cached = pipsCache.get(gameState);
+    if (!cached) {
+        cached = calculatePlayerPotentialPips(gameState);
+        pipsCache.set(gameState, cached);
+    }
+    return cached;
+}
+
 interface BotConfig {
     game: Game;
     enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
@@ -41,7 +52,7 @@ export class MonteCatanoBot extends MCTSBot {
                 pipThresholds.forEach(threshold => {
                     objectives[`PIPS_${threshold}`] = {
                         checker: (gameState: GameState) => {
-                            const pipsByPlayer = calculatePlayerPotentialPips(gameState);
+                            const pipsByPlayer = getPlayerPotentialPips(gameState);
                             const myPips = pipsByPlayer[playerID] || {};
                             const totalPips = Object.values(myPips).reduce((a, b) => a + b, 0);
                             return totalPips >= threshold;
@@ -54,7 +65,7 @@ export class MonteCatanoBot extends MCTSBot {
                 // Reward having at least SOME production in critical resources (Ore/Wheat)
                 objectives['HAS_ORE_AND_WHEAT'] = {
                     checker: (gameState: GameState) => {
-                        const pipsByPlayer = calculatePlayerPotentialPips(gameState);
+                        const pipsByPlayer = getPlayerPotentialPips(gameState);
                         const myPips = pipsByPlayer[playerID] || {};
                         return (myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0;
                     },
@@ -63,7 +74,7 @@ export class MonteCatanoBot extends MCTSBot {
 
                 objectives['HAS_BRICK_AND_WOOD'] = {
                     checker: (gameState: GameState) => {
-                        const pipsByPlayer = calculatePlayerPotentialPips(gameState);
+                        const pipsByPlayer = getPlayerPotentialPips(gameState);
                         const myPips = pipsByPlayer[playerID] || {};
                         return (myPips.brick || 0) > 0 && (myPips.wood || 0) > 0;
                     },
