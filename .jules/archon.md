@@ -33,3 +33,6 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-04-26 - [High Complexity Logic]
 **Observation:** Multiple UI components (`OverlayEdge.tsx`, `OverlayVertex.tsx`, `TooltipRenderers.tsx`, `TurnControls.tsx`, `PlayerPanel.tsx`) had high cyclomatic complexity due to mixing rendering logic with inline conditional styling or complex data parsing.
 **Strategy:** Extracted style derivation (`getOverlayEdgeStyles`, `getOverlayVertexStyles`, `getPlayerCardStyles`, `getEndTurnProps`, `getRollProps`) and data parsing (`parseTradeData`) into pure helper functions. This decoupled logic from the React rendering loops, reducing cyclomatic complexity below 10 across all these files.
+## 2026-06-17 - [High Complexity Logic]
+**Observation:** `HexOverlays.tsx` had high cyclomatic complexity (11) due to multiple inline boolean logic checks in `checkBasicPropsEqual`.
+**Strategy:** Extracted context-related equality checks into `checkContextPropsEqual`. Reduced cyclomatic complexity below 10, removing it from the top 10 logic-heavy list and dropping its compound score to 62.5.
