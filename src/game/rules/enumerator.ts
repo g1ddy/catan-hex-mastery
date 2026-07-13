@@ -98,8 +98,8 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
             // Handle Non-Parameterized Moves (Everything else)
             // Use RuleEngine for ALL non-parameterized moves to ensure correctness
             const moveKey = moveName as keyof MoveArguments;
-            if (RuleEngine.validateMove(G, ctx, moveKey, [] as any).isValid) {
-                 moves.push(makeMove(moveKey, [] as any));
+            if (RuleEngine.validateMove(G, ctx, moveKey, [] as unknown as MoveArguments[typeof moveKey]).isValid) {
+                 moves.push(makeMove(moveKey, [] as unknown as MoveArguments[typeof moveKey]));
             }
         }
     });
