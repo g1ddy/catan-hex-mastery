@@ -31,6 +31,40 @@ export const getCoachMode = (
     return null;
 };
 
+const getRecommendationsForMode = (
+    coach: Coach,
+    mode: CoachMode,
+    G: GameState,
+    ctx: Ctx,
+    playerID: string
+): CoachRecommendation[] => {
+    switch (mode) {
+        case 'city': {
+            // eslint-disable-next-line security/detect-object-injection -- playerID is safe here, strictly typed to current player
+            const candidates = G.players[playerID]?.settlements || [];
+            // Check if method exists (runtime safety)
+            if (typeof coach.getBestCitySpots === 'function') {
+                return coach.getBestCitySpots(playerID, ctx, candidates);
+            }
+            break;
+        }
+        case 'road': {
+            if (typeof coach.getBestRoadSpots === 'function') {
+                return coach.getBestRoadSpots(playerID, ctx);
+            }
+            break;
+        }
+        case 'settlement':
+        default: {
+            if (typeof coach.getAllSettlementScores === 'function') {
+                return coach.getAllSettlementScores(playerID, ctx);
+            }
+            break;
+        }
+    }
+    return [];
+}
+
 /**
  * Fetches raw recommendations from the Coach instance based on the mode.
  * Securely checks that the requesting player is the current player.
@@ -52,29 +86,7 @@ export const fetchRecommendations = (
     const playerID = ctx.currentPlayer;
 
     try {
-        switch (mode) {
-            case 'city': {
-                const candidates = G.players[playerID]?.settlements || [];
-                // Check if method exists (runtime safety)
-                if (typeof coach.getBestCitySpots === 'function') {
-                    return coach.getBestCitySpots(playerID, ctx, candidates);
-                }
-                break;
-            }
-            case 'road': {
-                if (typeof coach.getBestRoadSpots === 'function') {
-                    return coach.getBestRoadSpots(playerID, ctx);
-                }
-                break;
-            }
-            case 'settlement':
-            default: {
-                if (typeof coach.getAllSettlementScores === 'function') {
-                    return coach.getAllSettlementScores(playerID, ctx);
-                }
-                break;
-            }
-        }
+        return getRecommendationsForMode(coach, mode, G, ctx, playerID);
     } catch (e) {
         console.error('Error fetching coach recommendations:', e);
     }
