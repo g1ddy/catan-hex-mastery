@@ -1,1 +1,2 @@
 ## 2026-03-11 - [Legacy React.FC Usage] **Observation:** Usage of React.FC instead of semantic function declarations. **Strategy:** Prefer semantic function declarations (e.g., export function Component(props: Props)) over React.FC as per React 19 standards.
+## 2026-07-13 - [Unexpected any Usage] **Observation:** Usage of `any` to cast empty argument lists for dynamically determined moves. **Strategy:** Replaced `as any` with `as unknown as MoveArguments[typeof moveKey]` to enforce strict type checking and avoid type unsafety warnings without modifying actual runtime logic.

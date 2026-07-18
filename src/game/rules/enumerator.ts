@@ -97,9 +97,14 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
         } else {
             // Handle Non-Parameterized Moves (Everything else)
             // Use RuleEngine for ALL non-parameterized moves to ensure correctness
-            const moveKey = moveName as keyof MoveArguments;
-            if (RuleEngine.validateMove(G, ctx, moveKey, [] as any).isValid) {
-                 moves.push(makeMove(moveKey, [] as any));
+            // Create a union of all MoveArguments keys where the argument tuple is empty
+            type EmptyArgMoveKeys = {
+                [K in keyof MoveArguments]: MoveArguments[K] extends [] ? K : never
+            }[keyof MoveArguments];
+
+            const moveKey = moveName as EmptyArgMoveKeys;
+            if (RuleEngine.validateMove(G, ctx, moveKey, []).isValid) {
+                 moves.push(makeMove(moveKey, []));
             }
         }
     });
