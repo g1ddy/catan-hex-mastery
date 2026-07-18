@@ -54,13 +54,14 @@ const getRecommendationsForMode = (
             }
             break;
         }
-        case 'settlement':
-        default: {
+        case 'settlement': {
             if (typeof coach.getAllSettlementScores === 'function') {
                 return coach.getAllSettlementScores(playerID, ctx);
             }
             break;
         }
+        default:
+            break;
     }
     return [];
 }
