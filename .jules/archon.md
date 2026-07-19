@@ -36,3 +36,6 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-06-17 - [High Complexity Logic]
 **Observation:** `HexOverlays.tsx` had high cyclomatic complexity (11) due to multiple inline boolean logic checks in `checkBasicPropsEqual`.
 **Strategy:** Extracted context-related equality checks into `checkContextPropsEqual`. Reduced cyclomatic complexity below 10, removing it from the top 10 logic-heavy list and dropping its compound score to 62.5.
+## 2026-07-17 - [High Complexity in fetchRecommendations]
+**Observation:** The `fetchRecommendations` function in `src/features/coach/logic/coachUtils.ts` has a cyclomatic complexity of 11 due to a `switch (mode)` statement embedded inside.
+**Strategy:** Extract the `switch (mode)` block into a separate helper function `getRecommendationsForMode` to reduce complexity and improve readability.
