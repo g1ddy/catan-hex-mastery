@@ -1,15 +1,23 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { SetupPage } from './pages/SetupPage';
-import { GamePage } from './pages/GamePage';
 import './styles/App.css';
+
+const SetupPage = lazy(() =>
+  import('./pages/SetupPage').then(({ SetupPage: Page }) => ({ default: Page })),
+);
+const GamePage = lazy(() =>
+  import('./pages/GamePage').then(({ GamePage: Page }) => ({ default: Page })),
+);
 
 function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route path="/" element={<SetupPage />} />
-        <Route path="/game" element={<GamePage />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<SetupPage />} />
+          <Route path="/game" element={<GamePage />} />
+        </Routes>
+      </Suspense>
     </HashRouter>
   );
 }
