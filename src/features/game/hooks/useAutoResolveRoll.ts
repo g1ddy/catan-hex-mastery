@@ -36,6 +36,5 @@ export const useAutoResolveRoll = (G: GameState, ctx: Ctx, moves: ClientMoves, p
                 return () => clearTimeout(timer);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [G.rollStatus, ctx.currentPlayer, playerID]);
+    }, [G.rollStatus, ctx.currentPlayer, moves, playerID]);
 };
