@@ -4,6 +4,7 @@ import { BotCoach } from './BotCoach';
 import { GameState, MakeMoveAction } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
+import { getAffordableBuilds } from '../game/mechanics/costs';
 
 // Mock dependencies
 jest.mock('../game/analysis/coach');
@@ -310,8 +311,7 @@ describe('BotCoach', () => {
 
         it('should boost settlement building when affordable', () => {
             // Override affordable check
-            const costsMock = require('../game/mechanics/costs');
-            costsMock.getAffordableBuilds.mockReturnValue({
+            jest.mocked(getAffordableBuilds).mockReturnValue({
                 settlement: true, city: false, road: false, devCard: false
             });
 
@@ -327,8 +327,7 @@ describe('BotCoach', () => {
         });
 
         it('should boost tradeBank when settlement is needed but not affordable', () => {
-            const costsMock = require('../game/mechanics/costs');
-            costsMock.getAffordableBuilds.mockReturnValue({
+            jest.mocked(getAffordableBuilds).mockReturnValue({
                 settlement: false, city: false, road: false, devCard: false
             });
 
@@ -374,8 +373,7 @@ describe('BotCoach', () => {
         it('should ban tradeBank if coach evaluates unsafe', () => {
             (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: false, reason: 'Unsafe' });
 
-            const costsMock = require('../game/mechanics/costs');
-            costsMock.getAffordableBuilds.mockReturnValue({
+            jest.mocked(getAffordableBuilds).mockReturnValue({
                 settlement: false, city: false, road: false, devCard: false
             });
 
@@ -393,8 +391,7 @@ describe('BotCoach', () => {
         it('should ALLOW tradeBank if coach evaluates safe', () => {
             (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
 
-            const costsMock = require('../game/mechanics/costs');
-            costsMock.getAffordableBuilds.mockReturnValue({
+            jest.mocked(getAffordableBuilds).mockReturnValue({
                 settlement: false, city: false, road: false, devCard: false
             });
 
