@@ -89,7 +89,7 @@ test.describe('Documentation Screenshots', () => {
     await goldRing.hover({ force: true });
 
     // Wait for tooltip to appear and contain the score, confirming dynamic content has rendered
-    const tooltip = page.locator('.react-tooltip');
+    const tooltip = page.locator('#coach-tooltip');
     await expect(tooltip).toBeVisible();
     await expect(tooltip.getByText(/score:/i)).toBeVisible();
 
@@ -117,7 +117,7 @@ test.describe('Documentation Screenshots', () => {
     await goldRing.hover({ force: true });
 
     // Wait for tooltip to appear and contain the score
-    const tooltip = page.locator('.react-tooltip');
+    const tooltip = page.locator('#coach-tooltip');
     await expect(tooltip).toBeVisible();
     await expect(tooltip.getByText(/score:/i)).toBeVisible();
 
