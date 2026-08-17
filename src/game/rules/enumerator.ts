@@ -63,51 +63,90 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
     // Iterate through ALL potential moves for this stage
     moveTypesList.forEach(moveName => {
         const spots = moveSpotMapping[moveName];
-
-        if (spots) {
-            // Handle Spatial Parameterized Moves (Simple args: [id])
-            if (moveName === 'placeSettlement' || moveName === 'buildSettlement' || moveName === 'buildCity' ||
-                moveName === 'placeRoad' || moveName === 'buildRoad') {
-                spots.forEach(id => moves.push(makeMove(moveName, [id])));
-            }
-        } else if (moveName === 'dismissRobber') {
-            // Handle Robber: Enumerate Hexes AND Victims
-             const validRobberSpots = getValidRobberSpots(G);
-
-             validRobberSpots.forEach(hexID => {
-                 const potentialVictims = getValidRobberVictims(G, hexID, playerID);
-
-                 if (potentialVictims.size > 0) {
-                     // Must choose a victim
-                     potentialVictims.forEach(victimID => {
-                         moves.push(makeMove('dismissRobber', [hexID, victimID]));
-                     });
-                 } else {
-                     // No victims available, just move robber
-                     moves.push(makeMove('dismissRobber', [hexID]));
-                 }
-             });
-
-        } else if (moveName === 'tradeBank') {
-            // Special Case: Transactional Move (0-arg but conditional)
-            // Delegate to RuleEngine for consistency
-            if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
-                moves.push(makeMove('tradeBank', []));
-            }
-        } else {
-            // Handle Non-Parameterized Moves (Everything else)
-            // Use RuleEngine for ALL non-parameterized moves to ensure correctness
-            // Create a union of all MoveArguments keys where the argument tuple is empty
-            type EmptyArgMoveKeys = {
-                [K in keyof MoveArguments]: MoveArguments[K] extends [] ? K : never
-            }[keyof MoveArguments];
-
-            const moveKey = moveName as EmptyArgMoveKeys;
-            if (RuleEngine.validateMove(G, ctx, moveKey, []).isValid) {
-                 moves.push(makeMove(moveKey, []));
-            }
-        }
+        addMovesForType(moveName, G, ctx, playerID, spots, moves);
     });
 
     return moves;
 };
+
+/**
+ * Handles adding valid moves to the list for a given move type.
+ */
+function addMovesForType(
+    moveName: string,
+    G: GameState,
+    ctx: Ctx,
+    playerID: string,
+    spots: Set<string> | undefined,
+    moves: GameAction[]
+) {
+    if (spots) {
+        handleParameterizedSpatialMoves(moveName, spots, moves);
+    } else if (moveName === 'dismissRobber') {
+        handleDismissRobberMoves(G, playerID, moves);
+    } else if (moveName === 'tradeBank') {
+        handleTradeBankMove(G, ctx, moves);
+    } else {
+        handleNonParameterizedMove(moveName, G, ctx, moves);
+    }
+}
+
+/**
+ * Handles specifically enumerating the valid moves for spatial parameterized moves.
+ */
+function handleParameterizedSpatialMoves(moveName: string, spots: Set<string>, moves: GameAction[]) {
+    // Handle Spatial Parameterized Moves (Simple args: [id])
+    if (moveName === 'placeSettlement' || moveName === 'buildSettlement' || moveName === 'buildCity' ||
+        moveName === 'placeRoad' || moveName === 'buildRoad') {
+        spots.forEach(id => moves.push(makeMove(moveName, [id])));
+    }
+}
+
+/**
+ * Handles enumerating the 'tradeBank' move.
+ */
+function handleTradeBankMove(G: GameState, ctx: Ctx, moves: GameAction[]) {
+    // Special Case: Transactional Move (0-arg but conditional)
+    // Delegate to RuleEngine for consistency
+    if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
+        moves.push(makeMove('tradeBank', []));
+    }
+}
+
+/**
+ * Handles enumerating other non-parameterized moves.
+ */
+function handleNonParameterizedMove(moveName: string, G: GameState, ctx: Ctx, moves: GameAction[]) {
+    // Handle Non-Parameterized Moves (Everything else)
+    // Use RuleEngine for ALL non-parameterized moves to ensure correctness
+    // Create a union of all MoveArguments keys where the argument tuple is empty
+    type EmptyArgMoveKeys = {
+        [K in keyof MoveArguments]: MoveArguments[K] extends [] ? K : never
+    }[keyof MoveArguments];
+
+    const moveKey = moveName as EmptyArgMoveKeys;
+    if (RuleEngine.validateMove(G, ctx, moveKey, [] as unknown as MoveArguments[typeof moveKey]).isValid) {
+        moves.push(makeMove(moveKey, [] as unknown as MoveArguments[typeof moveKey]));
+    }
+}
+
+/**
+ * Handles specifically enumerating the valid moves for 'dismissRobber'.
+ */
+function handleDismissRobberMoves(G: GameState, playerID: string, moves: GameAction[]) {
+    const validRobberSpots = getValidRobberSpots(G);
+
+    validRobberSpots.forEach(hexID => {
+        const potentialVictims = getValidRobberVictims(G, hexID, playerID);
+
+        if (potentialVictims.size > 0) {
+            // Must choose a victim
+            potentialVictims.forEach(victimID => {
+                moves.push(makeMove('dismissRobber', [hexID, victimID]));
+            });
+        } else {
+            // No victims available, just move robber
+            moves.push(makeMove('dismissRobber', [hexID]));
+        }
+    });
+}

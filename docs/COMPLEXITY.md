@@ -92,9 +92,9 @@ Following the "Namespace Restructure" refactor to align with directional layers 
 
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-07-17
+**Last Updated:** 2026-08-17
 
-### 🏥 Repository Health Score: **98.0 / 100**
+### 🏥 Repository Health Score: **99.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Files Scanned**: 112
@@ -119,7 +119,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
 | `src/game/rules/validator.ts` | **11** | 75 |
-| `src/game/rules/enumerator.ts` | **11** | 109 |
 | `src/game/analysis/coach.ts` | **10** | 209 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |
@@ -128,3 +127,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/core/utils/sanitize.ts` | **10** | 73 |
 | `src/bots/CatanBot.ts` | **9** | 112 |
 | `src/features/board/components/GameHex.tsx` | **9** | 64 |
+| `src/features/board/components/HexOverlays.tsx` | **9** | 148 |

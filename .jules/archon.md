@@ -39,3 +39,6 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-07-17 - [High Complexity in fetchRecommendations]
 **Observation:** The `fetchRecommendations` function in `src/features/coach/logic/coachUtils.ts` has a cyclomatic complexity of 11 due to a `switch (mode)` statement embedded inside.
 **Strategy:** Extract the `switch (mode)` block into a separate helper function `getRecommendationsForMode` to reduce complexity and improve readability.
+## 2026-08-17 - [High Complexity Logic]
+**Observation:** `enumerator.ts` had high cyclomatic complexity (11) due to monolithic conditionals for determining valid moves within the `enumerate` iteration.
+**Strategy:** Extracted the complexity into `addMovesForType`, `handleParameterizedSpatialMoves`, `handleDismissRobberMoves`, `handleTradeBankMove`, and `handleNonParameterizedMove` to decouple specific branch enumeration, effectively reducing its complexity score.
