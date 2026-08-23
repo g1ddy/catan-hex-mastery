@@ -58,7 +58,7 @@ function main() {
     // 2. ESLint (Cyclomatic Complexity)
     console.log('   - Running ESLint for Complexity...');
     // We use a high max-warnings to prevent exit code 1 from crashing execSync immediate (though handled in try-catch)
-    const eslintJson = runCommand(`npx eslint '${SRC_DIR}/**/*.{ts,tsx}' --format json --rule 'complexity: ["warn", 0]' --parser @typescript-eslint/parser`);
+    const eslintJson = runCommand(`npx eslint '${SRC_DIR}/**/*.{ts,tsx}' --format json --rule 'complexity: ["warn", 0]'`);
 
     const complexityMap = {}; // filePath -> maxComplexity
     try {
