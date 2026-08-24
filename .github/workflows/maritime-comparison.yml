@@ -15,6 +15,7 @@ jobs:
       - name: Checkout Catan
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
           path: catan
           fetch-depth: 0
