@@ -20,7 +20,7 @@
     "generate:json": "depcruise src --config config/dependency-graph.cjs --output-type json > config/dependency-graph.json",
     "generate:dot": "depcruise-fmt -T dot config/dependency-graph.json > config/dependency-graph.dot",
     "generate:graph": "dot -T svg config/dependency-graph.dot > docs/images/dependency-graph.svg && dot -T png config/dependency-graph.dot > docs/images/dependency-graph.png",
-    "analyze:maritime": "maritime analyze --source src --output .maritime --depcruise-config config/dependency-cruiser.cjs"
+    "analyze:maritime": "maritime analyze --source src --output .maritime --depcruise-config config/dependency-cruiser.cjs --fail-on-unmeasured"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",
