@@ -1,0 +1,79 @@
+name: Maritime Comparison
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Catan
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+          path: catan
+          fetch-depth: 0
+
+      - name: Checkout Dependency Maritime
+        uses: actions/checkout@v4
+        with:
+          repository: g1ddy/dependency-maritime
+          ref: 0c2e9369356edb32f04ffb261c3705e0c23cd08b
+          path: maritime
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+
+      - name: Build and pack Maritime
+        working-directory: maritime
+        run: |
+          npm ci
+          npm run build:cli
+          mkdir -p ../packages
+          npm pack --pack-destination ../packages
+
+      - name: Install Catan and packed Maritime CLI
+        working-directory: catan
+        run: |
+          npm ci
+          TARBALL=$(ls ../packages/dependency-maritime-cli-*.tgz | head -n1)
+          npm install --no-save "$TARBALL"
+
+      - name: Run Maritime against Catan
+        working-directory: catan
+        run: npm run analyze:maritime
+
+      - name: Inspect Maritime outputs
+        run: find catan/.maritime -maxdepth 1 -type f -print
+
+      - name: Upload Maritime comparison artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maritime-comparison
+          path: catan/.maritime/
+          if-no-files-found: error
+          include-hidden-files: true
+
+      - name: Commit Maritime comparison outputs
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        working-directory: catan
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [ -z "$(git status --porcelain -- .maritime)" ]; then
+            echo "Maritime comparison outputs are already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .maritime
+          git commit -m "docs(metrics): add Maritime comparison outputs"
+          git push origin "HEAD:${HEAD_BRANCH}"
