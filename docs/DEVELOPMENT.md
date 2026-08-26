@@ -23,7 +23,7 @@ The project is built on a modern React stack, leveraging `boardgame.io` for stat
 ### Prerequisites
 
 *   Node.js (v20.19.0+ or >=22.12.0)
-*   npm (included with Node.js)
+*   `pnpm` (or `npm`)
 
 ### Installation & Environment Bootstrapping
 
@@ -41,7 +41,7 @@ The project is built on a modern React stack, leveraging `boardgame.io` for stat
 
 3.  **Run the development server:**
     ```bash
-    npm run dev
+    pnpm dev
     ```
     Open `http://localhost:5173` to view the app in Vite dev mode.
 
@@ -57,10 +57,10 @@ Unit tests focus on game engine logic, rules, move validation, bots, and geometr
 
 ```bash
 # Run all unit tests
-npm test
+pnpm test
 
 # Run a specific unit test file
-npm test -- src/game/rules/moveValidation.test.ts
+pnpm test src/game/rules/moveValidation.test.ts
 ```
 
 *Note on JSDOM*: The default Jest environment is `node`. Any React component or DOM-dependent test file must include `/** @jest-environment jsdom */` at the top of the file.
@@ -71,10 +71,10 @@ UI/UX changes must be visually verified using Playwright.
 
 ```bash
 # Run E2E test suite
-npm run test:e2e
+pnpm test:e2e
 
 # Run with Playwright UI / Debugger
-npm run test:debug
+pnpm test:debug
 ```
 
 *Verification Rules:*
@@ -90,7 +90,7 @@ All architectural integrity and code complexity evidence is generated programmat
 ### 1. Layered Architecture Verification
 Verify system dependency rules (e.g., source code in MOVES must not import from BOTS):
 ```bash
-npm run check:arch
+pnpm check:arch
 ```
 *Runs `depcruise src --config config/dependency-cruiser.cjs`.*
 
@@ -98,23 +98,23 @@ npm run check:arch
 Calculate file line counts, cyclomatic complexity, coupling, and repository health scores:
 ```bash
 # Generate JSON dependency graph dependency artifact
-npm run generate:json
+pnpm generate:json
 
 # Calculate and update docs/COMPLEXITY.md automated report
-npm run calculate:complexity
+pnpm calculate:complexity
 ```
 
 ### 3. Architecture & Dependency Diagrams
 Regenerate visual dependency graphs in `docs/images/`:
 ```bash
-npm run generate:dot
-npm run generate:graph
+pnpm generate:dot
+pnpm generate:graph
 ```
 
 ### 4. Code Quality & Linting
 Run ESLint checks:
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ---
@@ -124,7 +124,7 @@ npm run lint
 Before submitting a PR or marking a task complete:
 
 1.  **Test-Driven Development**: Write tests alongside or before new game logic.
-2.  **Verify Build & Architecture**: Ensure `npm run build && npm test` completes with 0 errors.
+2.  **Verify Build & Architecture**: Ensure `pnpm build && pnpm test` completes with 0 errors.
 3.  **No Stale History**: Update `docs/ROADMAP.md` when completing items. Do not commit temporary logs or manual complexity snapshot tables.
 4.  **Strict Typing**: Ensure strict TypeScript compliance with no `any` types.
 
