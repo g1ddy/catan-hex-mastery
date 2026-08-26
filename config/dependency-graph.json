@@ -4,13 +4,13 @@
       "source": "src/App.tsx",
       "dependencies": [
         {
-          "dynamic": false,
+          "dynamic": true,
           "module": "./pages/GamePage",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "dynamic-import"
           ],
           "preCompilationOnly": false,
           "resolved": "src/pages/GamePage.tsx",
@@ -22,13 +22,13 @@
           "valid": true
         },
         {
-          "dynamic": false,
+          "dynamic": true,
           "module": "./pages/SetupPage",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "dynamic-import"
           ],
           "preCompilationOnly": false,
           "resolved": "src/pages/SetupPage.tsx",
@@ -167,6 +167,24 @@
           ],
           "preCompilationOnly": false,
           "resolved": "src/bots/ExpansiveBot.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../bots/MonteCatanoBot",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/bots/MonteCatanoBot.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -608,6 +626,7 @@
         "src/game/analysis/coach.ts",
         "src/game/rules/queries.ts",
         "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts",
         "src/features/coach/logic/coachUtils.ts",
         "src/features/board/components/HexEdges.tsx",
         "src/features/board/components/HexVertices.tsx",
@@ -650,6 +669,7 @@
         "src/bots/utils/ActionUtils.ts",
         "src/bots/logic/OptimalMoveFilter.ts",
         "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts",
         "src/features/game/GameScreen.tsx",
         "src/features/board/BoardLayer.tsx",
         "src/features/coach/hooks/useCoachData.ts",
@@ -1556,6 +1576,7 @@
       ],
       "dependents": [
         "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/bots/MonteCatanoBot.ts",
         "src/features/coach/components/PlayerProductionPotential.tsx"
       ],
       "orphan": false,
@@ -2510,6 +2531,71 @@
           ],
           "preCompilationOnly": false,
           "resolved": "src/bots/profiles/BotProfile.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        }
+      ],
+      "dependents": [
+        "src/pages/GamePage.tsx"
+      ],
+      "orphan": false,
+      "valid": true
+    },
+    {
+      "source": "src/bots/MonteCatanoBot.ts",
+      "dependencies": [
+        {
+          "dynamic": false,
+          "module": "../game/analysis/analyst",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/game/analysis/analyst.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../game/core/constants",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "preCompilationOnly": false,
+          "resolved": "src/game/core/constants.ts",
+          "coreModule": false,
+          "followable": true,
+          "couldNotResolve": false,
+          "matchesDoNotFollow": false,
+          "circular": false,
+          "valid": true
+        },
+        {
+          "dynamic": false,
+          "module": "../game/core/types",
+          "moduleSystem": "es6",
+          "exoticallyRequired": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "preCompilationOnly": true,
+          "resolved": "src/game/core/types.ts",
           "coreModule": false,
           "followable": true,
           "couldNotResolve": false,
@@ -7912,10 +7998,10 @@
     "warn": 0,
     "info": 0,
     "ignore": 0,
-    "totalCruised": 113,
-    "totalDependenciesCruised": 352,
+    "totalCruised": 114,
+    "totalDependenciesCruised": 356,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
+      "baseDir": "/app",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
