@@ -6,7 +6,7 @@ This document defines the repository's complexity measures and thresholds. The c
 
 ## 📊 Complexity Dimensions & Warning Thresholds
 
-We evaluate source files in `src/` across five dimensions:
+The Maritime bundle evaluates source files in `src/` across four dimensions:
 
 | Dimension | Metric | Warning Threshold | Description |
 | :--- | :--- | :--- | :--- |
@@ -14,7 +14,6 @@ We evaluate source files in `src/` across five dimensions:
 | **Coupling** | **Fan-Out** (Dependencies) | > 15 Imports | Number of measured local modules this file depends on. |
 | **Stability** | **Instability (I)** | 0.30 – 0.70 | $I = \frac{\text{Fan-Out}}{\text{Fan-In} + \text{Fan-Out}}$. Modules in this range may change for many reasons while also affecting many dependents. |
 | **Logic** | **Cyclomatic Complexity** | > 10 | Maximum cyclomatic complexity of functions within the file (ESLint). |
-| **Testability** | **Test Coverage** | < 80% | Percentage of covered statements and paths. |
 
 ---
 
