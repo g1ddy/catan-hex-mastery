@@ -8,7 +8,6 @@ This document is the single authoritative source for unfinished product, engine,
 
 ### 1. Trade System
 - [ ] Implement the player-to-player trade lifecycle: offer, counter-offer, accept, and reject.
-- [ ] Add maritime trade (4:1 bank trades and port-based 3:1 / 2:1 ratio trades).
 - [ ] Add the trade interface and player notifications.
 
 ### 2. Robber Mechanics & Discarding

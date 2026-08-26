@@ -19,7 +19,7 @@ Do not duplicate content across files. Refer to the specific document for each c
 *   **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)**: Local environment setup, test execution commands, generated evidence workflows, and contribution standards.
 *   **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Layered architecture rules (Layers -1 to 3), dependency directions, game/UI isolation, and namespace/file placement guidance.
 *   **[docs/ROADMAP.md](./docs/ROADMAP.md)**: **Single authoritative home for active work**, including Phase 7 (Full Game Loop: Trade, Robber, Dev Cards, Special Awards, Win Conditions) and maintenance tasks.
-*   **[docs/COMPLEXITY.md](./docs/COMPLEXITY.md)**: Code health metric definitions, warning thresholds, and instructions for generating canonical complexity reports.
+*   **[docs/COMPLEXITY.md](./docs/COMPLEXITY.md)**: Code health metric definitions, warning thresholds, and the canonical generated Maritime evidence.
 *   **[docs/STRATEGY_ENGINE.md](./docs/STRATEGY_ENGINE.md)** and **[docs/Catan Strategy and Starting Rules.txt](./docs/Catan Strategy and Starting Rules.txt)**: Domain strategy, probability math, 2d6 bell curve calculations, and Coach heuristic rules.
 
 ---
@@ -37,8 +37,8 @@ All engine logic and AI behavior must obey these core mathematical and domain ru
 
 ## 🛡️ Verification & Operational Constraints
 
-*   **Mandatory TDD & Verification**: Write tests alongside or before implementing game logic. Verify changes by running tests (`pnpm test`) and build checks (`pnpm build`) before marking tasks complete.
-*   **UI / Visual Verification**: When modifying UI/UX components, run Playwright E2E tests (`pnpm test:e2e`) or generate screenshots to confirm visually.
+*   **Mandatory TDD & Verification**: Write tests alongside or before implementing game logic. Verify changes by running tests (`npm test`) and build checks (`npm run build`) before marking tasks complete.
+*   **UI / Visual Verification**: When modifying UI/UX components, run Playwright E2E tests (`npm run test:e2e`) or generate screenshots to confirm visually.
 *   **No Fixed Timeouts**: Never use `waitForTimeout` in Playwright tests; always wait for explicit DOM selectors or state conditions.
 *   **Strict Typing**: Always use strict TypeScript with specific interfaces. Do not use `any`.
 *   **Active Tasks**: All Phase 7 and remaining roadmap work must be checked against and tracked in `docs/ROADMAP.md`.
