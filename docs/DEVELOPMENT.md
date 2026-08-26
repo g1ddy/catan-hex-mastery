@@ -1,6 +1,6 @@
 # Development Guide
 
-This guide covers the technical architecture, setup instructions, and contribution guidelines for **Hex-Mastery**.
+This guide covers local setup, testing, and contributing to **Hex-Mastery**. See the [Architecture Guide](./ARCHITECTURE.md) for system boundaries and file organization.
 
 ## 🛠 Tech Stack
 
