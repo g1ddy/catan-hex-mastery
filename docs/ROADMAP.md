@@ -1,31 +1,41 @@
 # Roadmap
 
-This document tracks unfinished product and maintenance work. Generated complexity evidence belongs in the current maritime artifacts; completed refactoring history remains in git history.
+This document is the single authoritative source for unfinished product, engine, and maintenance work across **Hex-Mastery**.
 
-## Full Game Loop
+---
 
-### Trade System
+## 🎲 Phase 7: Full Game Loop
 
+### 1. Trade System
 - [ ] Implement the player-to-player trade lifecycle: offer, counter-offer, accept, and reject.
+- [ ] Add maritime trade (4:1 bank trades and port-based 3:1 / 2:1 ratio trades).
 - [ ] Add the trade interface and player notifications.
 
-### Development Cards
+### 2. Robber Mechanics & Discarding
+- [ ] Implement discarding for players with > 7 cards when a 7 is rolled.
+- [ ] Implement robber relocation and target player selection (stealing resources).
 
-- [ ] Add deck management and random shuffling.
-- [ ] Add the Buy Development Card move.
+### 3. Development Cards
+- [ ] Implement Development Card deck initialization and random shuffling.
+- [ ] Add `buyDevCard` and `playDevCard` moves.
 - [ ] Implement Knight, Road Building, Year of Plenty, Monopoly, and Victory Point cards.
 
-### Special Awards and Victory
+### 4. Special Awards & Victory Conditions
+- [ ] Implement continuous-path calculation algorithm for Longest Road (minimum 5 continuous segments).
+- [ ] Track played Knight cards per player for Largest Army (minimum 3 Knights).
+- [ ] Integrate special award VP allocations and end-game win detection (reaching 10 Victory Points).
 
-- [ ] Implement continuous-path calculation for Longest Road.
-- [ ] Track played Knight cards for Largest Army.
-- [ ] Integrate special awards into victory-point calculation and win determination.
+---
 
-## UI Quality
+## 🎨 UI & UX Refinement
 
-- [ ] Keep NumberToken components legible and consistently styled across supported screen sizes.
+- [ ] Ensure `NumberToken` components are legible and styled consistently across all resolutions.
+- [ ] Enhance mobile drawer interactions for Robber target selection and Trading.
 
-## Complexity Stewardship
+---
 
-- [ ] As full-game-loop features are added, keep UI orchestration and decision logic decomposed into focused hooks, helpers, and domain modules rather than creating new monoliths.
-- [ ] Reassess extraction opportunities when the generated complexity evidence identifies sustained growth or threshold breaches.
+## 🧹 Code Quality & Complexity Stewardship
+
+- [ ] Maintain modular feature-based UI design (`src/features/`) and avoid monolithic components.
+- [ ] Keep decision logic and move execution separated according to multi-layer architecture guidelines in `docs/ARCHITECTURE.md`.
+- [ ] Monitor complexity metrics reported in `docs/COMPLEXITY.md` and address threshold breaches as Phase 7 features are integrated.
