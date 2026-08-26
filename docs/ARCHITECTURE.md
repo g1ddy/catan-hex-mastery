@@ -1,6 +1,8 @@
-## 🏗 Architecture
+# Architecture
 
 The project follows a **Multi-Layer Architecture** (Layers -1 to 3) to separate concerns between Foundation, Rules, Analysis, and Decision.
+
+## Layered Architecture
 
 ### -1. Core Layer (Pure Definition)
 *   **`src/game/core/types.ts`**: Global type definitions.
@@ -46,7 +48,7 @@ The project follows a **Multi-Layer Architecture** (Layers -1 to 3) to separate 
     *   Refining top candidates using `Coach` heatmaps (Tactics).
 *   **`src/game/moves/*.ts`**: The "Execution Layer". These files are dumb executors that mutate state after delegating validation to the `RuleEngine`.
 
-### Architecture Diagram
+## Architecture Diagram
 
 ![Dependency Graph](images/dependency-graph.svg)
 
@@ -106,51 +108,7 @@ graph TD
     Mech --> Core
 ```
 
-### Architecture Verification
-
-We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
-
-*   **Command Line**: You can verify the architecture manually by running:
-    ```bash
-    npm run check:arch
-    ```
-*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
-*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
-*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
-
-## 📂 Project Structure & Namespace Best Practices
-
-### Ideal Structure
-
-We aim for small, focused classes with specific responsibilities.
-
-```
-src/
-├── features/           # UI Domains (Feature-Based Architecture)
-│   ├── board/          # Board rendering & overlays
-│   ├── coach/          # Analyst dashboard & coach bot UI
-│   ├── game/           # Main Game Screen & Layout
-│   └── hud/            # Game controls, player panels, notifications
-├── game/               # Game Logic
-│   ├── core/           # Types, Constants, Config (Layer -1)
-│   ├── geometry/       # Pure Math: math.ts, hexUtils.ts (Layer 0)
-│   ├── generation/     # Setup: boardGen.ts (Layer 1)
-│   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts (Layer 0)
-│   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts (Layer 1.5)
-│   ├── analysis/       # Evaluation: coach.ts, analyst.ts (Layer 2)
-│   └── moves/          # Execution: build.ts, trade.ts (Layer 3)
-└── shared/             # Generic UI components (buttons, icons, etc.)
-```
-
-### Namespace Guidelines
-1.  **Keep Root Clean**: `src/game/` should only contain the main `Game.ts`. Auxiliaries like `types.ts` or `constants.ts` should live in `src/game/core/`.
-2.  **Group by Domain**:
-    *   **Math** goes to `geometry/`.
-    *   **Setup Logic** goes to `generation/`.
-    *   **Game Rules** (Costs, Etc) go to `mechanics/`.
-3.  **No Monoliths**: Avoid "Utils" folders that become dumping grounds. `hexUtils` is acceptable because it is specific to the Hexagonal Grid domain, but `gameUtils` would be an anti-pattern.
-
-## 🎨 UI Architecture (Feature-Based)
+## UI Architecture
 
 To maintain a clean and scalable frontend, we organize UI components by **Feature Domain** (`src/features/`) rather than by technical type (e.g., no `src/components`).
 
@@ -182,3 +140,47 @@ To keep UI components (especially the Orchestrator `GameScreen.tsx`) clean:
 
 3.  **Facade Pattern**:
     *   When a component needs data from multiple complex sources, create a Hook or a Helper Class to act as a Facade, providing a simple API to the component.
+
+## Project Structure and Namespace Practices
+
+### Ideal Structure
+
+We aim for small, focused classes with specific responsibilities.
+
+```
+src/
+├── features/           # UI Domains (Feature-Based Architecture)
+│   ├── board/          # Board rendering & overlays
+│   ├── coach/          # Analyst dashboard & coach bot UI
+│   ├── game/           # Main Game Screen & Layout
+│   └── hud/            # Game controls, player panels, notifications
+├── game/               # Game Logic
+│   ├── core/           # Types, Constants, Config (Layer -1)
+│   ├── geometry/       # Pure Math: math.ts, hexUtils.ts (Layer 0)
+│   ├── generation/     # Setup: boardGen.ts (Layer 1)
+│   ├── mechanics/      # Foundation: costs.ts, resources.ts, scoring.ts (Layer 0)
+│   ├── rules/          # Validation & Enumeration: validator.ts, queries.ts (Layer 1.5)
+│   ├── analysis/       # Evaluation: coach.ts, analyst.ts (Layer 2)
+│   └── moves/          # Execution: build.ts, trade.ts (Layer 3)
+└── shared/             # Generic UI components (buttons, icons, etc.)
+```
+
+### Namespace Guidelines
+1.  **Keep Root Clean**: `src/game/` should only contain the main `Game.ts`. Auxiliaries like `types.ts` or `constants.ts` should live in `src/game/core/`.
+2.  **Group by Domain**:
+    *   **Math** goes to `geometry/`.
+    *   **Setup Logic** goes to `generation/`.
+    *   **Game Rules** (Costs, Etc) go to `mechanics/`.
+3.  **No Monoliths**: Avoid "Utils" folders that become dumping grounds. `hexUtils` is acceptable because it is specific to the Hexagonal Grid domain, but `gameUtils` would be an anti-pattern.
+
+## Architecture Verification
+
+We enforce this architecture using `dependency-cruiser`. This ensures that lower layers never accidentally import from higher layers.
+
+*   **Command Line**: You can verify the architecture manually by running:
+    ```bash
+    npm run check:arch
+    ```
+*   **Automated Check**: This check is automatically run as part of the build process (`npm run build`).
+*   **VS Code Extension**: For real-time feedback, we recommend installing the [Dependency Cruiser extension](https://marketplace.visualstudio.com/items?itemName=sverweij.dependency-cruiser-extension) for VS Code.
+*   **Configuration**: The rules are defined in `config/dependency-cruiser.cjs`.
