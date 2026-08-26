@@ -2,13 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test('verify hex overlays rendering and setup flow', async ({ page }) => {
   // Go to the game page (using baseURL from config)
-  await page.goto('./');
+  await page.goto('/');
 
-  // Check if we are on the setup page and click 3 Players (No Bots)
+  // Click 3 Players (No Bots) to start game setup
   const startButton = page.getByRole('button', { name: '3 Players (No Bots)' });
-  if (await startButton.isVisible()) {
-      await startButton.click();
-  }
+  await startButton.click();
 
   // Wait for the board to render
   const layout = page.locator('[data-testid="game-layout"]');
