@@ -238,42 +238,6 @@ To keep UI components (especially the Orchestrator `GameScreen.tsx`) clean:
 3.  **Facade Pattern**:
     *   When a component needs data from multiple complex sources, create a Hook or a Helper Class to act as a Facade, providing a simple API to the component.
 
-## 🗺️ Development Roadmap
-
-### Completed Refactoring ✅
-- [x] **Unified Move Architecture**: Separated Validation (Rules) from Execution (Moves).
-- [x] **God Object Split**: `rules/validator.ts` split into `RuleEngine` (Validation) and `Queries` (Availability).
-- [x] **Namespace Restructure**: Implemented the "Ideal Structure" (`Core`, `Geometry`, `Generation`) to separate concerns and stabilize the dependency graph.
-- [x] **UI Migration**: Migrated `src/components` to `src/features` (Board, Coach, Game, HUD).
-- [x] **GameScreen Refactor**: Extracted complex logic (Coach Data, Game Effects) from `GameScreen.tsx` into dedicated hooks (`useCoachData`, `useGameEffects`).
-
-### Strategic Refactoring (Complexity Reduction) 📉
-To improve the [Repo Health Score](./COMPLEXITY.md), we are targeting files with high coupling and complexity.
-
-*   **Primary Target**: `src/features/game/components/GameScreen.tsx` (Formerly `Board.tsx`)
-    *   **Issue**: Acts as the central hub, prone to "God Component" growth.
-    *   **Strategy**: Continuously extract logic into `src/features/{feature}/hooks/` as new features (Trade, Dev Cards) are added.
-*   **Secondary Target**: `src/features/hud/components/GameControls.tsx`
-    *   **Issue**: High Cyclomatic Complexity (handling many move types).
-    *   **Strategy**: Extract logic into custom hooks (e.g., `useBuildActions`, `useTurnActions`).
-
-### Current Focus: Phase 7 (Full Game Loop) 🚧
-- [x] **Robber Mechanics**:
-    - [x] Resource Discarding (Players with >7 cards must discard half on roll of 7).
-    - [x] Stealing (Active player steals 1 random resource from a player on the target hex).
-- [ ] **Trade System**:
-    - [ ] Player-to-Player trading (Offer, Counter-Offer, Accept/Reject).
-    - [ ] Trade interface and notification system.
-- [ ] **Development Cards**:
-    - [ ] Deck management & random shuffling.
-    - [ ] "Buy Dev Card" move.
-    - [ ] Cards include: Knight (Move Robber), Road Building, Year of Plenty, Monopoly, Victory Point.
-- [ ] **Special Awards**:
-    - [ ] **Longest Road**: Dynamic pathfinding algorithm to track continuous road segments.
-    - [ ] **Largest Army**: Tracking played Knight cards.
-- [ ] **Win Conditions**:
-    - [ ] Integrate Special Awards into VP calculation.
-
 ## 🤝 Contributing
 
 1.  Create a feature branch (`git checkout -b feature/amazing-feature`).
