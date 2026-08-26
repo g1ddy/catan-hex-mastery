@@ -23,38 +23,6 @@ The tracked files in [`.maritime/`](../.maritime/) are the authoritative generat
 
 - `complexity-metrics.json` is machine-readable evidence for tooling.
 - `complexity-report.md` is the human-readable complexity and hotspot report.
-- `analysis-bundle.json` is the validated combined analysis output.
+- `dependency-graph.json` is the machine-readable dependency graph used to derive structural metrics.
 
-Regenerate this evidence through [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml). The workflow builds and packs Dependency Maritime, installs that tarball with `npm install --no-save`, runs `npm run analyze:maritime`, and commits updated `.maritime/` outputs for same-repository pull requests. Do not edit those generated files manually.
-
-`npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`: Maritime is not a permanent Catan dependency.
-
-### Local reproduction
-
-When you need to reproduce the workflow locally, first build and pack Dependency Maritime, then install that tarball into this repository without saving it:
-
-```bash
-# In a Dependency Maritime checkout
-npm ci
-npm run build:cli
-npm pack --pack-destination /tmp/maritime-package
-
-# In this repository
-npm install --no-save /tmp/maritime-package/dependency-maritime-cli-*.tgz
-npm run analyze:maritime
-```
-
----
-
-## 🧭 Dependency Rules and Diagrams
-
-These npm scripts remain the local source for architecture-rule verification and dependency diagrams:
-
-```bash
-npm run check:arch
-npm run generate:json
-npm run generate:dot
-npm run generate:graph
-```
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the architectural boundaries those checks enforce.
+For regeneration and local reproduction, follow the generated-evidence workflow in [DEVELOPMENT.md](./DEVELOPMENT.md). Do not edit these generated files manually.
