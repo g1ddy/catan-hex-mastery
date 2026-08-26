@@ -85,34 +85,54 @@ npm run test:debug
 
 ## 📊 Generated Evidence & Quality Workflows
 
-All architectural integrity and code complexity evidence is generated programmatically rather than maintained manually.
+All architectural and complexity evidence is generated programmatically rather than maintained manually.
 
 ### 1. Layered Architecture Verification
-Verify system dependency rules (e.g., source code in MOVES must not import from BOTS):
+
+Verify dependency rules (for example, that source code in MOVES does not import from BOTS):
+
 ```bash
 npm run check:arch
 ```
+
 *Runs `depcruise src --config config/dependency-cruiser.cjs`.*
 
-### 2. Automated Complexity Metrics
-Calculate file line counts, cyclomatic complexity, coupling, and repository health scores:
-```bash
-# Generate JSON dependency graph dependency artifact
-npm run generate:json
+### 2. Canonical Complexity & Hotspot Evidence
 
-# Calculate and update docs/COMPLEXITY.md automated report
-npm run calculate:complexity
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the canonical regeneration path: it builds and packs Dependency Maritime, installs the tarball without saving it, and runs the analysis on this repository. Do not edit the generated Maritime outputs manually.
+
+`npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`, because Maritime is not a permanent Catan dependency.
+
+To reproduce the workflow locally:
+
+```bash
+# In a Dependency Maritime checkout
+npm ci
+npm run build:cli
+mkdir -p /tmp/maritime-package
+npm pack --pack-destination /tmp/maritime-package
+
+# In this repository
+npm install --no-save /tmp/maritime-package/dependency-maritime-cli-*.tgz
+npm run analyze:maritime
 ```
 
+See [COMPLEXITY.md](./COMPLEXITY.md) for metric definitions, thresholds, and the generated artifact inventory.
+
 ### 3. Architecture & Dependency Diagrams
+
 Regenerate visual dependency graphs in `docs/images/`:
+
 ```bash
+npm run generate:json
 npm run generate:dot
 npm run generate:graph
 ```
 
 ### 4. Code Quality & Linting
+
 Run ESLint checks:
+
 ```bash
 npm run lint
 ```
