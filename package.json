@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0",
     "react-hexgrid": "^2.0.1",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^7.18.2",
     "react-tooltip": "^5.30.0"
   },
   "devDependencies": {
