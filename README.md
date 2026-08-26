@@ -64,13 +64,18 @@ The Coach Panel is also fully accessible, tucking away into a clean bottom drawe
 
 ## 📚 Documentation
 
-Whether you are a player looking to improve your win rate or a developer looking to contribute, we have you covered.
-
-*   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)**
-    *Learn the math behind the game. Understanding Pips, the Bell Curve, and how the Coach calculates the "Perfect Move."*
+Whether you are a player looking to improve your win rate or a developer looking to contribute, we have you covered:
 
 *   **[Development Guide](./docs/DEVELOPMENT.md)**
-    *For developers. Installation instructions, tech stack (React + boardgame.io), and contribution guidelines.*
+    *Local setup, testing/verification standards, generated evidence workflows, and contribution guidelines.*
+*   **[Architecture Guide](./docs/ARCHITECTURE.md)**
+    *Layered architecture, dependency directions, game/UI boundaries, and namespace and file-placement practices.*
+*   **[Roadmap](./docs/ROADMAP.md)**
+    *The authoritative single source for unfinished product and maintenance work, including remaining full-game-loop features.*
+*   **[Complexity & Code Health](./docs/COMPLEXITY.md)**
+    *Metric definitions, thresholds, and instructions for generating or checking code complexity evidence.*
+*   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)**
+    *The game theory, placement heuristics, and probability math powering the Coach and Analyst.*
 
 ## 🚀 Getting Started
 
