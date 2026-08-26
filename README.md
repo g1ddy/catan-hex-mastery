@@ -72,6 +72,9 @@ Whether you are a player looking to improve your win rate or a developer looking
 *   **[Development Guide](./docs/DEVELOPMENT.md)**
     *For developers. Installation instructions, tech stack (React + boardgame.io), and contribution guidelines.*
 
+*   **[Roadmap](./docs/ROADMAP.md)**
+    *The remaining work toward a complete, maintainable game.*
+
 ## 🚀 Getting Started
 
 1.  **Select a Mode**: Choose "Single Player (vs AI)" to practice or "Pass & Play" for local games.
