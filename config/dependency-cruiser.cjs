@@ -31,6 +31,7 @@ module.exports = {
     doNotFollow: {
       path: 'node_modules',
     },
+    exclude: '(\\.test\\.ts$|\\.test\\.tsx$|\\.spec\\.ts$|\\.spec\\.tsx$|testUtils\\.ts$)',
     moduleSystems: ['cjs', 'es6'],
     tsPreCompilationDeps: true,
     tsConfig: {
