@@ -1,0 +1,5 @@
+digraph "dependency-graph" {
+  graph [compound="true", rankdir="LR", fontname="Helvetica"];
+  node [fontname="Helvetica", fontsize="10"];
+  edge [fontname="Helvetica", fontsize="8"];
+}

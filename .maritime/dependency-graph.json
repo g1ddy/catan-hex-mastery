@@ -27,9 +27,6 @@
           "default"
         ]
       },
-      "exclude": {
-        "path": "(\\.test\\.ts$|\\.test\\.tsx$|\\.spec\\.ts$|\\.spec\\.tsx$|testUtils\\.ts$)"
-      },
       "exoticRequireStrings": [],
       "externalModuleResolutionStrategy": "node_modules",
       "metrics": false,
