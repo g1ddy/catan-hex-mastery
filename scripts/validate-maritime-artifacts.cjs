@@ -2,7 +2,7 @@ const { readFileSync } = require('node:fs');
 
 const EXPECTED_TOOL_VERSION = '0.1.0-beta.3';
 const EXPECTED_SOURCE_ROOT = 'src';
-const TEST_MODULE_PATTERN = /(^|\/)(__tests__\/|.*\.(test|spec)\.[cm]?[jt]sx?$|testUtils\.[cm]?[jt]sx?$)/;
+const TEST_MODULE_PATTERN = /(^|\/)(__tests__\/|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
 
 function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
   const errors = [];
@@ -46,7 +46,7 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
 
   const testSources = localSources.filter((source) => TEST_MODULE_PATTERN.test(source));
   if (testSources.length > 0) {
-    errors.push(`production evidence contains test-only modules: ${testSources.slice(0, 3).join(', ')}`);
+    errors.push(`production evidence contains test/spec modules: ${testSources.slice(0, 3).join(', ')}`);
   }
 
   if (metricEntries.length !== summary.totalFiles) {

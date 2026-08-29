@@ -101,6 +101,24 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # beta.3 provisions Graphviz 2.42.2 internally. That version fails routing
+      # splines through Catan's nested production clusters (init_rank/routesplines)
+      # even though Maritime analysis and validation succeed. Keep Maritime as the
+      # renderer and Graphviz owner, but override only the transient routing mode.
+      # Remove this compatibility shim when Maritime's controlled renderer no
+      # longer requires it for Catan.
+      - name: Configure Graphviz routing compatibility
+        if: steps.plan.outputs.run_maritime == 'true'
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/maritime-graphviz-bin"
+          cat > "$RUNNER_TEMP/maritime-graphviz-bin/dot" <<'SH'
+          #!/usr/bin/env bash
+          exec /usr/bin/dot -Gsplines=false "$@"
+          SH
+          chmod +x "$RUNNER_TEMP/maritime-graphviz-bin/dot"
+          echo "$RUNNER_TEMP/maritime-graphviz-bin" >> "$GITHUB_PATH"
+
       - name: Analyze with Maritime
         if: steps.plan.outputs.run_maritime == 'true'
         uses: g1ddy/dependency-maritime@70b1882dbe37728bba511ea396645421170789f7
