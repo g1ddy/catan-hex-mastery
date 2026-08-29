@@ -87,6 +87,8 @@ npm run test:debug
 
 All architectural and complexity evidence is generated programmatically rather than maintained manually.
 
+The [Maritime Comparison workflow](../.github/workflows/maritime-comparison.yml) is the single PR-branch writer for generated artifacts. It conditionally runs Maritime evidence generation, documentation screenshots, and the refactor-labeled Graphviz/legacy complexity generators in sequence, then performs one final push. The generators remain separate commands with separate artifact ownership; the orchestration only prevents competing bot pushes to the same branch.
+
 ### 1. Layered Architecture Verification
 
 Verify dependency rules (for example, that source code in MOVES does not import from BOTS):
@@ -121,6 +123,8 @@ npm run generate:json
 npm run generate:dot
 npm run generate:graph
 ```
+
+When a pull request carries the `refactor` label, the generated-artifact workflow runs these Graphviz commands plus `npm run calculate:complexity` after Maritime and any required screenshot generation. This keeps the diagram pipeline independent at the command/artifact level while sharing the single branch-writer path.
 
 ### 4. Code Quality & Linting
 

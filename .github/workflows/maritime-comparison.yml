@@ -2,7 +2,7 @@ name: Maritime Comparison
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, labeled]
   workflow_dispatch:
 
 permissions:
@@ -11,6 +11,9 @@ permissions:
 concurrency:
   group: generated-artifacts-${{ github.repository }}-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: false
+
+env:
+  GENERATED_COMMITS: 'false'
 
 jobs:
   compare:
@@ -23,15 +26,77 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
 
-      - name: Use Node.js
+      - name: Plan generated artifacts
+        id: plan
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { appendFileSync, readFileSync } = require('node:fs');
+
+          const eventName = process.env.GITHUB_EVENT_NAME;
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const action = event.action ?? '';
+          const pullRequest = event.pull_request;
+          const normalPrAction = ['opened', 'reopened', 'synchronize'].includes(action);
+
+          const runMaritime = eventName === 'workflow_dispatch' || (eventName === 'pull_request' && normalPrAction);
+          const runRefactor = eventName === 'pull_request'
+            && ['labeled', 'synchronize'].includes(action)
+            && (pullRequest?.labels ?? []).some((label) => label.name === 'refactor');
+
+          let runScreenshots = false;
+          if (eventName === 'pull_request' && normalPrAction && pullRequest?.base?.ref === 'main') {
+            const changedFiles = execFileSync(
+              'git',
+              ['diff', '--name-only', pullRequest.base.sha, pullRequest.head.sha],
+              { encoding: 'utf8' },
+            ).trim().split('\n').filter(Boolean);
+
+            runScreenshots = changedFiles.some((path) => {
+              if (path === 'README.md' || path === 'package.json') return true;
+              if (!path.startsWith('docs/')) return false;
+              if (path.startsWith('docs/images/')) return false;
+              return path !== 'docs/COMPLEXITY.md';
+            });
+          }
+
+          const any = runMaritime || runScreenshots || runRefactor;
+          const output = [
+            `run_maritime=${runMaritime}`,
+            `run_screenshots=${runScreenshots}`,
+            `run_refactor=${runRefactor}`,
+            `any=${any}`,
+          ].join('\n');
+          appendFileSync(process.env.GITHUB_OUTPUT, `${output}\n`);
+          NODE
+
+      - name: Use Node.js for Maritime
+        if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
+          cache: npm
+
+      - name: Use repository Node.js
+        if: steps.plan.outputs.run_maritime != 'true' && (steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true')
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
 
       - name: Install Catan dependencies
+        if: steps.plan.outputs.any == 'true'
         run: npm ci
 
+      - name: Configure generated-artifact committer
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.plan.outputs.any == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Analyze with Maritime
+        if: steps.plan.outputs.run_maritime == 'true'
         uses: g1ddy/dependency-maritime@0291da99242e70080522c9d465d902a31966e47e
         with:
           node-version: '22.13.0'
@@ -43,9 +108,11 @@ jobs:
           upload-artifact: 'false'
 
       - name: Inspect Maritime outputs
+        if: steps.plan.outputs.run_maritime == 'true'
         run: find .maritime -maxdepth 1 -type f -print
 
       - name: Upload Maritime comparison artifacts
+        if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: maritime-comparison
@@ -53,18 +120,96 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Commit Maritime comparison outputs
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          HEAD_BRANCH: ${{ github.head_ref }}
+      - name: Commit Maritime comparison outputs locally
+        if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
         run: |
-          if node scripts/has-substantive-maritime-changes.cjs; then
-            echo "Maritime comparison outputs are already current."
+          set +e
+          node scripts/has-substantive-maritime-changes.cjs
+          comparison_status=$?
+          set -e
+
+          case "$comparison_status" in
+            0)
+              echo "Maritime comparison outputs are already current."
+              git restore -- .maritime
+              ;;
+            1)
+              git add .maritime
+              git commit -m "docs(metrics): add Maritime comparison outputs"
+              echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
+              ;;
+            *)
+              echo "Maritime evidence comparison failed with status $comparison_status." >&2
+              exit "$comparison_status"
+              ;;
+          esac
+
+      - name: Restore repository Node.js for Catan generators
+        if: steps.plan.outputs.run_maritime == 'true' && (steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true')
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Build project for generated assets
+        if: steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true'
+        run: npm run build
+
+      - name: Install Playwright browsers
+        if: steps.plan.outputs.run_screenshots == 'true'
+        run: npx playwright install chromium
+
+      - name: Generate documentation screenshots
+        if: steps.plan.outputs.run_screenshots == 'true'
+        run: npm run test:screenshots
+        env:
+          CI: true
+
+      - name: Commit documentation screenshots locally
+        if: steps.plan.outputs.run_screenshots == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git add docs/images/*.png
+          if git diff --cached --quiet; then
+            echo "Documentation screenshots are already current."
             exit 0
           fi
+          git commit -m "docs(assets): update screenshots [skip ci]"
+          echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .maritime
-          git commit -m "docs(metrics): add Maritime comparison outputs"
-          git push origin "HEAD:${HEAD_BRANCH}"
+      - name: Install Graphviz
+        if: steps.plan.outputs.run_refactor == 'true'
+        uses: ts-graphviz/setup-graphviz@v2
+
+      - name: Generate dependency graph JSON
+        if: steps.plan.outputs.run_refactor == 'true'
+        run: npm run generate:json
+
+      - name: Generate dependency graph DOT
+        if: steps.plan.outputs.run_refactor == 'true'
+        run: npm run generate:dot
+
+      - name: Generate dependency graph images
+        if: steps.plan.outputs.run_refactor == 'true'
+        run: npm run generate:graph
+
+      - name: Calculate legacy complexity documentation
+        if: steps.plan.outputs.run_refactor == 'true'
+        run: npm run calculate:complexity
+
+      - name: Commit refactor metrics locally
+        if: steps.plan.outputs.run_refactor == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git add docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md config/dependency-graph.dot config/dependency-graph.json
+          if git diff --cached --quiet; then
+            echo "Refactor metrics and dependency images are already current."
+            exit 0
+          fi
+          git commit -m "docs(metrics): update dependency graph and complexity report [skip ci]"
+          echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
+
+      - name: Push generated artifact commits
+        if: env.GENERATED_COMMITS == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: git push origin "HEAD:${HEAD_BRANCH}"
