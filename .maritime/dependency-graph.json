@@ -13391,7 +13391,7 @@
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery/catan",
+      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
