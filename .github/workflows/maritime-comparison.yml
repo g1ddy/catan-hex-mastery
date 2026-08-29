@@ -14,6 +14,7 @@ concurrency:
 
 env:
   GENERATED_COMMITS: 'false'
+  MARITIME_CANDIDATE: 'true'
 
 jobs:
   compare:
@@ -101,31 +102,28 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # beta.3 provisions Graphviz 2.42.2 inside the composite Action. That
-      # release fails default spline routing through Catan's nested production
-      # clusters even though Maritime analysis and validation succeed. Install a
-      # transient /usr/local/bin/dot launcher because /usr/local/bin is already
-      # ahead of /usr/bin inside nested composite steps; the Action's apt install
-      # still owns the actual /usr/bin/dot binary and controlled version.
-      # Remove this compatibility shim when Maritime's controlled renderer no
-      # longer requires it for Catan.
-      - name: Configure Graphviz routing compatibility
+      - name: Checkout Maritime renderer candidate
         if: steps.plan.outputs.run_maritime == 'true'
-        shell: bash
-        run: |
-          cat > "$RUNNER_TEMP/dot" <<'SH'
-          #!/usr/bin/env bash
-          exec /usr/bin/dot -Gsplines=false "$@"
-          SH
-          chmod +x "$RUNNER_TEMP/dot"
-          sudo install -m 0755 "$RUNNER_TEMP/dot" /usr/local/bin/dot
+        uses: actions/checkout@v4
+        with:
+          repository: g1ddy/dependency-maritime
+          ref: fix/graphviz-nested-cluster-ranking
+          path: .maritime-cli-candidate
 
-      - name: Analyze with Maritime
+      - name: Build Maritime renderer candidate
+        if: steps.plan.outputs.run_maritime == 'true'
+        working-directory: .maritime-cli-candidate
+        run: |
+          npm ci
+          npm pkg set version=0.1.0-beta.3
+          npm run build:cli
+
+      - name: Analyze with Maritime renderer candidate
         if: steps.plan.outputs.run_maritime == 'true'
         uses: g1ddy/dependency-maritime@70b1882dbe37728bba511ea396645421170789f7
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.3'
+          cli-source: '.maritime-cli-candidate'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
@@ -146,7 +144,7 @@ jobs:
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-comparison
+          name: maritime-comparison-candidate
           path: |
             .maritime/
             docs/images/dependency-graph.svg
@@ -154,7 +152,7 @@ jobs:
           include-hidden-files: true
 
       - name: Commit Maritime comparison outputs locally
-        if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: steps.plan.outputs.run_maritime == 'true' && env.MARITIME_CANDIDATE != 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         shell: bash
         run: |
           set +e
