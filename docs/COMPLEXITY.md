@@ -21,8 +21,9 @@ The Maritime bundle evaluates source files in `src/` across four dimensions:
 
 The tracked files in [`.maritime/`](../.maritime/) are the authoritative generated bundle:
 
-- `complexity-metrics.json` is machine-readable evidence for tooling.
+- `complexity-metrics.json` is machine-readable per-file evidence for tooling.
 - `complexity-report.md` is the human-readable complexity and hotspot report.
 - `dependency-graph.json` is the machine-readable dependency graph used to derive structural metrics.
+- `manifest.json` is the versioned bundle manifest and validation envelope.
 
 For regeneration and local reproduction, follow the generated-evidence workflow in [DEVELOPMENT.md](./DEVELOPMENT.md). Do not edit these generated files manually.
