@@ -2,6 +2,34 @@ import { compareBundles } from '../../scripts/has-substantive-maritime-changes.c
 import { validateMaritimeArtifactContent } from '../../scripts/validate-maritime-artifacts.cjs';
 
 type Bundle = Map<string, string>;
+type MaritimeModuleFixture = {
+  source: string;
+  dependencies: unknown[];
+  dependents: unknown[];
+};
+type MaritimeMetricFixture = {
+  scanned: boolean;
+  complexity: number;
+  loc: number;
+  fanIn: number;
+  fanOut: number;
+};
+type MaritimeArtifactsFixture = {
+  manifest: {
+    schemaVersion: string;
+    toolVersion: string;
+    sourceRoots: string[];
+    summary: {
+      totalFiles: number;
+      scannedCount: number;
+      skippedCount: number;
+      healthScore: number;
+    };
+  };
+  graph: { modules: MaritimeModuleFixture[] };
+  metrics: Record<string, MaritimeMetricFixture>;
+  svg: string;
+};
 
 const createBundle = (): Bundle => new Map([
   ['complexity-metrics.json', '{"src/example.ts":{"complexity":1}}\n'],
@@ -10,7 +38,7 @@ const createBundle = (): Bundle => new Map([
   ['manifest.json', JSON.stringify({ schemaVersion: 1, generatedAt: '2026-08-28T00:00:00.000Z', toolVersion: '0.1.0-beta.2' }, null, 2)],
 ]);
 
-const createValidArtifacts = () => ({
+const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
     toolVersion: '0.1.0-beta.3',
