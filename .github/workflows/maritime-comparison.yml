@@ -1,4 +1,4 @@
-name: Maritime Comparison
+name: Generated Artifacts
 
 on:
   pull_request:
@@ -53,12 +53,22 @@ jobs:
               { encoding: 'utf8' },
             ).trim().split('\n').filter(Boolean);
 
-            runScreenshots = changedFiles.some((path) => {
-              if (path === 'README.md' || path === 'package.json') return true;
-              if (!path.startsWith('docs/')) return false;
-              if (path.startsWith('docs/images/')) return false;
-              return path !== 'docs/COMPLEXITY.md';
-            });
+            const screenshotInputs = new Set([
+              'config/playwright.screenshots.config.ts',
+              'docs/scripts/generate_screenshots.spec.ts',
+              'index.html',
+              'package.json',
+              'package-lock.json',
+              'postcss.config.js',
+              'tailwind.config.js',
+              'vite.config.ts',
+            ]);
+
+            runScreenshots = changedFiles.some((path) => (
+              path.startsWith('src/')
+              || path.startsWith('public/')
+              || screenshotInputs.has(path)
+            ));
           }
 
           const any = runMaritime || runScreenshots || runRefactor;
@@ -193,19 +203,15 @@ jobs:
         if: steps.plan.outputs.run_refactor == 'true'
         run: npm run generate:graph
 
-      - name: Calculate legacy complexity documentation
-        if: steps.plan.outputs.run_refactor == 'true'
-        run: npm run calculate:complexity
-
-      - name: Commit refactor metrics locally
+      - name: Commit refactor diagram outputs locally
         if: steps.plan.outputs.run_refactor == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          git add docs/images/*.png docs/images/*.svg docs/COMPLEXITY.md config/dependency-graph.dot config/dependency-graph.json
+          git add docs/images/dependency-graph.png docs/images/dependency-graph.svg config/dependency-graph.dot config/dependency-graph.json
           if git diff --cached --quiet; then
-            echo "Refactor metrics and dependency images are already current."
+            echo "Refactor dependency diagrams are already current."
             exit 0
           fi
-          git commit -m "docs(metrics): update dependency graph and complexity report [skip ci]"
+          git commit -m "docs(metrics): update dependency graph artifacts [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Push generated artifact commits
