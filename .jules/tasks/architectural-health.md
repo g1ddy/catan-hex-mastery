@@ -22,7 +22,7 @@ Only log critical architectural blockers or recurring anti-patterns.
 ### 1. 🔍 OBSERVE (The Inspection)
 Start by running the diagnostics:
 1.  Read the current `docs/COMPLEXITY.md` (Baseline).
-2.  Run `npm run generate:dot` to ensure the dependency graph is current.
+2.  Run `npm run generate:graph` if local graph regeneration is needed from `.maritime`.
 3.  Run `npm run calculate:complexity` to update the metrics.
 4.  Read the newly updated `docs/COMPLEXITY.md` (Current State).
 5.  Run `npm run check:arch` to see if any new violations have crept in.

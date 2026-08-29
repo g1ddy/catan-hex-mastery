@@ -5,7 +5,7 @@ const { execSync } = require('child_process');
 // Configuration
 const SRC_DIR = 'src';
 const DOCS_FILE = 'docs/COMPLEXITY.md';
-const DEP_GRAPH_JSON = 'config/dependency-graph.json';
+const DEP_GRAPH_JSON = '.maritime/dependency-graph.json';
 
 // Thresholds for "Repo Health" Penalties
 const THRESHOLDS = {
