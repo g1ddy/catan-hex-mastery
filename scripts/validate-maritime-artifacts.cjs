@@ -2,7 +2,7 @@ const { readFileSync } = require('node:fs');
 
 const EXPECTED_TOOL_VERSION = '0.1.0-beta.3';
 const EXPECTED_SOURCE_ROOT = 'src';
-const TEST_MODULE_PATTERN = /(^|\/)(__tests__\/|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
+const TEST_MODULE_PATTERN = /(^|[/])(__tests__[/]|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
 
 function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
   const errors = [];
