@@ -1,4 +1,5 @@
 import { compareBundles } from '../../scripts/has-substantive-maritime-changes.cjs';
+import { validateMaritimeArtifactContent } from '../../scripts/validate-maritime-artifacts.cjs';
 
 type Bundle = Map<string, string>;
 
@@ -8,6 +9,27 @@ const createBundle = (): Bundle => new Map([
   ['dependency-graph.json', '{"modules":[]}\n'],
   ['manifest.json', JSON.stringify({ schemaVersion: 1, generatedAt: '2026-08-28T00:00:00.000Z', toolVersion: '0.1.0-beta.2' }, null, 2)],
 ]);
+
+const createValidArtifacts = () => ({
+  manifest: {
+    schemaVersion: '1.0.0',
+    toolVersion: '0.1.0-beta.3',
+    sourceRoots: ['src'],
+    summary: {
+      totalFiles: 1,
+      scannedCount: 1,
+      skippedCount: 0,
+      healthScore: 100,
+    },
+  },
+  graph: {
+    modules: [{ source: 'src/game/core/types.ts', dependencies: [], dependents: [] }],
+  },
+  metrics: {
+    'src/game/core/types.ts': { scanned: true, complexity: 1, loc: 10, fanIn: 0, fanOut: 0 },
+  },
+  svg: '<svg><title>local:src/game/core/types.ts</title></svg>',
+});
 
 describe('Maritime substantive baseline comparison', () => {
   it('ignores a report date-only change', () => {
@@ -45,5 +67,47 @@ describe('Maritime substantive baseline comparison', () => {
     generated.set('new-evidence.json', '{}\n');
 
     expect(compareBundles(baseline, generated)).toBe(false);
+  });
+});
+
+describe('Maritime consumer contract', () => {
+  it('accepts a measured production bundle with a rendered local node', () => {
+    expect(validateMaritimeArtifactContent(createValidArtifacts())).toEqual([]);
+  });
+
+  it('rejects an empty bundle even if it reports a perfect health score', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.manifest.summary.totalFiles = 0;
+    artifacts.manifest.summary.scannedCount = 0;
+    artifacts.graph.modules = [];
+    artifacts.metrics = {};
+    artifacts.svg = '<svg></svg>';
+
+    expect(validateMaritimeArtifactContent(artifacts)).toEqual(expect.arrayContaining([
+      'manifest summary.totalFiles must be greater than zero',
+      'manifest summary.scannedCount must be greater than zero',
+      'dependency graph must contain local src/ modules',
+      'dependency graph SVG contains no local src/ module nodes',
+    ]));
+  });
+
+  it('rejects test-only modules in the production evidence graph', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.graph.modules.push({ source: 'src/game/core/types.test.ts', dependencies: [], dependents: [] });
+
+    expect(validateMaritimeArtifactContent(artifacts).some((error: string) => (
+      error.startsWith('production evidence contains test-only modules:')
+    ))).toBe(true);
+  });
+
+  it('rejects a metric that is not represented in the canonical graph', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.manifest.summary.totalFiles = 2;
+    artifacts.manifest.summary.scannedCount = 2;
+    artifacts.metrics['src/game/core/constants.ts'] = { scanned: true, complexity: 1, loc: 10, fanIn: 0, fanOut: 0 };
+
+    expect(validateMaritimeArtifactContent(artifacts)).toContain(
+      'measured file is missing from dependency graph: src/game/core/constants.ts',
+    );
   });
 });
