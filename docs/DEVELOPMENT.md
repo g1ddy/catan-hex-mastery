@@ -87,6 +87,10 @@ npm run test:debug
 
 All architectural and complexity evidence is generated programmatically rather than maintained manually.
 
+The **Generated Artifacts** workflow in [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the single PR-branch writer for generated artifacts. It conditionally runs Maritime evidence generation, documentation screenshots, and refactor-labeled Graphviz diagram generation in sequence, then performs one final push. The generators remain separate commands with separate artifact ownership; the orchestration only prevents competing bot pushes to the same branch.
+
+Documentation screenshots regenerate when UI or screenshot-generation inputs change, including `src/`, `public/`, the screenshot spec/config, package manifests, and relevant Vite/Tailwind/PostCSS entry configuration. Documentation prose changes alone do not regenerate application screenshots.
+
 ### 1. Layered Architecture Verification
 
 Verify dependency rules (for example, that source code in MOVES does not import from BOTS):
@@ -99,21 +103,16 @@ npm run check:arch
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the canonical regeneration path: it builds and packs Dependency Maritime, installs the tarball without saving it, and runs the analysis on this repository. Do not edit the generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow invokes Dependency Maritime's Action implementation at the verified commit `0291da99242e70080522c9d465d902a31966e47e`, acquires the exact `@dependency-maritime/cli@0.1.0-beta.2` package, and runs the analysis from this repository's root. Do not edit the generated Maritime outputs manually.
+
+`docs/COMPLEXITY.md` is a stable guide to those canonical Maritime artifacts. The refactor-labeled Graphviz stage must not append or replace a second generated complexity report in that document.
 
 `npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`, because Maritime is not a permanent Catan dependency.
 
-To reproduce the workflow locally:
+To reproduce the analysis locally, install the same published CLI prerelease without saving it as a Catan dependency, then use the repository command that mirrors the action inputs:
 
 ```bash
-# In a Dependency Maritime checkout
-npm ci
-npm run build:cli
-mkdir -p /tmp/maritime-package
-npm pack --pack-destination /tmp/maritime-package
-
-# In this repository
-npm install --no-save /tmp/maritime-package/dependency-maritime-cli-*.tgz
+npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.2
 npm run analyze:maritime
 ```
 
@@ -129,6 +128,8 @@ npm run generate:dot
 npm run generate:graph
 ```
 
+When a pull request carries the `refactor` label, the Generated Artifacts workflow runs these Graphviz commands after Maritime and any required screenshot generation. It commits only the dependency graph JSON/DOT and derived SVG/PNG diagram assets; canonical complexity reporting remains owned by Maritime. The longer-term convergence of this legacy graph path onto `.maritime/dependency-graph.json` is tracked separately.
+
 ### 4. Code Quality & Linting
 
 Run ESLint checks:
@@ -143,7 +144,7 @@ npm run lint
 
 Before submitting a PR or marking a task complete:
 
-1.  **Test-Driven Development**: Write tests alongside or before new game logic.
+1.  **Test-Driven Development**: Write tests alongside or before implementing game logic.
 2.  **Verify Build & Architecture**: Ensure `npm run build && npm test` completes with 0 errors.
 3.  **No Stale History**: Update `docs/ROADMAP.md` when completing items. Do not commit temporary logs or manual complexity snapshot tables.
 4.  **Strict Typing**: Ensure strict TypeScript compliance with no `any` types.
