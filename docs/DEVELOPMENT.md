@@ -99,14 +99,14 @@ npm run check:arch
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the canonical CI regeneration path: it invokes Dependency Maritime's published action at the immutable `cli-v0.1.0-beta.2` release and runs the analysis from this repository's root. Do not edit the generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the canonical CI regeneration path: it invokes Dependency Maritime's Action implementation at the verified commit `0291da99242e70080522c9d465d902a31966e47e`, acquires the exact `@dependency-maritime/cli@0.1.0-beta.2` package, and runs the analysis from this repository's root. Do not edit the generated Maritime outputs manually.
 
 `npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`, because Maritime is not a permanent Catan dependency.
 
 To reproduce the analysis locally, install the same published CLI prerelease without saving it as a Catan dependency, then use the repository command that mirrors the action inputs:
 
 ```bash
-npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.1
+npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.2
 npm run analyze:maritime
 ```
 
