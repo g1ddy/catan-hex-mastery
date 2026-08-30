@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { compareBundles } from '../../scripts/has-substantive-maritime-changes.cjs';
 import { validateMaritimeArtifactContent } from '../../scripts/validate-maritime-artifacts.cjs';
 
@@ -95,6 +96,17 @@ describe('Maritime substantive baseline comparison', () => {
     generated.set('new-evidence.json', '{}\n');
 
     expect(compareBundles(baseline, generated)).toBe(false);
+  });
+});
+
+describe('Maritime local graph contract', () => {
+  it('pins beta.5 graph rendering to omit external packages just like CI', () => {
+    const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+      scripts?: Record<string, string>;
+    };
+
+    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.5');
+    expect(packageJson.scripts?.['generate:graph']).toContain('--external-packages none');
   });
 });
 
