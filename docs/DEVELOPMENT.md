@@ -103,7 +103,7 @@ This runs `depcruise src --config config/dependency-cruiser.cjs`. The same unfil
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow invokes Dependency Maritime's Action implementation at immutable commit `70b1882dbe37728bba511ea396645421170789f7`, explicitly acquires `@dependency-maritime/cli@0.1.0-beta.3`, analyzes `src/`, validates the bundle, and renders the SVG from that same run. Do not edit generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow invokes Dependency Maritime's Action implementation at immutable commit `05315851a619ef8b854af365e09d64290370639b`, explicitly acquires `@dependency-maritime/cli@0.1.0-beta.4`, analyzes `src/`, validates the bundle, and renders the SVG from that same run. Do not edit generated Maritime outputs manually.
 
 For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. That file inherits all rules from `config/dependency-cruiser.cjs` and excludes `.test` / `.spec` modules from the evidence graph so committed graph presentation describes production coupling. Maritime's metric calculation already excludes those test/spec files; this profile therefore preserves the measured production-file contract while keeping test-only graph edges out of presentation. This does **not** relax `npm run check:arch`, `npm run build`, or `npm test`.
 
@@ -112,7 +112,7 @@ For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. T
 `npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`, because Maritime is not a permanent Catan dependency. To reproduce the exact analysis locally, install the same published CLI prerelease without saving it as a Catan dependency, then run the repository command that mirrors the Action inputs:
 
 ```bash
-npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.3
+npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.4
 npm run analyze:maritime
 npm run verify:maritime
 ```
@@ -129,13 +129,9 @@ To render the visual dependency graph locally from already-generated canonical `
 npm run generate:graph
 ```
 
-`generate:graph` is a thin, version-pinned wrapper around `@dependency-maritime/cli@0.1.0-beta.3 maritime graph`; it performs no dependency scan and does not require Maritime to be installed as a repository dependency. Graphviz's `dot` executable must be available; `./scripts/setup.sh` installs it on supported package managers.
+`generate:graph` is a thin, version-pinned wrapper around `@dependency-maritime/cli@0.1.0-beta.4 maritime graph`; it performs no dependency scan and does not require Maritime to be installed as a repository dependency. Graphviz's `dot` executable must be available; `./scripts/setup.sh` installs it on supported package managers.
 
-#### Controlled Graphviz 2.42 compatibility
-
-Maritime beta.3's reusable Action intentionally controls Graphviz at Ubuntu package version `2.42.2`. On Catan's nested production graph, that Graphviz release fails default spline routing after Maritime analysis and validation succeed (`trouble in init_rank` / `routesplines`). Catan does **not** fork Maritime's graph-to-DOT renderer or perform another dependency scan. The Generated Artifacts workflow supplies a transient `dot` launcher that keeps the Action's controlled `/usr/bin/dot` binary but disables spline routing for this repository. Maritime still creates the DOT semantics and invokes Graphviz during `render-graph: true`.
-
-This is a presentation-only compatibility boundary. Remove it when a released Maritime renderer/controlled Graphviz combination handles Catan's graph without the routing override.
+Maritime beta.4 includes the renderer compatibility needed for Catan's recursively nested production graph, so Catan does not carry a repository-specific Graphviz wrapper or alternate rendering path.
 
 ### 4. Code Quality & Linting
 
