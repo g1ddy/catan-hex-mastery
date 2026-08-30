@@ -1,6 +1,6 @@
 const { readFileSync } = require('node:fs');
 
-const EXPECTED_TOOL_VERSION = '0.1.0-beta.4';
+const EXPECTED_TOOL_VERSION = '0.1.0-beta.5';
 const EXPECTED_SOURCE_ROOT = 'src';
 const TEST_MODULE_PATTERN = /(^|[/])(__tests__[/]|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
 
@@ -69,6 +69,8 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
     errors.push('dependency graph presentation is not SVG');
   } else if (!svg.includes('local:src/')) {
     errors.push('dependency graph SVG contains no local src/ module nodes');
+  } else if (svg.includes('external:') || svg.includes('External packages')) {
+    errors.push('dependency graph SVG must omit external package nodes');
   }
 
   return errors;
