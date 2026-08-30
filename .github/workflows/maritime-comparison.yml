@@ -41,9 +41,6 @@ jobs:
           const normalPrAction = ['opened', 'reopened', 'synchronize'].includes(action);
 
           const runMaritime = eventName === 'workflow_dispatch' || (eventName === 'pull_request' && normalPrAction);
-          const runRefactor = eventName === 'pull_request'
-            && ['labeled', 'synchronize'].includes(action)
-            && (pullRequest?.labels ?? []).some((label) => label.name === 'refactor');
 
           let runScreenshots = false;
           if (eventName === 'pull_request' && normalPrAction && pullRequest?.base?.ref === 'main') {
@@ -71,11 +68,10 @@ jobs:
             ));
           }
 
-          const any = runMaritime || runScreenshots || runRefactor;
+          const any = runMaritime || runScreenshots;
           const output = [
             `run_maritime=${runMaritime}`,
             `run_screenshots=${runScreenshots}`,
-            `run_refactor=${runRefactor}`,
             `any=${any}`,
           ].join('\n');
           appendFileSync(process.env.GITHUB_OUTPUT, `${output}\n`);
@@ -89,7 +85,7 @@ jobs:
           cache: npm
 
       - name: Use repository Node.js
-        if: steps.plan.outputs.run_maritime != 'true' && (steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true')
+        if: steps.plan.outputs.run_maritime != 'true' && steps.plan.outputs.run_screenshots == 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -107,15 +103,22 @@ jobs:
 
       - name: Analyze with Maritime
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@0291da99242e70080522c9d465d902a31966e47e
+        uses: g1ddy/dependency-maritime@7d53fc6dc412390ea5a363eae6b4bc93047914f2 # cli-v0.1.0-beta.5
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.2'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.5'
           source-roots: 'src'
-          depcruise-config: 'config/dependency-cruiser.cjs'
+          depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
           fail-on-unmeasured: 'true'
+          render-graph: 'true'
+          graph-output: 'docs/images/dependency-graph.svg'
+          external-packages: 'none'
           upload-artifact: 'false'
+
+      - name: Verify Maritime consumer contract
+        if: steps.plan.outputs.run_maritime == 'true'
+        run: npm run verify:maritime
 
       - name: Inspect Maritime outputs
         if: steps.plan.outputs.run_maritime == 'true'
@@ -126,7 +129,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: maritime-comparison
-          path: .maritime/
+          path: |
+            .maritime/
+            docs/images/dependency-graph.svg
           if-no-files-found: error
           include-hidden-files: true
 
@@ -142,11 +147,11 @@ jobs:
           case "$comparison_status" in
             0)
               echo "Maritime comparison outputs are already current."
-              git restore -- .maritime
+              git restore -- .maritime docs/images/dependency-graph.svg
               ;;
             1)
-              git add .maritime
-              git commit -m "docs(metrics): add Maritime comparison outputs"
+              git add .maritime docs/images/dependency-graph.svg
+              git commit -m "docs(metrics): add Maritime comparison outputs and dependency graph"
               echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
               ;;
             *)
@@ -156,14 +161,14 @@ jobs:
           esac
 
       - name: Restore repository Node.js for Catan generators
-        if: steps.plan.outputs.run_maritime == 'true' && (steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true')
+        if: steps.plan.outputs.run_maritime == 'true' && steps.plan.outputs.run_screenshots == 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: npm
 
       - name: Build project for generated assets
-        if: steps.plan.outputs.run_screenshots == 'true' || steps.plan.outputs.run_refactor == 'true'
+        if: steps.plan.outputs.run_screenshots == 'true'
         run: npm run build
 
       - name: Install Playwright browsers
@@ -185,33 +190,6 @@ jobs:
             exit 0
           fi
           git commit -m "docs(assets): update screenshots [skip ci]"
-          echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
-
-      - name: Install Graphviz
-        if: steps.plan.outputs.run_refactor == 'true'
-        uses: ts-graphviz/setup-graphviz@v2
-
-      - name: Generate dependency graph JSON
-        if: steps.plan.outputs.run_refactor == 'true'
-        run: npm run generate:json
-
-      - name: Generate dependency graph DOT
-        if: steps.plan.outputs.run_refactor == 'true'
-        run: npm run generate:dot
-
-      - name: Generate dependency graph images
-        if: steps.plan.outputs.run_refactor == 'true'
-        run: npm run generate:graph
-
-      - name: Commit refactor diagram outputs locally
-        if: steps.plan.outputs.run_refactor == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git add docs/images/dependency-graph.png docs/images/dependency-graph.svg config/dependency-graph.dot config/dependency-graph.json
-          if git diff --cached --quiet; then
-            echo "Refactor dependency diagrams are already current."
-            exit 0
-          fi
-          git commit -m "docs(metrics): update dependency graph artifacts [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Push generated artifact commits
