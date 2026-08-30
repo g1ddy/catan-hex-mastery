@@ -41,7 +41,7 @@ const createBundle = (): Bundle => new Map([
 const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
-    toolVersion: '0.1.0-beta.3',
+    toolVersion: '0.1.0-beta.4',
     sourceRoots: ['src'],
     summary: {
       totalFiles: 1,
