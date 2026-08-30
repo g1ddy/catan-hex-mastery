@@ -41,7 +41,7 @@ const createBundle = (): Bundle => new Map([
 const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
-    toolVersion: '0.1.0-beta.4',
+    toolVersion: '0.1.0-beta.5',
     sourceRoots: ['src'],
     summary: {
       totalFiles: 1,
@@ -117,6 +117,15 @@ describe('Maritime consumer contract', () => {
       'dependency graph must contain local src/ modules',
       'dependency graph SVG contains no local src/ module nodes',
     ]));
+  });
+
+  it('rejects external package nodes in the local-only graph presentation', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.svg = '<svg><title>local:src/game/core/types.ts</title><title>external:react</title></svg>';
+
+    expect(validateMaritimeArtifactContent(artifacts)).toContain(
+      'dependency graph SVG must omit external package nodes',
+    );
   });
 
   it('rejects test-only modules in the production evidence graph', () => {
