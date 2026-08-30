@@ -103,16 +103,17 @@ jobs:
 
       - name: Analyze with Maritime
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@05315851a619ef8b854af365e09d64290370639b
+        uses: g1ddy/dependency-maritime@7d53fc6dc412390ea5a363eae6b4bc93047914f2 # cli-v0.1.0-beta.5
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.4'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.5'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
           fail-on-unmeasured: 'true'
           render-graph: 'true'
           graph-output: 'docs/images/dependency-graph.svg'
+          external-packages: 'none'
           upload-artifact: 'false'
 
       - name: Verify Maritime consumer contract
