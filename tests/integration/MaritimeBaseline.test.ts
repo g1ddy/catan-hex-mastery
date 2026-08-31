@@ -42,7 +42,7 @@ const createBundle = (): Bundle => new Map([
 const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
-    toolVersion: '0.1.0-beta.5',
+    toolVersion: '0.1.0-beta.6',
     sourceRoots: ['src'],
     summary: {
       totalFiles: 1,
@@ -100,13 +100,13 @@ describe('Maritime substantive baseline comparison', () => {
 });
 
 describe('Maritime local graph contract', () => {
-  it('pins beta.5 graph rendering to omit external packages just like CI', () => {
+  it('pins beta.6 compact graph rendering just like CI', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
 
-    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.5');
-    expect(packageJson.scripts?.['generate:graph']).toContain('--external-packages none');
+    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.6');
+    expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
   });
 });
 
