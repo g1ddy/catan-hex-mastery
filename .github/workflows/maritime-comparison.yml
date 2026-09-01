@@ -103,10 +103,10 @@ jobs:
 
       - name: Analyze with Maritime
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@67ad3234d3532c9015ff43e1f44cd4ee271ba971 # cli-v0.1.0-beta.6
+        uses: g1ddy/dependency-maritime@abf06891ecaa902cf8bb0b5f45a7ddd8e1d32805 # cli-v0.1.0-beta.7
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.6'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.7'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
