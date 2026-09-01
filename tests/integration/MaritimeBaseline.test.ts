@@ -134,7 +134,7 @@ describe('Maritime consumer contract', () => {
       'manifest summary.totalFiles must be greater than zero',
       'manifest summary.scannedCount must be greater than zero',
       'dependency graph must contain local src/ modules',
-      'dependency graph SVG contains no local src/ module nodes',
+      'dependency graph SVG contains no local src/ module or aggregate folder nodes',
     ]));
   });
 
