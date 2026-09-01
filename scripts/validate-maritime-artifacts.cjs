@@ -67,8 +67,8 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
 
   if (typeof svg !== 'string' || !svg.includes('<svg')) {
     errors.push('dependency graph presentation is not SVG');
-  } else if (!svg.includes('local:src/')) {
-    errors.push('dependency graph SVG contains no local src/ module nodes');
+  } else if (!svg.includes('local:src/') && !svg.includes('folder:src/')) {
+    errors.push('dependency graph SVG contains no local src/ module or aggregate folder nodes');
   } else if (svg.includes('external:') || svg.includes('External packages')) {
     errors.push('dependency graph SVG must omit external package nodes');
   }
