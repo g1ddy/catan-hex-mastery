@@ -115,6 +115,13 @@ describe('Maritime consumer contract', () => {
     expect(validateMaritimeArtifactContent(createValidArtifacts())).toEqual([]);
   });
 
+  it('accepts a compact profile aggregate folder node', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.svg = '<svg><title>folder:src/game/core</title></svg>';
+
+    expect(validateMaritimeArtifactContent(artifacts)).toEqual([]);
+  });
+
   it('rejects an empty bundle even if it reports a perfect health score', () => {
     const artifacts = createValidArtifacts();
     artifacts.manifest.summary.totalFiles = 0;
