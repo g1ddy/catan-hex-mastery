@@ -51,15 +51,22 @@ test('rejects a rendered SVG that loses a retained local edge', () => {
   try {
     const input = path.join(directory, 'input.json');
     const output = path.join(directory, 'candidate.svg');
+    const reference = path.join(directory, 'reference.svg');
     const fakeDot = path.join(directory, 'dot');
     writeFileSync(input, JSON.stringify({ modules: [
       { source: 'src/a.ts', dependencies: [{ resolved: 'src/b.ts' }] },
       { source: 'src/b.ts', dependencies: [] },
     ] }));
     writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(reference, '<svg width="10pt" height="20pt"></svg>');
 
-    assert.throws(() => renderCandidate(input, output, fakeDot), /lost graph elements.*0 edges/u);
+    assert.throws(() => renderCandidate(input, output, fakeDot, reference), /lost graph elements.*0 edges/u);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test('derives target canvas constraints from the supplied layout reference', () => {
+  const dot = generateDot({ modules: [] }, { width: 1566, height: 3537 });
+  assert.match(dot, /size="21\.750,49\.125!", ratio=fill/u);
 });

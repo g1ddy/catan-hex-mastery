@@ -8,7 +8,7 @@
  * Run: node scripts/experiment-maritime-layout.mjs
  *
  * The canonical input and separate candidate output can also be overridden:
- * node scripts/experiment-maritime-layout.mjs input.json output.svg [--reference reference.svg]
+ * node scripts/experiment-maritime-layout.mjs input.json output.svg --layout-reference reference.svg
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -47,7 +47,7 @@ function addDirectory(tree, directory) {
   return branch;
 }
 
-export function generateDot(artifact) {
+export function generateDot(artifact, targetDimensions) {
   if (!Array.isArray(artifact?.modules)) {
     throw new TypeError('Maritime artifact must contain a modules array');
   }
@@ -73,9 +73,12 @@ export function generateDot(artifact) {
   collectDirectories(root);
   const clusterIds = new Map(directories.map((directory, index) => [directory, `cluster_${index}`]));
 
+  const targetLayout = targetDimensions
+    ? `, size=${quote(`${(targetDimensions.width / 72).toFixed(3)},${(targetDimensions.height / 72).toFixed(3)}!`)}, ratio=fill`
+    : '';
   const lines = [
     'digraph dependencies {',
-    '  graph [rankdir=TB, compound=true, remincross=true, outputorder=edgesfirst, splines=polyline, nodesep=0.10, ranksep=0.28, pad=0.10, bgcolor="transparent"];',
+    `  graph [rankdir=TB, compound=true, remincross=true, outputorder=edgesfirst, splines=polyline, nodesep=0.10, ranksep=0.28, pad=0.10, bgcolor="transparent"${targetLayout}];`,
     '  node [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#8b95a5", fontname="Helvetica", fontsize=8, margin="0.06,0.035", height=0.20];',
     '  edge [color="#9aa3b2", penwidth=0.65, arrowsize=0.45];',
   ];
@@ -128,9 +131,11 @@ function formatMetrics(label, metrics) {
   return `${label}: ${metrics.width} × ${metrics.height} pt; ${metrics.nodes} nodes, ${metrics.edges} edges, ${metrics.clusters} clusters; aspect ${metrics.aspectRatio.toFixed(3)}`;
 }
 
-export function renderCandidate(inputPath, outputPath, dotCommand = 'dot') {
+export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath) {
   const artifact = JSON.parse(readFileSync(inputPath, 'utf8'));
-  const dot = generateDot(artifact);
+  if (!layoutReferencePath) throw new Error('A layout reference SVG path is required');
+  const reference = inspectSvg(readFileSync(layoutReferencePath, 'utf8'));
+  const dot = generateDot(artifact, reference);
   const result = spawnSync(dotCommand, ['-Tsvg'], { input: dot, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
   if (result.error) throw new Error(`Unable to invoke Graphviz ${quote(dotCommand)}: ${result.error.message}`);
   if (result.status !== 0) throw new Error(`Graphviz failed with status ${result.status}: ${result.stderr.trim()}`);
@@ -145,7 +150,7 @@ export function renderCandidate(inputPath, outputPath, dotCommand = 'dot') {
   } finally {
     rmSync(temporaryPath, { force: true });
   }
-  return metrics;
+  return { candidate: metrics, reference };
 }
 
 function localSources(artifact) {
@@ -180,18 +185,15 @@ function directoryCount(artifact) {
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const arguments_ = process.argv.slice(2);
-  const referenceFlag = arguments_.indexOf('--reference');
+  const referenceFlag = arguments_.indexOf('--layout-reference');
   const referenceArgument = referenceFlag < 0 ? undefined : arguments_[referenceFlag + 1];
-  if (referenceFlag >= 0 && !referenceArgument) throw new Error('--reference requires an SVG path');
+  if (!referenceArgument) throw new Error('--layout-reference requires an SVG path');
   if (referenceFlag >= 0) arguments_.splice(referenceFlag, 2);
-  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] [--reference reference.svg]');
+  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] --layout-reference reference.svg');
   const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
   const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate.svg');
-  const candidate = renderCandidate(inputPath, outputPath);
+  const { candidate, reference } = renderCandidate(inputPath, outputPath, 'dot', path.resolve(referenceArgument));
   console.log(`Rendered ${path.relative(process.cwd(), outputPath) || outputPath} from ${path.relative(process.cwd(), inputPath) || inputPath}`);
-  if (referenceArgument) {
-    const reference = inspectSvg(readFileSync(path.resolve(referenceArgument), 'utf8'));
-    console.log(formatMetrics('reference', reference));
-  }
+  console.log(formatMetrics('reference', reference));
   console.log(formatMetrics('candidate', candidate));
 }

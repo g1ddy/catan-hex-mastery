@@ -50,12 +50,12 @@ With Graphviz `dot` on `PATH`, render the candidate from the already-generated e
 node scripts/experiment-maritime-layout.mjs \
   .maritime/dependency-graph.json \
   docs/images/dependency-graph.candidate.svg \
-  --reference docs/images/dependency-graph.reference.svg
+  --layout-reference docs/images/dependency-graph.reference.svg
 ```
 
 The renderer selects every non-`node_modules` module in the artifact, retains only edges whose resolved endpoints are in that local module set, and builds recursive clusters from path segments. Stable path sorting assigns opaque node and cluster IDs, so neither repository-specific names nor layout coordinates are encoded in the renderer. Dependency kinds are deliberately not emitted.
 
-The `--reference` comparison is optional: omit it when moving the renderer upstream or using custom input and output paths. After Graphviz succeeds, the command inspects the generated SVG itself—not merely the DOT—and prints its point dimensions, aspect ratio, and rendered node, edge, and cluster counts. It rejects an SVG that loses retained-local edges, module nodes, or recursive clusters and writes the candidate atomically.
+The layout reference is required and portable: consumers supply any reference SVG rather than relying on a Catan path embedded in the renderer. Its point dimensions drive Graphviz's `size` and `ratio=fill` constraints, making the candidate target the reference canvas while Graphviz still computes every node position. After Graphviz succeeds, the command inspects the generated SVG itself—not merely the DOT—and prints both files' point dimensions, aspect ratios, and rendered node, edge, and cluster counts. It rejects an SVG that loses retained-local edges, module nodes, or recursive clusters and writes the candidate atomically.
 
 Then create the required equal-width visual comparison. This helper fails unless all three SVGs exist and both Inkscape and ImageMagick are installed:
 
