@@ -116,6 +116,10 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
+      - name: Render Maritime layout compatibility candidate
+        if: steps.plan.outputs.run_maritime == 'true'
+        run: node scripts/experiment-maritime-layout.mjs
+
       - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
         run: npm run verify:maritime
@@ -134,6 +138,19 @@ jobs:
             docs/images/dependency-graph.svg
           if-no-files-found: error
           include-hidden-files: true
+
+      - name: Upload Maritime layout compatibility artifacts
+        if: steps.plan.outputs.run_maritime == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: maritime-layout-compatibility
+          path: |
+            .maritime/dependency-graph.json
+            docs/images/dependency-graph.reference.svg
+            docs/images/dependency-graph.svg
+            docs/images/dependency-graph.candidate.svg
+            scripts/experiment-maritime-layout.mjs
+          if-no-files-found: error
 
       - name: Commit Maritime comparison outputs locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
