@@ -23,7 +23,7 @@ test('renders sorted local modules, local edges, and recursive clusters', () => 
   };
   const dot = generateDot(artifact);
 
-  assert.match(dot, /rankdir=TB/);
+  assert.match(dot, /rankdir=LR/);
   assert.match(dot, /subgraph "cluster_src" \{[\s\S]*tooltip="src";[\s\S]*subgraph "cluster_src\/deep" \{[\s\S]*tooltip="src\/deep";/);
   assert.match(dot, /module_0 \[label="a", tooltip="src\/deep\/a\.ts"\]/);
   assert.match(dot, /module_1 \[label="z", tooltip="src\/z\.ts"\]/);
