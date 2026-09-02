@@ -118,7 +118,11 @@ jobs:
 
       - name: Render Maritime layout compatibility candidate
         if: steps.plan.outputs.run_maritime == 'true'
-        run: node scripts/experiment-maritime-layout.mjs
+        run: >-
+          node scripts/experiment-maritime-layout.mjs
+          .maritime/dependency-graph.json
+          docs/images/dependency-graph.candidate.svg
+          --layout-reference docs/images/dependency-graph.reference.svg
 
       - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
