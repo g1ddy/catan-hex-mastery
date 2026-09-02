@@ -78,7 +78,7 @@ export function generateDot(artifact, targetDimensions) {
     : '';
   const lines = [
     'digraph dependencies {',
-    `  graph [rankdir=TB, compound=true, remincross=true, outputorder=edgesfirst, splines=polyline, nodesep=0.10, ranksep=0.28, pad=0.10, bgcolor="transparent"${targetLayout}];`,
+    `  graph [rankdir=LR, compound=true, remincross=true, outputorder=edgesfirst, splines=polyline, nodesep=0.10, ranksep=0.28, pad=0.10, bgcolor="transparent"${targetLayout}];`,
     '  node [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#8b95a5", fontname="Helvetica", fontsize=8, margin="0.06,0.035", height=0.20];',
     '  edge [color="#9aa3b2", penwidth=0.65, arrowsize=0.45];',
   ];
