@@ -181,6 +181,17 @@ jobs:
               ;;
           esac
 
+      - name: Commit Maritime layout compatibility candidate locally
+        if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git add docs/images/dependency-graph.candidate.svg
+          if git diff --cached --quiet; then
+            echo "Maritime layout compatibility candidate is already current."
+            exit 0
+          fi
+          git commit -m "docs(graph): update Maritime layout compatibility candidate [skip ci]"
+          echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
+
       - name: Restore repository Node.js for Catan generators
         if: steps.plan.outputs.run_maritime == 'true' && steps.plan.outputs.run_screenshots == 'true'
         uses: actions/setup-node@v4
