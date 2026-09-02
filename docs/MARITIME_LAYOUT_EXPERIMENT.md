@@ -41,3 +41,15 @@ Compare these three files side by side:
 3. `docs/images/dependency-graph.candidate.svg` — experimental compatibility result.
 
 The success criterion is not an exact pixel match. It is a generic Maritime-driven graph that retains the reference diagram's module-level, nested-hierarchy readability without the beta.6 panoramic expansion.
+
+## Local candidate renderer
+
+With Graphviz `dot` on `PATH`, render the candidate from the already-generated evidence:
+
+```bash
+node scripts/experiment-maritime-layout.mjs
+```
+
+The renderer selects every non-`node_modules` module in the artifact, retains only edges whose resolved endpoints are in that local module set, and builds recursive clusters from path segments. Stable path sorting assigns opaque node and cluster IDs, so neither repository-specific names nor layout coordinates are encoded in the renderer. Dependency kinds are deliberately not emitted.
+
+The experiment uses `rankdir=TB` with tight `nodesep` and `ranksep`, but deliberately omits Graphviz's global `newrank=true`. The comparison exposes a missing Maritime profile capability: a supported module-detail renderer needs cluster-local rank controls (and tunable spacing) that do not flatten nested clusters into one global ranking problem. Those generic renderer inputs should move upstream before this becomes a production Maritime profile; the script remains an isolated compatibility experiment and does not replace `npm run generate:graph`.
