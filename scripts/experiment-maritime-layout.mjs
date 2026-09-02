@@ -8,7 +8,7 @@
  * Run: node scripts/experiment-maritime-layout.mjs
  *
  * The canonical input and separate candidate output can also be overridden:
- * node scripts/experiment-maritime-layout.mjs input.json output.svg
+ * node scripts/experiment-maritime-layout.mjs input.json output.svg [--reference reference.svg]
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -135,7 +135,7 @@ export function renderCandidate(inputPath, outputPath, dotCommand = 'dot') {
   if (result.error) throw new Error(`Unable to invoke Graphviz ${quote(dotCommand)}: ${result.error.message}`);
   if (result.status !== 0) throw new Error(`Graphviz failed with status ${result.status}: ${result.stderr.trim()}`);
   const metrics = inspectSvg(result.stdout);
-  if (metrics.nodes !== modulesCount(artifact) || metrics.clusters !== directoryCount(artifact)) {
+  if (metrics.nodes !== modulesCount(artifact) || metrics.edges !== edgesCount(artifact) || metrics.clusters !== directoryCount(artifact)) {
     throw new Error(`Graphviz SVG lost graph elements: ${formatMetrics('candidate', metrics)}`);
   }
   const temporaryPath = `${outputPath}.tmp`;
@@ -158,6 +158,13 @@ function modulesCount(artifact) {
   return localSources(artifact).length;
 }
 
+function edgesCount(artifact) {
+  const sources = new Set(localSources(artifact));
+  return artifact.modules.reduce((count, module) => count + (module.dependencies ?? []).filter(({ resolved }) => (
+    typeof resolved === 'string' && sources.has(normalize(resolved))
+  )).length, 0);
+}
+
 function directoryCount(artifact) {
   const directories = new Set();
   for (const source of localSources(artifact)) {
@@ -172,12 +179,19 @@ function directoryCount(artifact) {
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
-  const inputPath = path.resolve(process.argv[2] ?? '.maritime/dependency-graph.json');
-  const outputPath = path.resolve(process.argv[3] ?? 'docs/images/dependency-graph.candidate.svg');
+  const arguments_ = process.argv.slice(2);
+  const referenceFlag = arguments_.indexOf('--reference');
+  const referenceArgument = referenceFlag < 0 ? undefined : arguments_[referenceFlag + 1];
+  if (referenceFlag >= 0 && !referenceArgument) throw new Error('--reference requires an SVG path');
+  if (referenceFlag >= 0) arguments_.splice(referenceFlag, 2);
+  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] [--reference reference.svg]');
+  const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
+  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate.svg');
   const candidate = renderCandidate(inputPath, outputPath);
-  const referencePath = path.resolve('docs/images/dependency-graph.reference.svg');
-  const reference = inspectSvg(readFileSync(referencePath, 'utf8'));
   console.log(`Rendered ${path.relative(process.cwd(), outputPath) || outputPath} from ${path.relative(process.cwd(), inputPath) || inputPath}`);
-  console.log(formatMetrics('reference', reference));
+  if (referenceArgument) {
+    const reference = inspectSvg(readFileSync(path.resolve(referenceArgument), 'utf8'));
+    console.log(formatMetrics('reference', reference));
+  }
   console.log(formatMetrics('candidate', candidate));
 }
