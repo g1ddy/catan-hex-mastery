@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
-import { generateDot } from './experiment-maritime-layout.mjs';
+import { generateDot, inspectSvg, renderCandidate } from './experiment-maritime-layout.mjs';
 
 test('renders sorted local modules, local edges, and recursive clusters', () => {
   const artifact = {
@@ -34,4 +36,37 @@ test('retains the canonical artifact module, edge, and cluster detail', () => {
   assert.equal(dot.match(/tooltip=/gu)?.length, 115);
   assert.equal(dot.match(/ -> /gu)?.length, 358);
   assert.equal(dot.match(/subgraph cluster_/gu)?.length, 41);
+});
+
+test('inspects the committed acceptance SVGs rather than inferring visual output from DOT', () => {
+  const reference = inspectSvg(readFileSync('docs/images/dependency-graph.reference.svg', 'utf8'));
+  const beta7 = inspectSvg(readFileSync('docs/images/dependency-graph.svg', 'utf8'));
+
+  assert.deepEqual(reference, { width: 1566, height: 3537, aspectRatio: 1566 / 3537, nodes: 113, edges: 351, clusters: 41 });
+  assert.deepEqual(beta7, { width: 1080, height: 666, aspectRatio: 1080 / 666, nodes: 20, edges: 63, clusters: 0 });
+});
+
+test('rejects a rendered SVG that loses a retained local edge', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'maritime-layout-'));
+  try {
+    const input = path.join(directory, 'input.json');
+    const output = path.join(directory, 'candidate.svg');
+    const reference = path.join(directory, 'reference.svg');
+    const fakeDot = path.join(directory, 'dot');
+    writeFileSync(input, JSON.stringify({ modules: [
+      { source: 'src/a.ts', dependencies: [{ resolved: 'src/b.ts' }] },
+      { source: 'src/b.ts', dependencies: [] },
+    ] }));
+    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(reference, '<svg width="10pt" height="20pt"></svg>');
+
+    assert.throws(() => renderCandidate(input, output, fakeDot, reference), /lost graph elements.*0 edges/u);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('derives target canvas constraints from the supplied layout reference', () => {
+  const dot = generateDot({ modules: [] }, { width: 1566, height: 3537 });
+  assert.match(dot, /size="21\.750,49\.125!", ratio=fill/u);
 });
