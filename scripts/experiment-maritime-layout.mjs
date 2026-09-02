@@ -74,7 +74,7 @@ export function generateDot(artifact, targetDimensions) {
   const clusterIds = new Map(directories.map((directory, index) => [directory, `cluster_${index}`]));
 
   const targetLayout = targetDimensions
-    ? `, size=${quote(`${(targetDimensions.width / 72).toFixed(3)},${(targetDimensions.height / 72).toFixed(3)}!`)}, ratio=fill`
+    ? `, size=${quote(`${(targetDimensions.width / 72).toFixed(3)},${(targetDimensions.height / 72).toFixed(3)}!`)}, ratio=${(targetDimensions.height / targetDimensions.width).toFixed(6)}`
     : '';
   const lines = [
     'digraph dependencies {',
@@ -86,8 +86,10 @@ export function generateDot(artifact, targetDimensions) {
   const renderBranch = (branch, indentation) => {
     const prefix = ' '.repeat(indentation);
     for (const child of [...branch.children.values()].sort((a, b) => a.path.localeCompare(b.path))) {
-      lines.push(`${prefix}subgraph ${clusterIds.get(child.path)} {`);
-      lines.push(`${prefix}  label=${quote(path.posix.basename(child.path))}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=6;`);
+      // The title Graphviz emits for this named subgraph is durable, non-visual
+      // namespace metadata. Keep opaque DOM ids, but expose the complete path.
+      lines.push(`${prefix}subgraph ${quote(`cluster_${child.path}`)} {`);
+      lines.push(`${prefix}  id=${quote(clusterIds.get(child.path))}; label=${quote(path.posix.basename(child.path))}; tooltip=${quote(child.path)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=6;`);
       renderBranch(child, indentation + 2);
       lines.push(`${prefix}}`);
     }
@@ -117,14 +119,74 @@ export function inspectSvg(svg) {
   if (!dimensions) throw new Error('Graphviz SVG is missing point dimensions');
   const width = Number(dimensions[1]);
   const height = Number(dimensions[2]);
+  const namespaces = [...svg.matchAll(/<g\s+id="[^"]+"\s+class="cluster">\s*<title>cluster_([^<]+)<\/title>/gu)]
+    .map((match) => decodeXml(match[1]))
+    .sort();
   return {
     width,
     height,
     aspectRatio: width / height,
     nodes: (svg.match(/<g\s+id="node\d+"\s+class="node">/gu) ?? []).length,
     edges: (svg.match(/<g\s+id="edge\d+"\s+class="edge">/gu) ?? []).length,
-    clusters: (svg.match(/<g\s+id="clust\d+"\s+class="cluster">/gu) ?? []).length,
+    clusters: (svg.match(/<g\s+id="[^"]+"\s+class="cluster">/gu) ?? []).length,
+    namespaces,
   };
+}
+
+function decodeXml(value) {
+  return value
+    .replaceAll('&#45;', '-')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&apos;', "'")
+    .replaceAll('&gt;', '>')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&amp;', '&');
+}
+
+export function retainedLocalModulePaths(artifact) {
+  if (!Array.isArray(artifact?.modules)) throw new TypeError('Maritime artifact must contain a modules array');
+  return localSources(artifact).sort();
+}
+
+export function recursiveFolderNamespaces(artifact) {
+  const directories = new Set();
+  for (const source of retainedLocalModulePaths(artifact)) {
+    let directory = directoryOf(source);
+    while (directory) {
+      directories.add(directory);
+      directory = directoryOf(directory);
+    }
+  }
+  return [...directories].sort();
+}
+
+export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, relativeTolerance = 0.1) {
+  const reference = inspectSvg(referenceSvg);
+  const candidate = inspectSvg(candidateSvg);
+  const { moduleCount, namespaces: expectedNamespaces } = expectation;
+
+  if (candidate.nodes < reference.nodes) throw new Error(`candidate has ${candidate.nodes} nodes; reference has ${reference.nodes}`);
+  if (candidate.nodes !== moduleCount) throw new Error(`candidate has ${candidate.nodes} nodes; expected ${moduleCount} modules`);
+  if (candidate.clusters !== expectedNamespaces.length || candidate.clusters !== reference.clusters) {
+    throw new Error(`candidate has ${candidate.clusters} clusters; canonical artifact expects ${expectedNamespaces.length} and reference has ${reference.clusters}`);
+  }
+  if (JSON.stringify(candidate.namespaces) !== JSON.stringify(expectedNamespaces)) {
+    throw new Error('candidate cluster namespace metadata does not match canonical recursive folders');
+  }
+  const aspectDifference = Math.abs(candidate.aspectRatio - reference.aspectRatio) / reference.aspectRatio;
+  if (aspectDifference > relativeTolerance) {
+    throw new Error(`candidate aspect ${candidate.aspectRatio.toFixed(3)} differs from reference ${reference.aspectRatio.toFixed(3)} by ${(aspectDifference * 100).toFixed(1)}%`);
+  }
+  return { reference, candidate, expectedNamespaces, aspectDifference };
+}
+
+export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1) {
+  const expectedModules = retainedLocalModulePaths(artifact);
+  const expectedNamespaces = recursiveFolderNamespaces(artifact);
+  return assertSvgCompatibility(referenceSvg, candidateSvg, {
+    moduleCount: expectedModules.length,
+    namespaces: expectedNamespaces,
+  }, relativeTolerance);
 }
 
 function formatMetrics(label, metrics) {
