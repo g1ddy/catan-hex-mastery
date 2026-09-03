@@ -14,44 +14,41 @@ import {
   retainedLocalModulePaths,
 } from './experiment-maritime-layout.mjs';
 
-test('compact baseline renders sorted local modules, local edges, and recursive clusters', () => {
+test('combined compact baseline applies the three promising structural overrides', () => {
   const artifact = {
     modules: [
       { source: 'src/z.ts', dependencies: [{ resolved: 'src/deep/a.ts' }, { resolved: 'node_modules/pkg/index.js' }] },
+      { source: 'src/game/testUtils.ts', dependencies: [] },
       { source: 'node_modules/pkg/index.js', dependencies: [] },
       { source: 'src/deep/a.ts', dependencies: [] },
     ],
   };
-  const dot = generateDot(artifact, 'compact');
+  const dot = generateDot(artifact, 'compact-combined');
 
   assert.match(dot, /rankdir=LR/);
-  assert.match(dot, /nodesep=0\.1, ranksep=0\.12/);
-  assert.match(dot, /subgraph "cluster_src" \{[\s\S]*tooltip="src";[\s\S]*subgraph "cluster_src\/deep" \{[\s\S]*tooltip="src\/deep";/);
-  assert.match(dot, /module_0 \[label="a\.ts", tooltip="src\/deep\/a\.ts"/);
-  assert.match(dot, /module_1 \[label="z\.ts", tooltip="src\/z\.ts"/);
-  assert.match(dot, /module_1 -> module_0;/);
-  assert.doesNotMatch(dot, /node_modules|pkg|newrank/);
-  assert.equal(generateDot(artifact, 'compact'), dot);
+  assert.match(dot, /nodesep=0\.16, ranksep=0\.18/);
+  assert.doesNotMatch(dot, /subgraph "cluster_src" \{/u);
+  assert.match(dot, /subgraph "cluster_src\/deep" \{/u);
+  assert.match(dot, /module_0 \[label="a\.ts", tooltip="src\/deep\/a\.ts"/u);
+  assert.match(dot, /module_1 \[label="z\.ts", tooltip="src\/z\.ts"/u);
+  assert.match(dot, /module_1 -> module_0;/u);
+  assert.doesNotMatch(dot, /node_modules|testUtils/u);
 });
 
 test('rejects artifacts without a modules array', () => {
   assert.throws(() => generateDot({}), /modules array/);
 });
 
-test('compact-no-src-wrapper removes only the redundant source-root cluster', () => {
+test('combined compact retains recursive namespaces without the redundant source root', () => {
   const artifact = { modules: [
     { source: 'src/root.ts', dependencies: [] },
     { source: 'src/deep/a.ts', dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-no-src-wrapper');
 
-  assert.doesNotMatch(dot, /subgraph "cluster_src" \{/u);
-  assert.match(dot, /subgraph "cluster_src\/deep" \{/u);
-  assert.match(dot, /tooltip="src\/deep"/u);
-  assert.deepEqual(recursiveFolderNamespaces(artifact, 'compact-no-src-wrapper'), ['src/deep']);
+  assert.deepEqual(recursiveFolderNamespaces(artifact, 'compact-combined'), ['src/deep']);
 });
 
-test('compact-production-filter excludes tests, specs, __tests__, and the historical testUtils support utility', () => {
+test('combined compact excludes tests, specs, __tests__, and the historical testUtils support utility', () => {
   const artifact = { modules: [
     { source: 'src/app.ts', dependencies: [] },
     { source: 'src/app.test.ts', dependencies: [] },
@@ -60,63 +57,50 @@ test('compact-production-filter excludes tests, specs, __tests__, and the histor
     { source: 'src/game/testUtils.ts', dependencies: [] },
   ] };
 
-  assert.deepEqual(retainedLocalModulePaths(artifact, 'compact-production-filter'), ['src/app.ts']);
-  const dot = generateDot(artifact, 'compact-production-filter');
-  assert.match(dot, /app\.ts/u);
-  assert.doesNotMatch(dot, /testUtils|\.test\.|\.spec\.|__tests__/u);
+  assert.deepEqual(retainedLocalModulePaths(artifact, 'compact-combined'), ['src/app.ts']);
 });
 
-test('compact-edge-hierarchy de-emphasizes exclusively type-only edges but keeps runtime pairs primary', () => {
+test('cluster-packing variants repeat folder declarations per module like historical dependency-cruiser DOT', () => {
   const artifact = { modules: [
-    { source: 'src/a.ts', dependencies: [
-      { resolved: 'src/b.ts', dependencyTypes: ['local', 'type-only', 'import'] },
-      { resolved: 'src/c.ts', dependencyTypes: ['local', 'import'] },
-      { resolved: 'src/c.ts', dependencyTypes: ['local', 'type-only', 'export'] },
-    ] },
-    { source: 'src/b.ts', dependencies: [] },
-    { source: 'src/c.ts', dependencies: [] },
+    { source: 'src/deep/a.ts', dependencies: [] },
+    { source: 'src/deep/b.ts', dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-edge-hierarchy');
+  const baseline = generateDot(artifact, 'compact-combined');
+  const packed = generateDot(artifact, 'compact-combined-cluster-packing');
 
-  assert.match(dot, /module_0 -> module_1 \[style="dashed", color="#aaaaaa", penwidth=0\.8\];/u);
-  assert.match(dot, /module_0 -> module_2;/u);
-  assert.doesNotMatch(dot, /module_0 -> module_2 \[/u);
+  assert.equal(baseline.match(/subgraph "cluster_src\/deep"/gu)?.length, 1);
+  assert.equal(packed.match(/subgraph "cluster_src\/deep"/gu)?.length, 2);
 });
 
-test('compact-cluster-packing repeats folder declarations per module like the historical dependency-cruiser DOT', () => {
-  const artifact = { modules: [
-    { source: 'src/a.ts', dependencies: [] },
-    { source: 'src/b.ts', dependencies: [] },
-  ] };
-  const baseline = generateDot(artifact, 'compact');
-  const packed = generateDot(artifact, 'compact-cluster-packing');
-
-  assert.equal(baseline.match(/subgraph "cluster_src"/gu)?.length, 1);
-  assert.equal(packed.match(/subgraph "cluster_src"/gu)?.length, 2);
+test('bold-border variant matches the historical black 2pt cluster border', () => {
+  const dot = generateDot({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }, 'compact-combined-bold-border');
+  assert.match(dot, /color="black"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=2;/u);
 });
 
-test('compact-reference-spacing changes only spacing to the historical values', () => {
-  const artifact = { modules: [] };
-  const baseline = generateDot(artifact, 'compact');
-  const spaced = generateDot(artifact, 'compact-reference-spacing');
-
-  assert.match(baseline, /nodesep=0\.1, ranksep=0\.12/u);
-  assert.match(spaced, /nodesep=0\.16, ranksep=0\.18/u);
+test('bold-title variant matches the historical black bold Helvetica cluster title', () => {
+  const dot = generateDot({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }, 'compact-combined-bold-titles');
+  assert.match(dot, /color="#c8ced8"; fontcolor="black"; fontname="Helvetica-Bold"; fontsize=9; penwidth=0\.8;/u);
 });
 
-test('exposes a compact baseline plus one-change-at-a-time variants', () => {
+test('combined bold variant applies both reference border and title weight', () => {
+  const dot = generateDot({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }, 'compact-combined-bold-border-and-titles');
+  assert.match(dot, /color="black"; fontcolor="black"; fontname="Helvetica-Bold"; fontsize=9; penwidth=2;/u);
+});
+
+test('exposes six combined candidates for visual comparison', () => {
   assert.deepEqual(Object.keys(LAYOUT_VARIANTS), [
-    'compact',
-    'compact-no-src-wrapper',
-    'compact-production-filter',
-    'compact-edge-hierarchy',
-    'compact-cluster-packing',
-    'compact-reference-spacing',
+    'compact-combined',
+    'compact-combined-cluster-packing',
+    'compact-combined-bold-border',
+    'compact-combined-bold-titles',
+    'compact-combined-bold-border-and-titles',
+    'compact-combined-bold-border-and-titles-cluster-packing',
   ]);
   for (const variant of Object.keys(LAYOUT_VARIANTS)) {
     const dot = generateDot({ modules: [] }, variant);
     assert.match(dot, /strict digraph dependencies/u);
     assert.match(dot, /rankdir=LR/u);
+    assert.match(dot, /nodesep=0\.16, ranksep=0\.18/u);
     assert.doesNotMatch(dot, /, size=|, ratio=/u);
   }
 });
@@ -128,12 +112,12 @@ test('rejects a rendered SVG that loses a retained local edge', () => {
     const output = path.join(directory, 'candidate.svg');
     const fakeDot = path.join(directory, 'dot');
     writeFileSync(input, JSON.stringify({ modules: [
-      { source: 'src/a.ts', dependencies: [{ resolved: 'src/b.ts' }] },
-      { source: 'src/b.ts', dependencies: [] },
+      { source: 'src/deep/a.ts', dependencies: [{ resolved: 'src/deep/b.ts' }] },
+      { source: 'src/deep/b.ts', dependencies: [] },
     ] }));
-    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src</title></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src/deep</title></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
 
-    assert.throws(() => renderCandidate(input, output, fakeDot, undefined, 'compact'), /lost graph elements.*0 edges/u);
+    assert.throws(() => renderCandidate(input, output, fakeDot, undefined, 'compact-combined'), /lost graph elements.*0 edges/u);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -145,10 +129,10 @@ test('layout reference is optional and measurement-only', () => {
     const input = path.join(directory, 'input.json');
     const output = path.join(directory, 'candidate.svg');
     const fakeDot = path.join(directory, 'dot');
-    writeFileSync(input, JSON.stringify({ modules: [{ source: 'src/a.ts', dependencies: [] }] }));
-    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src</title></g><g id="node1" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(input, JSON.stringify({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }));
+    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src/deep</title></g><g id="node1" class="node"></g></svg>'\n`, { mode: 0o755 });
 
-    const result = renderCandidate(input, output, fakeDot, undefined, 'compact');
+    const result = renderCandidate(input, output, fakeDot, undefined, 'compact-combined');
     assert.equal(result.reference, undefined);
     assert.deepEqual(
       { ...result.candidate, namespaces: undefined },
@@ -159,19 +143,18 @@ test('layout reference is optional and measurement-only', () => {
   }
 });
 
-test('retains the canonical compact artifact module, edge, and cluster detail', () => {
+test('combined compact canonical evidence keeps file detail while filtering test support and src wrapper', () => {
   const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
-  const dot = generateDot(artifact, 'compact');
+  const modules = retainedLocalModulePaths(artifact, 'compact-combined');
+  const namespaces = recursiveFolderNamespaces(artifact, 'compact-combined');
+  const dot = generateDot(artifact, 'compact-combined');
 
-  assert.equal(dot.match(/module_\d+ \[label=.*tooltip=/gu)?.length, 115);
-  assert.equal(dot.match(/ -> /gu)?.length, 357);
-  assert.equal(dot.match(/subgraph "cluster_/gu)?.length, 41);
-});
-
-test('the production-filter variant removes the remaining support utility from canonical evidence', () => {
-  const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
-  assert.equal(retainedLocalModulePaths(artifact, 'compact-production-filter').length, 114);
-  assert.doesNotMatch(generateDot(artifact, 'compact-production-filter'), /testUtils\.ts/u);
+  assert.equal(modules.length, 114);
+  assert.equal(dot.match(/module_\d+ \[label=.*tooltip=/gu)?.length, 114);
+  assert.ok((dot.match(/ -> /gu)?.length ?? 0) > 300);
+  assert.equal(namespaces.length, 40);
+  assert.ok(!namespaces.includes('src'));
+  assert.doesNotMatch(dot, /testUtils\.ts/u);
 });
 
 test('inspects the committed acceptance SVGs rather than inferring visual output from DOT', () => {
