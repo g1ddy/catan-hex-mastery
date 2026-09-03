@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import {
   assertLayoutCompatibility,
+  LAYOUT_VARIANTS,
   assertSvgCompatibility,
   generateDot,
   inspectSvg,
@@ -25,8 +26,8 @@ test('renders sorted local modules, local edges, and recursive clusters', () => 
 
   assert.match(dot, /rankdir=LR/);
   assert.match(dot, /subgraph "cluster_src" \{[\s\S]*tooltip="src";[\s\S]*subgraph "cluster_src\/deep" \{[\s\S]*tooltip="src\/deep";/);
-  assert.match(dot, /module_0 \[label="a", tooltip="src\/deep\/a\.ts"\]/);
-  assert.match(dot, /module_1 \[label="z", tooltip="src\/z\.ts"\]/);
+  assert.match(dot, /module_0 \[label="a\.ts", tooltip="src\/deep\/a\.ts"/);
+  assert.match(dot, /module_1 \[label="z\.ts", tooltip="src\/z\.ts"/);
   assert.match(dot, /module_1 -> module_0;/);
   assert.doesNotMatch(dot, /node_modules|pkg|dependencyTypes|newrank/);
   assert.equal(generateDot(artifact), dot);
@@ -100,7 +101,12 @@ test('rejects a rendered SVG that loses a retained local edge', () => {
   }
 });
 
-test('derives target canvas constraints from the supplied layout reference', () => {
-  const dot = generateDot({ modules: [] }, { width: 1566, height: 3537 });
-  assert.match(dot, /size="21\.750,49\.125!", ratio=2\.258621/u);
+test('offers five unconstrained LR variants for visual comparison', () => {
+  assert.deepEqual(Object.keys(LAYOUT_VARIANTS), ['reference-like', 'compact', 'spacious', 'orthogonal', 'curved']);
+  for (const variant of Object.keys(LAYOUT_VARIANTS)) {
+    const dot = generateDot({ modules: [] }, variant);
+    assert.match(dot, /strict digraph dependencies/u);
+    assert.match(dot, /rankdir=LR/u);
+    assert.doesNotMatch(dot, /size=|ratio=/u);
+  }
 });
