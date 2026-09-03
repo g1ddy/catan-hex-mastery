@@ -7,8 +7,8 @@
  * Prerequisite: Graphviz's `dot` executable must be on PATH.
  * Run: node scripts/experiment-maritime-layout.mjs
  *
- * The canonical input and separate candidate output can also be overridden:
- * node scripts/experiment-maritime-layout.mjs input.json output.svg --layout-reference reference.svg
+ * The canonical input, candidate output, and optional reference can be overridden:
+ * node scripts/experiment-maritime-layout.mjs input.json output.svg --variant compact --layout-reference reference.svg
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -19,15 +19,28 @@ import { fileURLToPath } from 'node:url';
 const quote = (value) => `"${String(value).replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`;
 const normalize = (value) => value.replaceAll('\\', '/');
 
-export const LAYOUT_VARIANTS = Object.freeze({
-  'reference-like': { splines: 'true', overlap: 'false', nodesep: 0.16, ranksep: 0.18, clusterMargin: 6 },
-  compact: { splines: 'true', overlap: 'false', nodesep: 0.10, ranksep: 0.12, clusterMargin: 4 },
-  spacious: { splines: 'true', overlap: 'false', nodesep: 0.24, ranksep: 0.30, clusterMargin: 8 },
-  orthogonal: { splines: 'ortho', overlap: 'false', nodesep: 0.16, ranksep: 0.22, clusterMargin: 6 },
-  curved: { splines: 'curved', overlap: 'false', nodesep: 0.18, ranksep: 0.24, clusterMargin: 6 },
+const COMPACT = Object.freeze({
+  splines: 'true',
+  overlap: 'false',
+  nodesep: 0.10,
+  ranksep: 0.12,
+  clusterMargin: 4,
+  omitSrcWrapper: false,
+  productionFilter: false,
+  edgeHierarchy: false,
+  dependencyCruiserPacking: false,
 });
 
-function resolveVariant(variant = 'reference-like') {
+export const LAYOUT_VARIANTS = Object.freeze({
+  compact: COMPACT,
+  'compact-no-src-wrapper': Object.freeze({ ...COMPACT, omitSrcWrapper: true }),
+  'compact-production-filter': Object.freeze({ ...COMPACT, productionFilter: true }),
+  'compact-edge-hierarchy': Object.freeze({ ...COMPACT, edgeHierarchy: true }),
+  'compact-cluster-packing': Object.freeze({ ...COMPACT, dependencyCruiserPacking: true }),
+  'compact-reference-spacing': Object.freeze({ ...COMPACT, nodesep: 0.16, ranksep: 0.18, clusterMargin: 6 }),
+});
+
+function resolveVariant(variant = 'compact') {
   const configuration = LAYOUT_VARIANTS[variant];
   if (!configuration) throw new Error(`Unknown layout variant: ${variant}`);
   return configuration;
@@ -53,6 +66,24 @@ function isExternal(modulePath) {
   return modulePath === 'node_modules' || modulePath.startsWith('node_modules/');
 }
 
+function isProductionExcluded(modulePath) {
+  return /(^|\/)(?:__tests__\/|.*\.(?:test|spec)\.[cm]?[jt]sx?$)/u.test(modulePath)
+    || /(^|\/)testUtils\.[cm]?[jt]sx?$/u.test(modulePath);
+}
+
+function selectModules(artifact, layout) {
+  if (!Array.isArray(artifact?.modules)) {
+    throw new TypeError('Maritime artifact must contain a modules array');
+  }
+
+  return artifact.modules
+    .filter(({ source }) => typeof source === 'string')
+    .map((module) => ({ ...module, source: normalize(module.source) }))
+    .filter(({ source }) => !isExternal(source))
+    .filter(({ source }) => !layout.productionFilter || !isProductionExcluded(source))
+    .sort((left, right) => left.source.localeCompare(right.source));
+}
+
 function addDirectory(tree, directory) {
   let branch = tree;
   let current = '';
@@ -68,32 +99,55 @@ function addDirectory(tree, directory) {
   return branch;
 }
 
-export function generateDot(artifact, variant = 'reference-like') {
-  const layout = resolveVariant(variant);
-  if (!Array.isArray(artifact?.modules)) {
-    throw new TypeError('Maritime artifact must contain a modules array');
+function collectDirectoryPaths(modules, layout) {
+  const directories = new Set();
+  for (const module of modules) {
+    let directory = directoryOf(module.source);
+    while (directory) {
+      if (!(layout.omitSrcWrapper && directory === 'src')) directories.add(directory);
+      directory = directoryOf(directory);
+    }
   }
+  return [...directories].sort();
+}
 
-  const modules = artifact.modules
-    .filter(({ source }) => typeof source === 'string' && !isExternal(normalize(source)))
-    .map((module) => ({ ...module, source: normalize(module.source) }))
-    .sort((left, right) => left.source.localeCompare(right.source));
-  const moduleIds = new Map(modules.map((module, index) => [module.source, `module_${index}`]));
+function buildTree(modules) {
   const root = { path: '', children: new Map(), modules: [] };
-
   for (const module of modules) {
     addDirectory(root, directoryOf(module.source)).modules.push(module);
   }
+  return root;
+}
 
-  const directories = [];
-  const collectDirectories = (branch) => {
-    for (const child of [...branch.children.values()].sort((a, b) => a.path.localeCompare(b.path))) {
-      directories.push(child.path);
-      collectDirectories(child);
+function dependencyIsTypeOnly(dependency) {
+  return Array.isArray(dependency?.dependencyTypes) && dependency.dependencyTypes.includes('type-only');
+}
+
+function collectEdges(modules, moduleIds) {
+  const edges = new Map();
+  for (const module of modules) {
+    for (const dependency of module.dependencies ?? []) {
+      const target = typeof dependency.resolved === 'string' ? normalize(dependency.resolved) : '';
+      if (!moduleIds.has(target)) continue;
+
+      const key = `${module.source}\0${target}`;
+      const previous = edges.get(key);
+      const typeOnly = dependencyIsTypeOnly(dependency);
+      edges.set(key, {
+        typeOnly: previous ? previous.typeOnly && typeOnly : typeOnly,
+      });
     }
-  };
-  collectDirectories(root);
+  }
+  return edges;
+}
+
+export function generateDot(artifact, variant = 'compact') {
+  const layout = resolveVariant(variant);
+  const modules = selectModules(artifact, layout);
+  const moduleIds = new Map(modules.map((module, index) => [module.source, `module_${index}`]));
+  const directories = collectDirectoryPaths(modules, layout);
   const clusterIds = new Map(directories.map((directory, index) => [directory, `cluster_${index}`]));
+  const root = buildTree(modules);
 
   const lines = [
     'strict digraph dependencies {',
@@ -102,32 +156,72 @@ export function generateDot(artifact, variant = 'reference-like') {
     '  edge [arrowhead="normal", arrowsize=0.6, penwidth=1.2, color="#00000044"];',
   ];
 
-  const renderBranch = (branch, indentation) => {
+  const pushClusterAttributes = (directory, indentation) => {
+    const prefix = ' '.repeat(indentation);
+    const id = clusterIds.get(directory);
+    lines.push(`${prefix}id=${quote(id)}; label=${quote(path.posix.basename(directory))}; tooltip=${quote(directory)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=${layout.clusterMargin};`);
+  };
+
+  const pushModule = (module, indentation) => {
+    const prefix = ' '.repeat(indentation);
+    lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}, fillcolor=${quote(nodeFillColor(module.source))}];`);
+  };
+
+  const renderTree = (branch, indentation) => {
     const prefix = ' '.repeat(indentation);
     for (const child of [...branch.children.values()].sort((a, b) => a.path.localeCompare(b.path))) {
-      // The title Graphviz emits for this named subgraph is durable, non-visual
-      // namespace metadata. Keep opaque DOM ids, but expose the complete path.
+      if (layout.omitSrcWrapper && child.path === 'src') {
+        renderTree(child, indentation);
+        continue;
+      }
       lines.push(`${prefix}subgraph ${quote(`cluster_${child.path}`)} {`);
-      lines.push(`${prefix}  id=${quote(clusterIds.get(child.path))}; label=${quote(path.posix.basename(child.path))}; tooltip=${quote(child.path)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=${layout.clusterMargin};`);
-      renderBranch(child, indentation + 2);
+      pushClusterAttributes(child.path, indentation + 2);
+      renderTree(child, indentation + 2);
       lines.push(`${prefix}}`);
     }
     for (const module of branch.modules.sort((a, b) => a.source.localeCompare(b.source))) {
-      lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}, fillcolor=${quote(nodeFillColor(module.source))}];`);
+      pushModule(module, indentation);
     }
   };
-  renderBranch(root, 2);
 
-  const edgeKeys = new Set();
-  for (const module of modules) {
-    for (const dependency of module.dependencies ?? []) {
-      const target = typeof dependency.resolved === 'string' ? normalize(dependency.resolved) : '';
-      if (moduleIds.has(target)) edgeKeys.add(`${module.source}\0${target}`);
+  const renderDependencyCruiserClusters = () => {
+    for (const module of modules) {
+      const nestedDirectories = [];
+      let directory = directoryOf(module.source);
+      while (directory) {
+        nestedDirectories.unshift(directory);
+        directory = directoryOf(directory);
+      }
+
+      let indentation = 2;
+      let opened = 0;
+      for (const nestedDirectory of nestedDirectories) {
+        if (layout.omitSrcWrapper && nestedDirectory === 'src') continue;
+        const prefix = ' '.repeat(indentation);
+        lines.push(`${prefix}subgraph ${quote(`cluster_${nestedDirectory}`)} {`);
+        pushClusterAttributes(nestedDirectory, indentation + 2);
+        indentation += 2;
+        opened += 1;
+      }
+      pushModule(module, indentation);
+      while (opened > 0) {
+        indentation -= 2;
+        lines.push(`${' '.repeat(indentation)}}`);
+        opened -= 1;
+      }
     }
-  }
-  for (const edgeKey of [...edgeKeys].sort()) {
+  };
+
+  if (layout.dependencyCruiserPacking) renderDependencyCruiserClusters();
+  else renderTree(root, 2);
+
+  const edges = collectEdges(modules, moduleIds);
+  for (const [edgeKey, metadata] of [...edges.entries()].sort(([left], [right]) => left.localeCompare(right))) {
     const [source, target] = edgeKey.split('\0');
-    lines.push(`  ${moduleIds.get(source)} -> ${moduleIds.get(target)};`);
+    const attributes = layout.edgeHierarchy && metadata.typeOnly
+      ? ' [style="dashed", color="#aaaaaa", penwidth=0.8]'
+      : '';
+    lines.push(`  ${moduleIds.get(source)} -> ${moduleIds.get(target)}${attributes};`);
   }
   lines.push('}');
   return `${lines.join('\n')}\n`;
@@ -162,21 +256,12 @@ function decodeXml(value) {
     .replaceAll('&amp;', '&');
 }
 
-export function retainedLocalModulePaths(artifact) {
-  if (!Array.isArray(artifact?.modules)) throw new TypeError('Maritime artifact must contain a modules array');
-  return localSources(artifact).sort();
+export function retainedLocalModulePaths(artifact, variant = 'compact') {
+  return selectModules(artifact, resolveVariant(variant)).map(({ source }) => source);
 }
 
-export function recursiveFolderNamespaces(artifact) {
-  const directories = new Set();
-  for (const source of retainedLocalModulePaths(artifact)) {
-    let directory = directoryOf(source);
-    while (directory) {
-      directories.add(directory);
-      directory = directoryOf(directory);
-    }
-  }
-  return [...directories].sort();
+export function recursiveFolderNamespaces(artifact, variant = 'compact') {
+  return collectDirectoryPaths(selectModules(artifact, resolveVariant(variant)), resolveVariant(variant));
 }
 
 export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, relativeTolerance = 0.1) {
@@ -199,30 +284,41 @@ export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, 
   return { reference, candidate, expectedNamespaces, aspectDifference };
 }
 
-export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1) {
-  const expectedModules = retainedLocalModulePaths(artifact);
-  const expectedNamespaces = recursiveFolderNamespaces(artifact);
+export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1, variant = 'compact') {
+  const expectedModules = retainedLocalModulePaths(artifact, variant);
+  const expectedNamespaces = recursiveFolderNamespaces(artifact, variant);
   return assertSvgCompatibility(referenceSvg, candidateSvg, {
     moduleCount: expectedModules.length,
     namespaces: expectedNamespaces,
   }, relativeTolerance);
 }
 
+function expectedGraphCounts(artifact, variant) {
+  const layout = resolveVariant(variant);
+  const modules = selectModules(artifact, layout);
+  const moduleIds = new Map(modules.map((module, index) => [module.source, `module_${index}`]));
+  return {
+    nodes: modules.length,
+    edges: collectEdges(modules, moduleIds).size,
+    clusters: collectDirectoryPaths(modules, layout).length,
+  };
+}
+
 function formatMetrics(label, metrics) {
   return `${label}: ${metrics.width} × ${metrics.height} pt; ${metrics.nodes} nodes, ${metrics.edges} edges, ${metrics.clusters} clusters; aspect ${metrics.aspectRatio.toFixed(3)}`;
 }
 
-export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'reference-like') {
+export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'compact') {
   const artifact = JSON.parse(readFileSync(inputPath, 'utf8'));
-  if (!layoutReferencePath) throw new Error('A layout reference SVG path is required');
-  const reference = inspectSvg(readFileSync(layoutReferencePath, 'utf8'));
+  const reference = layoutReferencePath ? inspectSvg(readFileSync(layoutReferencePath, 'utf8')) : undefined;
   const dot = generateDot(artifact, variant);
   const result = spawnSync(dotCommand, ['-Tsvg'], { input: dot, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
   if (result.error) throw new Error(`Unable to invoke Graphviz ${quote(dotCommand)}: ${result.error.message}`);
   if (result.status !== 0) throw new Error(`Graphviz failed with status ${result.status}: ${result.stderr.trim()}`);
   const metrics = inspectSvg(result.stdout);
-  if (metrics.nodes !== modulesCount(artifact) || metrics.edges !== edgesCount(artifact) || metrics.clusters !== directoryCount(artifact)) {
-    throw new Error(`Graphviz SVG lost graph elements: ${formatMetrics('candidate', metrics)}`);
+  const expected = expectedGraphCounts(artifact, variant);
+  if (metrics.nodes !== expected.nodes || metrics.edges !== expected.edges || metrics.clusters !== expected.clusters) {
+    throw new Error(`Graphviz SVG lost graph elements: ${formatMetrics('candidate', metrics)}; expected ${expected.nodes} nodes, ${expected.edges} edges, ${expected.clusters} clusters`);
   }
   const temporaryPath = `${outputPath}.tmp`;
   try {
@@ -232,42 +328,6 @@ export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layou
     rmSync(temporaryPath, { force: true });
   }
   return { candidate: metrics, reference };
-}
-
-function localSources(artifact) {
-  return artifact.modules
-    .map(({ source }) => typeof source === 'string' ? normalize(source) : '')
-    .filter((source) => source && !isExternal(source));
-}
-
-function modulesCount(artifact) {
-  return localSources(artifact).length;
-}
-
-function edgesCount(artifact) {
-  const sources = new Set(localSources(artifact));
-  const edges = new Set();
-  for (const module of artifact.modules) {
-    if (!sources.has(normalize(module.source ?? ''))) continue;
-    for (const dependency of module.dependencies ?? []) {
-      if (typeof dependency.resolved !== 'string') continue;
-      const target = normalize(dependency.resolved);
-      if (sources.has(target)) edges.add(normalize(module.source) + '\0' + target);
-    }
-  }
-  return edges.size;
-}
-
-function directoryCount(artifact) {
-  const directories = new Set();
-  for (const source of localSources(artifact)) {
-    let directory = directoryOf(source);
-    while (directory) {
-      directories.add(directory);
-      directory = directoryOf(directory);
-    }
-  }
-  return directories.size;
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -282,13 +342,18 @@ if (isMain) {
     return value;
   };
   const referenceArgument = readFlag('--layout-reference');
-  const variant = readFlag('--variant') ?? 'reference-like';
-  if (!referenceArgument) throw new Error('--layout-reference requires an SVG path');
-  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] --layout-reference reference.svg [--variant name]');
+  const variant = readFlag('--variant') ?? 'compact';
+  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] [--layout-reference reference.svg] [--variant name]');
   const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
-  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate.svg');
-  const { candidate, reference } = renderCandidate(inputPath, outputPath, 'dot', path.resolve(referenceArgument), variant);
+  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate-compact.svg');
+  const { candidate, reference } = renderCandidate(
+    inputPath,
+    outputPath,
+    'dot',
+    referenceArgument ? path.resolve(referenceArgument) : undefined,
+    variant,
+  );
   console.log(`Rendered ${path.relative(process.cwd(), outputPath) || outputPath} from ${path.relative(process.cwd(), inputPath) || inputPath}`);
-  console.log(formatMetrics('reference', reference));
+  if (reference) console.log(formatMetrics('reference', reference));
   console.log(formatMetrics('candidate', candidate));
 }

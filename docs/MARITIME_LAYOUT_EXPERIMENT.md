@@ -1,99 +1,115 @@
-# Maritime Layout Compatibility Experiment
+# Maritime Compact Profile Experiment
 
 ## Goal
 
-Reproduce the information density and hierarchy of Catan's historical dependency diagram from canonical Maritime evidence, while using Maritime rather than repository-owned DOT generation.
+Use Catan as a local proving ground for what Maritime's compact architecture profile should become before moving the behavior upstream.
 
-This is a **layout compatibility** experiment. It must not reduce the graph to a small folder-only overview.
+The target is the information density and hierarchy of Catan's historical dependency diagram, but the graph must remain derived from canonical Maritime evidence. Compact should be a **file-level, local-only LR architecture graph with nested folders and restrained spacing**, not a collapsed folder summary.
 
 ## Reference inputs
 
-- `docs/images/dependency-graph.reference.svg` — immutable visual reference copied from Catan commit `3bbac70d2de6dd3590bcb2c1f2710e68f5f6a871`.
-- `docs/images/dependency-graph.svg` — current beta.7 `compact-architecture` output. Keep it intact for side-by-side comparison.
-- `.maritime/dependency-graph.json` — canonical dependency evidence. Derive the candidate only from this artifact; do not revive Catan-owned dependency scanning or maintain a hand-written DOT file.
+- `docs/images/dependency-graph.reference.svg` — immutable historical target copied from Catan commit `3bbac70d2de6dd3590bcb2c1f2710e68f5f6a871`.
+- `docs/images/dependency-graph.svg` — current published beta.7 `compact-architecture` output. Keep it intact for comparison.
+- `.maritime/dependency-graph.json` — canonical dependency evidence. Every local experiment must derive from this artifact; do not revive repository-owned dependency scanning or maintain a hand-written DOT file.
 
-The reference has 113 module nodes, 351 edges, 41 nested folder clusters, and a 1566 × 3537 pt portrait canvas. The beta.6 migration had approximately the same topology (115 nodes / 358 edges) but produced a 5416 × 1704 pt panoramic layout. Beta.7 reduced it to 20 folder nodes / 63 edges, which is too abstract for Catan's desired architecture map.
+The reference has 113 module nodes, 351 rendered edges, and 41 nested folder clusters. The current Maritime evidence retains 115 local modules and 357 unique local source/target relationships. Beta.7's compact profile reduces that to 20 folder nodes and 63 edges, which is too abstract for Catan's intended architecture map.
 
-## Required deliverables
+## Historical behaviors worth recovering
 
-1. Check in a deterministic, locally runnable script under `scripts/` (for example, `scripts/experiment-maritime-layout.mjs`).
-2. The script must read the Maritime artifact and invoke Graphviz `dot`; document its command and prerequisites in the script header.
-3. Generate a candidate SVG at a clearly separate path, such as `docs/images/dependency-graph.candidate.svg`. Do not overwrite either reference SVG during the experiment.
-4. Keep the script generic: no Catan folder names, module names, or hand-positioned nodes. It should be suitable to move upstream into Dependency Maritime.
-5. Explain any Maritime renderer inputs or missing generic capability that the experiment exposes.
+Catan's old dependency-cruiser graph configuration provides concrete evidence for the desired profile:
 
-## Acceptance criteria
+- `rankdir=LR`.
+- local `src` modules only; external packages were not part of the architecture map.
+- tests/specs and `testUtils.ts` were excluded from the graph.
+- TypeScript pre-compilation dependencies were de-emphasized with dashed gray edges.
+- spacing used `nodesep=0.16` and `ranksep=0.18`.
+- dependency-cruiser's DOT repeatedly reopened folder clusters around each file instead of emitting one complete folder tree in a single block. Graphviz therefore had different packing freedom even though the visible hierarchy resolved to the same folder namespaces.
 
-- Preserve module-level detail: candidate node and edge counts should closely track canonical local production evidence rather than beta.7's 20-folder-node aggregate.
-- Preserve nested folder hierarchy: the SVG must include recursive folder clusters comparable to the reference's 41 clusters.
-- Produce a readable left-to-right (LR) architecture map within the reference-constrained canvas. Aim to stay near the reference aspect ratio and avoid beta.6's very wide panoramic layout.
-- Exclude external-package nodes and dependency-kind labels, as Catan's desired graph does.
-- Use deterministic ordering and output: repeated runs on the same artifact must produce the same SVG.
-- Preserve the canonical `.maritime/dependency-graph.json` unchanged.
-- Do not change Catan production code, dependency rules, or manually recreate the original DOT graph.
+Those are more useful experiments than arbitrary spline or whitespace presets.
 
-## Evaluation
+## Compact baseline
 
-Compare these three files side by side:
+`compact` is the control. It intentionally fixes the decisions that are already settled for this experiment:
 
-1. `docs/images/dependency-graph.reference.svg` — historical target.
-2. `docs/images/dependency-graph.svg` — current published beta.7 output.
-3. `docs/images/dependency-graph.candidate.svg` — experimental compatibility result.
+- individual source-file nodes are retained;
+- recursive folder groups are retained;
+- direction is LR;
+- external packages are excluded;
+- Graphviz uses its natural canvas — the historical SVG is never used to force `size` or `ratio`;
+- current compact spacing remains `nodesep=0.10`, `ranksep=0.12`, cluster margin `4`;
+- current full-tree cluster emission and uniform edge styling remain unchanged.
 
-The success criterion is not an exact pixel match. It is a generic Maritime-driven graph that retains the reference diagram's module-level, nested-hierarchy readability without the beta.6 panoramic expansion.
+The published beta.7 `docs/images/dependency-graph.svg` remains the summary-view comparator, so there is no value in creating another local “collapsed” variant.
 
-## Local candidate renderer
+## One-change-at-a-time variants
 
-With Graphviz `dot` on `PATH`, render the candidate from the already-generated evidence:
+The generated-artifacts workflow renders and commits these files:
+
+| Variant | Single delta from `compact` | Question it answers |
+| --- | --- | --- |
+| `candidate-compact.svg` | none | What does the current file-level compact baseline look like? |
+| `candidate-compact-no-src-wrapper.svg` | omit only the redundant outer `src` cluster | Does exposing `bots`, `features`, `game`, etc. as the visual roots improve hierarchy and packing? |
+| `candidate-compact-production-filter.svg` | apply the historical test/spec/`testUtils.ts` presentation filter | How much incidental support-code noise remains? |
+| `candidate-compact-edge-hierarchy.svg` | render exclusively type-only relationships thin/dashed | Does emphasizing runtime imports make the architecture easier to read? |
+| `candidate-compact-cluster-packing.svg` | emit repeated per-file folder clusters like the old dependency-cruiser DOT | Does historical cluster emission materially improve Graphviz routing/packing? |
+| `candidate-compact-reference-spacing.svg` | use only the historical spacing: `.16` / `.18` / margin `6` | Is the old spacing a better density/readability tradeoff? |
+
+The current Maritime evidence configuration already excludes `*.test.*`, `*.spec.*`, and `__tests__` modules before the renderer sees the artifact. Consequently, the production-filter variant currently demonstrates the remaining support-utility difference most visibly through `src/game/testUtils.ts`. A future Maritime source filter must be configurable rather than hard-coded to that filename.
+
+The edge-hierarchy experiment uses the canonical dependency metadata already present in `.maritime/dependency-graph.json`. If a source/target pair has any runtime relationship, it remains primary; a pair is dashed only when all retained relationships between those files are `type-only`. This avoids turning duplicate type/runtime evidence into extra visual edges.
+
+## Local usage
+
+With Graphviz `dot` on `PATH`, render the baseline:
 
 ```bash
 node scripts/experiment-maritime-layout.mjs \
   .maritime/dependency-graph.json \
-  docs/images/dependency-graph.candidate.svg \
-  --layout-reference docs/images/dependency-graph.reference.svg
+  docs/images/dependency-graph.candidate-compact.svg \
+  --variant compact
 ```
 
-The renderer selects every non-`node_modules` module in the artifact, retains only edges whose resolved endpoints are in that local module set, and builds recursive clusters from path segments. Stable path sorting assigns opaque node and cluster IDs, so neither repository-specific names nor layout coordinates are encoded in the renderer. Dependency kinds are deliberately not emitted.
-
-
-## Layout variants
-
-The renderer has five deterministic LR presets. They share the same Maritime evidence, module/folder coverage, and simple source-area coloring; only Graphviz routing and spacing differ.
-
-- `reference-like` — historical dependency-cruiser-inspired spacing with curved routes.
-- `compact` — tighter ranks and clusters.
-- `spacious` — more separation between ranks and folders.
-- `orthogonal` — right-angle edge routes.
-- `curved` — increased separation with curved edge routes.
-
-Run one locally with:
+The historical reference is optional and measurement-only:
 
 ```bash
 node scripts/experiment-maritime-layout.mjs \
   .maritime/dependency-graph.json \
-  docs/images/dependency-graph.candidate-reference-like.svg \
+  docs/images/dependency-graph.candidate-compact-reference-spacing.svg \
   --layout-reference docs/images/dependency-graph.reference.svg \
-  --variant reference-like
+  --variant compact-reference-spacing
 ```
 
-The generated-artifacts workflow renders and commits all five as `docs/images/dependency-graph.candidate-*.svg`. These are alternatives for visual selection; none is a Maritime production profile yet.
+The renderer validates the generated SVG itself after Graphviz runs. Each variant must retain exactly the node, unique local edge, and visible folder-namespace counts implied by that variant's filtered canonical evidence. Repeated runs on the same evidence must remain deterministic.
 
-The layout reference is required and portable: consumers supply any reference SVG rather than relying on a Catan path embedded in the renderer. Its point dimensions drive Graphviz's `size` constraint and numeric height-to-width `ratio`, making the candidate target the reference canvas while Graphviz still computes every node position. After Graphviz succeeds, the command inspects the generated SVG itself—not merely the DOT—and prints both files' point dimensions, aspect ratios, and rendered node, edge, and cluster counts. It rejects an SVG that loses retained-local edges, module nodes, or recursive clusters and writes the candidate atomically.
-
-Run the executable compatibility baseline with:
+Run the executable checks with:
 
 ```bash
 npm run test:layout
 ```
 
-That test generates the candidate from `.maritime/dependency-graph.json` with the checked-in renderer, parses both SVGs with `inspectSvg`, and requires the candidate to retain every local module and recursive folder namespace. Full namespace paths are emitted as Graphviz cluster titles/tooltips, so the assertion compares their identities rather than trusting a cluster count. The reference is first checked against itself, and the candidate's width-to-height ratio must remain within 10% of the reference.
-
-Then create the required equal-width visual comparison. This helper fails unless all three SVGs exist and both Inkscape and ImageMagick are installed:
+Then render the visual comparison grid (requires Inkscape and ImageMagick):
 
 ```bash
 node scripts/render-maritime-layout-previews.mjs
 ```
 
-It writes individual PNGs plus `docs/images/layout-previews/comparison.png`, ordered reference, beta.7, candidate. Inspect that combined image for portrait orientation, label legibility, cluster nesting, edge congestion, and unused whitespace. A candidate is not accepted or described as layout-compatible until both the SVG metrics and this side-by-side preview have been reviewed.
+The grid is ordered reference, beta.7, compact baseline, no-src wrapper, production filter, edge hierarchy, cluster packing, and reference spacing. Review label legibility, folder hierarchy, edge congestion, routing length, and whitespace rather than raw pixel similarity.
 
-The experiment uses `rankdir=LR` with tight `nodesep` and `ranksep`, but deliberately omits Graphviz's global `newrank=true`. The comparison exposes a missing Maritime profile capability: a supported module-detail renderer needs cluster-local rank controls (and tunable spacing) that do not flatten nested clusters into one global ranking problem. Those generic renderer inputs should move upstream before this becomes a production Maritime profile; the script remains an isolated compatibility experiment and does not replace `npm run generate:graph`.
+## Upstream interpretation
+
+The experiment should not turn Maritime into a bag of renderer knobs.
+
+Reasonable profile/configuration inputs are:
+
+- file-level folder grouping;
+- LR direction as the compact architecture profile default;
+- `includeExternal: false`;
+- configurable presentation/source filters for tests, specs, generated files, and support utilities.
+
+Renderer/profile implementation details should remain built in:
+
+- de-emphasizing type-only/pre-compilation relationships while keeping runtime imports primary;
+- the cluster-emission/packing strategy that produces a readable nested file graph;
+- the profile's chosen compact spacing defaults.
+
+Once the best local combination is clear, move those semantics into Dependency Maritime and return Catan to consuming the upstream compact profile rather than retaining this experiment as production graph code.

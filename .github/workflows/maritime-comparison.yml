@@ -116,11 +116,23 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Render Maritime layout compatibility variants
+      - name: Render Maritime compact override experiments
         if: steps.plan.outputs.run_maritime == 'true'
         shell: bash
         run: |
-          for layout_variant in reference-like compact spacious orthogonal curved; do
+          rm -f \
+            docs/images/dependency-graph.candidate-reference-like.svg \
+            docs/images/dependency-graph.candidate-spacious.svg \
+            docs/images/dependency-graph.candidate-orthogonal.svg \
+            docs/images/dependency-graph.candidate-curved.svg
+
+          for layout_variant in \
+            compact \
+            compact-no-src-wrapper \
+            compact-production-filter \
+            compact-edge-hierarchy \
+            compact-cluster-packing \
+            compact-reference-spacing; do
             node scripts/experiment-maritime-layout.mjs \
               .maritime/dependency-graph.json \
               "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
@@ -151,11 +163,11 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Upload Maritime layout compatibility artifacts
+      - name: Upload Maritime compact experiment artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-layout-compatibility
+          name: maritime-compact-experiments
           path: |
             .maritime/dependency-graph.json
             docs/images/dependency-graph.reference.svg
@@ -190,15 +202,15 @@ jobs:
               ;;
           esac
 
-      - name: Commit Maritime layout compatibility candidate locally
+      - name: Commit Maritime compact experiments locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          git add docs/images/dependency-graph.candidate-*.svg
+          git add -A -- ':(glob)docs/images/dependency-graph.candidate-*.svg'
           if git diff --cached --quiet; then
-            echo "Maritime layout compatibility candidate is already current."
+            echo "Maritime compact experiment artifacts are already current."
             exit 0
           fi
-          git commit -m "docs(graph): update Maritime layout compatibility variants [skip ci]"
+          git commit -m "docs(graph): update Maritime compact override experiments [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators
