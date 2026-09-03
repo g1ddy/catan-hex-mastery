@@ -55,6 +55,29 @@ node scripts/experiment-maritime-layout.mjs \
 
 The renderer selects every non-`node_modules` module in the artifact, retains only edges whose resolved endpoints are in that local module set, and builds recursive clusters from path segments. Stable path sorting assigns opaque node and cluster IDs, so neither repository-specific names nor layout coordinates are encoded in the renderer. Dependency kinds are deliberately not emitted.
 
+
+## Layout variants
+
+The renderer has five deterministic LR presets. They share the same Maritime evidence, module/folder coverage, and simple source-area coloring; only Graphviz routing and spacing differ.
+
+- `reference-like` — historical dependency-cruiser-inspired spacing with curved routes.
+- `compact` — tighter ranks and clusters.
+- `spacious` — more separation between ranks and folders.
+- `orthogonal` — right-angle edge routes.
+- `curved` — increased separation with curved edge routes.
+
+Run one locally with:
+
+```bash
+node scripts/experiment-maritime-layout.mjs \
+  .maritime/dependency-graph.json \
+  docs/images/dependency-graph.candidate-reference-like.svg \
+  --layout-reference docs/images/dependency-graph.reference.svg \
+  --variant reference-like
+```
+
+The generated-artifacts workflow renders and commits all five as `docs/images/dependency-graph.candidate-*.svg`. These are alternatives for visual selection; none is a Maritime production profile yet.
+
 The layout reference is required and portable: consumers supply any reference SVG rather than relying on a Catan path embedded in the renderer. Its point dimensions drive Graphviz's `size` constraint and numeric height-to-width `ratio`, making the candidate target the reference canvas while Graphviz still computes every node position. After Graphviz succeeds, the command inspects the generated SVG itself—not merely the DOT—and prints both files' point dimensions, aspect ratios, and rendered node, edge, and cluster counts. It rejects an SVG that loses retained-local edges, module nodes, or recursive clusters and writes the candidate atomically.
 
 Run the executable compatibility baseline with:
