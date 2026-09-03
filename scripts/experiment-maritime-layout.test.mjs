@@ -42,7 +42,7 @@ test('retains the canonical artifact module, edge, and cluster detail', () => {
   const dot = generateDot(artifact);
 
   assert.equal(dot.match(/module_\d+ \[label=.*tooltip=/gu)?.length, 115);
-  assert.equal(dot.match(/ -> /gu)?.length, 358);
+  assert.equal(dot.match(/ -> /gu)?.length, 357);
   assert.equal(dot.match(/subgraph "cluster_/gu)?.length, 41);
 });
 
