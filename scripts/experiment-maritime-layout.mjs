@@ -118,14 +118,14 @@ export function generateDot(artifact, variant = 'reference-like') {
   };
   renderBranch(root, 2);
 
-  const edgeKeys = [];
+  const edgeKeys = new Set();
   for (const module of modules) {
     for (const dependency of module.dependencies ?? []) {
       const target = typeof dependency.resolved === 'string' ? normalize(dependency.resolved) : '';
-      if (moduleIds.has(target)) edgeKeys.push(`${module.source}\0${target}`);
+      if (moduleIds.has(target)) edgeKeys.add(`${module.source}\0${target}`);
     }
   }
-  for (const edgeKey of edgeKeys.sort()) {
+  for (const edgeKey of [...edgeKeys].sort()) {
     const [source, target] = edgeKey.split('\0');
     lines.push(`  ${moduleIds.get(source)} -> ${moduleIds.get(target)};`);
   }
@@ -246,9 +246,16 @@ function modulesCount(artifact) {
 
 function edgesCount(artifact) {
   const sources = new Set(localSources(artifact));
-  return artifact.modules.reduce((count, module) => count + (module.dependencies ?? []).filter(({ resolved }) => (
-    typeof resolved === 'string' && sources.has(normalize(resolved))
-  )).length, 0);
+  const edges = new Set();
+  for (const module of artifact.modules) {
+    if (!sources.has(normalize(module.source ?? ''))) continue;
+    for (const dependency of module.dependencies ?? []) {
+      if (typeof dependency.resolved !== 'string') continue;
+      const target = normalize(dependency.resolved);
+      if (sources.has(target)) edges.add(normalize(module.source) + '\0' + target);
+    }
+  }
+  return edges.size;
 }
 
 function directoryCount(artifact) {
