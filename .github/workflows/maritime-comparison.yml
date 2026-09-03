@@ -116,13 +116,21 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Render Maritime layout compatibility candidate
+      - name: Render Maritime layout compatibility variants
         if: steps.plan.outputs.run_maritime == 'true'
-        run: >-
-          node scripts/experiment-maritime-layout.mjs
-          .maritime/dependency-graph.json
-          docs/images/dependency-graph.candidate.svg
-          --layout-reference docs/images/dependency-graph.reference.svg
+        shell: bash
+        run: |
+          for layout_variant in reference-like compact spacious orthogonal curved; do
+            node scripts/experiment-maritime-layout.mjs \
+              .maritime/dependency-graph.json \
+              "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
+              --layout-reference docs/images/dependency-graph.reference.svg \
+              --variant "${layout_variant}"
+          done
+
+      - name: Verify Maritime layout compatibility renderer
+        if: steps.plan.outputs.run_maritime == 'true'
+        run: npm run test:layout
 
       - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
@@ -152,8 +160,9 @@ jobs:
             .maritime/dependency-graph.json
             docs/images/dependency-graph.reference.svg
             docs/images/dependency-graph.svg
-            docs/images/dependency-graph.candidate.svg
+            docs/images/dependency-graph.candidate-*.svg
             scripts/experiment-maritime-layout.mjs
+            scripts/render-maritime-layout-previews.mjs
           if-no-files-found: error
 
       - name: Commit Maritime comparison outputs locally
@@ -184,12 +193,12 @@ jobs:
       - name: Commit Maritime layout compatibility candidate locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          git add docs/images/dependency-graph.candidate.svg
+          git add docs/images/dependency-graph.candidate-*.svg
           if git diff --cached --quiet; then
             echo "Maritime layout compatibility candidate is already current."
             exit 0
           fi
-          git commit -m "docs(graph): update Maritime layout compatibility candidate [skip ci]"
+          git commit -m "docs(graph): update Maritime layout compatibility variants [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators
