@@ -116,23 +116,19 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Render Maritime compact override experiments
+      - name: Render Maritime combined compact experiments
         if: steps.plan.outputs.run_maritime == 'true'
         shell: bash
         run: |
-          rm -f \
-            docs/images/dependency-graph.candidate-reference-like.svg \
-            docs/images/dependency-graph.candidate-spacious.svg \
-            docs/images/dependency-graph.candidate-orthogonal.svg \
-            docs/images/dependency-graph.candidate-curved.svg
+          rm -f docs/images/dependency-graph.candidate-*.svg
 
           for layout_variant in \
-            compact \
-            compact-no-src-wrapper \
-            compact-production-filter \
-            compact-edge-hierarchy \
-            compact-cluster-packing \
-            compact-reference-spacing; do
+            compact-combined \
+            compact-combined-cluster-packing \
+            compact-combined-bold-border \
+            compact-combined-bold-titles \
+            compact-combined-bold-border-and-titles \
+            compact-combined-bold-border-and-titles-cluster-packing; do
             node scripts/experiment-maritime-layout.mjs \
               .maritime/dependency-graph.json \
               "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
@@ -163,11 +159,11 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Upload Maritime compact experiment artifacts
+      - name: Upload Maritime combined compact experiment artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-compact-experiments
+          name: maritime-compact-combined-experiments
           path: |
             .maritime/dependency-graph.json
             docs/images/dependency-graph.reference.svg
@@ -202,15 +198,15 @@ jobs:
               ;;
           esac
 
-      - name: Commit Maritime compact experiments locally
+      - name: Commit Maritime combined compact experiments locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git add -A -- ':(glob)docs/images/dependency-graph.candidate-*.svg'
           if git diff --cached --quiet; then
-            echo "Maritime compact experiment artifacts are already current."
+            echo "Maritime combined compact experiment artifacts are already current."
             exit 0
           fi
-          git commit -m "docs(graph): update Maritime compact override experiments [skip ci]"
+          git commit -m "docs(graph): update Maritime combined compact experiments [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators
