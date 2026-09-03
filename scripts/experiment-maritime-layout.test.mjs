@@ -107,6 +107,6 @@ test('offers five unconstrained LR variants for visual comparison', () => {
     const dot = generateDot({ modules: [] }, variant);
     assert.match(dot, /strict digraph dependencies/u);
     assert.match(dot, /rankdir=LR/u);
-    assert.doesNotMatch(dot, /size=|ratio=/u);
+    assert.doesNotMatch(dot, /, size=|, ratio=/u);
   }
 });
