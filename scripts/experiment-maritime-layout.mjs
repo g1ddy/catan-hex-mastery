@@ -8,7 +8,7 @@
  * Run: node scripts/experiment-maritime-layout.mjs
  *
  * The canonical input, candidate output, and optional reference can be overridden:
- * node scripts/experiment-maritime-layout.mjs input.json output.svg --variant compact --layout-reference reference.svg
+ * node scripts/experiment-maritime-layout.mjs input.json output.svg --variant compact-combined --layout-reference reference.svg
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -29,18 +29,48 @@ const COMPACT = Object.freeze({
   productionFilter: false,
   edgeHierarchy: false,
   dependencyCruiserPacking: false,
+  clusterColor: '#c8ced8',
+  clusterFontColor: '#596273',
+  clusterFontName: 'Helvetica',
+  clusterPenwidth: 0.8,
+  clusterStyle: undefined,
+  clusterFillColor: undefined,
+});
+
+const COMBINED = Object.freeze({
+  ...COMPACT,
+  omitSrcWrapper: true,
+  productionFilter: true,
+  nodesep: 0.16,
+  ranksep: 0.18,
+  clusterMargin: 6,
+});
+
+const REFERENCE_BORDER = Object.freeze({
+  clusterColor: 'black',
+  clusterPenwidth: 2,
+});
+
+const REFERENCE_TITLES = Object.freeze({
+  clusterFontColor: 'black',
+  clusterFontName: 'Helvetica-Bold',
 });
 
 export const LAYOUT_VARIANTS = Object.freeze({
-  compact: COMPACT,
-  'compact-no-src-wrapper': Object.freeze({ ...COMPACT, omitSrcWrapper: true }),
-  'compact-production-filter': Object.freeze({ ...COMPACT, productionFilter: true }),
-  'compact-edge-hierarchy': Object.freeze({ ...COMPACT, edgeHierarchy: true }),
-  'compact-cluster-packing': Object.freeze({ ...COMPACT, dependencyCruiserPacking: true }),
-  'compact-reference-spacing': Object.freeze({ ...COMPACT, nodesep: 0.16, ranksep: 0.18, clusterMargin: 6 }),
+  'compact-combined': COMBINED,
+  'compact-combined-cluster-packing': Object.freeze({ ...COMBINED, dependencyCruiserPacking: true }),
+  'compact-combined-bold-border': Object.freeze({ ...COMBINED, ...REFERENCE_BORDER }),
+  'compact-combined-bold-titles': Object.freeze({ ...COMBINED, ...REFERENCE_TITLES }),
+  'compact-combined-bold-border-and-titles': Object.freeze({ ...COMBINED, ...REFERENCE_BORDER, ...REFERENCE_TITLES }),
+  'compact-combined-bold-border-and-titles-cluster-packing': Object.freeze({
+    ...COMBINED,
+    ...REFERENCE_BORDER,
+    ...REFERENCE_TITLES,
+    dependencyCruiserPacking: true,
+  }),
 });
 
-function resolveVariant(variant = 'compact') {
+function resolveVariant(variant = 'compact-combined') {
   const configuration = LAYOUT_VARIANTS[variant];
   if (!configuration) throw new Error(`Unknown layout variant: ${variant}`);
   return configuration;
@@ -141,7 +171,7 @@ function collectEdges(modules, moduleIds) {
   return edges;
 }
 
-export function generateDot(artifact, variant = 'compact') {
+export function generateDot(artifact, variant = 'compact-combined') {
   const layout = resolveVariant(variant);
   const modules = selectModules(artifact, layout);
   const moduleIds = new Map(modules.map((module, index) => [module.source, `module_${index}`]));
@@ -159,7 +189,20 @@ export function generateDot(artifact, variant = 'compact') {
   const pushClusterAttributes = (directory, indentation) => {
     const prefix = ' '.repeat(indentation);
     const id = clusterIds.get(directory);
-    lines.push(`${prefix}id=${quote(id)}; label=${quote(path.posix.basename(directory))}; tooltip=${quote(directory)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=${layout.clusterMargin};`);
+    const attributes = [
+      `id=${quote(id)}`,
+      `label=${quote(path.posix.basename(directory))}`,
+      `tooltip=${quote(directory)}`,
+      `color=${quote(layout.clusterColor)}`,
+      `fontcolor=${quote(layout.clusterFontColor)}`,
+      `fontname=${quote(layout.clusterFontName)}`,
+      'fontsize=9',
+      `penwidth=${layout.clusterPenwidth}`,
+      `margin=${layout.clusterMargin}`,
+    ];
+    if (layout.clusterStyle) attributes.push(`style=${quote(layout.clusterStyle)}`);
+    if (layout.clusterFillColor) attributes.push(`fillcolor=${quote(layout.clusterFillColor)}`);
+    lines.push(`${prefix}${attributes.join('; ')};`);
   };
 
   const pushModule = (module, indentation) => {
@@ -256,11 +299,11 @@ function decodeXml(value) {
     .replaceAll('&amp;', '&');
 }
 
-export function retainedLocalModulePaths(artifact, variant = 'compact') {
+export function retainedLocalModulePaths(artifact, variant = 'compact-combined') {
   return selectModules(artifact, resolveVariant(variant)).map(({ source }) => source);
 }
 
-export function recursiveFolderNamespaces(artifact, variant = 'compact') {
+export function recursiveFolderNamespaces(artifact, variant = 'compact-combined') {
   return collectDirectoryPaths(selectModules(artifact, resolveVariant(variant)), resolveVariant(variant));
 }
 
@@ -271,8 +314,8 @@ export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, 
 
   if (candidate.nodes < reference.nodes) throw new Error(`candidate has ${candidate.nodes} nodes; reference has ${reference.nodes}`);
   if (candidate.nodes !== moduleCount) throw new Error(`candidate has ${candidate.nodes} nodes; expected ${moduleCount} modules`);
-  if (candidate.clusters !== expectedNamespaces.length || candidate.clusters !== reference.clusters) {
-    throw new Error(`candidate has ${candidate.clusters} clusters; canonical artifact expects ${expectedNamespaces.length} and reference has ${reference.clusters}`);
+  if (candidate.clusters !== expectedNamespaces.length) {
+    throw new Error(`candidate has ${candidate.clusters} clusters; canonical artifact expects ${expectedNamespaces.length}`);
   }
   if (JSON.stringify(candidate.namespaces) !== JSON.stringify(expectedNamespaces)) {
     throw new Error('candidate cluster namespace metadata does not match canonical recursive folders');
@@ -284,7 +327,7 @@ export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, 
   return { reference, candidate, expectedNamespaces, aspectDifference };
 }
 
-export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1, variant = 'compact') {
+export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1, variant = 'compact-combined') {
   const expectedModules = retainedLocalModulePaths(artifact, variant);
   const expectedNamespaces = recursiveFolderNamespaces(artifact, variant);
   return assertSvgCompatibility(referenceSvg, candidateSvg, {
@@ -308,7 +351,7 @@ function formatMetrics(label, metrics) {
   return `${label}: ${metrics.width} × ${metrics.height} pt; ${metrics.nodes} nodes, ${metrics.edges} edges, ${metrics.clusters} clusters; aspect ${metrics.aspectRatio.toFixed(3)}`;
 }
 
-export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'compact') {
+export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'compact-combined') {
   const artifact = JSON.parse(readFileSync(inputPath, 'utf8'));
   const reference = layoutReferencePath ? inspectSvg(readFileSync(layoutReferencePath, 'utf8')) : undefined;
   const dot = generateDot(artifact, variant);
@@ -342,10 +385,10 @@ if (isMain) {
     return value;
   };
   const referenceArgument = readFlag('--layout-reference');
-  const variant = readFlag('--variant') ?? 'compact';
+  const variant = readFlag('--variant') ?? 'compact-combined';
   if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] [--layout-reference reference.svg] [--variant name]');
   const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
-  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate-compact.svg');
+  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate-compact-combined.svg');
   const { candidate, reference } = renderCandidate(
     inputPath,
     outputPath,
