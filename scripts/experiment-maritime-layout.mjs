@@ -19,13 +19,34 @@ import { fileURLToPath } from 'node:url';
 const quote = (value) => `"${String(value).replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`;
 const normalize = (value) => value.replaceAll('\\', '/');
 
+export const LAYOUT_VARIANTS = Object.freeze({
+  'reference-like': { splines: 'true', overlap: 'false', nodesep: 0.16, ranksep: 0.18, clusterMargin: 6 },
+  compact: { splines: 'true', overlap: 'false', nodesep: 0.10, ranksep: 0.12, clusterMargin: 4 },
+  spacious: { splines: 'true', overlap: 'false', nodesep: 0.24, ranksep: 0.30, clusterMargin: 8 },
+  orthogonal: { splines: 'ortho', overlap: 'false', nodesep: 0.16, ranksep: 0.22, clusterMargin: 6 },
+  curved: { splines: 'curved', overlap: 'false', nodesep: 0.18, ranksep: 0.24, clusterMargin: 6 },
+});
+
+function resolveVariant(variant = 'reference-like') {
+  const configuration = LAYOUT_VARIANTS[variant];
+  if (!configuration) throw new Error(`Unknown layout variant: ${variant}`);
+  return configuration;
+}
+
+function nodeFillColor(source) {
+  if (source.startsWith('src/features/')) return '#bbfeff';
+  if (source.startsWith('src/game/')) return '#ddfeff';
+  if (source.startsWith('src/bots/')) return '#fff2b2';
+  return '#ffffcc';
+}
+
 function directoryOf(modulePath) {
   const separator = modulePath.lastIndexOf('/');
   return separator < 0 ? '' : modulePath.slice(0, separator);
 }
 
 function displayName(modulePath) {
-  return path.posix.basename(modulePath).replace(/\.(?:[cm]?[jt]sx?|css)$/u, '');
+  return path.posix.basename(modulePath);
 }
 
 function isExternal(modulePath) {
@@ -47,7 +68,8 @@ function addDirectory(tree, directory) {
   return branch;
 }
 
-export function generateDot(artifact, targetDimensions) {
+export function generateDot(artifact, variant = 'reference-like') {
+  const layout = resolveVariant(variant);
   if (!Array.isArray(artifact?.modules)) {
     throw new TypeError('Maritime artifact must contain a modules array');
   }
@@ -73,14 +95,11 @@ export function generateDot(artifact, targetDimensions) {
   collectDirectories(root);
   const clusterIds = new Map(directories.map((directory, index) => [directory, `cluster_${index}`]));
 
-  const targetLayout = targetDimensions
-    ? `, size=${quote(`${(targetDimensions.width / 72).toFixed(3)},${(targetDimensions.height / 72).toFixed(3)}!`)}, ratio=${(targetDimensions.height / targetDimensions.width).toFixed(6)}`
-    : '';
   const lines = [
-    'digraph dependencies {',
-    `  graph [rankdir=LR, compound=true, remincross=true, outputorder=edgesfirst, splines=polyline, nodesep=0.10, ranksep=0.28, pad=0.10, bgcolor="transparent"${targetLayout}];`,
-    '  node [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#8b95a5", fontname="Helvetica", fontsize=8, margin="0.06,0.035", height=0.20];',
-    '  edge [color="#9aa3b2", penwidth=0.65, arrowsize=0.45];',
+    'strict digraph dependencies {',
+    `  graph [rankdir=LR, compound=true, splines=${layout.splines}, overlap=${layout.overlap}, nodesep=${layout.nodesep}, ranksep=${layout.ranksep}, pad=0.10, bgcolor="transparent", fontname="Helvetica-bold", fontsize=9, outputorder=edgesfirst];`,
+    '  node [shape=box, style="rounded,filled", color="black", fillcolor="#ffffcc", fontcolor="black", fontname="Helvetica", fontsize=9, margin="0.06,0.035", height=0.20];',
+    '  edge [arrowhead="normal", arrowsize=0.6, penwidth=1.2, color="#00000044"];',
   ];
 
   const renderBranch = (branch, indentation) => {
@@ -89,12 +108,12 @@ export function generateDot(artifact, targetDimensions) {
       // The title Graphviz emits for this named subgraph is durable, non-visual
       // namespace metadata. Keep opaque DOM ids, but expose the complete path.
       lines.push(`${prefix}subgraph ${quote(`cluster_${child.path}`)} {`);
-      lines.push(`${prefix}  id=${quote(clusterIds.get(child.path))}; label=${quote(path.posix.basename(child.path))}; tooltip=${quote(child.path)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=6;`);
+      lines.push(`${prefix}  id=${quote(clusterIds.get(child.path))}; label=${quote(path.posix.basename(child.path))}; tooltip=${quote(child.path)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=${layout.clusterMargin};`);
       renderBranch(child, indentation + 2);
       lines.push(`${prefix}}`);
     }
     for (const module of branch.modules.sort((a, b) => a.source.localeCompare(b.source))) {
-      lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}];`);
+      lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}, fillcolor=${quote(nodeFillColor(module.source))}];`);
     }
   };
   renderBranch(root, 2);
@@ -193,11 +212,11 @@ function formatMetrics(label, metrics) {
   return `${label}: ${metrics.width} × ${metrics.height} pt; ${metrics.nodes} nodes, ${metrics.edges} edges, ${metrics.clusters} clusters; aspect ${metrics.aspectRatio.toFixed(3)}`;
 }
 
-export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath) {
+export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'reference-like') {
   const artifact = JSON.parse(readFileSync(inputPath, 'utf8'));
   if (!layoutReferencePath) throw new Error('A layout reference SVG path is required');
   const reference = inspectSvg(readFileSync(layoutReferencePath, 'utf8'));
-  const dot = generateDot(artifact, reference);
+  const dot = generateDot(artifact, variant);
   const result = spawnSync(dotCommand, ['-Tsvg'], { input: dot, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
   if (result.error) throw new Error(`Unable to invoke Graphviz ${quote(dotCommand)}: ${result.error.message}`);
   if (result.status !== 0) throw new Error(`Graphviz failed with status ${result.status}: ${result.stderr.trim()}`);
@@ -247,14 +266,21 @@ function directoryCount(artifact) {
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const arguments_ = process.argv.slice(2);
-  const referenceFlag = arguments_.indexOf('--layout-reference');
-  const referenceArgument = referenceFlag < 0 ? undefined : arguments_[referenceFlag + 1];
+  const readFlag = (name) => {
+    const index = arguments_.indexOf(name);
+    if (index < 0) return undefined;
+    const value = arguments_[index + 1];
+    if (!value) throw new Error(`${name} requires a value`);
+    arguments_.splice(index, 2);
+    return value;
+  };
+  const referenceArgument = readFlag('--layout-reference');
+  const variant = readFlag('--variant') ?? 'reference-like';
   if (!referenceArgument) throw new Error('--layout-reference requires an SVG path');
-  if (referenceFlag >= 0) arguments_.splice(referenceFlag, 2);
-  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] --layout-reference reference.svg');
+  if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] --layout-reference reference.svg [--variant name]');
   const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
   const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate.svg');
-  const { candidate, reference } = renderCandidate(inputPath, outputPath, 'dot', path.resolve(referenceArgument));
+  const { candidate, reference } = renderCandidate(inputPath, outputPath, 'dot', path.resolve(referenceArgument), variant);
   console.log(`Rendered ${path.relative(process.cwd(), outputPath) || outputPath} from ${path.relative(process.cwd(), inputPath) || inputPath}`);
   console.log(formatMetrics('reference', reference));
   console.log(formatMetrics('candidate', candidate));
