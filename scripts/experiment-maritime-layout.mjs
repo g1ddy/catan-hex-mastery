@@ -31,6 +31,11 @@ const NO_SRC = Object.freeze({
   referenceEdgeTheme: false,
 });
 
+const WITH_SRC = Object.freeze({
+  ...NO_SRC,
+  omitSrcWrapper: false,
+});
+
 const REFERENCE_THEME = Object.freeze({
   referenceClusterTheme: true,
 });
@@ -48,6 +53,16 @@ export const LAYOUT_VARIANTS = Object.freeze({
     ...REFERENCE_THEME,
     ...REFERENCE_EDGES,
     productionFilter: true,
+  }),
+  'compact-src-reference-theme-edges-ts-precomp': Object.freeze({
+    ...WITH_SRC,
+    ...REFERENCE_THEME,
+    ...REFERENCE_EDGES,
+  }),
+  'compact-no-src-reference-theme-edges-ts-precomp': Object.freeze({
+    ...NO_SRC,
+    ...REFERENCE_THEME,
+    ...REFERENCE_EDGES,
   }),
 });
 
@@ -146,6 +161,7 @@ const TYPE_ONLY_DEPENDENCY_TYPES = new Set([
 ]);
 
 function dependencyIsTypeOnly(dependency) {
+  if (dependency?.preCompilationOnly === true) return true;
   return Array.isArray(dependency?.dependencyTypes)
     && dependency.dependencyTypes.some((type) => TYPE_ONLY_DEPENDENCY_TYPES.has(type));
 }

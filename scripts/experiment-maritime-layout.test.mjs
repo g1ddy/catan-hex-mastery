@@ -61,10 +61,10 @@ test('reference theme restores historical cluster weight and white rounded fill'
   assert.match(dot, /bgcolor="white"/u);
 });
 
-test('reference edge theme restores historical edge weight and de-emphasizes type-only relationships', () => {
+test('reference edge theme honors explicit preCompilationOnly relationships', () => {
   const artifact = { modules: [
     { source: 'src/a.ts', dependencies: [
-      { resolved: 'src/b.ts', dependencyTypes: ['local', 'type-only', 'import'] },
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: true },
       { resolved: 'src/c.ts', dependencyTypes: ['local', 'import'], dynamic: false },
       { resolved: 'src/d.ts', dependencyTypes: ['local', 'dynamic-import'], dynamic: true },
     ] },
@@ -72,7 +72,7 @@ test('reference edge theme restores historical edge weight and de-emphasizes typ
     { source: 'src/c.ts', dependencies: [] },
     { source: 'src/d.ts', dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges');
+  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
 
   assert.match(dot, /edge \[arrowhead="normal", arrowsize=0\.6, penwidth=2, color="#00000033"/u);
   assert.match(dot, /module_0 -> module_1 \[arrowhead="onormal", style="dashed", color="#aaaaaa", penwidth=1\];/u);
@@ -80,15 +80,15 @@ test('reference edge theme restores historical edge weight and de-emphasizes typ
   assert.match(dot, /module_0 -> module_3 \[style="dashed"\];/u);
 });
 
-test('runtime evidence keeps a source-target pair primary when duplicate type-only evidence also exists', () => {
+test('runtime evidence keeps a source-target pair primary when duplicate pre-compilation evidence also exists', () => {
   const artifact = { modules: [
     { source: 'src/a.ts', dependencies: [
-      { resolved: 'src/b.ts', dependencyTypes: ['local', 'type-only'] },
-      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'] },
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: true },
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: false },
     ] },
     { source: 'src/b.ts', dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges');
+  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
 
   assert.match(dot, /module_0 -> module_1;/u);
   assert.doesNotMatch(dot, /module_0 -> module_1 \[/u);
@@ -106,23 +106,56 @@ test('production variant excludes tests, specs, __tests__, and testUtils support
   assert.deepEqual(retainedLocalModulePaths(artifact, 'compact-no-src-reference-theme-production'), ['src/app.ts']);
 });
 
-test('all four variants retain recursive namespaces without the redundant source-root cluster', () => {
+test('src and no-src pre-compilation variants differ only in the outer source-root grouping', () => {
   const artifact = { modules: [
     { source: 'src/root.ts', dependencies: [] },
     { source: 'src/deep/a.ts', dependencies: [] },
   ] };
 
-  for (const variant of Object.keys(LAYOUT_VARIANTS)) {
+  assert.deepEqual(
+    recursiveFolderNamespaces(artifact, 'compact-src-reference-theme-edges-ts-precomp'),
+    ['src', 'src/deep'],
+  );
+  assert.deepEqual(
+    recursiveFolderNamespaces(artifact, 'compact-no-src-reference-theme-edges-ts-precomp'),
+    ['src/deep'],
+  );
+
+  const withSrc = generateDot(artifact, 'compact-src-reference-theme-edges-ts-precomp');
+  const withoutSrc = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
+  assert.match(withSrc, /subgraph "cluster_src" \{/u);
+  assert.doesNotMatch(withoutSrc, /subgraph "cluster_src" \{/u);
+  for (const dot of [withSrc, withoutSrc]) {
+    assert.match(dot, /penwidth=2, color="#00000033"/u);
+    assert.match(dot, /style="rounded,bold,filled"/u);
+  }
+});
+
+test('existing no-src variants retain recursive namespaces without the redundant source-root cluster', () => {
+  const artifact = { modules: [
+    { source: 'src/root.ts', dependencies: [] },
+    { source: 'src/deep/a.ts', dependencies: [] },
+  ] };
+
+  for (const variant of [
+    'compact-no-src-reference-colors',
+    'compact-no-src-reference-theme',
+    'compact-no-src-reference-theme-edges',
+    'compact-no-src-reference-theme-production',
+    'compact-no-src-reference-theme-edges-ts-precomp',
+  ]) {
     assert.deepEqual(recursiveFolderNamespaces(artifact, variant), ['src/deep']);
   }
 });
 
-test('exposes the focused no-src reference comparison family', () => {
+test('exposes the focused reference comparison family including ts pre-compilation variants', () => {
   assert.deepEqual(Object.keys(LAYOUT_VARIANTS), [
     'compact-no-src-reference-colors',
     'compact-no-src-reference-theme',
     'compact-no-src-reference-theme-edges',
     'compact-no-src-reference-theme-production',
+    'compact-src-reference-theme-edges-ts-precomp',
+    'compact-no-src-reference-theme-edges-ts-precomp',
   ]);
   for (const variant of Object.keys(LAYOUT_VARIANTS)) {
     const dot = generateDot({ modules: [] }, variant);
