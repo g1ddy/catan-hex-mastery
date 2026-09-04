@@ -8,323 +8,324 @@
  viewBox="0.00 0.00 1268.40 2859.22" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(7.2 2852.02)">
 <title>dependencies</title>
+<polygon fill="white" stroke="transparent" points="-7.2,7.2 -7.2,-2852.02 1261.2,-2852.02 1261.2,7.2 -7.2,7.2"/>
 <g id="cluster_0" class="cluster">
 <title>cluster_src/bots</title>
 <g id="a_cluster_0"><a xlink:title="src/bots">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="225,-2632.91 225,-2789.91 955.5,-2789.91 955.5,-2632.91 225,-2632.91"/>
-<text text-anchor="middle" x="590.25" y="-2778.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">bots</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M237,-2632.91C237,-2632.91 943.5,-2632.91 943.5,-2632.91 949.5,-2632.91 955.5,-2638.91 955.5,-2644.91 955.5,-2644.91 955.5,-2777.91 955.5,-2777.91 955.5,-2783.91 949.5,-2789.91 943.5,-2789.91 943.5,-2789.91 237,-2789.91 237,-2789.91 231,-2789.91 225,-2783.91 225,-2777.91 225,-2777.91 225,-2644.91 225,-2644.91 225,-2638.91 231,-2632.91 237,-2632.91"/>
+<text text-anchor="middle" x="590.25" y="-2778.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">bots</text>
 </a>
 </g>
 </g>
 <g id="cluster_1" class="cluster">
 <title>cluster_src/bots/logic</title>
 <g id="a_cluster_1"><a xlink:title="src/bots/logic">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="571,-2641.91 571,-2683.91 814,-2683.91 814,-2641.91 571,-2641.91"/>
-<text text-anchor="middle" x="692.5" y="-2672.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">logic</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M583,-2641.91C583,-2641.91 802,-2641.91 802,-2641.91 808,-2641.91 814,-2647.91 814,-2653.91 814,-2653.91 814,-2671.91 814,-2671.91 814,-2677.91 808,-2683.91 802,-2683.91 802,-2683.91 583,-2683.91 583,-2683.91 577,-2683.91 571,-2677.91 571,-2671.91 571,-2671.91 571,-2653.91 571,-2653.91 571,-2647.91 577,-2641.91 583,-2641.91"/>
+<text text-anchor="middle" x="692.5" y="-2672.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">logic</text>
 </a>
 </g>
 </g>
 <g id="cluster_2" class="cluster">
 <title>cluster_src/bots/profiles</title>
 <g id="a_cluster_2"><a xlink:title="src/bots/profiles">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="878,-2682.91 878,-2724.91 949,-2724.91 949,-2682.91 878,-2682.91"/>
-<text text-anchor="middle" x="913.5" y="-2713.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">profiles</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M890,-2682.91C890,-2682.91 937,-2682.91 937,-2682.91 943,-2682.91 949,-2688.91 949,-2694.91 949,-2694.91 949,-2712.91 949,-2712.91 949,-2718.91 943,-2724.91 937,-2724.91 937,-2724.91 890,-2724.91 890,-2724.91 884,-2724.91 878,-2718.91 878,-2712.91 878,-2712.91 878,-2694.91 878,-2694.91 878,-2688.91 884,-2682.91 890,-2682.91"/>
+<text text-anchor="middle" x="913.5" y="-2713.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">profiles</text>
 </a>
 </g>
 </g>
 <g id="cluster_3" class="cluster">
 <title>cluster_src/bots/utils</title>
 <g id="a_cluster_3"><a xlink:title="src/bots/utils">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="875.5,-2636.91 875.5,-2678.91 951.5,-2678.91 951.5,-2636.91 875.5,-2636.91"/>
-<text text-anchor="middle" x="913.5" y="-2667.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">utils</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M887.5,-2636.91C887.5,-2636.91 939.5,-2636.91 939.5,-2636.91 945.5,-2636.91 951.5,-2642.91 951.5,-2648.91 951.5,-2648.91 951.5,-2666.91 951.5,-2666.91 951.5,-2672.91 945.5,-2678.91 939.5,-2678.91 939.5,-2678.91 887.5,-2678.91 887.5,-2678.91 881.5,-2678.91 875.5,-2672.91 875.5,-2666.91 875.5,-2666.91 875.5,-2648.91 875.5,-2648.91 875.5,-2642.91 881.5,-2636.91 887.5,-2636.91"/>
+<text text-anchor="middle" x="913.5" y="-2667.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">utils</text>
 </a>
 </g>
 </g>
 <g id="cluster_4" class="cluster">
 <title>cluster_src/features</title>
 <g id="a_cluster_4"><a xlink:title="src/features">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="331,-227.91 331,-1498.91 1089,-1498.91 1089,-227.91 331,-227.91"/>
-<text text-anchor="middle" x="710" y="-1487.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">features</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M343,-227.91C343,-227.91 1077,-227.91 1077,-227.91 1083,-227.91 1089,-233.91 1089,-239.91 1089,-239.91 1089,-1486.91 1089,-1486.91 1089,-1492.91 1083,-1498.91 1077,-1498.91 1077,-1498.91 343,-1498.91 343,-1498.91 337,-1498.91 331,-1492.91 331,-1486.91 331,-1486.91 331,-239.91 331,-239.91 331,-233.91 337,-227.91 343,-227.91"/>
+<text text-anchor="middle" x="710" y="-1487.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">features</text>
 </a>
 </g>
 </g>
 <g id="cluster_5" class="cluster">
 <title>cluster_src/features/board</title>
 <g id="a_cluster_5"><a xlink:title="src/features/board">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="339,-1255.91 339,-1470.91 1085,-1470.91 1085,-1255.91 339,-1255.91"/>
-<text text-anchor="middle" x="712" y="-1459.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">board</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M351,-1255.91C351,-1255.91 1073,-1255.91 1073,-1255.91 1079,-1255.91 1085,-1261.91 1085,-1267.91 1085,-1267.91 1085,-1458.91 1085,-1458.91 1085,-1464.91 1079,-1470.91 1073,-1470.91 1073,-1470.91 351,-1470.91 351,-1470.91 345,-1470.91 339,-1464.91 339,-1458.91 339,-1458.91 339,-1267.91 339,-1267.91 339,-1261.91 345,-1255.91 351,-1255.91"/>
+<text text-anchor="middle" x="712" y="-1459.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">board</text>
 </a>
 </g>
 </g>
 <g id="cluster_6" class="cluster">
 <title>cluster_src/features/board/components</title>
 <g id="a_cluster_6"><a xlink:title="src/features/board/components">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="453,-1328.91 453,-1448.91 1081,-1448.91 1081,-1328.91 453,-1328.91"/>
-<text text-anchor="middle" x="767" y="-1437.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">components</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M465,-1328.91C465,-1328.91 1069,-1328.91 1069,-1328.91 1075,-1328.91 1081,-1334.91 1081,-1340.91 1081,-1340.91 1081,-1436.91 1081,-1436.91 1081,-1442.91 1075,-1448.91 1069,-1448.91 1069,-1448.91 465,-1448.91 465,-1448.91 459,-1448.91 453,-1442.91 453,-1436.91 453,-1436.91 453,-1340.91 453,-1340.91 453,-1334.91 459,-1328.91 465,-1328.91"/>
+<text text-anchor="middle" x="767" y="-1437.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">components</text>
 </a>
 </g>
 </g>
 <g id="cluster_7" class="cluster">
 <title>cluster_src/features/board/hooks</title>
 <g id="a_cluster_7"><a xlink:title="src/features/board/hooks">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="430,-1259.91 430,-1324.91 554,-1324.91 554,-1259.91 430,-1259.91"/>
-<text text-anchor="middle" x="492" y="-1313.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hooks</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M442,-1259.91C442,-1259.91 542,-1259.91 542,-1259.91 548,-1259.91 554,-1265.91 554,-1271.91 554,-1271.91 554,-1312.91 554,-1312.91 554,-1318.91 548,-1324.91 542,-1324.91 542,-1324.91 442,-1324.91 442,-1324.91 436,-1324.91 430,-1318.91 430,-1312.91 430,-1312.91 430,-1271.91 430,-1271.91 430,-1265.91 436,-1259.91 442,-1259.91"/>
+<text text-anchor="middle" x="492" y="-1313.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hooks</text>
 </a>
 </g>
 </g>
 <g id="cluster_8" class="cluster">
 <title>cluster_src/features/coach</title>
 <g id="a_cluster_8"><a xlink:title="src/features/coach">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="442,-412.91 442,-601.91 981,-601.91 981,-412.91 442,-412.91"/>
-<text text-anchor="middle" x="711.5" y="-590.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">coach</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M454,-412.91C454,-412.91 969,-412.91 969,-412.91 975,-412.91 981,-418.91 981,-424.91 981,-424.91 981,-589.91 981,-589.91 981,-595.91 975,-601.91 969,-601.91 969,-601.91 454,-601.91 454,-601.91 448,-601.91 442,-595.91 442,-589.91 442,-589.91 442,-424.91 442,-424.91 442,-418.91 448,-412.91 454,-412.91"/>
+<text text-anchor="middle" x="711.5" y="-590.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coach</text>
 </a>
 </g>
 </g>
 <g id="cluster_9" class="cluster">
 <title>cluster_src/features/coach/components</title>
 <g id="a_cluster_9"><a xlink:title="src/features/coach/components">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="579.5,-416.91 579.5,-527.91 977,-527.91 977,-416.91 579.5,-416.91"/>
-<text text-anchor="middle" x="778.25" y="-516.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">components</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M591.5,-416.91C591.5,-416.91 965,-416.91 965,-416.91 971,-416.91 977,-422.91 977,-428.91 977,-428.91 977,-515.91 977,-515.91 977,-521.91 971,-527.91 965,-527.91 965,-527.91 591.5,-527.91 591.5,-527.91 585.5,-527.91 579.5,-521.91 579.5,-515.91 579.5,-515.91 579.5,-428.91 579.5,-428.91 579.5,-422.91 585.5,-416.91 591.5,-416.91"/>
+<text text-anchor="middle" x="778.25" y="-516.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">components</text>
 </a>
 </g>
 </g>
 <g id="cluster_10" class="cluster">
 <title>cluster_src/features/coach/hooks</title>
 <g id="a_cluster_10"><a xlink:title="src/features/coach/hooks">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="446,-537.91 446,-579.91 538,-579.91 538,-537.91 446,-537.91"/>
-<text text-anchor="middle" x="492" y="-568.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hooks</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M458,-537.91C458,-537.91 526,-537.91 526,-537.91 532,-537.91 538,-543.91 538,-549.91 538,-549.91 538,-567.91 538,-567.91 538,-573.91 532,-579.91 526,-579.91 526,-579.91 458,-579.91 458,-579.91 452,-579.91 446,-573.91 446,-567.91 446,-567.91 446,-549.91 446,-549.91 446,-543.91 452,-537.91 458,-537.91"/>
+<text text-anchor="middle" x="492" y="-568.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hooks</text>
 </a>
 </g>
 </g>
 <g id="cluster_11" class="cluster">
 <title>cluster_src/features/coach/logic</title>
 <g id="a_cluster_11"><a xlink:title="src/features/coach/logic">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="587.5,-537.91 587.5,-579.91 661.5,-579.91 661.5,-537.91 587.5,-537.91"/>
-<text text-anchor="middle" x="624.5" y="-568.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">logic</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M599.5,-537.91C599.5,-537.91 649.5,-537.91 649.5,-537.91 655.5,-537.91 661.5,-543.91 661.5,-549.91 661.5,-549.91 661.5,-567.91 661.5,-567.91 661.5,-573.91 655.5,-579.91 649.5,-579.91 649.5,-579.91 599.5,-579.91 599.5,-579.91 593.5,-579.91 587.5,-573.91 587.5,-567.91 587.5,-567.91 587.5,-549.91 587.5,-549.91 587.5,-543.91 593.5,-537.91 599.5,-537.91"/>
+<text text-anchor="middle" x="624.5" y="-568.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">logic</text>
 </a>
 </g>
 </g>
 <g id="cluster_12" class="cluster">
 <title>cluster_src/features/game</title>
 <g id="a_cluster_12"><a xlink:title="src/features/game">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="335,-233.91 335,-393.91 691,-393.91 691,-233.91 335,-233.91"/>
-<text text-anchor="middle" x="513" y="-382.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">game</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M347,-233.91C347,-233.91 679,-233.91 679,-233.91 685,-233.91 691,-239.91 691,-245.91 691,-245.91 691,-381.91 691,-381.91 691,-387.91 685,-393.91 679,-393.91 679,-393.91 347,-393.91 347,-393.91 341,-393.91 335,-387.91 335,-381.91 335,-381.91 335,-245.91 335,-245.91 335,-239.91 341,-233.91 347,-233.91"/>
+<text text-anchor="middle" x="513" y="-382.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">game</text>
 </a>
 </g>
 </g>
 <g id="cluster_13" class="cluster">
 <title>cluster_src/features/game/components</title>
 <g id="a_cluster_13"><a xlink:title="src/features/game/components">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="571,-329.91 571,-371.91 678,-371.91 678,-329.91 571,-329.91"/>
-<text text-anchor="middle" x="624.5" y="-360.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">components</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M583,-329.91C583,-329.91 666,-329.91 666,-329.91 672,-329.91 678,-335.91 678,-341.91 678,-341.91 678,-359.91 678,-359.91 678,-365.91 672,-371.91 666,-371.91 666,-371.91 583,-371.91 583,-371.91 577,-371.91 571,-365.91 571,-359.91 571,-359.91 571,-341.91 571,-341.91 571,-335.91 577,-329.91 583,-329.91"/>
+<text text-anchor="middle" x="624.5" y="-360.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">components</text>
 </a>
 </g>
 </g>
 <g id="cluster_14" class="cluster">
 <title>cluster_src/features/game/hooks</title>
 <g id="a_cluster_14"><a xlink:title="src/features/game/hooks">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="562,-237.91 562,-325.91 687,-325.91 687,-237.91 562,-237.91"/>
-<text text-anchor="middle" x="624.5" y="-314.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hooks</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M574,-237.91C574,-237.91 675,-237.91 675,-237.91 681,-237.91 687,-243.91 687,-249.91 687,-249.91 687,-313.91 687,-313.91 687,-319.91 681,-325.91 675,-325.91 675,-325.91 574,-325.91 574,-325.91 568,-325.91 562,-319.91 562,-313.91 562,-313.91 562,-249.91 562,-249.91 562,-243.91 568,-237.91 574,-237.91"/>
+<text text-anchor="middle" x="624.5" y="-314.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hooks</text>
 </a>
 </g>
 </g>
 <g id="cluster_15" class="cluster">
 <title>cluster_src/features/hud</title>
 <g id="a_cluster_15"><a xlink:title="src/features/hud">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="453.5,-881.91 453.5,-1251.91 974,-1251.91 974,-881.91 453.5,-881.91"/>
-<text text-anchor="middle" x="713.75" y="-1240.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hud</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M465.5,-881.91C465.5,-881.91 962,-881.91 962,-881.91 968,-881.91 974,-887.91 974,-893.91 974,-893.91 974,-1239.91 974,-1239.91 974,-1245.91 968,-1251.91 962,-1251.91 962,-1251.91 465.5,-1251.91 465.5,-1251.91 459.5,-1251.91 453.5,-1245.91 453.5,-1239.91 453.5,-1239.91 453.5,-893.91 453.5,-893.91 453.5,-887.91 459.5,-881.91 465.5,-881.91"/>
+<text text-anchor="middle" x="713.75" y="-1240.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hud</text>
 </a>
 </g>
 </g>
 <g id="cluster_16" class="cluster">
 <title>cluster_src/features/hud/components</title>
 <g id="a_cluster_16"><a xlink:title="src/features/hud/components">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="564.5,-885.91 564.5,-1091.91 963.5,-1091.91 963.5,-885.91 564.5,-885.91"/>
-<text text-anchor="middle" x="764" y="-1080.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">components</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M576.5,-885.91C576.5,-885.91 951.5,-885.91 951.5,-885.91 957.5,-885.91 963.5,-891.91 963.5,-897.91 963.5,-897.91 963.5,-1079.91 963.5,-1079.91 963.5,-1085.91 957.5,-1091.91 951.5,-1091.91 951.5,-1091.91 576.5,-1091.91 576.5,-1091.91 570.5,-1091.91 564.5,-1085.91 564.5,-1079.91 564.5,-1079.91 564.5,-897.91 564.5,-897.91 564.5,-891.91 570.5,-885.91 576.5,-885.91"/>
+<text text-anchor="middle" x="764" y="-1080.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">components</text>
 </a>
 </g>
 </g>
 <g id="cluster_17" class="cluster">
 <title>cluster_src/features/hud/components/constants</title>
 <g id="a_cluster_17"><a xlink:title="src/features/hud/components/constants">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="882.5,-1027.91 882.5,-1069.91 944.5,-1069.91 944.5,-1027.91 882.5,-1027.91"/>
-<text text-anchor="middle" x="913.5" y="-1058.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">constants</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M892.5,-1027.91C892.5,-1027.91 935.5,-1027.91 935.5,-1027.91 941.5,-1027.91 947.5,-1033.91 947.5,-1039.91 947.5,-1039.91 947.5,-1057.91 947.5,-1057.91 947.5,-1063.91 941.5,-1069.91 935.5,-1069.91 935.5,-1069.91 892.5,-1069.91 892.5,-1069.91 886.5,-1069.91 880.5,-1063.91 880.5,-1057.91 880.5,-1057.91 880.5,-1039.91 880.5,-1039.91 880.5,-1033.91 886.5,-1027.91 892.5,-1027.91"/>
+<text text-anchor="middle" x="914" y="-1058.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">constants</text>
 </a>
 </g>
 </g>
 <g id="cluster_18" class="cluster">
 <title>cluster_src/features/hud/components/controls</title>
 <g id="a_cluster_18"><a xlink:title="src/features/hud/components/controls">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="723,-889.91 723,-1000.91 959.5,-1000.91 959.5,-889.91 723,-889.91"/>
-<text text-anchor="middle" x="841.25" y="-989.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">controls</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M735,-889.91C735,-889.91 947.5,-889.91 947.5,-889.91 953.5,-889.91 959.5,-895.91 959.5,-901.91 959.5,-901.91 959.5,-988.91 959.5,-988.91 959.5,-994.91 953.5,-1000.91 947.5,-1000.91 947.5,-1000.91 735,-1000.91 735,-1000.91 729,-1000.91 723,-994.91 723,-988.91 723,-988.91 723,-901.91 723,-901.91 723,-895.91 729,-889.91 735,-889.91"/>
+<text text-anchor="middle" x="841.25" y="-989.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">controls</text>
 </a>
 </g>
 </g>
 <g id="cluster_19" class="cluster">
 <title>cluster_src/features/hud/components/notifications</title>
 <g id="a_cluster_19"><a xlink:title="src/features/hud/components/notifications">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="707,-1004.91 707,-1069.91 841,-1069.91 841,-1004.91 707,-1004.91"/>
-<text text-anchor="middle" x="774" y="-1058.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">notifications</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M719,-1004.91C719,-1004.91 829,-1004.91 829,-1004.91 835,-1004.91 841,-1010.91 841,-1016.91 841,-1016.91 841,-1057.91 841,-1057.91 841,-1063.91 835,-1069.91 829,-1069.91 829,-1069.91 719,-1069.91 719,-1069.91 713,-1069.91 707,-1063.91 707,-1057.91 707,-1057.91 707,-1016.91 707,-1016.91 707,-1010.91 713,-1004.91 719,-1004.91"/>
+<text text-anchor="middle" x="774" y="-1058.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">notifications</text>
 </a>
 </g>
 </g>
 <g id="cluster_20" class="cluster">
 <title>cluster_src/features/hud/hooks</title>
 <g id="a_cluster_20"><a xlink:title="src/features/hud/hooks">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="699,-1141.91 699,-1229.91 959.5,-1229.91 959.5,-1141.91 699,-1141.91"/>
-<text text-anchor="middle" x="829.25" y="-1218.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hooks</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M711,-1141.91C711,-1141.91 947.5,-1141.91 947.5,-1141.91 953.5,-1141.91 959.5,-1147.91 959.5,-1153.91 959.5,-1153.91 959.5,-1217.91 959.5,-1217.91 959.5,-1223.91 953.5,-1229.91 947.5,-1229.91 947.5,-1229.91 711,-1229.91 711,-1229.91 705,-1229.91 699,-1223.91 699,-1217.91 699,-1217.91 699,-1153.91 699,-1153.91 699,-1147.91 705,-1141.91 711,-1141.91"/>
+<text text-anchor="middle" x="829.25" y="-1218.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hooks</text>
 </a>
 </g>
 </g>
 <g id="cluster_21" class="cluster">
 <title>cluster_src/features/hud/logic</title>
 <g id="a_cluster_21"><a xlink:title="src/features/hud/logic">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="857,-1095.91 857,-1137.91 970,-1137.91 970,-1095.91 857,-1095.91"/>
-<text text-anchor="middle" x="913.5" y="-1126.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">logic</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M869,-1095.91C869,-1095.91 958,-1095.91 958,-1095.91 964,-1095.91 970,-1101.91 970,-1107.91 970,-1107.91 970,-1125.91 970,-1125.91 970,-1131.91 964,-1137.91 958,-1137.91 958,-1137.91 869,-1137.91 869,-1137.91 863,-1137.91 857,-1131.91 857,-1125.91 857,-1125.91 857,-1107.91 857,-1107.91 857,-1101.91 863,-1095.91 869,-1095.91"/>
+<text text-anchor="middle" x="913.5" y="-1126.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">logic</text>
 </a>
 </g>
 </g>
 <g id="cluster_22" class="cluster">
 <title>cluster_src/features/shared</title>
 <g id="a_cluster_22"><a xlink:title="src/features/shared">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="853.5,-605.91 853.5,-877.91 1076,-877.91 1076,-605.91 853.5,-605.91"/>
-<text text-anchor="middle" x="964.75" y="-866.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">shared</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M865.5,-605.91C865.5,-605.91 1064,-605.91 1064,-605.91 1070,-605.91 1076,-611.91 1076,-617.91 1076,-617.91 1076,-865.91 1076,-865.91 1076,-871.91 1070,-877.91 1064,-877.91 1064,-877.91 865.5,-877.91 865.5,-877.91 859.5,-877.91 853.5,-871.91 853.5,-865.91 853.5,-865.91 853.5,-617.91 853.5,-617.91 853.5,-611.91 859.5,-605.91 865.5,-605.91"/>
+<text text-anchor="middle" x="964.75" y="-866.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">shared</text>
 </a>
 </g>
 </g>
 <g id="cluster_23" class="cluster">
 <title>cluster_src/features/shared/components</title>
 <g id="a_cluster_23"><a xlink:title="src/features/shared/components">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="857.5,-655.91 857.5,-720.91 969.5,-720.91 969.5,-655.91 857.5,-655.91"/>
-<text text-anchor="middle" x="913.5" y="-709.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">components</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M869.5,-655.91C869.5,-655.91 957.5,-655.91 957.5,-655.91 963.5,-655.91 969.5,-661.91 969.5,-667.91 969.5,-667.91 969.5,-708.91 969.5,-708.91 969.5,-714.91 963.5,-720.91 957.5,-720.91 957.5,-720.91 869.5,-720.91 869.5,-720.91 863.5,-720.91 857.5,-714.91 857.5,-708.91 857.5,-708.91 857.5,-667.91 857.5,-667.91 857.5,-661.91 863.5,-655.91 869.5,-655.91"/>
+<text text-anchor="middle" x="913.5" y="-709.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">components</text>
 </a>
 </g>
 </g>
 <g id="cluster_24" class="cluster">
 <title>cluster_src/features/shared/config</title>
 <g id="a_cluster_24"><a xlink:title="src/features/shared/config">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="1001,-745.91 1001,-787.91 1072,-787.91 1072,-745.91 1001,-745.91"/>
-<text text-anchor="middle" x="1036.5" y="-776.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">config</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1013,-745.91C1013,-745.91 1060,-745.91 1060,-745.91 1066,-745.91 1072,-751.91 1072,-757.91 1072,-757.91 1072,-775.91 1072,-775.91 1072,-781.91 1066,-787.91 1060,-787.91 1060,-787.91 1013,-787.91 1013,-787.91 1007,-787.91 1001,-781.91 1001,-775.91 1001,-775.91 1001,-757.91 1001,-757.91 1001,-751.91 1007,-745.91 1013,-745.91"/>
+<text text-anchor="middle" x="1036.5" y="-776.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">config</text>
 </a>
 </g>
 </g>
 <g id="cluster_25" class="cluster">
 <title>cluster_src/features/shared/constants</title>
 <g id="a_cluster_25"><a xlink:title="src/features/shared/constants">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="880,-724.91 880,-789.91 947,-789.91 947,-724.91 880,-724.91"/>
-<text text-anchor="middle" x="913.5" y="-778.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">constants</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M892,-724.91C892,-724.91 935,-724.91 935,-724.91 941,-724.91 947,-730.91 947,-736.91 947,-736.91 947,-777.91 947,-777.91 947,-783.91 941,-789.91 935,-789.91 935,-789.91 892,-789.91 892,-789.91 886,-789.91 880,-783.91 880,-777.91 880,-777.91 880,-736.91 880,-736.91 880,-730.91 886,-724.91 892,-724.91"/>
+<text text-anchor="middle" x="913.5" y="-778.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">constants</text>
 </a>
 </g>
 </g>
 <g id="cluster_26" class="cluster">
 <title>cluster_src/features/shared/hooks</title>
 <g id="a_cluster_26"><a xlink:title="src/features/shared/hooks">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="873.5,-609.91 873.5,-651.91 953.5,-651.91 953.5,-609.91 873.5,-609.91"/>
-<text text-anchor="middle" x="913.5" y="-640.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">hooks</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M885.5,-609.91C885.5,-609.91 941.5,-609.91 941.5,-609.91 947.5,-609.91 953.5,-615.91 953.5,-621.91 953.5,-621.91 953.5,-639.91 953.5,-639.91 953.5,-645.91 947.5,-651.91 941.5,-651.91 941.5,-651.91 885.5,-651.91 885.5,-651.91 879.5,-651.91 873.5,-645.91 873.5,-639.91 873.5,-639.91 873.5,-621.91 873.5,-621.91 873.5,-615.91 879.5,-609.91 885.5,-609.91"/>
+<text text-anchor="middle" x="913.5" y="-640.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">hooks</text>
 </a>
 </g>
 </g>
 <g id="cluster_27" class="cluster">
 <title>cluster_src/features/shared/utils</title>
 <g id="a_cluster_27"><a xlink:title="src/features/shared/utils">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="879,-813.91 879,-855.91 948,-855.91 948,-813.91 879,-813.91"/>
-<text text-anchor="middle" x="913.5" y="-844.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">utils</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M891,-813.91C891,-813.91 936,-813.91 936,-813.91 942,-813.91 948,-819.91 948,-825.91 948,-825.91 948,-843.91 948,-843.91 948,-849.91 942,-855.91 936,-855.91 936,-855.91 891,-855.91 891,-855.91 885,-855.91 879,-849.91 879,-843.91 879,-843.91 879,-825.91 879,-825.91 879,-819.91 885,-813.91 891,-813.91"/>
+<text text-anchor="middle" x="913.5" y="-844.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">utils</text>
 </a>
 </g>
 </g>
 <g id="cluster_28" class="cluster">
 <title>cluster_src/game</title>
 <g id="a_cluster_28"><a xlink:title="src/game">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="461,-1740.91 461,-2607.91 1246,-2607.91 1246,-1740.91 461,-1740.91"/>
-<text text-anchor="middle" x="853.5" y="-2596.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">game</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M473,-1740.91C473,-1740.91 1234,-1740.91 1234,-1740.91 1240,-1740.91 1246,-1746.91 1246,-1752.91 1246,-1752.91 1246,-2595.91 1246,-2595.91 1246,-2601.91 1240,-2607.91 1234,-2607.91 1234,-2607.91 473,-2607.91 473,-2607.91 467,-2607.91 461,-2601.91 461,-2595.91 461,-2595.91 461,-1752.91 461,-1752.91 461,-1746.91 467,-1740.91 473,-1740.91"/>
+<text text-anchor="middle" x="853.5" y="-2596.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">game</text>
 </a>
 </g>
 </g>
 <g id="cluster_29" class="cluster">
 <title>cluster_src/game/analysis</title>
 <g id="a_cluster_29"><a xlink:title="src/game/analysis">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="583,-1786.91 583,-1943.91 1169.5,-1943.91 1169.5,-1786.91 583,-1786.91"/>
-<text text-anchor="middle" x="876.25" y="-1932.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">analysis</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M595,-1786.91C595,-1786.91 1157.5,-1786.91 1157.5,-1786.91 1163.5,-1786.91 1169.5,-1792.91 1169.5,-1798.91 1169.5,-1798.91 1169.5,-1931.91 1169.5,-1931.91 1169.5,-1937.91 1163.5,-1943.91 1157.5,-1943.91 1157.5,-1943.91 595,-1943.91 595,-1943.91 589,-1943.91 583,-1937.91 583,-1931.91 583,-1931.91 583,-1798.91 583,-1798.91 583,-1792.91 589,-1786.91 595,-1786.91"/>
+<text text-anchor="middle" x="876.25" y="-1932.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">analysis</text>
 </a>
 </g>
 </g>
 <g id="cluster_30" class="cluster">
 <title>cluster_src/game/analysis/advisors</title>
 <g id="a_cluster_30"><a xlink:title="src/game/analysis/advisors">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="871,-1813.91 871,-1878.91 1082,-1878.91 1082,-1813.91 871,-1813.91"/>
-<text text-anchor="middle" x="976.5" y="-1867.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">advisors</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M883,-1813.91C883,-1813.91 1070,-1813.91 1070,-1813.91 1076,-1813.91 1082,-1819.91 1082,-1825.91 1082,-1825.91 1082,-1866.91 1082,-1866.91 1082,-1872.91 1076,-1878.91 1070,-1878.91 1070,-1878.91 883,-1878.91 883,-1878.91 877,-1878.91 871,-1872.91 871,-1866.91 871,-1866.91 871,-1825.91 871,-1825.91 871,-1819.91 877,-1813.91 883,-1813.91"/>
+<text text-anchor="middle" x="976.5" y="-1867.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">advisors</text>
 </a>
 </g>
 </g>
 <g id="cluster_31" class="cluster">
 <title>cluster_src/game/core</title>
 <g id="a_cluster_31"><a xlink:title="src/game/core">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="1097,-1967.91 1097,-2124.91 1242,-2124.91 1242,-1967.91 1097,-1967.91"/>
-<text text-anchor="middle" x="1169.5" y="-2113.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">core</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1109,-1967.91C1109,-1967.91 1230,-1967.91 1230,-1967.91 1236,-1967.91 1242,-1973.91 1242,-1979.91 1242,-1979.91 1242,-2112.91 1242,-2112.91 1242,-2118.91 1236,-2124.91 1230,-2124.91 1230,-2124.91 1109,-2124.91 1109,-2124.91 1103,-2124.91 1097,-2118.91 1097,-2112.91 1097,-2112.91 1097,-1979.91 1097,-1979.91 1097,-1973.91 1103,-1967.91 1109,-1967.91"/>
+<text text-anchor="middle" x="1169.5" y="-2113.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">core</text>
 </a>
 </g>
 </g>
 <g id="cluster_32" class="cluster">
 <title>cluster_src/game/core/utils</title>
 <g id="a_cluster_32"><a xlink:title="src/game/core/utils">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="1101,-1971.91 1101,-2036.91 1176,-2036.91 1176,-1971.91 1101,-1971.91"/>
-<text text-anchor="middle" x="1138.5" y="-2025.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">utils</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1113,-1971.91C1113,-1971.91 1164,-1971.91 1164,-1971.91 1170,-1971.91 1176,-1977.91 1176,-1983.91 1176,-1983.91 1176,-2024.91 1176,-2024.91 1176,-2030.91 1170,-2036.91 1164,-2036.91 1164,-2036.91 1113,-2036.91 1113,-2036.91 1107,-2036.91 1101,-2030.91 1101,-2024.91 1101,-2024.91 1101,-1983.91 1101,-1983.91 1101,-1977.91 1107,-1971.91 1113,-1971.91"/>
+<text text-anchor="middle" x="1138.5" y="-2025.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">utils</text>
 </a>
 </g>
 </g>
 <g id="cluster_33" class="cluster">
 <title>cluster_src/game/generation</title>
 <g id="a_cluster_33"><a xlink:title="src/game/generation">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="1000.5,-2468.91 1000.5,-2510.91 1072.5,-2510.91 1072.5,-2468.91 1000.5,-2468.91"/>
-<text text-anchor="middle" x="1036.5" y="-2499.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">generation</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1012.5,-2468.91C1012.5,-2468.91 1061.5,-2468.91 1061.5,-2468.91 1067.5,-2468.91 1073.5,-2474.91 1073.5,-2480.91 1073.5,-2480.91 1073.5,-2498.91 1073.5,-2498.91 1073.5,-2504.91 1067.5,-2510.91 1061.5,-2510.91 1061.5,-2510.91 1012.5,-2510.91 1012.5,-2510.91 1006.5,-2510.91 1000.5,-2504.91 1000.5,-2498.91 1000.5,-2498.91 1000.5,-2480.91 1000.5,-2480.91 1000.5,-2474.91 1006.5,-2468.91 1012.5,-2468.91"/>
+<text text-anchor="middle" x="1037" y="-2499.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">generation</text>
 </a>
 </g>
 </g>
 <g id="cluster_34" class="cluster">
 <title>cluster_src/game/geometry</title>
 <g id="a_cluster_34"><a xlink:title="src/game/geometry">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="989,-2520.91 989,-2571.91 1242,-2571.91 1242,-2520.91 989,-2520.91"/>
-<text text-anchor="middle" x="1115.5" y="-2560.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">geometry</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1001,-2520.91C1001,-2520.91 1230,-2520.91 1230,-2520.91 1236,-2520.91 1242,-2526.91 1242,-2532.91 1242,-2532.91 1242,-2559.91 1242,-2559.91 1242,-2565.91 1236,-2571.91 1230,-2571.91 1230,-2571.91 1001,-2571.91 1001,-2571.91 995,-2571.91 989,-2565.91 989,-2559.91 989,-2559.91 989,-2532.91 989,-2532.91 989,-2526.91 995,-2520.91 1001,-2520.91"/>
+<text text-anchor="middle" x="1115.5" y="-2560.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
 </a>
 </g>
 </g>
 <g id="cluster_35" class="cluster">
 <title>cluster_src/game/mechanics</title>
 <g id="a_cluster_35"><a xlink:title="src/game/mechanics">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="998,-2238.91 998,-2395.91 1075,-2395.91 1075,-2238.91 998,-2238.91"/>
-<text text-anchor="middle" x="1036.5" y="-2384.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">mechanics</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M1010,-2238.91C1010,-2238.91 1063,-2238.91 1063,-2238.91 1069,-2238.91 1075,-2244.91 1075,-2250.91 1075,-2250.91 1075,-2383.91 1075,-2383.91 1075,-2389.91 1069,-2395.91 1063,-2395.91 1063,-2395.91 1010,-2395.91 1010,-2395.91 1004,-2395.91 998,-2389.91 998,-2383.91 998,-2383.91 998,-2250.91 998,-2250.91 998,-2244.91 1004,-2238.91 1010,-2238.91"/>
+<text text-anchor="middle" x="1036.5" y="-2384.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">mechanics</text>
 </a>
 </g>
 </g>
 <g id="cluster_36" class="cluster">
 <title>cluster_src/game/moves</title>
 <g id="a_cluster_36"><a xlink:title="src/game/moves">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="593.5,-2107.91 593.5,-2241.91 655.5,-2241.91 655.5,-2107.91 593.5,-2107.91"/>
-<text text-anchor="middle" x="624.5" y="-2230.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">moves</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M605.5,-2107.91C605.5,-2107.91 643.5,-2107.91 643.5,-2107.91 649.5,-2107.91 655.5,-2113.91 655.5,-2119.91 655.5,-2119.91 655.5,-2229.91 655.5,-2229.91 655.5,-2235.91 649.5,-2241.91 643.5,-2241.91 643.5,-2241.91 605.5,-2241.91 605.5,-2241.91 599.5,-2241.91 593.5,-2235.91 593.5,-2229.91 593.5,-2229.91 593.5,-2119.91 593.5,-2119.91 593.5,-2113.91 599.5,-2107.91 605.5,-2107.91"/>
+<text text-anchor="middle" x="624.5" y="-2230.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">moves</text>
 </a>
 </g>
 </g>
 <g id="cluster_37" class="cluster">
 <title>cluster_src/game/rules</title>
 <g id="a_cluster_37"><a xlink:title="src/game/rules">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="584.5,-1947.91 584.5,-2035.91 1077.5,-2035.91 1077.5,-1947.91 584.5,-1947.91"/>
-<text text-anchor="middle" x="831" y="-2024.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">rules</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M596.5,-1947.91C596.5,-1947.91 1065.5,-1947.91 1065.5,-1947.91 1071.5,-1947.91 1077.5,-1953.91 1077.5,-1959.91 1077.5,-1959.91 1077.5,-2023.91 1077.5,-2023.91 1077.5,-2029.91 1071.5,-2035.91 1065.5,-2035.91 1065.5,-2035.91 596.5,-2035.91 596.5,-2035.91 590.5,-2035.91 584.5,-2029.91 584.5,-2023.91 584.5,-2023.91 584.5,-1959.91 584.5,-1959.91 584.5,-1953.91 590.5,-1947.91 596.5,-1947.91"/>
+<text text-anchor="middle" x="831" y="-2024.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">rules</text>
 </a>
 </g>
 </g>
 <g id="cluster_38" class="cluster">
 <title>cluster_src/pages</title>
 <g id="a_cluster_38"><a xlink:title="src/pages">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="135,-2641.91 135,-2706.91 217,-2706.91 217,-2641.91 135,-2641.91"/>
-<text text-anchor="middle" x="176" y="-2695.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">pages</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M147,-2641.91C147,-2641.91 205,-2641.91 205,-2641.91 211,-2641.91 217,-2647.91 217,-2653.91 217,-2653.91 217,-2694.91 217,-2694.91 217,-2700.91 211,-2706.91 205,-2706.91 205,-2706.91 147,-2706.91 147,-2706.91 141,-2706.91 135,-2700.91 135,-2694.91 135,-2694.91 135,-2653.91 135,-2653.91 135,-2647.91 141,-2641.91 147,-2641.91"/>
+<text text-anchor="middle" x="176" y="-2695.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">pages</text>
 </a>
 </g>
 </g>
 <g id="cluster_39" class="cluster">
 <title>cluster_src/styles</title>
 <g id="a_cluster_39"><a xlink:title="src/styles">
-<polygon fill="transparent" stroke="#c8ced8" stroke-width="0.8" points="145,-2714.91 145,-2779.91 207,-2779.91 207,-2714.91 145,-2714.91"/>
-<text text-anchor="middle" x="176" y="-2768.71" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#596273">styles</text>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M157,-2714.91C157,-2714.91 195,-2714.91 195,-2714.91 201,-2714.91 207,-2720.91 207,-2726.91 207,-2726.91 207,-2767.91 207,-2767.91 207,-2773.91 201,-2779.91 195,-2779.91 195,-2779.91 157,-2779.91 157,-2779.91 151,-2779.91 145,-2773.91 145,-2767.91 145,-2767.91 145,-2726.91 145,-2726.91 145,-2720.91 151,-2714.91 157,-2714.91"/>
+<text text-anchor="middle" x="176" y="-2768.71" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">styles</text>
 </a>
 </g>
 </g>
@@ -2474,7 +2475,7 @@
 <g id="node1" class="node">
 <title>module_8</title>
 <g id="a_node1"><a xlink:title="src/bots/logic/MoveScorer.ts">
-<path fill="#fff2b2" stroke="black" d="M804.67,-2661.91C804.67,-2661.91 743.33,-2661.91 743.33,-2661.91 740.67,-2661.91 738,-2659.24 738,-2656.58 738,-2656.58 738,-2651.24 738,-2651.24 738,-2648.58 740.67,-2645.91 743.33,-2645.91 743.33,-2645.91 804.67,-2645.91 804.67,-2645.91 807.33,-2645.91 810,-2648.58 810,-2651.24 810,-2651.24 810,-2656.58 810,-2656.58 810,-2659.24 807.33,-2661.91 804.67,-2661.91"/>
+<path fill="#ddfeff" stroke="black" d="M804.67,-2661.91C804.67,-2661.91 743.33,-2661.91 743.33,-2661.91 740.67,-2661.91 738,-2659.24 738,-2656.58 738,-2656.58 738,-2651.24 738,-2651.24 738,-2648.58 740.67,-2645.91 743.33,-2645.91 743.33,-2645.91 804.67,-2645.91 804.67,-2645.91 807.33,-2645.91 810,-2648.58 810,-2651.24 810,-2651.24 810,-2656.58 810,-2656.58 810,-2659.24 807.33,-2661.91 804.67,-2661.91"/>
 <text text-anchor="middle" x="774" y="-2651.71" font-family="Helvetica,sans-Serif" font-size="9.00">MoveScorer.ts</text>
 </a>
 </g>
@@ -2483,7 +2484,7 @@
 <g id="node2" class="node">
 <title>module_9</title>
 <g id="a_node2"><a xlink:title="src/bots/logic/OptimalMoveFilter.ts">
-<path fill="#fff2b2" stroke="black" d="M668.67,-2661.91C668.67,-2661.91 580.33,-2661.91 580.33,-2661.91 577.67,-2661.91 575,-2659.24 575,-2656.58 575,-2656.58 575,-2651.24 575,-2651.24 575,-2648.58 577.67,-2645.91 580.33,-2645.91 580.33,-2645.91 668.67,-2645.91 668.67,-2645.91 671.33,-2645.91 674,-2648.58 674,-2651.24 674,-2651.24 674,-2656.58 674,-2656.58 674,-2659.24 671.33,-2661.91 668.67,-2661.91"/>
+<path fill="#ddfeff" stroke="black" d="M668.67,-2661.91C668.67,-2661.91 580.33,-2661.91 580.33,-2661.91 577.67,-2661.91 575,-2659.24 575,-2656.58 575,-2656.58 575,-2651.24 575,-2651.24 575,-2648.58 577.67,-2645.91 580.33,-2645.91 580.33,-2645.91 668.67,-2645.91 668.67,-2645.91 671.33,-2645.91 674,-2648.58 674,-2651.24 674,-2651.24 674,-2656.58 674,-2656.58 674,-2659.24 671.33,-2661.91 668.67,-2661.91"/>
 <text text-anchor="middle" x="624.5" y="-2651.71" font-family="Helvetica,sans-Serif" font-size="9.00">OptimalMoveFilter.ts</text>
 </a>
 </g>
@@ -2492,7 +2493,7 @@
 <g id="node3" class="node">
 <title>module_11</title>
 <g id="a_node3"><a xlink:title="src/bots/profiles/BotProfile.ts">
-<path fill="#fff2b2" stroke="black" d="M939.67,-2702.91C939.67,-2702.91 887.33,-2702.91 887.33,-2702.91 884.67,-2702.91 882,-2700.24 882,-2697.58 882,-2697.58 882,-2692.24 882,-2692.24 882,-2689.58 884.67,-2686.91 887.33,-2686.91 887.33,-2686.91 939.67,-2686.91 939.67,-2686.91 942.33,-2686.91 945,-2689.58 945,-2692.24 945,-2692.24 945,-2697.58 945,-2697.58 945,-2700.24 942.33,-2702.91 939.67,-2702.91"/>
+<path fill="#ddfeff" stroke="black" d="M939.67,-2702.91C939.67,-2702.91 887.33,-2702.91 887.33,-2702.91 884.67,-2702.91 882,-2700.24 882,-2697.58 882,-2697.58 882,-2692.24 882,-2692.24 882,-2689.58 884.67,-2686.91 887.33,-2686.91 887.33,-2686.91 939.67,-2686.91 939.67,-2686.91 942.33,-2686.91 945,-2689.58 945,-2692.24 945,-2692.24 945,-2697.58 945,-2697.58 945,-2700.24 942.33,-2702.91 939.67,-2702.91"/>
 <text text-anchor="middle" x="913.5" y="-2692.71" font-family="Helvetica,sans-Serif" font-size="9.00">BotProfile.ts</text>
 </a>
 </g>
@@ -2501,7 +2502,7 @@
 <g id="node4" class="node">
 <title>module_12</title>
 <g id="a_node4"><a xlink:title="src/bots/utils/ActionUtils.ts">
-<path fill="#fff2b2" stroke="black" d="M942.17,-2656.91C942.17,-2656.91 884.83,-2656.91 884.83,-2656.91 882.17,-2656.91 879.5,-2654.24 879.5,-2651.58 879.5,-2651.58 879.5,-2646.24 879.5,-2646.24 879.5,-2643.58 882.17,-2640.91 884.83,-2640.91 884.83,-2640.91 942.17,-2640.91 942.17,-2640.91 944.83,-2640.91 947.5,-2643.58 947.5,-2646.24 947.5,-2646.24 947.5,-2651.58 947.5,-2651.58 947.5,-2654.24 944.83,-2656.91 942.17,-2656.91"/>
+<path fill="#ddfeff" stroke="black" d="M942.17,-2656.91C942.17,-2656.91 884.83,-2656.91 884.83,-2656.91 882.17,-2656.91 879.5,-2654.24 879.5,-2651.58 879.5,-2651.58 879.5,-2646.24 879.5,-2646.24 879.5,-2643.58 882.17,-2640.91 884.83,-2640.91 884.83,-2640.91 942.17,-2640.91 942.17,-2640.91 944.83,-2640.91 947.5,-2643.58 947.5,-2646.24 947.5,-2646.24 947.5,-2651.58 947.5,-2651.58 947.5,-2654.24 944.83,-2656.91 942.17,-2656.91"/>
 <text text-anchor="middle" x="913.5" y="-2646.71" font-family="Helvetica,sans-Serif" font-size="9.00">ActionUtils.ts</text>
 </a>
 </g>
@@ -2510,7 +2511,7 @@
 <g id="node5" class="node">
 <title>module_1</title>
 <g id="a_node5"><a xlink:title="src/bots/AggressiveBot.ts">
-<path fill="#fff2b2" stroke="black" d="M312.67,-2698.91C312.67,-2698.91 239.33,-2698.91 239.33,-2698.91 236.67,-2698.91 234,-2696.24 234,-2693.58 234,-2693.58 234,-2688.24 234,-2688.24 234,-2685.58 236.67,-2682.91 239.33,-2682.91 239.33,-2682.91 312.67,-2682.91 312.67,-2682.91 315.33,-2682.91 318,-2685.58 318,-2688.24 318,-2688.24 318,-2693.58 318,-2693.58 318,-2696.24 315.33,-2698.91 312.67,-2698.91"/>
+<path fill="#ddfeff" stroke="black" d="M312.67,-2698.91C312.67,-2698.91 239.33,-2698.91 239.33,-2698.91 236.67,-2698.91 234,-2696.24 234,-2693.58 234,-2693.58 234,-2688.24 234,-2688.24 234,-2685.58 236.67,-2682.91 239.33,-2682.91 239.33,-2682.91 312.67,-2682.91 312.67,-2682.91 315.33,-2682.91 318,-2685.58 318,-2688.24 318,-2688.24 318,-2693.58 318,-2693.58 318,-2696.24 315.33,-2698.91 312.67,-2698.91"/>
 <text text-anchor="middle" x="276" y="-2688.71" font-family="Helvetica,sans-Serif" font-size="9.00">AggressiveBot.ts</text>
 </a>
 </g>
@@ -2519,7 +2520,7 @@
 <g id="node6" class="node">
 <title>module_2</title>
 <g id="a_node6"><a xlink:title="src/bots/BalancedBot.ts">
-<path fill="#fff2b2" stroke="black" d="M308.67,-2675.91C308.67,-2675.91 243.33,-2675.91 243.33,-2675.91 240.67,-2675.91 238,-2673.24 238,-2670.58 238,-2670.58 238,-2665.24 238,-2665.24 238,-2662.58 240.67,-2659.91 243.33,-2659.91 243.33,-2659.91 308.67,-2659.91 308.67,-2659.91 311.33,-2659.91 314,-2662.58 314,-2665.24 314,-2665.24 314,-2670.58 314,-2670.58 314,-2673.24 311.33,-2675.91 308.67,-2675.91"/>
+<path fill="#ddfeff" stroke="black" d="M308.67,-2675.91C308.67,-2675.91 243.33,-2675.91 243.33,-2675.91 240.67,-2675.91 238,-2673.24 238,-2670.58 238,-2670.58 238,-2665.24 238,-2665.24 238,-2662.58 240.67,-2659.91 243.33,-2659.91 243.33,-2659.91 308.67,-2659.91 308.67,-2659.91 311.33,-2659.91 314,-2662.58 314,-2665.24 314,-2665.24 314,-2670.58 314,-2670.58 314,-2673.24 311.33,-2675.91 308.67,-2675.91"/>
 <text text-anchor="middle" x="276" y="-2665.71" font-family="Helvetica,sans-Serif" font-size="9.00">BalancedBot.ts</text>
 </a>
 </g>
@@ -2528,7 +2529,7 @@
 <g id="node7" class="node">
 <title>module_3</title>
 <g id="a_node7"><a xlink:title="src/bots/BotCoach.ts">
-<path fill="#fff2b2" stroke="black" d="M518.17,-2685.91C518.17,-2685.91 465.83,-2685.91 465.83,-2685.91 463.17,-2685.91 460.5,-2683.24 460.5,-2680.58 460.5,-2680.58 460.5,-2675.24 460.5,-2675.24 460.5,-2672.58 463.17,-2669.91 465.83,-2669.91 465.83,-2669.91 518.17,-2669.91 518.17,-2669.91 520.83,-2669.91 523.5,-2672.58 523.5,-2675.24 523.5,-2675.24 523.5,-2680.58 523.5,-2680.58 523.5,-2683.24 520.83,-2685.91 518.17,-2685.91"/>
+<path fill="#ddfeff" stroke="black" d="M518.17,-2685.91C518.17,-2685.91 465.83,-2685.91 465.83,-2685.91 463.17,-2685.91 460.5,-2683.24 460.5,-2680.58 460.5,-2680.58 460.5,-2675.24 460.5,-2675.24 460.5,-2672.58 463.17,-2669.91 465.83,-2669.91 465.83,-2669.91 518.17,-2669.91 518.17,-2669.91 520.83,-2669.91 523.5,-2672.58 523.5,-2675.24 523.5,-2675.24 523.5,-2680.58 523.5,-2680.58 523.5,-2683.24 520.83,-2685.91 518.17,-2685.91"/>
 <text text-anchor="middle" x="492" y="-2675.71" font-family="Helvetica,sans-Serif" font-size="9.00">BotCoach.ts</text>
 </a>
 </g>
@@ -2537,7 +2538,7 @@
 <g id="node8" class="node">
 <title>module_4</title>
 <g id="a_node8"><a xlink:title="src/bots/CatanBot.ts">
-<path fill="#fff2b2" stroke="black" d="M405.67,-2702.91C405.67,-2702.91 355.33,-2702.91 355.33,-2702.91 352.67,-2702.91 350,-2700.24 350,-2697.58 350,-2697.58 350,-2692.24 350,-2692.24 350,-2689.58 352.67,-2686.91 355.33,-2686.91 355.33,-2686.91 405.67,-2686.91 405.67,-2686.91 408.33,-2686.91 411,-2689.58 411,-2692.24 411,-2692.24 411,-2697.58 411,-2697.58 411,-2700.24 408.33,-2702.91 405.67,-2702.91"/>
+<path fill="#ddfeff" stroke="black" d="M405.67,-2702.91C405.67,-2702.91 355.33,-2702.91 355.33,-2702.91 352.67,-2702.91 350,-2700.24 350,-2697.58 350,-2697.58 350,-2692.24 350,-2692.24 350,-2689.58 352.67,-2686.91 355.33,-2686.91 355.33,-2686.91 405.67,-2686.91 405.67,-2686.91 408.33,-2686.91 411,-2689.58 411,-2692.24 411,-2692.24 411,-2697.58 411,-2697.58 411,-2700.24 408.33,-2702.91 405.67,-2702.91"/>
 <text text-anchor="middle" x="380.5" y="-2692.71" font-family="Helvetica,sans-Serif" font-size="9.00">CatanBot.ts</text>
 </a>
 </g>
@@ -2546,7 +2547,7 @@
 <g id="node9" class="node">
 <title>module_5</title>
 <g id="a_node9"><a xlink:title="src/bots/CatanMCTSBot.ts">
-<path fill="#fff2b2" stroke="black" d="M313.67,-2767.91C313.67,-2767.91 238.33,-2767.91 238.33,-2767.91 235.67,-2767.91 233,-2765.24 233,-2762.58 233,-2762.58 233,-2757.24 233,-2757.24 233,-2754.58 235.67,-2751.91 238.33,-2751.91 238.33,-2751.91 313.67,-2751.91 313.67,-2751.91 316.33,-2751.91 319,-2754.58 319,-2757.24 319,-2757.24 319,-2762.58 319,-2762.58 319,-2765.24 316.33,-2767.91 313.67,-2767.91"/>
+<path fill="#ddfeff" stroke="black" d="M313.67,-2767.91C313.67,-2767.91 238.33,-2767.91 238.33,-2767.91 235.67,-2767.91 233,-2765.24 233,-2762.58 233,-2762.58 233,-2757.24 233,-2757.24 233,-2754.58 235.67,-2751.91 238.33,-2751.91 238.33,-2751.91 313.67,-2751.91 313.67,-2751.91 316.33,-2751.91 319,-2754.58 319,-2757.24 319,-2757.24 319,-2762.58 319,-2762.58 319,-2765.24 316.33,-2767.91 313.67,-2767.91"/>
 <text text-anchor="middle" x="276" y="-2757.71" font-family="Helvetica,sans-Serif" font-size="9.00">CatanMCTSBot.ts</text>
 </a>
 </g>
@@ -2555,7 +2556,7 @@
 <g id="node10" class="node">
 <title>module_6</title>
 <g id="a_node10"><a xlink:title="src/bots/DefensiveBot.ts">
-<path fill="#fff2b2" stroke="black" d="M309.67,-2652.91C309.67,-2652.91 242.33,-2652.91 242.33,-2652.91 239.67,-2652.91 237,-2650.24 237,-2647.58 237,-2647.58 237,-2642.24 237,-2642.24 237,-2639.58 239.67,-2636.91 242.33,-2636.91 242.33,-2636.91 309.67,-2636.91 309.67,-2636.91 312.33,-2636.91 315,-2639.58 315,-2642.24 315,-2642.24 315,-2647.58 315,-2647.58 315,-2650.24 312.33,-2652.91 309.67,-2652.91"/>
+<path fill="#ddfeff" stroke="black" d="M309.67,-2652.91C309.67,-2652.91 242.33,-2652.91 242.33,-2652.91 239.67,-2652.91 237,-2650.24 237,-2647.58 237,-2647.58 237,-2642.24 237,-2642.24 237,-2639.58 239.67,-2636.91 242.33,-2636.91 242.33,-2636.91 309.67,-2636.91 309.67,-2636.91 312.33,-2636.91 315,-2639.58 315,-2642.24 315,-2642.24 315,-2647.58 315,-2647.58 315,-2650.24 312.33,-2652.91 309.67,-2652.91"/>
 <text text-anchor="middle" x="276" y="-2642.71" font-family="Helvetica,sans-Serif" font-size="9.00">DefensiveBot.ts</text>
 </a>
 </g>
@@ -2564,7 +2565,7 @@
 <g id="node11" class="node">
 <title>module_7</title>
 <g id="a_node11"><a xlink:title="src/bots/ExpansiveBot.ts">
-<path fill="#fff2b2" stroke="black" d="M311.17,-2721.91C311.17,-2721.91 240.83,-2721.91 240.83,-2721.91 238.17,-2721.91 235.5,-2719.24 235.5,-2716.58 235.5,-2716.58 235.5,-2711.24 235.5,-2711.24 235.5,-2708.58 238.17,-2705.91 240.83,-2705.91 240.83,-2705.91 311.17,-2705.91 311.17,-2705.91 313.83,-2705.91 316.5,-2708.58 316.5,-2711.24 316.5,-2711.24 316.5,-2716.58 316.5,-2716.58 316.5,-2719.24 313.83,-2721.91 311.17,-2721.91"/>
+<path fill="#ddfeff" stroke="black" d="M311.17,-2721.91C311.17,-2721.91 240.83,-2721.91 240.83,-2721.91 238.17,-2721.91 235.5,-2719.24 235.5,-2716.58 235.5,-2716.58 235.5,-2711.24 235.5,-2711.24 235.5,-2708.58 238.17,-2705.91 240.83,-2705.91 240.83,-2705.91 311.17,-2705.91 311.17,-2705.91 313.83,-2705.91 316.5,-2708.58 316.5,-2711.24 316.5,-2711.24 316.5,-2716.58 316.5,-2716.58 316.5,-2719.24 313.83,-2721.91 311.17,-2721.91"/>
 <text text-anchor="middle" x="276" y="-2711.71" font-family="Helvetica,sans-Serif" font-size="9.00">ExpansiveBot.ts</text>
 </a>
 </g>
@@ -2573,7 +2574,7 @@
 <g id="node12" class="node">
 <title>module_10</title>
 <g id="a_node12"><a xlink:title="src/bots/MonteCatanoBot.ts">
-<path fill="#fff2b2" stroke="black" d="M317.67,-2744.91C317.67,-2744.91 234.33,-2744.91 234.33,-2744.91 231.67,-2744.91 229,-2742.24 229,-2739.58 229,-2739.58 229,-2734.24 229,-2734.24 229,-2731.58 231.67,-2728.91 234.33,-2728.91 234.33,-2728.91 317.67,-2728.91 317.67,-2728.91 320.33,-2728.91 323,-2731.58 323,-2734.24 323,-2734.24 323,-2739.58 323,-2739.58 323,-2742.24 320.33,-2744.91 317.67,-2744.91"/>
+<path fill="#ddfeff" stroke="black" d="M317.67,-2744.91C317.67,-2744.91 234.33,-2744.91 234.33,-2744.91 231.67,-2744.91 229,-2742.24 229,-2739.58 229,-2739.58 229,-2734.24 229,-2734.24 229,-2731.58 231.67,-2728.91 234.33,-2728.91 234.33,-2728.91 317.67,-2728.91 317.67,-2728.91 320.33,-2728.91 323,-2731.58 323,-2734.24 323,-2734.24 323,-2739.58 323,-2739.58 323,-2742.24 320.33,-2744.91 317.67,-2744.91"/>
 <text text-anchor="middle" x="276" y="-2734.71" font-family="Helvetica,sans-Serif" font-size="9.00">MonteCatanoBot.ts</text>
 </a>
 </g>
@@ -2672,7 +2673,7 @@
 <g id="node23" class="node">
 <title>module_24</title>
 <g id="a_node23"><a xlink:title="src/features/board/hooks/useBoardInteractions.ts">
-<path fill="#bbfeff" stroke="black" d="M544.67,-1302.91C544.67,-1302.91 439.33,-1302.91 439.33,-1302.91 436.67,-1302.91 434,-1300.24 434,-1297.58 434,-1297.58 434,-1292.24 434,-1292.24 434,-1289.58 436.67,-1286.91 439.33,-1286.91 439.33,-1286.91 544.67,-1286.91 544.67,-1286.91 547.33,-1286.91 550,-1289.58 550,-1292.24 550,-1292.24 550,-1297.58 550,-1297.58 550,-1300.24 547.33,-1302.91 544.67,-1302.91"/>
+<path fill="#ddfeff" stroke="black" d="M544.67,-1302.91C544.67,-1302.91 439.33,-1302.91 439.33,-1302.91 436.67,-1302.91 434,-1300.24 434,-1297.58 434,-1297.58 434,-1292.24 434,-1292.24 434,-1289.58 436.67,-1286.91 439.33,-1286.91 439.33,-1286.91 544.67,-1286.91 544.67,-1286.91 547.33,-1286.91 550,-1289.58 550,-1292.24 550,-1292.24 550,-1297.58 550,-1297.58 550,-1300.24 547.33,-1302.91 544.67,-1302.91"/>
 <text text-anchor="middle" x="492" y="-1292.71" font-family="Helvetica,sans-Serif" font-size="9.00">useBoardInteractions.ts</text>
 </a>
 </g>
@@ -2681,7 +2682,7 @@
 <g id="node24" class="node">
 <title>module_25</title>
 <g id="a_node24"><a xlink:title="src/features/board/hooks/useGameEffects.ts">
-<path fill="#bbfeff" stroke="black" d="M533.17,-1279.91C533.17,-1279.91 450.83,-1279.91 450.83,-1279.91 448.17,-1279.91 445.5,-1277.24 445.5,-1274.58 445.5,-1274.58 445.5,-1269.24 445.5,-1269.24 445.5,-1266.58 448.17,-1263.91 450.83,-1263.91 450.83,-1263.91 533.17,-1263.91 533.17,-1263.91 535.83,-1263.91 538.5,-1266.58 538.5,-1269.24 538.5,-1269.24 538.5,-1274.58 538.5,-1274.58 538.5,-1277.24 535.83,-1279.91 533.17,-1279.91"/>
+<path fill="#ddfeff" stroke="black" d="M533.17,-1279.91C533.17,-1279.91 450.83,-1279.91 450.83,-1279.91 448.17,-1279.91 445.5,-1277.24 445.5,-1274.58 445.5,-1274.58 445.5,-1269.24 445.5,-1269.24 445.5,-1266.58 448.17,-1263.91 450.83,-1263.91 450.83,-1263.91 533.17,-1263.91 533.17,-1263.91 535.83,-1263.91 538.5,-1266.58 538.5,-1269.24 538.5,-1269.24 538.5,-1274.58 538.5,-1274.58 538.5,-1277.24 535.83,-1279.91 533.17,-1279.91"/>
 <text text-anchor="middle" x="492" y="-1269.71" font-family="Helvetica,sans-Serif" font-size="9.00">useGameEffects.ts</text>
 </a>
 </g>
@@ -2762,7 +2763,7 @@
 <g id="node33" class="node">
 <title>module_34</title>
 <g id="a_node33"><a xlink:title="src/features/coach/hooks/useCoachData.ts">
-<path fill="#bbfeff" stroke="black" d="M528.67,-557.91C528.67,-557.91 455.33,-557.91 455.33,-557.91 452.67,-557.91 450,-555.24 450,-552.58 450,-552.58 450,-547.24 450,-547.24 450,-544.58 452.67,-541.91 455.33,-541.91 455.33,-541.91 528.67,-541.91 528.67,-541.91 531.33,-541.91 534,-544.58 534,-547.24 534,-547.24 534,-552.58 534,-552.58 534,-555.24 531.33,-557.91 528.67,-557.91"/>
+<path fill="#ddfeff" stroke="black" d="M528.67,-557.91C528.67,-557.91 455.33,-557.91 455.33,-557.91 452.67,-557.91 450,-555.24 450,-552.58 450,-552.58 450,-547.24 450,-547.24 450,-544.58 452.67,-541.91 455.33,-541.91 455.33,-541.91 528.67,-541.91 528.67,-541.91 531.33,-541.91 534,-544.58 534,-547.24 534,-547.24 534,-552.58 534,-552.58 534,-555.24 531.33,-557.91 528.67,-557.91"/>
 <text text-anchor="middle" x="492" y="-547.71" font-family="Helvetica,sans-Serif" font-size="9.00">useCoachData.ts</text>
 </a>
 </g>
@@ -2771,7 +2772,7 @@
 <g id="node34" class="node">
 <title>module_35</title>
 <g id="a_node34"><a xlink:title="src/features/coach/logic/coachUtils.ts">
-<path fill="#bbfeff" stroke="black" d="M652.17,-557.91C652.17,-557.91 596.83,-557.91 596.83,-557.91 594.17,-557.91 591.5,-555.24 591.5,-552.58 591.5,-552.58 591.5,-547.24 591.5,-547.24 591.5,-544.58 594.17,-541.91 596.83,-541.91 596.83,-541.91 652.17,-541.91 652.17,-541.91 654.83,-541.91 657.5,-544.58 657.5,-547.24 657.5,-547.24 657.5,-552.58 657.5,-552.58 657.5,-555.24 654.83,-557.91 652.17,-557.91"/>
+<path fill="#ddfeff" stroke="black" d="M652.17,-557.91C652.17,-557.91 596.83,-557.91 596.83,-557.91 594.17,-557.91 591.5,-555.24 591.5,-552.58 591.5,-552.58 591.5,-547.24 591.5,-547.24 591.5,-544.58 594.17,-541.91 596.83,-541.91 596.83,-541.91 652.17,-541.91 652.17,-541.91 654.83,-541.91 657.5,-544.58 657.5,-547.24 657.5,-547.24 657.5,-552.58 657.5,-552.58 657.5,-555.24 654.83,-557.91 652.17,-557.91"/>
 <text text-anchor="middle" x="624.5" y="-547.71" font-family="Helvetica,sans-Serif" font-size="9.00">coachUtils.ts</text>
 </a>
 </g>
@@ -2789,7 +2790,7 @@
 <g id="node36" class="node">
 <title>module_36</title>
 <g id="a_node36"><a xlink:title="src/features/coach/types.ts">
-<path fill="#bbfeff" stroke="black" d="M795.67,-557.91C795.67,-557.91 752.33,-557.91 752.33,-557.91 749.67,-557.91 747,-555.24 747,-552.58 747,-552.58 747,-547.24 747,-547.24 747,-544.58 749.67,-541.91 752.33,-541.91 752.33,-541.91 795.67,-541.91 795.67,-541.91 798.33,-541.91 801,-544.58 801,-547.24 801,-547.24 801,-552.58 801,-552.58 801,-555.24 798.33,-557.91 795.67,-557.91"/>
+<path fill="#ddfeff" stroke="black" d="M795.67,-557.91C795.67,-557.91 752.33,-557.91 752.33,-557.91 749.67,-557.91 747,-555.24 747,-552.58 747,-552.58 747,-547.24 747,-547.24 747,-544.58 749.67,-541.91 752.33,-541.91 752.33,-541.91 795.67,-541.91 795.67,-541.91 798.33,-541.91 801,-544.58 801,-547.24 801,-547.24 801,-552.58 801,-552.58 801,-555.24 798.33,-557.91 795.67,-557.91"/>
 <text text-anchor="middle" x="774" y="-547.71" font-family="Helvetica,sans-Serif" font-size="9.00">types.ts</text>
 </a>
 </g>
@@ -2807,7 +2808,7 @@
 <g id="node38" class="node">
 <title>module_41</title>
 <g id="a_node38"><a xlink:title="src/features/game/hooks/useAutoResolveRoll.ts">
-<path fill="#bbfeff" stroke="black" d="M672.17,-257.91C672.17,-257.91 576.83,-257.91 576.83,-257.91 574.17,-257.91 571.5,-255.24 571.5,-252.58 571.5,-252.58 571.5,-247.24 571.5,-247.24 571.5,-244.58 574.17,-241.91 576.83,-241.91 576.83,-241.91 672.17,-241.91 672.17,-241.91 674.83,-241.91 677.5,-244.58 677.5,-247.24 677.5,-247.24 677.5,-252.58 677.5,-252.58 677.5,-255.24 674.83,-257.91 672.17,-257.91"/>
+<path fill="#ddfeff" stroke="black" d="M672.17,-257.91C672.17,-257.91 576.83,-257.91 576.83,-257.91 574.17,-257.91 571.5,-255.24 571.5,-252.58 571.5,-252.58 571.5,-247.24 571.5,-247.24 571.5,-244.58 574.17,-241.91 576.83,-241.91 576.83,-241.91 672.17,-241.91 672.17,-241.91 674.83,-241.91 677.5,-244.58 677.5,-247.24 677.5,-247.24 677.5,-252.58 677.5,-252.58 677.5,-255.24 674.83,-257.91 672.17,-257.91"/>
 <text text-anchor="middle" x="624.5" y="-247.71" font-family="Helvetica,sans-Serif" font-size="9.00">useAutoResolveRoll.ts</text>
 </a>
 </g>
@@ -2816,7 +2817,7 @@
 <g id="node39" class="node">
 <title>module_42</title>
 <g id="a_node39"><a xlink:title="src/features/game/hooks/useGameScreenState.ts">
-<path fill="#bbfeff" stroke="black" d="M677.67,-280.91C677.67,-280.91 571.33,-280.91 571.33,-280.91 568.67,-280.91 566,-278.24 566,-275.58 566,-275.58 566,-270.24 566,-270.24 566,-267.58 568.67,-264.91 571.33,-264.91 571.33,-264.91 677.67,-264.91 677.67,-264.91 680.33,-264.91 683,-267.58 683,-270.24 683,-270.24 683,-275.58 683,-275.58 683,-278.24 680.33,-280.91 677.67,-280.91"/>
+<path fill="#ddfeff" stroke="black" d="M677.67,-280.91C677.67,-280.91 571.33,-280.91 571.33,-280.91 568.67,-280.91 566,-278.24 566,-275.58 566,-275.58 566,-270.24 566,-270.24 566,-267.58 568.67,-264.91 571.33,-264.91 571.33,-264.91 677.67,-264.91 677.67,-264.91 680.33,-264.91 683,-267.58 683,-270.24 683,-270.24 683,-275.58 683,-275.58 683,-278.24 680.33,-280.91 677.67,-280.91"/>
 <text text-anchor="middle" x="624.5" y="-270.71" font-family="Helvetica,sans-Serif" font-size="9.00">useGameScreenState.ts</text>
 </a>
 </g>
@@ -2825,7 +2826,7 @@
 <g id="node40" class="node">
 <title>module_43</title>
 <g id="a_node40"><a xlink:title="src/features/game/hooks/useViewportDvh.ts">
-<path fill="#bbfeff" stroke="black" d="M665.67,-303.91C665.67,-303.91 583.33,-303.91 583.33,-303.91 580.67,-303.91 578,-301.24 578,-298.58 578,-298.58 578,-293.24 578,-293.24 578,-290.58 580.67,-287.91 583.33,-287.91 583.33,-287.91 665.67,-287.91 665.67,-287.91 668.33,-287.91 671,-290.58 671,-293.24 671,-293.24 671,-298.58 671,-298.58 671,-301.24 668.33,-303.91 665.67,-303.91"/>
+<path fill="#ddfeff" stroke="black" d="M665.67,-303.91C665.67,-303.91 583.33,-303.91 583.33,-303.91 580.67,-303.91 578,-301.24 578,-298.58 578,-298.58 578,-293.24 578,-293.24 578,-290.58 580.67,-287.91 583.33,-287.91 583.33,-287.91 665.67,-287.91 665.67,-287.91 668.33,-287.91 671,-290.58 671,-293.24 671,-293.24 671,-298.58 671,-298.58 671,-301.24 668.33,-303.91 665.67,-303.91"/>
 <text text-anchor="middle" x="624.5" y="-293.71" font-family="Helvetica,sans-Serif" font-size="9.00">useViewportDvh.ts</text>
 </a>
 </g>
@@ -2834,7 +2835,7 @@
 <g id="node41" class="node">
 <title>module_38</title>
 <g id="a_node41"><a xlink:title="src/features/game/constants.ts">
-<path fill="#bbfeff" stroke="black" d="M518.67,-330.91C518.67,-330.91 465.33,-330.91 465.33,-330.91 462.67,-330.91 460,-328.24 460,-325.58 460,-325.58 460,-320.24 460,-320.24 460,-317.58 462.67,-314.91 465.33,-314.91 465.33,-314.91 518.67,-314.91 518.67,-314.91 521.33,-314.91 524,-317.58 524,-320.24 524,-320.24 524,-325.58 524,-325.58 524,-328.24 521.33,-330.91 518.67,-330.91"/>
+<path fill="#ddfeff" stroke="black" d="M518.67,-330.91C518.67,-330.91 465.33,-330.91 465.33,-330.91 462.67,-330.91 460,-328.24 460,-325.58 460,-325.58 460,-320.24 460,-320.24 460,-317.58 462.67,-314.91 465.33,-314.91 465.33,-314.91 518.67,-314.91 518.67,-314.91 521.33,-314.91 524,-317.58 524,-320.24 524,-320.24 524,-325.58 524,-325.58 524,-328.24 521.33,-330.91 518.67,-330.91"/>
 <text text-anchor="middle" x="492" y="-320.71" font-family="Helvetica,sans-Serif" font-size="9.00">constants.ts</text>
 </a>
 </g>
@@ -2861,7 +2862,7 @@
 <g id="node44" class="node">
 <title>module_44</title>
 <g id="a_node44"><a xlink:title="src/features/hud/components/constants/emojis.ts">
-<path fill="#bbfeff" stroke="black" d="M935.17,-1047.91C935.17,-1047.91 891.83,-1047.91 891.83,-1047.91 889.17,-1047.91 886.5,-1045.24 886.5,-1042.58 886.5,-1042.58 886.5,-1037.24 886.5,-1037.24 886.5,-1034.58 889.17,-1031.91 891.83,-1031.91 891.83,-1031.91 935.17,-1031.91 935.17,-1031.91 937.83,-1031.91 940.5,-1034.58 940.5,-1037.24 940.5,-1037.24 940.5,-1042.58 940.5,-1042.58 940.5,-1045.24 937.83,-1047.91 935.17,-1047.91"/>
+<path fill="#ddfeff" stroke="black" d="M935.17,-1047.91C935.17,-1047.91 891.83,-1047.91 891.83,-1047.91 889.17,-1047.91 886.5,-1045.24 886.5,-1042.58 886.5,-1042.58 886.5,-1037.24 886.5,-1037.24 886.5,-1034.58 889.17,-1031.91 891.83,-1031.91 891.83,-1031.91 935.17,-1031.91 935.17,-1031.91 937.83,-1031.91 940.5,-1034.58 940.5,-1037.24 940.5,-1037.24 940.5,-1042.58 940.5,-1042.58 940.5,-1045.24 937.83,-1047.91 935.17,-1047.91"/>
 <text text-anchor="middle" x="913.5" y="-1037.71" font-family="Helvetica,sans-Serif" font-size="9.00">emojis.ts</text>
 </a>
 </g>
@@ -2969,7 +2970,7 @@
 <g id="node56" class="node">
 <title>module_56</title>
 <g id="a_node56"><a xlink:title="src/features/hud/hooks/useAutoDismissNotification.ts">
-<path fill="#bbfeff" stroke="black" d="M839.67,-1161.91C839.67,-1161.91 708.33,-1161.91 708.33,-1161.91 705.67,-1161.91 703,-1159.24 703,-1156.58 703,-1156.58 703,-1151.24 703,-1151.24 703,-1148.58 705.67,-1145.91 708.33,-1145.91 708.33,-1145.91 839.67,-1145.91 839.67,-1145.91 842.33,-1145.91 845,-1148.58 845,-1151.24 845,-1151.24 845,-1156.58 845,-1156.58 845,-1159.24 842.33,-1161.91 839.67,-1161.91"/>
+<path fill="#ddfeff" stroke="black" d="M839.67,-1161.91C839.67,-1161.91 708.33,-1161.91 708.33,-1161.91 705.67,-1161.91 703,-1159.24 703,-1156.58 703,-1156.58 703,-1151.24 703,-1151.24 703,-1148.58 705.67,-1145.91 708.33,-1145.91 708.33,-1145.91 839.67,-1145.91 839.67,-1145.91 842.33,-1145.91 845,-1148.58 845,-1151.24 845,-1151.24 845,-1156.58 845,-1156.58 845,-1159.24 842.33,-1161.91 839.67,-1161.91"/>
 <text text-anchor="middle" x="774" y="-1151.71" font-family="Helvetica,sans-Serif" font-size="9.00">useAutoDismissNotification.ts</text>
 </a>
 </g>
@@ -2978,7 +2979,7 @@
 <g id="node57" class="node">
 <title>module_57</title>
 <g id="a_node57"><a xlink:title="src/features/hud/hooks/useGameControls.ts">
-<path fill="#bbfeff" stroke="black" d="M818.17,-1207.91C818.17,-1207.91 729.83,-1207.91 729.83,-1207.91 727.17,-1207.91 724.5,-1205.24 724.5,-1202.58 724.5,-1202.58 724.5,-1197.24 724.5,-1197.24 724.5,-1194.58 727.17,-1191.91 729.83,-1191.91 729.83,-1191.91 818.17,-1191.91 818.17,-1191.91 820.83,-1191.91 823.5,-1194.58 823.5,-1197.24 823.5,-1197.24 823.5,-1202.58 823.5,-1202.58 823.5,-1205.24 820.83,-1207.91 818.17,-1207.91"/>
+<path fill="#ddfeff" stroke="black" d="M818.17,-1207.91C818.17,-1207.91 729.83,-1207.91 729.83,-1207.91 727.17,-1207.91 724.5,-1205.24 724.5,-1202.58 724.5,-1202.58 724.5,-1197.24 724.5,-1197.24 724.5,-1194.58 727.17,-1191.91 729.83,-1191.91 729.83,-1191.91 818.17,-1191.91 818.17,-1191.91 820.83,-1191.91 823.5,-1194.58 823.5,-1197.24 823.5,-1197.24 823.5,-1202.58 823.5,-1202.58 823.5,-1205.24 820.83,-1207.91 818.17,-1207.91"/>
 <text text-anchor="middle" x="774" y="-1197.71" font-family="Helvetica,sans-Serif" font-size="9.00">useGameControls.ts</text>
 </a>
 </g>
@@ -2987,7 +2988,7 @@
 <g id="node58" class="node">
 <title>module_58</title>
 <g id="a_node58"><a xlink:title="src/features/hud/hooks/useGameStatusMessage.ts">
-<path fill="#bbfeff" stroke="black" d="M833.17,-1184.91C833.17,-1184.91 714.83,-1184.91 714.83,-1184.91 712.17,-1184.91 709.5,-1182.24 709.5,-1179.58 709.5,-1179.58 709.5,-1174.24 709.5,-1174.24 709.5,-1171.58 712.17,-1168.91 714.83,-1168.91 714.83,-1168.91 833.17,-1168.91 833.17,-1168.91 835.83,-1168.91 838.5,-1171.58 838.5,-1174.24 838.5,-1174.24 838.5,-1179.58 838.5,-1179.58 838.5,-1182.24 835.83,-1184.91 833.17,-1184.91"/>
+<path fill="#ddfeff" stroke="black" d="M833.17,-1184.91C833.17,-1184.91 714.83,-1184.91 714.83,-1184.91 712.17,-1184.91 709.5,-1182.24 709.5,-1179.58 709.5,-1179.58 709.5,-1174.24 709.5,-1174.24 709.5,-1171.58 712.17,-1168.91 714.83,-1168.91 714.83,-1168.91 833.17,-1168.91 833.17,-1168.91 835.83,-1168.91 838.5,-1171.58 838.5,-1174.24 838.5,-1174.24 838.5,-1179.58 838.5,-1179.58 838.5,-1182.24 835.83,-1184.91 833.17,-1184.91"/>
 <text text-anchor="middle" x="774" y="-1174.71" font-family="Helvetica,sans-Serif" font-size="9.00">useGameStatusMessage.ts</text>
 </a>
 </g>
@@ -2996,7 +2997,7 @@
 <g id="node59" class="node">
 <title>module_59</title>
 <g id="a_node59"><a xlink:title="src/features/hud/hooks/useTradeLogic.ts">
-<path fill="#bbfeff" stroke="black" d="M950.17,-1207.91C950.17,-1207.91 876.83,-1207.91 876.83,-1207.91 874.17,-1207.91 871.5,-1205.24 871.5,-1202.58 871.5,-1202.58 871.5,-1197.24 871.5,-1197.24 871.5,-1194.58 874.17,-1191.91 876.83,-1191.91 876.83,-1191.91 950.17,-1191.91 950.17,-1191.91 952.83,-1191.91 955.5,-1194.58 955.5,-1197.24 955.5,-1197.24 955.5,-1202.58 955.5,-1202.58 955.5,-1205.24 952.83,-1207.91 950.17,-1207.91"/>
+<path fill="#ddfeff" stroke="black" d="M950.17,-1207.91C950.17,-1207.91 876.83,-1207.91 876.83,-1207.91 874.17,-1207.91 871.5,-1205.24 871.5,-1202.58 871.5,-1202.58 871.5,-1197.24 871.5,-1197.24 871.5,-1194.58 874.17,-1191.91 876.83,-1191.91 876.83,-1191.91 950.17,-1191.91 950.17,-1191.91 952.83,-1191.91 955.5,-1194.58 955.5,-1197.24 955.5,-1197.24 955.5,-1202.58 955.5,-1202.58 955.5,-1205.24 952.83,-1207.91 950.17,-1207.91"/>
 <text text-anchor="middle" x="913.5" y="-1197.71" font-family="Helvetica,sans-Serif" font-size="9.00">useTradeLogic.ts</text>
 </a>
 </g>
@@ -3005,7 +3006,7 @@
 <g id="node60" class="node">
 <title>module_61</title>
 <g id="a_node60"><a xlink:title="src/features/hud/logic/statusMessageUtils.ts">
-<path fill="#bbfeff" stroke="black" d="M960.67,-1115.91C960.67,-1115.91 866.33,-1115.91 866.33,-1115.91 863.67,-1115.91 861,-1113.24 861,-1110.58 861,-1110.58 861,-1105.24 861,-1105.24 861,-1102.58 863.67,-1099.91 866.33,-1099.91 866.33,-1099.91 960.67,-1099.91 960.67,-1099.91 963.33,-1099.91 966,-1102.58 966,-1105.24 966,-1105.24 966,-1110.58 966,-1110.58 966,-1113.24 963.33,-1115.91 960.67,-1115.91"/>
+<path fill="#ddfeff" stroke="black" d="M960.67,-1115.91C960.67,-1115.91 866.33,-1115.91 866.33,-1115.91 863.67,-1115.91 861,-1113.24 861,-1110.58 861,-1110.58 861,-1105.24 861,-1105.24 861,-1102.58 863.67,-1099.91 866.33,-1099.91 866.33,-1099.91 960.67,-1099.91 960.67,-1099.91 963.33,-1099.91 966,-1102.58 966,-1105.24 966,-1105.24 966,-1110.58 966,-1110.58 966,-1113.24 963.33,-1115.91 960.67,-1115.91"/>
 <text text-anchor="middle" x="913.5" y="-1105.71" font-family="Helvetica,sans-Serif" font-size="9.00">statusMessageUtils.ts</text>
 </a>
 </g>
@@ -3050,7 +3051,7 @@
 <g id="node65" class="node">
 <title>module_65</title>
 <g id="a_node65"><a xlink:title="src/features/shared/constants/labels.ts">
-<path fill="#bbfeff" stroke="black" d="M935.17,-744.91C935.17,-744.91 891.83,-744.91 891.83,-744.91 889.17,-744.91 886.5,-742.24 886.5,-739.58 886.5,-739.58 886.5,-734.24 886.5,-734.24 886.5,-731.58 889.17,-728.91 891.83,-728.91 891.83,-728.91 935.17,-728.91 935.17,-728.91 937.83,-728.91 940.5,-731.58 940.5,-734.24 940.5,-734.24 940.5,-739.58 940.5,-739.58 940.5,-742.24 937.83,-744.91 935.17,-744.91"/>
+<path fill="#ddfeff" stroke="black" d="M935.17,-744.91C935.17,-744.91 891.83,-744.91 891.83,-744.91 889.17,-744.91 886.5,-742.24 886.5,-739.58 886.5,-739.58 886.5,-734.24 886.5,-734.24 886.5,-731.58 889.17,-728.91 891.83,-728.91 891.83,-728.91 935.17,-728.91 935.17,-728.91 937.83,-728.91 940.5,-731.58 940.5,-734.24 940.5,-734.24 940.5,-739.58 940.5,-739.58 940.5,-742.24 937.83,-744.91 935.17,-744.91"/>
 <text text-anchor="middle" x="913.5" y="-734.71" font-family="Helvetica,sans-Serif" font-size="9.00">labels.ts</text>
 </a>
 </g>
@@ -3059,7 +3060,7 @@
 <g id="node66" class="node">
 <title>module_66</title>
 <g id="a_node66"><a xlink:title="src/features/shared/constants/z&#45;indices.ts">
-<path fill="#bbfeff" stroke="black" d="M937.67,-767.91C937.67,-767.91 889.33,-767.91 889.33,-767.91 886.67,-767.91 884,-765.24 884,-762.58 884,-762.58 884,-757.24 884,-757.24 884,-754.58 886.67,-751.91 889.33,-751.91 889.33,-751.91 937.67,-751.91 937.67,-751.91 940.33,-751.91 943,-754.58 943,-757.24 943,-757.24 943,-762.58 943,-762.58 943,-765.24 940.33,-767.91 937.67,-767.91"/>
+<path fill="#ddfeff" stroke="black" d="M937.67,-767.91C937.67,-767.91 889.33,-767.91 889.33,-767.91 886.67,-767.91 884,-765.24 884,-762.58 884,-762.58 884,-757.24 884,-757.24 884,-754.58 886.67,-751.91 889.33,-751.91 889.33,-751.91 937.67,-751.91 937.67,-751.91 940.33,-751.91 943,-754.58 943,-757.24 943,-757.24 943,-762.58 943,-762.58 943,-765.24 940.33,-767.91 937.67,-767.91"/>
 <text text-anchor="middle" x="913.5" y="-757.71" font-family="Helvetica,sans-Serif" font-size="9.00">z&#45;indices.ts</text>
 </a>
 </g>
@@ -3068,7 +3069,7 @@
 <g id="node67" class="node">
 <title>module_67</title>
 <g id="a_node67"><a xlink:title="src/features/shared/hooks/useIsMobile.ts">
-<path fill="#bbfeff" stroke="black" d="M944.17,-629.91C944.17,-629.91 882.83,-629.91 882.83,-629.91 880.17,-629.91 877.5,-627.24 877.5,-624.58 877.5,-624.58 877.5,-619.24 877.5,-619.24 877.5,-616.58 880.17,-613.91 882.83,-613.91 882.83,-613.91 944.17,-613.91 944.17,-613.91 946.83,-613.91 949.5,-616.58 949.5,-619.24 949.5,-619.24 949.5,-624.58 949.5,-624.58 949.5,-627.24 946.83,-629.91 944.17,-629.91"/>
+<path fill="#ddfeff" stroke="black" d="M944.17,-629.91C944.17,-629.91 882.83,-629.91 882.83,-629.91 880.17,-629.91 877.5,-627.24 877.5,-624.58 877.5,-624.58 877.5,-619.24 877.5,-619.24 877.5,-616.58 880.17,-613.91 882.83,-613.91 882.83,-613.91 944.17,-613.91 944.17,-613.91 946.83,-613.91 949.5,-616.58 949.5,-619.24 949.5,-619.24 949.5,-624.58 949.5,-624.58 949.5,-627.24 946.83,-629.91 944.17,-629.91"/>
 <text text-anchor="middle" x="913.5" y="-619.71" font-family="Helvetica,sans-Serif" font-size="9.00">useIsMobile.ts</text>
 </a>
 </g>
@@ -3077,7 +3078,7 @@
 <g id="node68" class="node">
 <title>module_69</title>
 <g id="a_node68"><a xlink:title="src/features/shared/utils/feedback.ts">
-<path fill="#bbfeff" stroke="black" d="M938.67,-833.91C938.67,-833.91 888.33,-833.91 888.33,-833.91 885.67,-833.91 883,-831.24 883,-828.58 883,-828.58 883,-823.24 883,-823.24 883,-820.58 885.67,-817.91 888.33,-817.91 888.33,-817.91 938.67,-817.91 938.67,-817.91 941.33,-817.91 944,-820.58 944,-823.24 944,-823.24 944,-828.58 944,-828.58 944,-831.24 941.33,-833.91 938.67,-833.91"/>
+<path fill="#ddfeff" stroke="black" d="M938.67,-833.91C938.67,-833.91 888.33,-833.91 888.33,-833.91 885.67,-833.91 883,-831.24 883,-828.58 883,-828.58 883,-823.24 883,-823.24 883,-820.58 885.67,-817.91 888.33,-817.91 888.33,-817.91 938.67,-817.91 938.67,-817.91 941.33,-817.91 944,-820.58 944,-823.24 944,-823.24 944,-828.58 944,-828.58 944,-831.24 941.33,-833.91 938.67,-833.91"/>
 <text text-anchor="middle" x="913.5" y="-823.71" font-family="Helvetica,sans-Serif" font-size="9.00">feedback.ts</text>
 </a>
 </g>
@@ -3086,7 +3087,7 @@
 <g id="node69" class="node">
 <title>module_68</title>
 <g id="a_node69"><a xlink:title="src/features/shared/types.ts">
-<path fill="#bbfeff" stroke="black" d="M935.17,-809.91C935.17,-809.91 891.83,-809.91 891.83,-809.91 889.17,-809.91 886.5,-807.24 886.5,-804.58 886.5,-804.58 886.5,-799.24 886.5,-799.24 886.5,-796.58 889.17,-793.91 891.83,-793.91 891.83,-793.91 935.17,-793.91 935.17,-793.91 937.83,-793.91 940.5,-796.58 940.5,-799.24 940.5,-799.24 940.5,-804.58 940.5,-804.58 940.5,-807.24 937.83,-809.91 935.17,-809.91"/>
+<path fill="#ddfeff" stroke="black" d="M935.17,-809.91C935.17,-809.91 891.83,-809.91 891.83,-809.91 889.17,-809.91 886.5,-807.24 886.5,-804.58 886.5,-804.58 886.5,-799.24 886.5,-799.24 886.5,-796.58 889.17,-793.91 891.83,-793.91 891.83,-793.91 935.17,-793.91 935.17,-793.91 937.83,-793.91 940.5,-796.58 940.5,-799.24 940.5,-799.24 940.5,-804.58 940.5,-804.58 940.5,-807.24 937.83,-809.91 935.17,-809.91"/>
 <text text-anchor="middle" x="913.5" y="-799.71" font-family="Helvetica,sans-Serif" font-size="9.00">types.ts</text>
 </a>
 </g>
@@ -3437,7 +3438,7 @@
 <g id="node108" class="node">
 <title>module_110</title>
 <g id="a_node108"><a xlink:title="src/pages/GamePage.tsx">
-<path fill="#ffffcc" stroke="black" d="M207.17,-2684.91C207.17,-2684.91 144.83,-2684.91 144.83,-2684.91 142.17,-2684.91 139.5,-2682.24 139.5,-2679.58 139.5,-2679.58 139.5,-2674.24 139.5,-2674.24 139.5,-2671.58 142.17,-2668.91 144.83,-2668.91 144.83,-2668.91 207.17,-2668.91 207.17,-2668.91 209.83,-2668.91 212.5,-2671.58 212.5,-2674.24 212.5,-2674.24 212.5,-2679.58 212.5,-2679.58 212.5,-2682.24 209.83,-2684.91 207.17,-2684.91"/>
+<path fill="#bbfeff" stroke="black" d="M207.17,-2684.91C207.17,-2684.91 144.83,-2684.91 144.83,-2684.91 142.17,-2684.91 139.5,-2682.24 139.5,-2679.58 139.5,-2679.58 139.5,-2674.24 139.5,-2674.24 139.5,-2671.58 142.17,-2668.91 144.83,-2668.91 144.83,-2668.91 207.17,-2668.91 207.17,-2668.91 209.83,-2668.91 212.5,-2671.58 212.5,-2674.24 212.5,-2674.24 212.5,-2679.58 212.5,-2679.58 212.5,-2682.24 209.83,-2684.91 207.17,-2684.91"/>
 <text text-anchor="middle" x="176" y="-2674.71" font-family="Helvetica,sans-Serif" font-size="9.00">GamePage.tsx</text>
 </a>
 </g>
@@ -3446,7 +3447,7 @@
 <g id="node109" class="node">
 <title>module_111</title>
 <g id="a_node109"><a xlink:title="src/pages/SetupPage.tsx">
-<path fill="#ffffcc" stroke="black" d="M207.67,-2661.91C207.67,-2661.91 144.33,-2661.91 144.33,-2661.91 141.67,-2661.91 139,-2659.24 139,-2656.58 139,-2656.58 139,-2651.24 139,-2651.24 139,-2648.58 141.67,-2645.91 144.33,-2645.91 144.33,-2645.91 207.67,-2645.91 207.67,-2645.91 210.33,-2645.91 213,-2648.58 213,-2651.24 213,-2651.24 213,-2656.58 213,-2656.58 213,-2659.24 210.33,-2661.91 207.67,-2661.91"/>
+<path fill="#bbfeff" stroke="black" d="M207.67,-2661.91C207.67,-2661.91 144.33,-2661.91 144.33,-2661.91 141.67,-2661.91 139,-2659.24 139,-2656.58 139,-2656.58 139,-2651.24 139,-2651.24 139,-2648.58 141.67,-2645.91 144.33,-2645.91 144.33,-2645.91 207.67,-2645.91 207.67,-2645.91 210.33,-2645.91 213,-2648.58 213,-2651.24 213,-2651.24 213,-2656.58 213,-2656.58 213,-2659.24 210.33,-2661.91 207.67,-2661.91"/>
 <text text-anchor="middle" x="176" y="-2651.71" font-family="Helvetica,sans-Serif" font-size="9.00">SetupPage.tsx</text>
 </a>
 </g>
@@ -3473,7 +3474,7 @@
 <g id="node112" class="node">
 <title>module_0</title>
 <g id="a_node112"><a xlink:title="src/App.tsx">
-<path fill="#ffffcc" stroke="black" d="M121.67,-2709.91C121.67,-2709.91 78.33,-2709.91 78.33,-2709.91 75.67,-2709.91 73,-2707.24 73,-2704.58 73,-2704.58 73,-2699.24 73,-2699.24 73,-2696.58 75.67,-2693.91 78.33,-2693.91 78.33,-2693.91 121.67,-2693.91 121.67,-2693.91 124.33,-2693.91 127,-2696.58 127,-2699.24 127,-2699.24 127,-2704.58 127,-2704.58 127,-2707.24 124.33,-2709.91 121.67,-2709.91"/>
+<path fill="#bbfeff" stroke="black" d="M121.67,-2709.91C121.67,-2709.91 78.33,-2709.91 78.33,-2709.91 75.67,-2709.91 73,-2707.24 73,-2704.58 73,-2704.58 73,-2699.24 73,-2699.24 73,-2696.58 75.67,-2693.91 78.33,-2693.91 78.33,-2693.91 121.67,-2693.91 121.67,-2693.91 124.33,-2693.91 127,-2696.58 127,-2699.24 127,-2699.24 127,-2704.58 127,-2704.58 127,-2707.24 124.33,-2709.91 121.67,-2709.91"/>
 <text text-anchor="middle" x="100" y="-2699.71" font-family="Helvetica,sans-Serif" font-size="9.00">App.tsx</text>
 </a>
 </g>
@@ -3482,7 +3483,7 @@
 <g id="node113" class="node">
 <title>module_108</title>
 <g id="a_node113"><a xlink:title="src/GameClient.tsx">
-<path fill="#ffffcc" stroke="black" d="M309.17,-2517.91C309.17,-2517.91 242.83,-2517.91 242.83,-2517.91 240.17,-2517.91 237.5,-2515.24 237.5,-2512.58 237.5,-2512.58 237.5,-2507.24 237.5,-2507.24 237.5,-2504.58 240.17,-2501.91 242.83,-2501.91 242.83,-2501.91 309.17,-2501.91 309.17,-2501.91 311.83,-2501.91 314.5,-2504.58 314.5,-2507.24 314.5,-2507.24 314.5,-2512.58 314.5,-2512.58 314.5,-2515.24 311.83,-2517.91 309.17,-2517.91"/>
+<path fill="#bbfeff" stroke="black" d="M309.17,-2517.91C309.17,-2517.91 242.83,-2517.91 242.83,-2517.91 240.17,-2517.91 237.5,-2515.24 237.5,-2512.58 237.5,-2512.58 237.5,-2507.24 237.5,-2507.24 237.5,-2504.58 240.17,-2501.91 242.83,-2501.91 242.83,-2501.91 309.17,-2501.91 309.17,-2501.91 311.83,-2501.91 314.5,-2504.58 314.5,-2507.24 314.5,-2507.24 314.5,-2512.58 314.5,-2512.58 314.5,-2515.24 311.83,-2517.91 309.17,-2517.91"/>
 <text text-anchor="middle" x="276" y="-2507.71" font-family="Helvetica,sans-Serif" font-size="9.00">GameClient.tsx</text>
 </a>
 </g>
@@ -3491,7 +3492,7 @@
 <g id="node114" class="node">
 <title>module_109</title>
 <g id="a_node114"><a xlink:title="src/main.tsx">
-<path fill="#ffffcc" stroke="black" d="M53.67,-2718.91C53.67,-2718.91 10.33,-2718.91 10.33,-2718.91 7.67,-2718.91 5,-2716.24 5,-2713.58 5,-2713.58 5,-2708.24 5,-2708.24 5,-2705.58 7.67,-2702.91 10.33,-2702.91 10.33,-2702.91 53.67,-2702.91 53.67,-2702.91 56.33,-2702.91 59,-2705.58 59,-2708.24 59,-2708.24 59,-2713.58 59,-2713.58 59,-2716.24 56.33,-2718.91 53.67,-2718.91"/>
+<path fill="#bbfeff" stroke="black" d="M53.67,-2718.91C53.67,-2718.91 10.33,-2718.91 10.33,-2718.91 7.67,-2718.91 5,-2716.24 5,-2713.58 5,-2713.58 5,-2708.24 5,-2708.24 5,-2705.58 7.67,-2702.91 10.33,-2702.91 10.33,-2702.91 53.67,-2702.91 53.67,-2702.91 56.33,-2702.91 59,-2705.58 59,-2708.24 59,-2708.24 59,-2713.58 59,-2713.58 59,-2716.24 56.33,-2718.91 53.67,-2718.91"/>
 <text text-anchor="middle" x="32" y="-2708.71" font-family="Helvetica,sans-Serif" font-size="9.00">main.tsx</text>
 </a>
 </g>
@@ -3500,7 +3501,7 @@
 <g id="node115" class="node">
 <title>module_114</title>
 <g id="a_node115"><a xlink:title="src/vite&#45;env.d.ts">
-<path fill="#ffffcc" stroke="black" d="M58.67,-2741.91C58.67,-2741.91 5.33,-2741.91 5.33,-2741.91 2.67,-2741.91 0,-2739.24 0,-2736.58 0,-2736.58 0,-2731.24 0,-2731.24 0,-2728.58 2.67,-2725.91 5.33,-2725.91 5.33,-2725.91 58.67,-2725.91 58.67,-2725.91 61.33,-2725.91 64,-2728.58 64,-2731.24 64,-2731.24 64,-2736.58 64,-2736.58 64,-2739.24 61.33,-2741.91 58.67,-2741.91"/>
+<path fill="#ccffcc" stroke="black" d="M58.67,-2741.91C58.67,-2741.91 5.33,-2741.91 5.33,-2741.91 2.67,-2741.91 0,-2739.24 0,-2736.58 0,-2736.58 0,-2731.24 0,-2731.24 0,-2728.58 2.67,-2725.91 5.33,-2725.91 5.33,-2725.91 58.67,-2725.91 58.67,-2725.91 61.33,-2725.91 64,-2728.58 64,-2731.24 64,-2731.24 64,-2736.58 64,-2736.58 64,-2739.24 61.33,-2741.91 58.67,-2741.91"/>
 <text text-anchor="middle" x="32" y="-2731.71" font-family="Helvetica,sans-Serif" font-size="9.00">vite&#45;env.d.ts</text>
 </a>
 </g>

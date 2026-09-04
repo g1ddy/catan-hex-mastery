@@ -116,25 +116,56 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Render Maritime compact override experiments
+      - name: Analyze pre-compilation-specified Maritime evidence
         if: steps.plan.outputs.run_maritime == 'true'
         shell: bash
         run: |
-          rm -f \
-            docs/images/dependency-graph.candidate-reference-like.svg \
-            docs/images/dependency-graph.candidate-spacious.svg \
-            docs/images/dependency-graph.candidate-orthogonal.svg \
-            docs/images/dependency-graph.candidate-curved.svg
+          rm -rf .maritime-precomp
+          $MARITIME_BIN analyze \
+            --source src \
+            --output .maritime-precomp \
+            --depcruise-config config/dependency-cruiser.maritime-precomp.cjs \
+            --fail-on-unmeasured
+          $MARITIME_BIN validate .maritime-precomp
+
+          node <<'NODE'
+          const { readFileSync } = require('node:fs');
+          const artifact = JSON.parse(readFileSync('.maritime-precomp/dependency-graph.json', 'utf8'));
+          const dependencies = artifact.modules.flatMap((module) => module.dependencies ?? []);
+          const explicit = dependencies.filter((dependency) => dependency.preCompilationOnly === true).length;
+          const tagged = dependencies.filter((dependency) => (
+            Array.isArray(dependency.dependencyTypes)
+            && dependency.dependencyTypes.includes('pre-compilation-only')
+          )).length;
+          if (explicit === 0 && tagged === 0) {
+            throw new Error('tsPreCompilationDeps=specify produced no distinguishable pre-compilation-only relationships');
+          }
+          console.log(`Pre-compilation evidence: ${explicit} explicit flags, ${tagged} dependency-type tags.`);
+          NODE
+
+      - name: Render Maritime reference experiments
+        if: steps.plan.outputs.run_maritime == 'true'
+        shell: bash
+        run: |
+          rm -f docs/images/dependency-graph.candidate-*.svg
 
           for layout_variant in \
-            compact \
-            compact-no-src-wrapper \
-            compact-production-filter \
-            compact-edge-hierarchy \
-            compact-cluster-packing \
-            compact-reference-spacing; do
+            compact-no-src-reference-colors \
+            compact-no-src-reference-theme \
+            compact-no-src-reference-theme-edges \
+            compact-no-src-reference-theme-production; do
             node scripts/experiment-maritime-layout.mjs \
               .maritime/dependency-graph.json \
+              "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
+              --layout-reference docs/images/dependency-graph.reference.svg \
+              --variant "${layout_variant}"
+          done
+
+          for layout_variant in \
+            compact-src-reference-theme-edges-ts-precomp \
+            compact-no-src-reference-theme-edges-ts-precomp; do
+            node scripts/experiment-maritime-layout.mjs \
+              .maritime-precomp/dependency-graph.json \
               "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
               --layout-reference docs/images/dependency-graph.reference.svg \
               --variant "${layout_variant}"
@@ -150,7 +181,9 @@ jobs:
 
       - name: Inspect Maritime outputs
         if: steps.plan.outputs.run_maritime == 'true'
-        run: find .maritime -maxdepth 1 -type f -print
+        run: |
+          find .maritime -maxdepth 1 -type f -print
+          find .maritime-precomp -maxdepth 1 -type f -print
 
       - name: Upload Maritime comparison artifacts
         if: steps.plan.outputs.run_maritime == 'true'
@@ -163,16 +196,18 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Upload Maritime compact experiment artifacts
+      - name: Upload Maritime reference experiment artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-compact-experiments
+          name: maritime-compact-reference-experiments
           path: |
             .maritime/dependency-graph.json
+            .maritime-precomp/dependency-graph.json
             docs/images/dependency-graph.reference.svg
             docs/images/dependency-graph.svg
             docs/images/dependency-graph.candidate-*.svg
+            config/dependency-cruiser.maritime-precomp.cjs
             scripts/experiment-maritime-layout.mjs
             scripts/render-maritime-layout-previews.mjs
           if-no-files-found: error
@@ -202,15 +237,15 @@ jobs:
               ;;
           esac
 
-      - name: Commit Maritime compact experiments locally
+      - name: Commit Maritime reference experiments locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git add -A -- ':(glob)docs/images/dependency-graph.candidate-*.svg'
           if git diff --cached --quiet; then
-            echo "Maritime compact experiment artifacts are already current."
+            echo "Maritime reference experiment artifacts are already current."
             exit 0
           fi
-          git commit -m "docs(graph): update Maritime compact override experiments [skip ci]"
+          git commit -m "docs(graph): update Maritime reference experiments [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators

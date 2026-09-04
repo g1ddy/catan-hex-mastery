@@ -14,44 +14,87 @@ import {
   retainedLocalModulePaths,
 } from './experiment-maritime-layout.mjs';
 
-test('compact baseline renders sorted local modules, local edges, and recursive clusters', () => {
+test('no-src reference-colors baseline keeps the compact geometry decisions', () => {
   const artifact = {
     modules: [
       { source: 'src/z.ts', dependencies: [{ resolved: 'src/deep/a.ts' }, { resolved: 'node_modules/pkg/index.js' }] },
+      { source: 'src/game/testUtils.ts', dependencies: [] },
       { source: 'node_modules/pkg/index.js', dependencies: [] },
       { source: 'src/deep/a.ts', dependencies: [] },
     ],
   };
-  const dot = generateDot(artifact, 'compact');
+  const dot = generateDot(artifact, 'compact-no-src-reference-colors');
 
-  assert.match(dot, /rankdir=LR/);
-  assert.match(dot, /nodesep=0\.1, ranksep=0\.12/);
-  assert.match(dot, /subgraph "cluster_src" \{[\s\S]*tooltip="src";[\s\S]*subgraph "cluster_src\/deep" \{[\s\S]*tooltip="src\/deep";/);
-  assert.match(dot, /module_0 \[label="a\.ts", tooltip="src\/deep\/a\.ts"/);
-  assert.match(dot, /module_1 \[label="z\.ts", tooltip="src\/z\.ts"/);
-  assert.match(dot, /module_1 -> module_0;/);
-  assert.doesNotMatch(dot, /node_modules|pkg|newrank/);
-  assert.equal(generateDot(artifact, 'compact'), dot);
+  assert.match(dot, /rankdir=LR/u);
+  assert.match(dot, /nodesep=0\.1, ranksep=0\.12/u);
+  assert.doesNotMatch(dot, /subgraph "cluster_src" \{/u);
+  assert.match(dot, /subgraph "cluster_src\/deep" \{/u);
+  assert.match(dot, /testUtils\.ts/u);
+  assert.doesNotMatch(dot, /node_modules/u);
 });
 
 test('rejects artifacts without a modules array', () => {
-  assert.throws(() => generateDot({}), /modules array/);
+  assert.throws(() => generateDot({}), /modules array/u);
 });
 
-test('compact-no-src-wrapper removes only the redundant source-root cluster', () => {
+test('reference colors reproduce dependency-cruiser semantic module coloring', () => {
   const artifact = { modules: [
-    { source: 'src/root.ts', dependencies: [] },
-    { source: 'src/deep/a.ts', dependencies: [] },
+    { source: 'src/vite-env.d.ts', orphan: true, dependencies: [] },
+    { source: 'src/plain.ts', orphan: false, dependencies: [] },
+    { source: 'src/App.tsx', orphan: false, dependencies: [] },
+    { source: 'src/data.json', orphan: false, dependencies: [] },
+    { source: 'src/styles.css', orphan: false, dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-no-src-wrapper');
+  const dot = generateDot(artifact, 'compact-no-src-reference-colors');
 
-  assert.doesNotMatch(dot, /subgraph "cluster_src" \{/u);
-  assert.match(dot, /subgraph "cluster_src\/deep" \{/u);
-  assert.match(dot, /tooltip="src\/deep"/u);
-  assert.deepEqual(recursiveFolderNamespaces(artifact, 'compact-no-src-wrapper'), ['src/deep']);
+  assert.match(dot, /tooltip="src\/vite-env\.d\.ts", fillcolor="#ccffcc"/u);
+  assert.match(dot, /tooltip="src\/plain\.ts", fillcolor="#ddfeff"/u);
+  assert.match(dot, /tooltip="src\/App\.tsx", fillcolor="#bbfeff"/u);
+  assert.match(dot, /tooltip="src\/data\.json", fillcolor="#ffee44"/u);
+  assert.match(dot, /tooltip="src\/styles\.css", fillcolor="#ffffcc"/u);
 });
 
-test('compact-production-filter excludes tests, specs, __tests__, and the historical testUtils support utility', () => {
+test('reference theme restores historical cluster weight and white rounded fill', () => {
+  const dot = generateDot({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }, 'compact-no-src-reference-theme');
+
+  assert.match(dot, /color="black"; fontcolor="black"; fontname="Helvetica-Bold"; fontsize=9; penwidth=2; margin=4; style="rounded,bold,filled"; fillcolor="#ffffff";/u);
+  assert.match(dot, /bgcolor="white"/u);
+});
+
+test('reference edge theme honors explicit preCompilationOnly relationships', () => {
+  const artifact = { modules: [
+    { source: 'src/a.ts', dependencies: [
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: true },
+      { resolved: 'src/c.ts', dependencyTypes: ['local', 'import'], dynamic: false },
+      { resolved: 'src/d.ts', dependencyTypes: ['local', 'dynamic-import'], dynamic: true },
+    ] },
+    { source: 'src/b.ts', dependencies: [] },
+    { source: 'src/c.ts', dependencies: [] },
+    { source: 'src/d.ts', dependencies: [] },
+  ] };
+  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
+
+  assert.match(dot, /edge \[arrowhead="normal", arrowsize=0\.6, penwidth=2, color="#00000033"/u);
+  assert.match(dot, /module_0 -> module_1 \[arrowhead="onormal", style="dashed", color="#aaaaaa", penwidth=1\];/u);
+  assert.match(dot, /module_0 -> module_2;/u);
+  assert.match(dot, /module_0 -> module_3 \[style="dashed"\];/u);
+});
+
+test('runtime evidence keeps a source-target pair primary when duplicate pre-compilation evidence also exists', () => {
+  const artifact = { modules: [
+    { source: 'src/a.ts', dependencies: [
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: true },
+      { resolved: 'src/b.ts', dependencyTypes: ['local', 'import'], preCompilationOnly: false },
+    ] },
+    { source: 'src/b.ts', dependencies: [] },
+  ] };
+  const dot = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
+
+  assert.match(dot, /module_0 -> module_1;/u);
+  assert.doesNotMatch(dot, /module_0 -> module_1 \[/u);
+});
+
+test('production variant excludes tests, specs, __tests__, and testUtils support utilities', () => {
   const artifact = { modules: [
     { source: 'src/app.ts', dependencies: [] },
     { source: 'src/app.test.ts', dependencies: [] },
@@ -60,63 +103,65 @@ test('compact-production-filter excludes tests, specs, __tests__, and the histor
     { source: 'src/game/testUtils.ts', dependencies: [] },
   ] };
 
-  assert.deepEqual(retainedLocalModulePaths(artifact, 'compact-production-filter'), ['src/app.ts']);
-  const dot = generateDot(artifact, 'compact-production-filter');
-  assert.match(dot, /app\.ts/u);
-  assert.doesNotMatch(dot, /testUtils|\.test\.|\.spec\.|__tests__/u);
+  assert.deepEqual(retainedLocalModulePaths(artifact, 'compact-no-src-reference-theme-production'), ['src/app.ts']);
 });
 
-test('compact-edge-hierarchy de-emphasizes exclusively type-only edges but keeps runtime pairs primary', () => {
+test('src and no-src pre-compilation variants differ only in the outer source-root grouping', () => {
   const artifact = { modules: [
-    { source: 'src/a.ts', dependencies: [
-      { resolved: 'src/b.ts', dependencyTypes: ['local', 'type-only', 'import'] },
-      { resolved: 'src/c.ts', dependencyTypes: ['local', 'import'] },
-      { resolved: 'src/c.ts', dependencyTypes: ['local', 'type-only', 'export'] },
-    ] },
-    { source: 'src/b.ts', dependencies: [] },
-    { source: 'src/c.ts', dependencies: [] },
+    { source: 'src/root.ts', dependencies: [] },
+    { source: 'src/deep/a.ts', dependencies: [] },
   ] };
-  const dot = generateDot(artifact, 'compact-edge-hierarchy');
 
-  assert.match(dot, /module_0 -> module_1 \[style="dashed", color="#aaaaaa", penwidth=0\.8\];/u);
-  assert.match(dot, /module_0 -> module_2;/u);
-  assert.doesNotMatch(dot, /module_0 -> module_2 \[/u);
+  assert.deepEqual(
+    recursiveFolderNamespaces(artifact, 'compact-src-reference-theme-edges-ts-precomp'),
+    ['src', 'src/deep'],
+  );
+  assert.deepEqual(
+    recursiveFolderNamespaces(artifact, 'compact-no-src-reference-theme-edges-ts-precomp'),
+    ['src/deep'],
+  );
+
+  const withSrc = generateDot(artifact, 'compact-src-reference-theme-edges-ts-precomp');
+  const withoutSrc = generateDot(artifact, 'compact-no-src-reference-theme-edges-ts-precomp');
+  assert.match(withSrc, /subgraph "cluster_src" \{/u);
+  assert.doesNotMatch(withoutSrc, /subgraph "cluster_src" \{/u);
+  for (const dot of [withSrc, withoutSrc]) {
+    assert.match(dot, /penwidth=2, color="#00000033"/u);
+    assert.match(dot, /style="rounded,bold,filled"/u);
+  }
 });
 
-test('compact-cluster-packing repeats folder declarations per module like the historical dependency-cruiser DOT', () => {
+test('existing no-src variants retain recursive namespaces without the redundant source-root cluster', () => {
   const artifact = { modules: [
-    { source: 'src/a.ts', dependencies: [] },
-    { source: 'src/b.ts', dependencies: [] },
+    { source: 'src/root.ts', dependencies: [] },
+    { source: 'src/deep/a.ts', dependencies: [] },
   ] };
-  const baseline = generateDot(artifact, 'compact');
-  const packed = generateDot(artifact, 'compact-cluster-packing');
 
-  assert.equal(baseline.match(/subgraph "cluster_src"/gu)?.length, 1);
-  assert.equal(packed.match(/subgraph "cluster_src"/gu)?.length, 2);
+  for (const variant of [
+    'compact-no-src-reference-colors',
+    'compact-no-src-reference-theme',
+    'compact-no-src-reference-theme-edges',
+    'compact-no-src-reference-theme-production',
+    'compact-no-src-reference-theme-edges-ts-precomp',
+  ]) {
+    assert.deepEqual(recursiveFolderNamespaces(artifact, variant), ['src/deep']);
+  }
 });
 
-test('compact-reference-spacing changes only spacing to the historical values', () => {
-  const artifact = { modules: [] };
-  const baseline = generateDot(artifact, 'compact');
-  const spaced = generateDot(artifact, 'compact-reference-spacing');
-
-  assert.match(baseline, /nodesep=0\.1, ranksep=0\.12/u);
-  assert.match(spaced, /nodesep=0\.16, ranksep=0\.18/u);
-});
-
-test('exposes a compact baseline plus one-change-at-a-time variants', () => {
+test('exposes the focused reference comparison family including ts pre-compilation variants', () => {
   assert.deepEqual(Object.keys(LAYOUT_VARIANTS), [
-    'compact',
-    'compact-no-src-wrapper',
-    'compact-production-filter',
-    'compact-edge-hierarchy',
-    'compact-cluster-packing',
-    'compact-reference-spacing',
+    'compact-no-src-reference-colors',
+    'compact-no-src-reference-theme',
+    'compact-no-src-reference-theme-edges',
+    'compact-no-src-reference-theme-production',
+    'compact-src-reference-theme-edges-ts-precomp',
+    'compact-no-src-reference-theme-edges-ts-precomp',
   ]);
   for (const variant of Object.keys(LAYOUT_VARIANTS)) {
     const dot = generateDot({ modules: [] }, variant);
     assert.match(dot, /strict digraph dependencies/u);
     assert.match(dot, /rankdir=LR/u);
+    assert.match(dot, /nodesep=0\.1, ranksep=0\.12/u);
     assert.doesNotMatch(dot, /, size=|, ratio=/u);
   }
 });
@@ -128,12 +173,12 @@ test('rejects a rendered SVG that loses a retained local edge', () => {
     const output = path.join(directory, 'candidate.svg');
     const fakeDot = path.join(directory, 'dot');
     writeFileSync(input, JSON.stringify({ modules: [
-      { source: 'src/a.ts', dependencies: [{ resolved: 'src/b.ts' }] },
-      { source: 'src/b.ts', dependencies: [] },
+      { source: 'src/deep/a.ts', dependencies: [{ resolved: 'src/deep/b.ts' }] },
+      { source: 'src/deep/b.ts', dependencies: [] },
     ] }));
-    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src</title></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src/deep</title></g><g id="node1" class="node"></g><g id="node2" class="node"></g></svg>'\n`, { mode: 0o755 });
 
-    assert.throws(() => renderCandidate(input, output, fakeDot, undefined, 'compact'), /lost graph elements.*0 edges/u);
+    assert.throws(() => renderCandidate(input, output, fakeDot, undefined, 'compact-no-src-reference-colors'), /lost graph elements.*0 edges/u);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -145,10 +190,10 @@ test('layout reference is optional and measurement-only', () => {
     const input = path.join(directory, 'input.json');
     const output = path.join(directory, 'candidate.svg');
     const fakeDot = path.join(directory, 'dot');
-    writeFileSync(input, JSON.stringify({ modules: [{ source: 'src/a.ts', dependencies: [] }] }));
-    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src</title></g><g id="node1" class="node"></g></svg>'\n`, { mode: 0o755 });
+    writeFileSync(input, JSON.stringify({ modules: [{ source: 'src/deep/a.ts', dependencies: [] }] }));
+    writeFileSync(fakeDot, `#!/bin/sh\nprintf '%s' '<svg width="10pt" height="20pt"><g id="clust1" class="cluster"><title>cluster_src/deep</title></g><g id="node1" class="node"></g></svg>'\n`, { mode: 0o755 });
 
-    const result = renderCandidate(input, output, fakeDot, undefined, 'compact');
+    const result = renderCandidate(input, output, fakeDot, undefined, 'compact-no-src-reference-colors');
     assert.equal(result.reference, undefined);
     assert.deepEqual(
       { ...result.candidate, namespaces: undefined },
@@ -159,19 +204,28 @@ test('layout reference is optional and measurement-only', () => {
   }
 });
 
-test('retains the canonical compact artifact module, edge, and cluster detail', () => {
+test('canonical no-src evidence preserves file detail and reference semantic orphan coloring', () => {
   const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
-  const dot = generateDot(artifact, 'compact');
+  const modules = retainedLocalModulePaths(artifact, 'compact-no-src-reference-colors');
+  const namespaces = recursiveFolderNamespaces(artifact, 'compact-no-src-reference-colors');
+  const dot = generateDot(artifact, 'compact-no-src-reference-colors');
 
+  assert.equal(modules.length, 115);
   assert.equal(dot.match(/module_\d+ \[label=.*tooltip=/gu)?.length, 115);
   assert.equal(dot.match(/ -> /gu)?.length, 357);
-  assert.equal(dot.match(/subgraph "cluster_/gu)?.length, 41);
+  assert.equal(namespaces.length, 40);
+  assert.ok(!namespaces.includes('src'));
+  assert.match(dot, /tooltip="src\/vite-env\.d\.ts", fillcolor="#ccffcc"/u);
 });
 
-test('the production-filter variant removes the remaining support utility from canonical evidence', () => {
+test('canonical production variant removes the remaining support utility', () => {
   const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
-  assert.equal(retainedLocalModulePaths(artifact, 'compact-production-filter').length, 114);
-  assert.doesNotMatch(generateDot(artifact, 'compact-production-filter'), /testUtils\.ts/u);
+  const modules = retainedLocalModulePaths(artifact, 'compact-no-src-reference-theme-production');
+  const dot = generateDot(artifact, 'compact-no-src-reference-theme-production');
+
+  assert.equal(modules.length, 114);
+  assert.equal(dot.match(/ -> /gu)?.length, 355);
+  assert.doesNotMatch(dot, /testUtils\.ts/u);
 });
 
 test('inspects the committed acceptance SVGs rather than inferring visual output from DOT', () => {

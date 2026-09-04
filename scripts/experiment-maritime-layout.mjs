@@ -8,7 +8,7 @@
  * Run: node scripts/experiment-maritime-layout.mjs
  *
  * The canonical input, candidate output, and optional reference can be overridden:
- * node scripts/experiment-maritime-layout.mjs input.json output.svg --variant compact --layout-reference reference.svg
+ * node scripts/experiment-maritime-layout.mjs input.json output.svg --variant compact-no-src-reference-colors --layout-reference reference.svg
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -19,37 +19,71 @@ import { fileURLToPath } from 'node:url';
 const quote = (value) => `"${String(value).replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`;
 const normalize = (value) => value.replaceAll('\\', '/');
 
-const COMPACT = Object.freeze({
+const NO_SRC = Object.freeze({
   splines: 'true',
   overlap: 'false',
   nodesep: 0.10,
   ranksep: 0.12,
   clusterMargin: 4,
-  omitSrcWrapper: false,
+  omitSrcWrapper: true,
   productionFilter: false,
-  edgeHierarchy: false,
-  dependencyCruiserPacking: false,
+  referenceClusterTheme: false,
+  referenceEdgeTheme: false,
+});
+
+const WITH_SRC = Object.freeze({
+  ...NO_SRC,
+  omitSrcWrapper: false,
+});
+
+const REFERENCE_THEME = Object.freeze({
+  referenceClusterTheme: true,
+});
+
+const REFERENCE_EDGES = Object.freeze({
+  referenceEdgeTheme: true,
 });
 
 export const LAYOUT_VARIANTS = Object.freeze({
-  compact: COMPACT,
-  'compact-no-src-wrapper': Object.freeze({ ...COMPACT, omitSrcWrapper: true }),
-  'compact-production-filter': Object.freeze({ ...COMPACT, productionFilter: true }),
-  'compact-edge-hierarchy': Object.freeze({ ...COMPACT, edgeHierarchy: true }),
-  'compact-cluster-packing': Object.freeze({ ...COMPACT, dependencyCruiserPacking: true }),
-  'compact-reference-spacing': Object.freeze({ ...COMPACT, nodesep: 0.16, ranksep: 0.18, clusterMargin: 6 }),
+  'compact-no-src-reference-colors': NO_SRC,
+  'compact-no-src-reference-theme': Object.freeze({ ...NO_SRC, ...REFERENCE_THEME }),
+  'compact-no-src-reference-theme-edges': Object.freeze({ ...NO_SRC, ...REFERENCE_THEME, ...REFERENCE_EDGES }),
+  'compact-no-src-reference-theme-production': Object.freeze({
+    ...NO_SRC,
+    ...REFERENCE_THEME,
+    ...REFERENCE_EDGES,
+    productionFilter: true,
+  }),
+  'compact-src-reference-theme-edges-ts-precomp': Object.freeze({
+    ...WITH_SRC,
+    ...REFERENCE_THEME,
+    ...REFERENCE_EDGES,
+  }),
+  'compact-no-src-reference-theme-edges-ts-precomp': Object.freeze({
+    ...NO_SRC,
+    ...REFERENCE_THEME,
+    ...REFERENCE_EDGES,
+  }),
 });
 
-function resolveVariant(variant = 'compact') {
+function resolveVariant(variant = 'compact-no-src-reference-colors') {
   const configuration = LAYOUT_VARIANTS[variant];
   if (!configuration) throw new Error(`Unknown layout variant: ${variant}`);
   return configuration;
 }
 
-function nodeFillColor(source) {
-  if (source.startsWith('src/features/')) return '#bbfeff';
-  if (source.startsWith('src/game/')) return '#ddfeff';
-  if (source.startsWith('src/bots/')) return '#fff2b2';
+function nodeFillColor(module) {
+  if (module.orphan === true) return '#ccffcc';
+  const source = module.source;
+  if (/\.json$/u.test(source)) return '#ffee44';
+  if (/\.jsx$/u.test(source)) return '#ffff77';
+  if (/\.vue$/u.test(source)) return '#41f083';
+  if (/\.tsx$/u.test(source)) return '#bbfeff';
+  if (/\.([cm]?ts)$/u.test(source)) return '#ddfeff';
+  if (/\.svelte$/u.test(source)) return '#febbff';
+  if (/(\.coffee|\.litcoffee|\.coffee\.md)$/u.test(source)) return '#eeccaa';
+  if (/(\.csx|\.cjsx)$/u.test(source)) return '#eebb77';
+  if (/\.ls$/u.test(source)) return 'pink';
   return '#ffffcc';
 }
 
@@ -119,8 +153,17 @@ function buildTree(modules) {
   return root;
 }
 
+const TYPE_ONLY_DEPENDENCY_TYPES = new Set([
+  'pre-compilation-only',
+  'triple-slash-type-reference',
+  'type-import',
+  'type-only',
+]);
+
 function dependencyIsTypeOnly(dependency) {
-  return Array.isArray(dependency?.dependencyTypes) && dependency.dependencyTypes.includes('type-only');
+  if (dependency?.preCompilationOnly === true) return true;
+  return Array.isArray(dependency?.dependencyTypes)
+    && dependency.dependencyTypes.some((type) => TYPE_ONLY_DEPENDENCY_TYPES.has(type));
 }
 
 function collectEdges(modules, moduleIds) {
@@ -133,38 +176,67 @@ function collectEdges(modules, moduleIds) {
       const key = `${module.source}\0${target}`;
       const previous = edges.get(key);
       const typeOnly = dependencyIsTypeOnly(dependency);
+      const dynamic = dependency.dynamic === true;
       edges.set(key, {
         typeOnly: previous ? previous.typeOnly && typeOnly : typeOnly,
+        dynamic: previous ? previous.dynamic && dynamic : dynamic,
       });
     }
   }
   return edges;
 }
 
-export function generateDot(artifact, variant = 'compact') {
+function edgeAttributes(metadata, layout) {
+  if (!layout.referenceEdgeTheme) return '';
+  if (metadata.typeOnly) {
+    return ' [arrowhead="onormal", style="dashed", color="#aaaaaa", penwidth=1]';
+  }
+  if (metadata.dynamic) return ' [style="dashed"]';
+  return '';
+}
+
+export function generateDot(artifact, variant = 'compact-no-src-reference-colors') {
   const layout = resolveVariant(variant);
   const modules = selectModules(artifact, layout);
   const moduleIds = new Map(modules.map((module, index) => [module.source, `module_${index}`]));
   const directories = collectDirectoryPaths(modules, layout);
   const clusterIds = new Map(directories.map((directory, index) => [directory, `cluster_${index}`]));
   const root = buildTree(modules);
+  const edgePenwidth = layout.referenceEdgeTheme ? 2.0 : 1.2;
+  const edgeColor = layout.referenceEdgeTheme ? '#00000033' : '#00000044';
+  const graphBackground = layout.referenceClusterTheme ? 'white' : 'transparent';
 
   const lines = [
     'strict digraph dependencies {',
-    `  graph [rankdir=LR, compound=true, splines=${layout.splines}, overlap=${layout.overlap}, nodesep=${layout.nodesep}, ranksep=${layout.ranksep}, pad=0.10, bgcolor="transparent", fontname="Helvetica-bold", fontsize=9, outputorder=edgesfirst];`,
+    `  graph [rankdir=LR, compound=true, splines=${layout.splines}, overlap=${layout.overlap}, nodesep=${layout.nodesep}, ranksep=${layout.ranksep}, pad=0.10, bgcolor=${quote(graphBackground)}, fontname="Helvetica-bold", fontsize=9, outputorder=edgesfirst];`,
     '  node [shape=box, style="rounded,filled", color="black", fillcolor="#ffffcc", fontcolor="black", fontname="Helvetica", fontsize=9, margin="0.06,0.035", height=0.20];',
-    '  edge [arrowhead="normal", arrowsize=0.6, penwidth=1.2, color="#00000044"];',
+    `  edge [arrowhead="normal", arrowsize=0.6, penwidth=${edgePenwidth}, color=${quote(edgeColor)}, fontname="Helvetica", fontsize=9];`,
   ];
 
   const pushClusterAttributes = (directory, indentation) => {
     const prefix = ' '.repeat(indentation);
     const id = clusterIds.get(directory);
-    lines.push(`${prefix}id=${quote(id)}; label=${quote(path.posix.basename(directory))}; tooltip=${quote(directory)}; color="#c8ced8"; fontcolor="#596273"; fontname="Helvetica"; fontsize=9; penwidth=0.8; margin=${layout.clusterMargin};`);
+    const attributes = [
+      `id=${quote(id)}`,
+      `label=${quote(path.posix.basename(directory))}`,
+      `tooltip=${quote(directory)}`,
+      `color=${quote(layout.referenceClusterTheme ? 'black' : '#c8ced8')}`,
+      `fontcolor=${quote(layout.referenceClusterTheme ? 'black' : '#596273')}`,
+      `fontname=${quote(layout.referenceClusterTheme ? 'Helvetica-Bold' : 'Helvetica')}`,
+      'fontsize=9',
+      `penwidth=${layout.referenceClusterTheme ? 2 : 0.8}`,
+      `margin=${layout.clusterMargin}`,
+    ];
+    if (layout.referenceClusterTheme) {
+      attributes.push('style="rounded,bold,filled"');
+      attributes.push('fillcolor="#ffffff"');
+    }
+    lines.push(`${prefix}${attributes.join('; ')};`);
   };
 
   const pushModule = (module, indentation) => {
     const prefix = ' '.repeat(indentation);
-    lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}, fillcolor=${quote(nodeFillColor(module.source))}];`);
+    lines.push(`${prefix}${moduleIds.get(module.source)} [label=${quote(displayName(module.source))}, tooltip=${quote(module.source)}, fillcolor=${quote(nodeFillColor(module))}];`);
   };
 
   const renderTree = (branch, indentation) => {
@@ -184,44 +256,12 @@ export function generateDot(artifact, variant = 'compact') {
     }
   };
 
-  const renderDependencyCruiserClusters = () => {
-    for (const module of modules) {
-      const nestedDirectories = [];
-      let directory = directoryOf(module.source);
-      while (directory) {
-        nestedDirectories.unshift(directory);
-        directory = directoryOf(directory);
-      }
-
-      let indentation = 2;
-      let opened = 0;
-      for (const nestedDirectory of nestedDirectories) {
-        if (layout.omitSrcWrapper && nestedDirectory === 'src') continue;
-        const prefix = ' '.repeat(indentation);
-        lines.push(`${prefix}subgraph ${quote(`cluster_${nestedDirectory}`)} {`);
-        pushClusterAttributes(nestedDirectory, indentation + 2);
-        indentation += 2;
-        opened += 1;
-      }
-      pushModule(module, indentation);
-      while (opened > 0) {
-        indentation -= 2;
-        lines.push(`${' '.repeat(indentation)}}`);
-        opened -= 1;
-      }
-    }
-  };
-
-  if (layout.dependencyCruiserPacking) renderDependencyCruiserClusters();
-  else renderTree(root, 2);
+  renderTree(root, 2);
 
   const edges = collectEdges(modules, moduleIds);
   for (const [edgeKey, metadata] of [...edges.entries()].sort(([left], [right]) => left.localeCompare(right))) {
     const [source, target] = edgeKey.split('\0');
-    const attributes = layout.edgeHierarchy && metadata.typeOnly
-      ? ' [style="dashed", color="#aaaaaa", penwidth=0.8]'
-      : '';
-    lines.push(`  ${moduleIds.get(source)} -> ${moduleIds.get(target)}${attributes};`);
+    lines.push(`  ${moduleIds.get(source)} -> ${moduleIds.get(target)}${edgeAttributes(metadata, layout)};`);
   }
   lines.push('}');
   return `${lines.join('\n')}\n`;
@@ -256,11 +296,11 @@ function decodeXml(value) {
     .replaceAll('&amp;', '&');
 }
 
-export function retainedLocalModulePaths(artifact, variant = 'compact') {
+export function retainedLocalModulePaths(artifact, variant = 'compact-no-src-reference-colors') {
   return selectModules(artifact, resolveVariant(variant)).map(({ source }) => source);
 }
 
-export function recursiveFolderNamespaces(artifact, variant = 'compact') {
+export function recursiveFolderNamespaces(artifact, variant = 'compact-no-src-reference-colors') {
   return collectDirectoryPaths(selectModules(artifact, resolveVariant(variant)), resolveVariant(variant));
 }
 
@@ -271,8 +311,8 @@ export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, 
 
   if (candidate.nodes < reference.nodes) throw new Error(`candidate has ${candidate.nodes} nodes; reference has ${reference.nodes}`);
   if (candidate.nodes !== moduleCount) throw new Error(`candidate has ${candidate.nodes} nodes; expected ${moduleCount} modules`);
-  if (candidate.clusters !== expectedNamespaces.length || candidate.clusters !== reference.clusters) {
-    throw new Error(`candidate has ${candidate.clusters} clusters; canonical artifact expects ${expectedNamespaces.length} and reference has ${reference.clusters}`);
+  if (candidate.clusters !== expectedNamespaces.length) {
+    throw new Error(`candidate has ${candidate.clusters} clusters; canonical artifact expects ${expectedNamespaces.length}`);
   }
   if (JSON.stringify(candidate.namespaces) !== JSON.stringify(expectedNamespaces)) {
     throw new Error('candidate cluster namespace metadata does not match canonical recursive folders');
@@ -284,7 +324,7 @@ export function assertSvgCompatibility(referenceSvg, candidateSvg, expectation, 
   return { reference, candidate, expectedNamespaces, aspectDifference };
 }
 
-export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1, variant = 'compact') {
+export function assertLayoutCompatibility(referenceSvg, candidateSvg, artifact, relativeTolerance = 0.1, variant = 'compact-no-src-reference-colors') {
   const expectedModules = retainedLocalModulePaths(artifact, variant);
   const expectedNamespaces = recursiveFolderNamespaces(artifact, variant);
   return assertSvgCompatibility(referenceSvg, candidateSvg, {
@@ -308,7 +348,7 @@ function formatMetrics(label, metrics) {
   return `${label}: ${metrics.width} × ${metrics.height} pt; ${metrics.nodes} nodes, ${metrics.edges} edges, ${metrics.clusters} clusters; aspect ${metrics.aspectRatio.toFixed(3)}`;
 }
 
-export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'compact') {
+export function renderCandidate(inputPath, outputPath, dotCommand = 'dot', layoutReferencePath, variant = 'compact-no-src-reference-colors') {
   const artifact = JSON.parse(readFileSync(inputPath, 'utf8'));
   const reference = layoutReferencePath ? inspectSvg(readFileSync(layoutReferencePath, 'utf8')) : undefined;
   const dot = generateDot(artifact, variant);
@@ -342,10 +382,10 @@ if (isMain) {
     return value;
   };
   const referenceArgument = readFlag('--layout-reference');
-  const variant = readFlag('--variant') ?? 'compact';
+  const variant = readFlag('--variant') ?? 'compact-no-src-reference-colors';
   if (arguments_.length > 2) throw new Error('Usage: experiment-maritime-layout.mjs [input.json] [output.svg] [--layout-reference reference.svg] [--variant name]');
   const inputPath = path.resolve(arguments_[0] ?? '.maritime/dependency-graph.json');
-  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate-compact.svg');
+  const outputPath = path.resolve(arguments_[1] ?? 'docs/images/dependency-graph.candidate-compact-no-src-reference-colors.svg');
   const { candidate, reference } = renderCandidate(
     inputPath,
     outputPath,

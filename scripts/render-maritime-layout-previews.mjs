@@ -2,7 +2,7 @@
 /* global console, process */
 
 /**
- * Render the reference, current Maritime output, and compact experiments to equally wide PNGs.
+ * Render the reference, current Maritime output, and focused no-src experiments to equally wide PNGs.
  * Prerequisites: Inkscape and ImageMagick's `magick` executable on PATH.
  * Run: node scripts/render-maritime-layout-previews.mjs
  */
@@ -15,12 +15,10 @@ const outputDirectory = path.resolve(process.argv[2] ?? 'docs/images/layout-prev
 const inputs = [
   ['reference', 'docs/images/dependency-graph.reference.svg'],
   ['beta7', 'docs/images/dependency-graph.svg'],
-  ['compact', 'docs/images/dependency-graph.candidate-compact.svg'],
-  ['compact-no-src-wrapper', 'docs/images/dependency-graph.candidate-compact-no-src-wrapper.svg'],
-  ['compact-production-filter', 'docs/images/dependency-graph.candidate-compact-production-filter.svg'],
-  ['compact-edge-hierarchy', 'docs/images/dependency-graph.candidate-compact-edge-hierarchy.svg'],
-  ['compact-cluster-packing', 'docs/images/dependency-graph.candidate-compact-cluster-packing.svg'],
-  ['compact-reference-spacing', 'docs/images/dependency-graph.candidate-compact-reference-spacing.svg'],
+  ['no-src-reference-colors', 'docs/images/dependency-graph.candidate-compact-no-src-reference-colors.svg'],
+  ['no-src-reference-theme', 'docs/images/dependency-graph.candidate-compact-no-src-reference-theme.svg'],
+  ['no-src-reference-theme-edges', 'docs/images/dependency-graph.candidate-compact-no-src-reference-theme-edges.svg'],
+  ['no-src-reference-theme-production', 'docs/images/dependency-graph.candidate-compact-no-src-reference-theme-production.svg'],
 ];
 
 function run(command, arguments_) {
