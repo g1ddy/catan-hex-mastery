@@ -4,112 +4,104 @@
 
 Use Catan as a local proving ground for what Maritime's compact architecture profile should become before moving the behavior upstream.
 
-The target is the information density and hierarchy of Catan's historical dependency diagram, but the graph must remain derived from canonical Maritime evidence. Compact should be a **file-level, local-only LR architecture graph with nested folders and restrained spacing**, not a collapsed folder summary.
+The target is the hierarchy and visual language of Catan's historical dependency-cruiser diagram while remaining derived from canonical Maritime evidence. Compact should remain a **file-level, local-only LR graph with nested folders**, not a collapsed summary.
 
 ## Reference inputs
 
-- `docs/images/dependency-graph.reference.svg` — immutable historical target copied from Catan commit `3bbac70d2de6dd3590bcb2c1f2710e68f5f6a871`.
-- `docs/images/dependency-graph.svg` — current published beta.7 `compact-architecture` output. Keep it intact for comparison.
-- `.maritime/dependency-graph.json` — canonical dependency evidence. Every local experiment must derive from this artifact; do not revive repository-owned dependency scanning or maintain a hand-written DOT file.
+- `docs/images/dependency-graph.reference.svg` — immutable historical target.
+- `docs/images/dependency-graph.svg` — current Maritime beta.7 `compact-architecture` output.
+- `.maritime/dependency-graph.json` — canonical dependency evidence used by every experiment.
 
-The reference has 113 module nodes, 351 rendered edges, and 41 nested folder clusters. The current Maritime evidence retains 115 local modules and 357 unique local source/target relationships. Beta.7's compact profile reduces that to 20 folder nodes and 63 edges, which is too abstract for Catan's intended architecture map.
+The historical reference has 113 nodes, 351 edges, and 41 nested clusters. The current Maritime evidence contains 115 local modules and 357 unique local relationships.
 
-## Historical behaviors worth recovering
+## What earlier experiments established
 
-Catan's old dependency-cruiser graph configuration provides concrete evidence for the desired profile:
+The one-change-at-a-time pass found that omitting only the redundant outer `src` wrapper produced the closest overall silhouette to the historical reference. Its aspect ratio was nearly identical to the reference.
 
-- `rankdir=LR`.
-- local `src` modules only; external packages were not part of the architecture map.
-- tests/specs and `testUtils.ts` were excluded from the graph.
-- TypeScript pre-compilation dependencies were de-emphasized with dashed gray edges.
-- spacing used `nodesep=0.16` and `ranksep=0.18`.
-- dependency-cruiser's DOT repeatedly reopened folder clusters around each file instead of emitting one complete folder tree in a single block. Graphviz therefore had different packing freedom even though the visible hierarchy resolved to the same folder namespaces.
+A later combined experiment added production filtering and historical `.16/.18` spacing on top of that. That combination became too tall, so the historical spacing is no longer part of the favored base geometry. Repeated dependency-cruiser-style cluster emission also did not materially improve the outer geometry.
 
-Those are more useful experiments than arbitrary spline or whitespace presets.
+The current focused pass therefore returns to the winning no-`src` geometry and tests visual semantics instead.
 
-## Compact baseline
+## Recovered historical visual semantics
 
-`compact` is the control. It intentionally fixes the decisions that are already settled for this experiment:
+The old graph used dependency-cruiser's semantic DOT theme rather than folder-based source coloring.
 
-- individual source-file nodes are retained;
-- recursive folder groups are retained;
-- direction is LR;
-- external packages are excluded;
-- Graphviz uses its natural canvas — the historical SVG is never used to force `size` or `ratio`;
-- current compact spacing remains `nodesep=0.10`, `ranksep=0.12`, cluster margin `4`;
-- current full-tree cluster emission and uniform edge styling remain unchanged.
+Important recovered rules include:
 
-The published beta.7 `docs/images/dependency-graph.svg` remains the summary-view comparator, so there is no value in creating another local “collapsed” variant.
+- orphan modules: `#ccffcc`;
+- `.ts`, `.mts`, `.cts`, and `.d.ts`: `#ddfeff`;
+- `.tsx`: `#bbfeff`;
+- `.json`: `#ffee44`;
+- `.jsx`: `#ffff77`;
+- unmatched modules: `#ffffcc`;
+- folder clusters: black 2pt borders, bold black Helvetica 9pt labels, rounded/bold/filled white styling;
+- default edges: `#00000033`, 2pt;
+- dynamic dependencies: dashed;
+- type-only / pre-compilation-only dependencies: thinner, dashed gray edges with open arrowheads.
 
-## One-change-at-a-time variants
+`src/vite-env.d.ts` is green in the reference because dependency-cruiser marks it as an orphan; the orphan rule takes precedence over its TypeScript extension color.
 
-The generated-artifacts workflow renders and commits these files:
+## Focused variants
 
-| Variant | Single delta from `compact` | Question it answers |
+The generated-artifacts workflow now renders exactly four candidates:
+
+| Variant | Delta | Purpose |
 | --- | --- | --- |
-| `candidate-compact.svg` | none | What does the current file-level compact baseline look like? |
-| `candidate-compact-no-src-wrapper.svg` | omit only the redundant outer `src` cluster | Does exposing `bots`, `features`, `game`, etc. as the visual roots improve hierarchy and packing? |
-| `candidate-compact-production-filter.svg` | apply the historical test/spec/`testUtils.ts` presentation filter | How much incidental support-code noise remains? |
-| `candidate-compact-edge-hierarchy.svg` | render exclusively type-only relationships thin/dashed | Does emphasizing runtime imports make the architecture easier to read? |
-| `candidate-compact-cluster-packing.svg` | emit repeated per-file folder clusters like the old dependency-cruiser DOT | Does historical cluster emission materially improve Graphviz routing/packing? |
-| `candidate-compact-reference-spacing.svg` | use only the historical spacing: `.16` / `.18` / margin `6` | Is the old spacing a better density/readability tradeoff? |
+| `candidate-compact-no-src-reference-colors.svg` | no-`src` geometry + dependency-cruiser semantic node colors | Is semantic coloring itself the missing visual signal? |
+| `candidate-compact-no-src-reference-theme.svg` | above + reference-like folder cluster styling | Does restoring border/title weight materially improve fidelity? |
+| `candidate-compact-no-src-reference-theme-edges.svg` | above + reference-like edge styling | Closest overall candidate: geometry + semantic colors + cluster + edge language. |
+| `candidate-compact-no-src-reference-theme-production.svg` | above + test/spec/`testUtils` filter | Does production-only content improve or hurt the historical match? |
 
-The current Maritime evidence configuration already excludes `*.test.*`, `*.spec.*`, and `__tests__` modules before the renderer sees the artifact. Consequently, the production-filter variant currently demonstrates the remaining support-utility difference most visibly through `src/game/testUtils.ts`. A future Maritime source filter must be configurable rather than hard-coded to that filename.
+All four intentionally retain current compact spacing (`nodesep=0.10`, `ranksep=0.12`, cluster margin `4`) and omit the redundant `src` wrapper.
 
-The edge-hierarchy experiment uses the canonical dependency metadata already present in `.maritime/dependency-graph.json`. If a source/target pair has any runtime relationship, it remains primary; a pair is dashed only when all retained relationships between those files are `type-only`. This avoids turning duplicate type/runtime evidence into extra visual edges.
+## Validation
+
+`npm run test:layout` verifies both graph structure and reference semantics. In particular it checks:
+
+- local file nodes and recursive namespaces are retained;
+- the outer `src` cluster is omitted;
+- `vite-env.d.ts` renders orphan green;
+- representative `.ts`, `.tsx`, and `.json` files use the recovered dependency-cruiser palette;
+- reference-theme variants use black 2pt clusters with bold titles and white rounded fill;
+- edge-theme variants use 2pt translucent edges and de-emphasize type-only relationships;
+- the production variant removes test/spec/support-only presentation noise;
+- rendered SVG node/edge/cluster counts remain consistent with canonical Maritime evidence.
 
 ## Local usage
 
-With Graphviz `dot` on `PATH`, render the baseline:
+With Graphviz `dot` on `PATH`:
 
 ```bash
 node scripts/experiment-maritime-layout.mjs \
   .maritime/dependency-graph.json \
-  docs/images/dependency-graph.candidate-compact.svg \
-  --variant compact
-```
-
-The historical reference is optional and measurement-only:
-
-```bash
-node scripts/experiment-maritime-layout.mjs \
-  .maritime/dependency-graph.json \
-  docs/images/dependency-graph.candidate-compact-reference-spacing.svg \
+  docs/images/dependency-graph.candidate-compact-no-src-reference-theme-edges.svg \
   --layout-reference docs/images/dependency-graph.reference.svg \
-  --variant compact-reference-spacing
+  --variant compact-no-src-reference-theme-edges
 ```
 
-The renderer validates the generated SVG itself after Graphviz runs. Each variant must retain exactly the node, unique local edge, and visible folder-namespace counts implied by that variant's filtered canonical evidence. Repeated runs on the same evidence must remain deterministic.
-
-Run the executable checks with:
+Run tests with:
 
 ```bash
 npm run test:layout
 ```
 
-Then render the visual comparison grid (requires Inkscape and ImageMagick):
+Render an equal-width visual comparison grid with:
 
 ```bash
 node scripts/render-maritime-layout-previews.mjs
 ```
 
-The grid is ordered reference, beta.7, compact baseline, no-src wrapper, production filter, edge hierarchy, cluster packing, and reference spacing. Review label legibility, folder hierarchy, edge congestion, routing length, and whitespace rather than raw pixel similarity.
-
 ## Upstream interpretation
 
-The experiment should not turn Maritime into a bag of renderer knobs.
+If the reference-theme-edge candidate wins, the likely Maritime compact-profile direction is:
 
-Reasonable profile/configuration inputs are:
+- file-level local nodes;
+- nested folder groups;
+- LR direction;
+- external packages omitted;
+- redundant source-root cluster omitted when there is one obvious source root;
+- semantic module coloring based on canonical graph metadata and file type;
+- reference-like cluster/edge hierarchy built into the profile;
+- source filtering configurable rather than hard-coded per repository.
 
-- file-level folder grouping;
-- LR direction as the compact architecture profile default;
-- `includeExternal: false`;
-- configurable presentation/source filters for tests, specs, generated files, and support utilities.
-
-Renderer/profile implementation details should remain built in:
-
-- de-emphasizing type-only/pre-compilation relationships while keeping runtime imports primary;
-- the cluster-emission/packing strategy that produces a readable nested file graph;
-- the profile's chosen compact spacing defaults.
-
-Once the best local combination is clear, move those semantics into Dependency Maritime and return Catan to consuming the upstream compact profile rather than retaining this experiment as production graph code.
+Catan should remain a temporary proving ground only. Once the winning behavior is clear, move it into Dependency Maritime and return Catan to consuming the upstream profile.

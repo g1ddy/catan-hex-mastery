@@ -116,19 +116,17 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Render Maritime combined compact experiments
+      - name: Render Maritime no-src reference experiments
         if: steps.plan.outputs.run_maritime == 'true'
         shell: bash
         run: |
           rm -f docs/images/dependency-graph.candidate-*.svg
 
           for layout_variant in \
-            compact-combined \
-            compact-combined-cluster-packing \
-            compact-combined-bold-border \
-            compact-combined-bold-titles \
-            compact-combined-bold-border-and-titles \
-            compact-combined-bold-border-and-titles-cluster-packing; do
+            compact-no-src-reference-colors \
+            compact-no-src-reference-theme \
+            compact-no-src-reference-theme-edges \
+            compact-no-src-reference-theme-production; do
             node scripts/experiment-maritime-layout.mjs \
               .maritime/dependency-graph.json \
               "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
@@ -159,11 +157,11 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Upload Maritime combined compact experiment artifacts
+      - name: Upload Maritime no-src reference experiment artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-compact-combined-experiments
+          name: maritime-compact-no-src-reference-experiments
           path: |
             .maritime/dependency-graph.json
             docs/images/dependency-graph.reference.svg
@@ -198,15 +196,15 @@ jobs:
               ;;
           esac
 
-      - name: Commit Maritime combined compact experiments locally
+      - name: Commit Maritime no-src reference experiments locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git add -A -- ':(glob)docs/images/dependency-graph.candidate-*.svg'
           if git diff --cached --quiet; then
-            echo "Maritime combined compact experiment artifacts are already current."
+            echo "Maritime no-src reference experiment artifacts are already current."
             exit 0
           fi
-          git commit -m "docs(graph): update Maritime combined compact experiments [skip ci]"
+          git commit -m "docs(graph): update Maritime no-src reference experiments [skip ci]"
           echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators
