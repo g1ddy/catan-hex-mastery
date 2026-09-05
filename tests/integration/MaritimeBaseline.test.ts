@@ -42,7 +42,7 @@ const createBundle = (): Bundle => new Map([
 const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
-    toolVersion: '0.1.0-beta.7',
+    toolVersion: '0.1.0-beta.8',
     sourceRoots: ['src'],
     summary: {
       totalFiles: 1,
@@ -52,7 +52,15 @@ const createValidArtifacts = (): MaritimeArtifactsFixture => ({
     },
   },
   graph: {
-    modules: [{ source: 'src/game/core/types.ts', dependencies: [], dependents: [] }],
+    modules: [{
+      source: 'src/game/core/types.ts',
+      dependencies: [{
+        resolved: 'src/game/core/types.ts',
+        preCompilationOnly: true,
+        dependencyTypes: ['local', 'pre-compilation-only'],
+      }],
+      dependents: [],
+    }],
   },
   metrics: {
     'src/game/core/types.ts': { scanned: true, complexity: 1, loc: 10, fanIn: 0, fanOut: 0 },
@@ -100,26 +108,30 @@ describe('Maritime substantive baseline comparison', () => {
 });
 
 describe('Maritime local graph contract', () => {
-  it('pins beta.7 compact graph rendering just like CI', () => {
+  it('uses the upstream compact profile rather than a repository-owned renderer', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
 
-    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.7');
-    expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
+    expect(packageJson.scripts?.['generate:graph']).toBe(
+      'maritime graph --input .maritime --output docs/images/dependency-graph.svg --graph-profile compact-architecture',
+    );
+    expect(packageJson.scripts?.['test:layout']).toContain('validate-maritime-layout.test.mjs');
   });
 });
 
 describe('Maritime consumer contract', () => {
-  it('accepts a measured production bundle with a rendered local node', () => {
+  it('accepts a measured production bundle with explicit pre-compilation evidence and rendered local files', () => {
     expect(validateMaritimeArtifactContent(createValidArtifacts())).toEqual([]);
   });
 
-  it('accepts a compact profile aggregate folder node', () => {
+  it('rejects folder aggregation because compact-architecture is file-level', () => {
     const artifacts = createValidArtifacts();
     artifacts.svg = '<svg><title>folder:src/game/core</title></svg>';
 
-    expect(validateMaritimeArtifactContent(artifacts)).toEqual([]);
+    expect(validateMaritimeArtifactContent(artifacts)).toEqual(expect.arrayContaining([
+      'compact dependency graph SVG contains no local src/ file nodes',
+    ]));
   });
 
   it('rejects an empty bundle even if it reports a perfect health score', () => {
@@ -134,7 +146,8 @@ describe('Maritime consumer contract', () => {
       'manifest summary.totalFiles must be greater than zero',
       'manifest summary.scannedCount must be greater than zero',
       'dependency graph must contain local src/ modules',
-      'dependency graph SVG contains no local src/ module or aggregate folder nodes',
+      'dependency graph must preserve explicit pre-compilation evidence for compact edge semantics',
+      'compact dependency graph SVG contains no local src/ file nodes',
     ]));
   });
 
