@@ -78,7 +78,7 @@ npm run test:debug
 ```
 
 *Verification Rules:*
-*   **No Fixed Timeouts**: Avoid `waitForTimeout` in E2E tests as it causes flakiness. Wait for explicit DOM elements or state conditions (e.g. `expect(locator).toBeVisible()`).
+*   **No Fixed Timeouts**: Avoid `waitForTimeout` in E2E tests as it causes flakiness. Wait for explicit DOM elements or state conditions (e.g., `expect(locator).toBeVisible()`).
 *   **Base URL**: E2E tests run against the preview/dev server configured in `config/playwright.config.ts`. Use relative paths for `page.goto('/')`.
 
 ---
@@ -89,7 +89,7 @@ All architectural and complexity evidence is generated programmatically rather t
 
 The **Generated Artifacts** workflow in [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the single PR-branch writer for generated artifacts. It runs Maritime evidence generation once, renders both architecture presentations from that canonical evidence, verifies the consumer contract, optionally generates documentation screenshots, and performs one final push. The generators retain separate artifact ownership; the orchestration prevents competing bot pushes to the same branch.
 
-Documentation screenshots regenerate when UI or screenshot-generation inputs change, including `src/`, `public/`, the screenshot spec/config, package manifests, and relevant Vite/Tailwind/PostCSS entry configuration. Documentation prose changes alone do not regenerate application screenshots.
+Documentation screenshots regenerate when UI or screenshot-generation inputs change, including `src/`, `public/`, the screenshot spec/config, package manifests, and relevant Vite/Tailwind/PostCSS entry configuration. Documentation prose and Maritime presentation-only workflow changes do not regenerate application screenshots.
 
 ### 1. Layered Architecture Verification
 
@@ -109,13 +109,16 @@ For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. T
 
 `docs/COMPLEXITY.md` is a stable guide to the generated artifacts. Current health and hotspot values are read directly from `.maritime/complexity-report.md`; there is no second Catan-owned complexity-report generator.
 
-For local reproduction, install the matching published prerelease without saving it as a Catan dependency, then run the same repository commands used by CI:
+For local reproduction, install the matching published prerelease without saving it as a Catan dependency, then run the same analysis and rendering commands used by CI:
 
 ```bash
 npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.8
 npm run analyze:maritime
 npm run generate:graph
-npm run generate:overview
+npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph \
+  --input .maritime \
+  --output docs/images/dependency-overview.svg \
+  --graph-profile architecture-overview
 npm run verify:maritime
 ```
 
@@ -128,14 +131,9 @@ Dependency diagram presentation is derived directly from canonical Maritime evid
 - `docs/images/dependency-overview.svg` uses Maritime's `architecture-overview` profile to aggregate individual files into source-root-relative folder nodes. Use this for the high-level architectural shape and major area-to-area coupling.
 - `docs/images/dependency-graph.svg` uses Maritime's `compact-architecture` profile to preserve individual file nodes while reducing visual noise. Use this when investigating concrete dependencies.
 
-To render both visual dependency graphs locally from already-generated canonical `.maritime` evidence:
+The detailed graph retains the repository script `npm run generate:graph`. The overview is rendered directly by the Generated Artifacts workflow with the same pinned Maritime beta.8 package rather than adding a package script solely for documentation generation.
 
-```bash
-npm run generate:graph
-npm run generate:overview
-```
-
-Both commands use the published `@dependency-maritime/cli@0.1.0-beta.8` package. The overview deliberately changes information granularity through folder aggregation; the compact graph remains a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies both resulting presentations rather than maintaining a repository-owned renderer or historical reference image.
+The overview deliberately changes information granularity through folder aggregation; the compact graph remains a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies both resulting presentations rather than maintaining a repository-owned renderer or historical reference image.
 
 ### 4. Code Quality & Linting
 
