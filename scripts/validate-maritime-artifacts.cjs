@@ -1,6 +1,6 @@
 const { readFileSync } = require('node:fs');
 
-const EXPECTED_TOOL_VERSION = '0.1.0-beta.7';
+const EXPECTED_TOOL_VERSION = '0.1.0-beta.8';
 const EXPECTED_SOURCE_ROOT = 'src';
 const TEST_MODULE_PATTERN = /(^|[/])(__tests__[/]|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
 
@@ -49,6 +49,15 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
     errors.push(`production evidence contains test-only modules: ${testSources.slice(0, 3).join(', ')}`);
   }
 
+  const dependencies = modules.flatMap((module) => module?.dependencies ?? []);
+  const hasPreCompilationEvidence = dependencies.some((dependency) => (
+    dependency?.preCompilationOnly === true
+    || (Array.isArray(dependency?.dependencyTypes) && dependency.dependencyTypes.includes('pre-compilation-only'))
+  ));
+  if (!hasPreCompilationEvidence) {
+    errors.push('dependency graph must preserve explicit pre-compilation evidence for compact edge semantics');
+  }
+
   if (metricEntries.length !== summary.totalFiles) {
     errors.push(`complexity metrics count (${metricEntries.length}) must match manifest totalFiles (${summary.totalFiles ?? '<missing>'})`);
   }
@@ -67,8 +76,10 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
 
   if (typeof svg !== 'string' || !svg.includes('<svg')) {
     errors.push('dependency graph presentation is not SVG');
-  } else if (!svg.includes('local:src/') && !svg.includes('folder:src/')) {
-    errors.push('dependency graph SVG contains no local src/ module or aggregate folder nodes');
+  } else if (!svg.includes('local:src/')) {
+    errors.push('compact dependency graph SVG contains no local src/ file nodes');
+  } else if (svg.includes('folder:src/')) {
+    errors.push('compact dependency graph must remain file-level rather than folder-aggregated');
   } else if (svg.includes('external:') || svg.includes('External packages')) {
     errors.push('dependency graph SVG must omit external package nodes');
   }
