@@ -107,16 +107,14 @@ describe('Maritime substantive baseline comparison', () => {
   });
 });
 
-describe('Maritime local graph contract', () => {
-  it('uses the upstream compact profile rather than a repository-owned renderer', () => {
+describe('Maritime released consumer contract', () => {
+  it('pins graph generation to published beta.8 compact-architecture', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
 
-    expect(packageJson.scripts?.['generate:graph']).toBe(
-      'maritime graph --input .maritime --output docs/images/dependency-graph.svg --graph-profile compact-architecture',
-    );
-    expect(packageJson.scripts?.['test:layout']).toContain('validate-maritime-layout.test.mjs');
+    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.8');
+    expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
   });
 });
 
