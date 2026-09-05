@@ -17,7 +17,6 @@
     "test:screenshots": "playwright test -c config/playwright.screenshots.config.ts",
     "check:arch": "depcruise src --config config/dependency-cruiser.cjs",
     "generate:graph": "npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph --input .maritime --output docs/images/dependency-graph.svg --graph-profile compact-architecture",
-    "generate:overview": "npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph --input .maritime --output docs/images/dependency-overview.svg --graph-profile architecture-overview",
     "analyze:maritime": "maritime analyze --source src --output .maritime --depcruise-config config/dependency-cruiser.maritime.cjs --fail-on-unmeasured",
     "verify:maritime": "node scripts/validate-maritime-artifacts.cjs"
   },
