@@ -103,19 +103,13 @@ This runs `depcruise src --config config/dependency-cruiser.cjs`. The same unfil
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow invokes Dependency Maritime's Action implementation at immutable commit `abf06891ecaa902cf8bb0b5f45a7ddd8e1d32805` (`cli-v0.1.0-beta.7`), explicitly acquires `@dependency-maritime/cli@0.1.0-beta.7`, analyzes `src/`, validates the bundle, and renders the SVG from that same run. Do not edit generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. While beta.8 is being release-gated, the **Generated Artifacts** workflow checks out Dependency Maritime at immutable merged commit `83dadbdc6718264060f82cad02197671abd76e29`, stamps that workspace as `0.1.0-beta.8`, builds the CLI, and runs the merged composite Action against Catan. This deliberately validates the exact merged source before the npm prerelease is published. Do not edit generated Maritime outputs manually.
 
-For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. That file inherits all rules from `config/dependency-cruiser.cjs` and excludes `.test` / `.spec` modules from the evidence graph so committed graph presentation describes production coupling. Maritime's metric calculation already excludes those test/spec files; this profile therefore preserves the measured production-file contract while keeping test-only graph edges out of presentation. This does **not** relax `npm run check:arch`, `npm run build`, or `npm test`.
+For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. That file inherits all rules from `config/dependency-cruiser.cjs`, excludes `.test` / `.spec` modules from the evidence graph, and sets `tsPreCompilationDeps: 'specify'` so the compact renderer can distinguish secondary type/pre-compilation relationships. This does **not** relax `npm run check:arch`, `npm run build`, or `npm test`.
 
 `docs/COMPLEXITY.md` is a stable guide to the generated artifacts. Current health and hotspot values are read directly from `.maritime/complexity-report.md`; there is no second Catan-owned complexity-report generator.
 
-`npm run analyze:maritime` is intentionally not available immediately after `./scripts/setup.sh`, because Maritime is not a permanent Catan dependency. To reproduce the exact analysis locally, install the same published CLI prerelease without saving it as a Catan dependency, then run the repository command that mirrors the Action inputs:
-
-```bash
-npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.7
-npm run analyze:maritime
-npm run verify:maritime
-```
+`npm run analyze:maritime`, `npm run generate:graph`, and `npm run verify:maritime` expect the Maritime CLI to be available on PATH. During the beta.8 release gate, CI supplies the CLI built from the immutable merged upstream commit. After beta.8 is published, local reproduction should install that published prerelease without saving it as a Catan dependency before running the same commands.
 
 See [COMPLEXITY.md](./COMPLEXITY.md) for metric definitions, thresholds, and artifact ownership.
 
@@ -123,15 +117,13 @@ See [COMPLEXITY.md](./COMPLEXITY.md) for metric definitions, thresholds, and art
 
 Dependency diagram presentation is derived directly from canonical Maritime evidence. `.maritime/dependency-graph.json` is the canonical machine evidence, and `docs/images/dependency-graph.svg` is the derived Maritime/Graphviz presentation. The SVG is not hand-edited; folder hierarchy and module relationships are derived recursively by Maritime from production module paths. Architecture policy and layer boundary rules remain governed by `config/dependency-cruiser.cjs`.
 
-To render the visual dependency graph locally from already-generated canonical `.maritime` evidence:
+To render the visual dependency graph locally from already-generated canonical `.maritime` evidence after making Maritime available on PATH:
 
 ```bash
 npm run generate:graph
 ```
 
-`generate:graph` is a thin, version-pinned wrapper around `@dependency-maritime/cli@0.1.0-beta.7 maritime graph`; it performs no dependency scan and does not require Maritime to be installed as a repository dependency. Graphviz's `dot` executable must be available; `./scripts/setup.sh` installs it on supported package managers.
-
-Maritime beta.7 uses the `compact-architecture` presentation profile for Catan's wide, cross-folder graph: it aggregates local implementation modules and their dependencies into deterministic folder nodes and edges, removes external-package nodes and dependency-type labels, and uses compact top-to-bottom layout. The canonical JSON evidence is unchanged; this affects only the derived SVG.
+Catan uses Maritime's `compact-architecture` profile: a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. The workflow also executes `scripts/validate-maritime-layout.mjs` against the historical reference SVG to ensure the upstream renderer preserves canonical node/edge counts, namespace hierarchy, and the accepted aspect-ratio envelope.
 
 ### 4. Code Quality & Linting
 
