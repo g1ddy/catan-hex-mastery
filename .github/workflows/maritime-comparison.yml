@@ -14,6 +14,8 @@ concurrency:
 
 env:
   GENERATED_COMMITS: 'false'
+  MARITIME_BETA8_COMMIT: '83dadbdc6718264060f82cad02197671abd76e29'
+  MARITIME_BETA8_VERSION: '0.1.0-beta.8'
 
 jobs:
   compare:
@@ -39,7 +41,6 @@ jobs:
           const action = event.action ?? '';
           const pullRequest = event.pull_request;
           const normalPrAction = ['opened', 'reopened', 'synchronize'].includes(action);
-
           const runMaritime = eventName === 'workflow_dispatch' || (eventName === 'pull_request' && normalPrAction);
 
           let runScreenshots = false;
@@ -69,12 +70,11 @@ jobs:
           }
 
           const any = runMaritime || runScreenshots;
-          const output = [
+          appendFileSync(process.env.GITHUB_OUTPUT, [
             `run_maritime=${runMaritime}`,
             `run_screenshots=${runScreenshots}`,
             `any=${any}`,
-          ].join('\n');
-          appendFileSync(process.env.GITHUB_OUTPUT, `${output}\n`);
+          ].join('\n') + '\n');
           NODE
 
       - name: Use Node.js for Maritime
@@ -101,12 +101,28 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Analyze with Maritime
+      - name: Checkout merged Maritime beta.8 candidate
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@abf06891ecaa902cf8bb0b5f45a7ddd8e1d32805 # cli-v0.1.0-beta.7
+        uses: actions/checkout@v4
+        with:
+          repository: g1ddy/dependency-maritime
+          ref: ${{ env.MARITIME_BETA8_COMMIT }}
+          path: .maritime-cli-source
+
+      - name: Build beta.8 candidate exactly from merged Maritime source
+        if: steps.plan.outputs.run_maritime == 'true'
+        working-directory: .maritime-cli-source
+        run: |
+          npm ci
+          npm version "$MARITIME_BETA8_VERSION" --no-git-tag-version
+          npm run build:cli
+
+      - name: Analyze and render with merged Maritime compact profile
+        if: steps.plan.outputs.run_maritime == 'true'
+        uses: g1ddy/dependency-maritime@83dadbdc6718264060f82cad02197671abd76e29
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.7'
+          cli-source: '.maritime-cli-source'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
@@ -116,21 +132,12 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Analyze pre-compilation-specified Maritime evidence
+      - name: Verify compact evidence and reference fidelity
         if: steps.plan.outputs.run_maritime == 'true'
-        shell: bash
         run: |
-          rm -rf .maritime-precomp
-          $MARITIME_BIN analyze \
-            --source src \
-            --output .maritime-precomp \
-            --depcruise-config config/dependency-cruiser.maritime-precomp.cjs \
-            --fail-on-unmeasured
-          $MARITIME_BIN validate .maritime-precomp
-
           node <<'NODE'
           const { readFileSync } = require('node:fs');
-          const artifact = JSON.parse(readFileSync('.maritime-precomp/dependency-graph.json', 'utf8'));
+          const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
           const dependencies = artifact.modules.flatMap((module) => module.dependencies ?? []);
           const explicit = dependencies.filter((dependency) => dependency.preCompilationOnly === true).length;
           const tagged = dependencies.filter((dependency) => (
@@ -138,79 +145,32 @@ jobs:
             && dependency.dependencyTypes.includes('pre-compilation-only')
           )).length;
           if (explicit === 0 && tagged === 0) {
-            throw new Error('tsPreCompilationDeps=specify produced no distinguishable pre-compilation-only relationships');
+            throw new Error('canonical Catan evidence contains no distinguishable pre-compilation-only relationships');
           }
           console.log(`Pre-compilation evidence: ${explicit} explicit flags, ${tagged} dependency-type tags.`);
           NODE
-
-      - name: Render Maritime reference experiments
-        if: steps.plan.outputs.run_maritime == 'true'
-        shell: bash
-        run: |
-          rm -f docs/images/dependency-graph.candidate-*.svg
-
-          for layout_variant in \
-            compact-no-src-reference-colors \
-            compact-no-src-reference-theme \
-            compact-no-src-reference-theme-edges \
-            compact-no-src-reference-theme-production; do
-            node scripts/experiment-maritime-layout.mjs \
-              .maritime/dependency-graph.json \
-              "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
-              --layout-reference docs/images/dependency-graph.reference.svg \
-              --variant "${layout_variant}"
-          done
-
-          for layout_variant in \
-            compact-src-reference-theme-edges-ts-precomp \
-            compact-no-src-reference-theme-edges-ts-precomp; do
-            node scripts/experiment-maritime-layout.mjs \
-              .maritime-precomp/dependency-graph.json \
-              "docs/images/dependency-graph.candidate-${layout_variant}.svg" \
-              --layout-reference docs/images/dependency-graph.reference.svg \
-              --variant "${layout_variant}"
-          done
-
-      - name: Verify Maritime layout compatibility renderer
-        if: steps.plan.outputs.run_maritime == 'true'
-        run: npm run test:layout
-
-      - name: Verify Maritime consumer contract
-        if: steps.plan.outputs.run_maritime == 'true'
-        run: npm run verify:maritime
+          npm run test:layout
+          npm run verify:maritime
 
       - name: Inspect Maritime outputs
         if: steps.plan.outputs.run_maritime == 'true'
-        run: |
-          find .maritime -maxdepth 1 -type f -print
-          find .maritime-precomp -maxdepth 1 -type f -print
+        run: find .maritime -maxdepth 1 -type f -print
 
-      - name: Upload Maritime comparison artifacts
+      - name: Upload Maritime beta.8 candidate artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-comparison
+          name: maritime-beta8-catan-gate
           path: |
             .maritime/
+            docs/images/dependency-graph.reference.svg
             docs/images/dependency-graph.svg
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Upload Maritime reference experiment artifacts
+      - name: Remove temporary Maritime source checkout
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: maritime-compact-reference-experiments
-          path: |
-            .maritime/dependency-graph.json
-            .maritime-precomp/dependency-graph.json
-            docs/images/dependency-graph.reference.svg
-            docs/images/dependency-graph.svg
-            docs/images/dependency-graph.candidate-*.svg
-            config/dependency-cruiser.maritime-precomp.cjs
-            scripts/experiment-maritime-layout.mjs
-            scripts/render-maritime-layout-previews.mjs
-          if-no-files-found: error
+        run: rm -rf .maritime-cli-source
 
       - name: Commit Maritime comparison outputs locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
@@ -228,7 +188,7 @@ jobs:
               ;;
             1)
               git add .maritime docs/images/dependency-graph.svg
-              git commit -m "docs(metrics): add Maritime comparison outputs and dependency graph"
+              git commit -m "docs(metrics): update Maritime beta.8 candidate evidence"
               echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
               ;;
             *)
@@ -236,17 +196,6 @@ jobs:
               exit "$comparison_status"
               ;;
           esac
-
-      - name: Commit Maritime reference experiments locally
-        if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git add -A -- ':(glob)docs/images/dependency-graph.candidate-*.svg'
-          if git diff --cached --quiet; then
-            echo "Maritime reference experiment artifacts are already current."
-            exit 0
-          fi
-          git commit -m "docs(graph): update Maritime reference experiments [skip ci]"
-          echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
 
       - name: Restore repository Node.js for Catan generators
         if: steps.plan.outputs.run_maritime == 'true' && steps.plan.outputs.run_screenshots == 'true'
