@@ -110,15 +110,17 @@ describe('Maritime substantive baseline comparison', () => {
 });
 
 describe('Maritime released consumer contract', () => {
-  it('pins graph generation to published beta.8 profiles', () => {
+  it('pins compact and overview rendering to published beta.8 profiles', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
+    const workflow = readFileSync('.github/workflows/maritime-comparison.yml', 'utf8');
 
     expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.8');
     expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
-    expect(packageJson.scripts?.['generate:overview']).toContain('@dependency-maritime/cli@0.1.0-beta.8');
-    expect(packageJson.scripts?.['generate:overview']).toContain('--graph-profile architecture-overview');
+    expect(workflow).toContain('npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph');
+    expect(workflow).toContain('--output docs/images/dependency-overview.svg');
+    expect(workflow).toContain('--graph-profile architecture-overview');
   });
 });
 
