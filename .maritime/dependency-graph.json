@@ -19,6 +19,7 @@
           "module": "./pages/GamePage",
           "resolved": "src/pages/GamePage.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -36,6 +37,7 @@
           "module": "./pages/SetupPage",
           "resolved": "src/pages/SetupPage.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -53,6 +55,7 @@
           "module": "./styles/App.css",
           "resolved": "src/styles/App.css",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -61,6 +64,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -70,6 +74,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -87,6 +92,7 @@
           "module": "react-router-dom",
           "resolved": "node_modules/react-router-dom/dist/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -156,6 +162,7 @@
       "matchesDoNotFollow": true,
       "dependencyTypes": [
         "npm",
+        "npm-dev",
         "import"
       ]
     },
@@ -197,6 +204,7 @@
           "module": "../bots/AggressiveBot",
           "resolved": "src/bots/AggressiveBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -214,6 +222,7 @@
           "module": "../bots/BalancedBot",
           "resolved": "src/bots/BalancedBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -231,6 +240,7 @@
           "module": "../bots/CatanMCTSBot",
           "resolved": "src/bots/CatanMCTSBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -248,6 +258,7 @@
           "module": "../bots/DefensiveBot",
           "resolved": "src/bots/DefensiveBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -265,6 +276,7 @@
           "module": "../bots/ExpansiveBot",
           "resolved": "src/bots/ExpansiveBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -282,6 +294,7 @@
           "module": "../bots/MonteCatanoBot",
           "resolved": "src/bots/MonteCatanoBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -299,6 +312,7 @@
           "module": "../GameClient",
           "resolved": "src/GameClient.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -316,6 +330,7 @@
           "module": "boardgame.io/ai",
           "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -324,6 +339,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -333,6 +349,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -350,6 +367,7 @@
           "module": "react-router-dom",
           "resolved": "node_modules/react-router-dom/dist/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -398,6 +416,7 @@
           "module": "./CatanBot",
           "resolved": "src/bots/CatanBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -415,6 +434,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -442,6 +462,7 @@
           "module": "../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -450,7 +471,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -459,6 +481,7 @@
           "module": "../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -476,6 +499,7 @@
           "module": "./BotCoach",
           "resolved": "src/bots/BotCoach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -493,6 +517,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -501,7 +526,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -510,6 +536,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -527,6 +554,7 @@
           "module": "boardgame.io/ai",
           "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -584,7 +612,8 @@
       "matchesDoNotFollow": true,
       "dependencyTypes": [
         "npm",
-        "import"
+        "import",
+        "pre-compilation-only"
       ]
     },
     {
@@ -606,6 +635,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -614,7 +644,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -623,6 +654,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -640,6 +672,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -657,6 +690,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -674,6 +708,7 @@
           "module": "../rules/queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -691,6 +726,7 @@
           "module": "./adviceConstants",
           "resolved": "src/game/analysis/adviceConstants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -708,6 +744,7 @@
           "module": "./advisors/RoadAdvisor",
           "resolved": "src/game/analysis/advisors/RoadAdvisor.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "cycle": [
             {
               "name": "src/game/analysis/advisors/RoadAdvisor.ts",
@@ -720,14 +757,16 @@
               "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             },
             {
               "name": "src/game/analysis/coach.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             }
           ],
@@ -748,6 +787,7 @@
           "module": "./advisors/SpatialAdvisor",
           "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "cycle": [
             {
               "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
@@ -760,7 +800,8 @@
               "name": "src/game/analysis/coach.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             }
           ],
@@ -781,6 +822,7 @@
           "module": "./advisors/TradeAdvisor",
           "resolved": "src/game/analysis/advisors/TradeAdvisor.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -789,7 +831,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -798,6 +841,7 @@
           "module": "./types",
           "resolved": "src/game/analysis/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -807,7 +851,8 @@
           "dependencyTypes": [
             "local",
             "type-only",
-            "export"
+            "export",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -816,6 +861,7 @@
           "module": "./types",
           "resolved": "src/game/analysis/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -824,7 +870,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -833,6 +880,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -967,7 +1015,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -976,6 +1025,7 @@
           "module": "./types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -1004,7 +1054,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1013,6 +1064,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1030,6 +1082,7 @@
           "module": "./math",
           "resolved": "src/game/geometry/math.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1078,6 +1131,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1086,7 +1140,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1095,6 +1150,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1112,6 +1168,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1129,6 +1186,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1146,6 +1204,7 @@
           "module": "../mechanics/costs",
           "resolved": "src/game/mechanics/costs.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1163,6 +1222,7 @@
           "module": "./robberRules",
           "resolved": "src/game/rules/robberRules.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1180,6 +1240,7 @@
           "module": "./spatial",
           "resolved": "src/game/rules/spatial.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1188,7 +1249,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1197,6 +1259,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -1229,6 +1292,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1237,7 +1301,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1246,6 +1311,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -1277,6 +1343,7 @@
           "module": "./types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1319,6 +1386,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1327,7 +1395,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1336,6 +1405,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1353,6 +1423,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1370,6 +1441,7 @@
           "module": "../mechanics/resources",
           "resolved": "src/game/mechanics/resources.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1422,6 +1494,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1439,6 +1512,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1447,7 +1521,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1456,6 +1531,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1473,6 +1549,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1503,6 +1580,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1511,7 +1589,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1520,6 +1599,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1537,6 +1617,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1554,6 +1635,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1585,7 +1667,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1594,6 +1677,7 @@
           "module": "../../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1611,6 +1695,7 @@
           "module": "../../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1628,6 +1713,7 @@
           "module": "../../rules/spatial",
           "resolved": "src/game/rules/spatial.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1645,6 +1731,7 @@
           "module": "../analyst",
           "resolved": "src/game/analysis/analyst.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1653,7 +1740,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1662,6 +1750,7 @@
           "module": "../types",
           "resolved": "src/game/analysis/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1670,7 +1759,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1679,19 +1769,22 @@
           "module": "./SpatialAdvisor",
           "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "cycle": [
             {
               "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             },
             {
               "name": "src/game/analysis/coach.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             },
             {
@@ -1729,6 +1822,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1746,6 +1840,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1754,7 +1849,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1763,6 +1859,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1780,6 +1877,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -1821,6 +1919,7 @@
           "module": "../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1838,6 +1937,7 @@
           "module": "../../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1855,6 +1955,7 @@
           "module": "../../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1872,6 +1973,7 @@
           "module": "../../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1889,6 +1991,7 @@
           "module": "../../mechanics/resources",
           "resolved": "src/game/mechanics/resources.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1906,6 +2009,7 @@
           "module": "../../mechanics/scoring",
           "resolved": "src/game/mechanics/scoring.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1923,6 +2027,7 @@
           "module": "../../rules/queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -1931,7 +2036,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1940,12 +2046,14 @@
           "module": "../coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "cycle": [
             {
               "name": "src/game/analysis/coach.ts",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             },
             {
@@ -1964,7 +2072,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1973,6 +2082,7 @@
           "module": "../types",
           "resolved": "src/game/analysis/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -1981,7 +2091,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -1990,6 +2101,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -2018,7 +2130,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2027,6 +2140,7 @@
           "module": "../../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2044,6 +2158,7 @@
           "module": "../../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2061,6 +2176,7 @@
           "module": "../../mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2078,6 +2194,7 @@
           "module": "../adviceConstants",
           "resolved": "src/game/analysis/adviceConstants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -2105,6 +2222,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2122,6 +2240,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2130,7 +2249,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2139,6 +2259,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -2162,7 +2283,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2171,6 +2293,7 @@
           "module": "../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2179,7 +2302,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2188,6 +2312,7 @@
           "module": "../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2205,6 +2330,7 @@
           "module": "./logic/MoveScorer",
           "resolved": "src/bots/logic/MoveScorer.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2222,6 +2348,7 @@
           "module": "./logic/OptimalMoveFilter",
           "resolved": "src/bots/logic/OptimalMoveFilter.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2239,6 +2366,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2247,7 +2375,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2256,6 +2385,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -2274,7 +2404,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2283,6 +2414,7 @@
           "module": "../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2291,7 +2423,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2300,6 +2433,7 @@
           "module": "../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2308,7 +2442,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2317,6 +2452,7 @@
           "module": "../../game/mechanics/costs",
           "resolved": "src/game/mechanics/costs.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2325,7 +2461,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2334,6 +2471,7 @@
           "module": "../profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2351,6 +2489,7 @@
           "module": "../utils/ActionUtils",
           "resolved": "src/bots/utils/ActionUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2359,7 +2498,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2368,6 +2508,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -2403,7 +2544,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2412,6 +2554,7 @@
           "module": "../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -2431,7 +2574,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2440,6 +2584,7 @@
           "module": "../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2448,7 +2593,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2457,6 +2603,7 @@
           "module": "../../game/analysis/types",
           "resolved": "src/game/analysis/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2465,7 +2612,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2474,6 +2622,7 @@
           "module": "../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2491,6 +2640,7 @@
           "module": "../../game/core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2508,6 +2658,7 @@
           "module": "../../game/mechanics/costs",
           "resolved": "src/game/mechanics/costs.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2516,7 +2667,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2525,6 +2677,7 @@
           "module": "../profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2542,6 +2695,7 @@
           "module": "../utils/ActionUtils",
           "resolved": "src/bots/utils/ActionUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2550,7 +2704,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2559,6 +2714,7 @@
           "module": "./MoveScorer",
           "resolved": "src/bots/logic/MoveScorer.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2567,7 +2723,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2576,6 +2733,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -2603,6 +2761,7 @@
           "module": "./CatanBot",
           "resolved": "src/bots/CatanBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2620,6 +2779,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -2647,6 +2807,7 @@
           "module": "../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2655,7 +2816,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2664,6 +2826,7 @@
           "module": "../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2672,7 +2835,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2681,6 +2845,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -2698,6 +2863,7 @@
           "module": "boardgame.io/ai",
           "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -2725,6 +2891,7 @@
           "module": "./CatanBot",
           "resolved": "src/bots/CatanBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2742,6 +2909,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -2769,6 +2937,7 @@
           "module": "./CatanBot",
           "resolved": "src/bots/CatanBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2786,6 +2955,7 @@
           "module": "./profiles/BotProfile",
           "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -2813,6 +2983,7 @@
           "module": "../game/analysis/analyst",
           "resolved": "src/game/analysis/analyst.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2830,6 +3001,7 @@
           "module": "../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2838,7 +3010,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2847,6 +3020,7 @@
           "module": "../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -2855,7 +3029,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2864,6 +3039,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -2881,6 +3057,7 @@
           "module": "boardgame.io/ai",
           "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -2908,6 +3085,7 @@
           "module": "./bots/CatanBot",
           "resolved": "src/bots/CatanBot.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2925,6 +3103,7 @@
           "module": "./features/game/GameScreen",
           "resolved": "src/features/game/GameScreen.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2942,6 +3121,7 @@
           "module": "./game/Game",
           "resolved": "src/game/Game.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -2950,7 +3130,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2959,6 +3140,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -2967,7 +3149,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -2976,6 +3159,7 @@
           "module": "boardgame.io/ai",
           "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -2993,6 +3177,7 @@
           "module": "boardgame.io/multiplayer",
           "resolved": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3010,6 +3195,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3018,6 +3204,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -3027,6 +3214,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -3093,6 +3281,7 @@
           "module": "../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3101,7 +3290,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3110,6 +3300,7 @@
           "module": "../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3127,6 +3318,7 @@
           "module": "../board/BoardLayer",
           "resolved": "src/features/board/BoardLayer.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3144,6 +3336,7 @@
           "module": "../coach/CoachLayer",
           "resolved": "src/features/coach/CoachLayer.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3161,6 +3354,7 @@
           "module": "../coach/hooks/useCoachData",
           "resolved": "src/features/coach/hooks/useCoachData.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3178,6 +3372,7 @@
           "module": "../hud/hooks/useTradeLogic",
           "resolved": "src/features/hud/hooks/useTradeLogic.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3195,6 +3390,7 @@
           "module": "../hud/HUDLayer",
           "resolved": "src/features/hud/HUDLayer.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3212,6 +3408,7 @@
           "module": "./constants",
           "resolved": "src/features/game/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3229,6 +3426,7 @@
           "module": "./GameLayout",
           "resolved": "src/features/game/GameLayout.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3246,6 +3444,7 @@
           "module": "./hooks/useAutoResolveRoll",
           "resolved": "src/features/game/hooks/useAutoResolveRoll.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3263,6 +3462,7 @@
           "module": "./hooks/useGameScreenState",
           "resolved": "src/features/game/hooks/useGameScreenState.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3271,7 +3471,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3280,6 +3481,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -3288,6 +3490,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -3297,6 +3500,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -3324,6 +3528,7 @@
           "module": "../../game/core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3332,7 +3537,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3341,6 +3547,7 @@
           "module": "../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3349,7 +3556,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3358,6 +3566,7 @@
           "module": "../coach/hooks/useCoachData",
           "resolved": "src/features/coach/hooks/useCoachData.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3375,6 +3584,7 @@
           "module": "../shared/constants/z-indices",
           "resolved": "src/features/shared/constants/z-indices.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3383,7 +3593,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3392,6 +3603,7 @@
           "module": "../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3409,6 +3621,7 @@
           "module": "./components/GameHex",
           "resolved": "src/features/board/components/GameHex.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3426,6 +3639,7 @@
           "module": "./components/helpers",
           "resolved": "src/features/board/components/helpers.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3443,6 +3657,7 @@
           "module": "./components/HexOverlays",
           "resolved": "src/features/board/components/HexOverlays.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3460,6 +3675,7 @@
           "module": "./hooks/useBoardInteractions",
           "resolved": "src/features/board/hooks/useBoardInteractions.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3477,6 +3693,7 @@
           "module": "./hooks/useGameEffects",
           "resolved": "src/features/board/hooks/useGameEffects.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3485,7 +3702,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3494,6 +3712,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -3502,6 +3721,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -3511,6 +3731,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3528,6 +3749,7 @@
           "module": "react-dom",
           "resolved": "node_modules/react-dom/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3545,6 +3767,7 @@
           "module": "react-hexgrid",
           "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3562,6 +3785,7 @@
           "module": "react-tooltip",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.cjs",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -3579,6 +3803,7 @@
           "module": "react-tooltip/dist/react-tooltip.css",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.css",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -3680,6 +3905,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3688,7 +3914,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3697,6 +3924,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3705,7 +3933,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3714,6 +3943,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3731,6 +3961,7 @@
           "module": "../logic/coachUtils",
           "resolved": "src/features/coach/logic/coachUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3748,6 +3979,7 @@
           "module": "../types",
           "resolved": "src/features/coach/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3756,7 +3988,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3765,6 +3998,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -3773,6 +4007,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -3782,6 +4017,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -3824,7 +4060,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3833,6 +4070,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3850,6 +4088,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3858,7 +4097,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3867,6 +4107,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3875,7 +4116,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3884,6 +4126,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -3901,6 +4144,7 @@
           "module": "../types",
           "resolved": "src/features/coach/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -3909,7 +4153,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3918,6 +4163,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -3936,7 +4182,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3945,6 +4192,7 @@
           "module": "../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -3976,7 +4224,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -3985,6 +4234,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4002,6 +4252,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4019,6 +4270,7 @@
           "module": "./NumberToken",
           "resolved": "src/features/board/components/NumberToken.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4036,6 +4288,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -4044,6 +4297,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4053,6 +4307,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -4070,6 +4325,7 @@
           "module": "react-hexgrid",
           "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4130,6 +4386,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4147,6 +4404,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4173,6 +4431,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4182,6 +4441,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4200,7 +4460,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4209,6 +4470,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4226,6 +4488,7 @@
           "module": "../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4234,7 +4497,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4243,6 +4507,7 @@
           "module": "../../coach/hooks/useCoachData",
           "resolved": "src/features/coach/hooks/useCoachData.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4260,6 +4525,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4277,6 +4543,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -4285,6 +4552,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4294,6 +4562,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4314,7 +4583,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4323,6 +4593,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4331,7 +4602,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4340,6 +4612,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4357,6 +4630,7 @@
           "module": "../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4374,6 +4648,7 @@
           "module": "../../../game/geometry/staticGeometry",
           "resolved": "src/game/geometry/staticGeometry.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4382,7 +4657,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4391,6 +4667,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4408,6 +4685,7 @@
           "module": "./HexEdges",
           "resolved": "src/features/board/components/HexEdges.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "cycle": [
             {
               "name": "src/features/board/components/HexEdges.tsx",
@@ -4420,7 +4698,8 @@
               "name": "src/features/board/components/HexOverlays.tsx",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             }
           ],
@@ -4441,6 +4720,7 @@
           "module": "./HexVertices",
           "resolved": "src/features/board/components/HexVertices.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4449,7 +4729,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4458,6 +4739,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -4466,6 +4748,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4475,6 +4758,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -4492,6 +4776,7 @@
           "module": "react-hexgrid",
           "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4511,7 +4796,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4520,6 +4806,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4537,6 +4824,7 @@
           "module": "./hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4554,6 +4842,7 @@
           "module": "./math",
           "resolved": "src/game/geometry/math.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -4582,6 +4871,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4599,6 +4889,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4607,7 +4898,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4616,6 +4908,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4633,6 +4926,7 @@
           "module": "../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4650,6 +4944,7 @@
           "module": "../../../game/geometry/staticGeometry",
           "resolved": "src/game/geometry/staticGeometry.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4658,7 +4953,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4667,6 +4963,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -4684,6 +4981,7 @@
           "module": "../../shared/utils/feedback",
           "resolved": "src/features/shared/utils/feedback.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4701,6 +4999,7 @@
           "module": "./helpers",
           "resolved": "src/features/board/components/helpers.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4709,7 +5008,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4718,12 +5018,14 @@
           "module": "./HexOverlays",
           "resolved": "src/features/board/components/HexOverlays.tsx",
           "valid": true,
+          "preCompilationOnly": true,
           "cycle": [
             {
               "name": "src/features/board/components/HexOverlays.tsx",
               "dependencyTypes": [
                 "local",
-                "import"
+                "import",
+                "pre-compilation-only"
               ]
             },
             {
@@ -4751,6 +5053,7 @@
           "module": "./OverlayEdge",
           "resolved": "src/features/board/components/OverlayEdge.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4768,6 +5071,7 @@
           "module": "./Port",
           "resolved": "src/features/board/components/Port.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4776,7 +5080,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -4785,6 +5090,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -4793,6 +5099,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4802,6 +5109,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4829,6 +5137,7 @@
           "module": "react-hot-toast",
           "resolved": "node_modules/react-hot-toast/dist/index.mjs",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4868,6 +5177,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4877,6 +5187,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4904,6 +5215,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4921,6 +5233,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4938,6 +5251,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -4946,6 +5260,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -4955,6 +5270,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -4982,6 +5298,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -4999,6 +5316,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5007,7 +5325,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5016,6 +5335,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5033,6 +5353,7 @@
           "module": "../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5041,7 +5362,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5050,6 +5372,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5067,6 +5390,7 @@
           "module": "../../shared/utils/feedback",
           "resolved": "src/features/shared/utils/feedback.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5084,6 +5408,7 @@
           "module": "./helpers",
           "resolved": "src/features/board/components/helpers.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5101,6 +5426,7 @@
           "module": "./OverlayVertex",
           "resolved": "src/features/board/components/OverlayVertex.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5109,7 +5435,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5118,6 +5445,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -5126,6 +5454,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -5135,6 +5464,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5162,6 +5492,7 @@
           "module": "../../../game/core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5170,7 +5501,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5179,6 +5511,7 @@
           "module": "../../hud/components/GameControls",
           "resolved": "src/features/hud/components/GameControls.tsx",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5196,6 +5529,7 @@
           "module": "./BuildingIcon",
           "resolved": "src/features/board/components/BuildingIcon.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5204,6 +5538,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -5213,6 +5548,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5231,7 +5567,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5240,6 +5577,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5248,7 +5586,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5257,6 +5596,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5265,7 +5605,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5274,6 +5615,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5291,6 +5633,7 @@
           "module": "../../shared/utils/feedback",
           "resolved": "src/features/shared/utils/feedback.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5308,6 +5651,7 @@
           "module": "../hooks/useGameControls",
           "resolved": "src/features/hud/hooks/useGameControls.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5325,6 +5669,7 @@
           "module": "./controls/BuildBar",
           "resolved": "src/features/hud/components/controls/BuildBar.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5342,6 +5687,7 @@
           "module": "./controls/RobberControls",
           "resolved": "src/features/hud/components/controls/RobberControls.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5359,6 +5705,7 @@
           "module": "./controls/SetupControls",
           "resolved": "src/features/hud/components/controls/SetupControls.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5376,6 +5723,7 @@
           "module": "./controls/TurnControls",
           "resolved": "src/features/hud/components/controls/TurnControls.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5384,7 +5732,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5393,6 +5742,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -5421,6 +5771,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5438,6 +5789,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5455,6 +5807,7 @@
           "module": "../../../game/mechanics/costs",
           "resolved": "src/game/mechanics/costs.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5463,7 +5816,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5472,6 +5826,7 @@
           "module": "../../../game/mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5480,7 +5835,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5489,6 +5845,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5506,6 +5863,7 @@
           "module": "../../shared/utils/feedback",
           "resolved": "src/features/shared/utils/feedback.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5523,6 +5881,7 @@
           "module": "./useTradeLogic",
           "resolved": "src/features/hud/hooks/useTradeLogic.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5531,7 +5890,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5540,6 +5900,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -5548,6 +5909,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -5557,6 +5919,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5584,6 +5947,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5592,7 +5956,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5601,6 +5966,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5618,6 +5984,7 @@
           "module": "../../../game/mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5626,7 +5993,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5635,6 +6003,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -5643,6 +6012,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -5652,6 +6022,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5671,7 +6042,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5680,6 +6052,7 @@
           "module": "../../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5697,6 +6070,7 @@
           "module": "../../../../game/core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5705,7 +6079,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5714,6 +6089,7 @@
           "module": "../../../../game/mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5731,6 +6107,7 @@
           "module": "../../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5739,7 +6116,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5748,6 +6126,7 @@
           "module": "../../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5765,6 +6144,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5792,6 +6172,7 @@
           "module": "./ActionButton",
           "resolved": "src/features/hud/components/controls/ActionButton.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -5810,6 +6191,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -5819,6 +6201,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5847,6 +6230,7 @@
           "module": "../../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5855,7 +6239,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5864,6 +6249,7 @@
           "module": "../../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5881,6 +6267,7 @@
           "module": "./ActionButton",
           "resolved": "src/features/hud/components/controls/ActionButton.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -5908,6 +6295,7 @@
           "module": "../../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -5925,6 +6313,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5952,6 +6341,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -5970,7 +6360,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -5979,6 +6370,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -5996,6 +6388,7 @@
           "module": "../../../game/rules/queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6004,7 +6397,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6013,6 +6407,7 @@
           "module": "boardgame.io/react",
           "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -6021,6 +6416,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -6030,6 +6426,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6048,7 +6445,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6057,6 +6455,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6065,6 +6464,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -6074,6 +6474,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6101,6 +6502,7 @@
           "module": "./components/AnalystPanel",
           "resolved": "src/features/coach/components/AnalystPanel.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6118,6 +6520,7 @@
           "module": "./components/CoachPanel",
           "resolved": "src/features/coach/components/CoachPanel.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6136,7 +6539,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6145,6 +6549,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6162,6 +6567,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6180,7 +6586,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6189,6 +6596,7 @@
           "module": "../../../game/analysis/coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6197,7 +6605,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6206,6 +6615,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6223,6 +6633,7 @@
           "module": "./PlayerProductionPotential",
           "resolved": "src/features/coach/components/PlayerProductionPotential.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6231,7 +6642,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6240,6 +6652,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -6267,6 +6680,7 @@
           "module": "../../../game/analysis/analyst",
           "resolved": "src/game/analysis/analyst.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6275,7 +6689,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6284,6 +6699,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6301,6 +6717,7 @@
           "module": "../../shared/components/ResourceIconRow",
           "resolved": "src/features/shared/components/ResourceIconRow.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6318,6 +6735,7 @@
           "module": "./PlayerProduction",
           "resolved": "src/features/coach/components/PlayerProduction.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6335,6 +6753,7 @@
           "module": "./ResourceDistribution",
           "resolved": "src/features/coach/components/ResourceDistribution.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6353,7 +6772,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6362,6 +6782,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6379,6 +6800,7 @@
           "module": "../config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6398,7 +6820,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6407,6 +6830,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6424,6 +6848,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6442,7 +6867,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6451,6 +6877,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6468,6 +6895,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6495,6 +6923,7 @@
           "module": "./components/GameControls",
           "resolved": "src/features/hud/components/GameControls.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6512,6 +6941,7 @@
           "module": "./components/GameNotification",
           "resolved": "src/features/hud/components/GameNotification.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6529,6 +6959,7 @@
           "module": "./components/GameStatusBanner",
           "resolved": "src/features/hud/components/GameStatusBanner.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6546,6 +6977,7 @@
           "module": "./components/PlayerPanel",
           "resolved": "src/features/hud/components/PlayerPanel.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -6573,6 +7005,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6590,6 +7023,7 @@
           "module": "../../shared/components/DiceIcons",
           "resolved": "src/features/shared/components/DiceIcons.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6607,6 +7041,7 @@
           "module": "../hooks/useAutoDismissNotification",
           "resolved": "src/features/hud/hooks/useAutoDismissNotification.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6624,6 +7059,7 @@
           "module": "./notifications/ProductionNotification",
           "resolved": "src/features/hud/components/notifications/ProductionNotification.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6641,6 +7077,7 @@
           "module": "./notifications/RobberNotification",
           "resolved": "src/features/hud/components/notifications/RobberNotification.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6658,6 +7095,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6685,6 +7123,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6704,7 +7143,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6713,6 +7153,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6721,6 +7162,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -6730,6 +7172,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6748,7 +7191,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6757,6 +7201,7 @@
           "module": "../../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6774,6 +7219,7 @@
           "module": "../../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6791,6 +7237,7 @@
           "module": "../constants/emojis",
           "resolved": "src/features/hud/components/constants/emojis.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6808,6 +7255,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -6816,6 +7264,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -6825,6 +7274,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6854,7 +7304,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6863,6 +7314,7 @@
           "module": "../../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6880,6 +7332,7 @@
           "module": "../../../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6897,6 +7350,7 @@
           "module": "../../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6914,6 +7368,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -6932,7 +7387,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6941,6 +7397,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -6958,6 +7415,7 @@
           "module": "../hooks/useGameStatusMessage",
           "resolved": "src/features/hud/hooks/useGameStatusMessage.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -6966,7 +7424,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -6975,6 +7434,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -6983,6 +7443,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -6992,6 +7453,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7010,7 +7472,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7019,6 +7482,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7036,6 +7500,7 @@
           "module": "../components/constants/emojis",
           "resolved": "src/features/hud/components/constants/emojis.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7053,6 +7518,7 @@
           "module": "../logic/statusMessageUtils",
           "resolved": "src/features/hud/logic/statusMessageUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7061,7 +7527,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7070,6 +7537,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -7078,6 +7546,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7087,6 +7556,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7115,6 +7585,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7123,7 +7594,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7132,6 +7604,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7149,6 +7622,7 @@
           "module": "../components/constants/emojis",
           "resolved": "src/features/hud/components/constants/emojis.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7157,7 +7631,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7166,6 +7641,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -7184,7 +7660,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7193,6 +7670,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7210,6 +7688,7 @@
           "module": "../../shared/components/ResourceIconRow",
           "resolved": "src/features/shared/components/ResourceIconRow.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7227,6 +7706,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7263,6 +7743,7 @@
           "module": "../coach/components/AnalystShell",
           "resolved": "src/features/coach/components/AnalystShell.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7280,6 +7761,7 @@
           "module": "../coach/components/CoachShell",
           "resolved": "src/features/coach/components/CoachShell.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7297,6 +7779,7 @@
           "module": "../shared/constants/labels",
           "resolved": "src/features/shared/constants/labels.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7314,6 +7797,7 @@
           "module": "../shared/constants/z-indices",
           "resolved": "src/features/shared/constants/z-indices.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7331,6 +7815,7 @@
           "module": "../shared/hooks/useIsMobile",
           "resolved": "src/features/shared/hooks/useIsMobile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7348,6 +7833,7 @@
           "module": "./components/TooltipRenderers",
           "resolved": "src/features/game/components/TooltipRenderers.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7365,6 +7851,7 @@
           "module": "./hooks/useViewportDvh",
           "resolved": "src/features/game/hooks/useViewportDvh.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7382,6 +7869,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -7390,7 +7878,9 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "npm-dev",
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7399,6 +7889,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -7416,6 +7907,7 @@
           "module": "react-hot-toast",
           "resolved": "node_modules/react-hot-toast/dist/index.mjs",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -7433,6 +7925,7 @@
           "module": "react-tooltip",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.cjs",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -7450,6 +7943,7 @@
           "module": "react-tooltip/dist/react-tooltip.css",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.css",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7477,6 +7971,7 @@
           "module": "../../shared/constants/labels",
           "resolved": "src/features/shared/constants/labels.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7494,6 +7989,7 @@
           "module": "../../shared/constants/z-indices",
           "resolved": "src/features/shared/constants/z-indices.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7511,6 +8007,7 @@
           "module": "../../shared/hooks/useIsMobile",
           "resolved": "src/features/shared/hooks/useIsMobile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7528,6 +8025,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7557,6 +8055,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7566,6 +8065,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7596,6 +8096,7 @@
           "module": "../../shared/constants/labels",
           "resolved": "src/features/shared/constants/labels.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7613,6 +8114,7 @@
           "module": "../../shared/constants/z-indices",
           "resolved": "src/features/shared/constants/z-indices.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7630,6 +8132,7 @@
           "module": "../../shared/hooks/useIsMobile",
           "resolved": "src/features/shared/hooks/useIsMobile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7647,6 +8150,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -7655,6 +8159,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7664,6 +8169,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7691,6 +8197,7 @@
           "module": "../../../game/core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7699,7 +8206,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7708,6 +8216,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7725,6 +8234,7 @@
           "module": "../../shared/components/DiceIcons",
           "resolved": "src/features/shared/components/DiceIcons.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7742,6 +8252,7 @@
           "module": "../../shared/config/uiConfig",
           "resolved": "src/features/shared/config/uiConfig.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7759,6 +8270,7 @@
           "module": "lucide-react",
           "resolved": "node_modules/lucide-react/dist/cjs/lucide-react.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7777,6 +8289,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7786,6 +8299,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7813,6 +8327,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7821,7 +8336,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7830,6 +8346,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -7838,6 +8355,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7847,6 +8365,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -7874,6 +8393,7 @@
           "module": "../../../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7882,7 +8402,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7891,6 +8412,7 @@
           "module": "../../../game/core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7908,6 +8430,7 @@
           "module": "../../../game/rules/queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7916,7 +8439,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7925,6 +8449,7 @@
           "module": "../../hud/hooks/useGameStatusMessage",
           "resolved": "src/features/hud/hooks/useGameStatusMessage.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7942,6 +8467,7 @@
           "module": "../../shared/hooks/useIsMobile",
           "resolved": "src/features/shared/hooks/useIsMobile.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -7950,7 +8476,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7959,6 +8486,7 @@
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -7967,7 +8495,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -7976,6 +8505,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -7984,6 +8514,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -7993,6 +8524,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -8020,6 +8552,7 @@
           "module": "../game/core/utils/sanitize",
           "resolved": "src/game/core/utils/sanitize.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8037,6 +8570,7 @@
           "module": "./analysis/CoachPlugin",
           "resolved": "src/game/analysis/CoachPlugin.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8054,6 +8588,7 @@
           "module": "./core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8071,6 +8606,7 @@
           "module": "./core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8088,6 +8624,7 @@
           "module": "./core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8105,6 +8642,7 @@
           "module": "./generation/boardGen",
           "resolved": "src/game/generation/boardGen.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8122,6 +8660,7 @@
           "module": "./mechanics/boardStats",
           "resolved": "src/game/mechanics/boardStats.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8139,6 +8678,7 @@
           "module": "./mechanics/turnOrder",
           "resolved": "src/game/mechanics/turnOrder.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8156,6 +8696,7 @@
           "module": "./moves/build",
           "resolved": "src/game/moves/build.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8173,6 +8714,7 @@
           "module": "./moves/robber",
           "resolved": "src/game/moves/robber.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8190,6 +8732,7 @@
           "module": "./moves/roll",
           "resolved": "src/game/moves/roll.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8207,6 +8750,7 @@
           "module": "./moves/setup",
           "resolved": "src/game/moves/setup.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8224,6 +8768,7 @@
           "module": "./moves/trade",
           "resolved": "src/game/moves/trade.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8241,6 +8786,7 @@
           "module": "./rules/enumerator",
           "resolved": "src/game/rules/enumerator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8249,7 +8795,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8258,6 +8805,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         },
         {
@@ -8275,6 +8823,7 @@
           "module": "boardgame.io/core",
           "resolved": "node_modules/boardgame.io/dist/cjs/core.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -8319,7 +8868,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8328,6 +8878,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -8345,6 +8896,7 @@
           "module": "./coach",
           "resolved": "src/game/analysis/coach.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8353,7 +8905,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8362,6 +8915,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -8389,6 +8943,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8406,6 +8961,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8423,6 +8979,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8440,6 +8997,7 @@
           "module": "lodash",
           "resolved": "node_modules/lodash/lodash.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -8485,6 +9043,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8493,7 +9052,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8502,6 +9062,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         }
       ],
@@ -8539,6 +9100,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8556,6 +9118,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8564,7 +9127,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8573,6 +9137,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -8590,6 +9155,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8607,6 +9173,7 @@
           "module": "../rules/validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8615,7 +9182,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8624,6 +9192,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -8642,7 +9211,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8651,6 +9221,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -8668,6 +9239,7 @@
           "module": "./moveValidation",
           "resolved": "src/game/rules/moveValidation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8685,6 +9257,7 @@
           "module": "./spatial",
           "resolved": "src/game/rules/spatial.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8693,7 +9266,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8702,6 +9276,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -8734,6 +9309,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8751,6 +9327,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8768,6 +9345,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8785,6 +9363,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8802,6 +9381,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8819,6 +9399,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8836,6 +9417,7 @@
           "module": "../mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8853,6 +9435,7 @@
           "module": "./economy",
           "resolved": "src/game/rules/economy.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8870,6 +9453,7 @@
           "module": "./robberRules",
           "resolved": "src/game/rules/robberRules.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8887,6 +9471,7 @@
           "module": "./spatial",
           "resolved": "src/game/rules/spatial.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8895,7 +9480,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8904,6 +9490,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -8931,6 +9518,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8939,7 +9527,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -8948,6 +9537,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -8965,6 +9555,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -8982,6 +9573,7 @@
           "module": "../mechanics/costs",
           "resolved": "src/game/mechanics/costs.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -9009,6 +9601,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9017,7 +9610,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9026,6 +9620,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -9043,6 +9638,7 @@
           "module": "../rules/queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9060,6 +9656,7 @@
           "module": "../rules/validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9068,7 +9665,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9077,6 +9675,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -9104,6 +9703,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9121,6 +9721,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9138,6 +9739,7 @@
           "module": "../mechanics/resources",
           "resolved": "src/game/mechanics/resources.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9155,6 +9757,7 @@
           "module": "../rules/validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9163,7 +9766,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9172,6 +9776,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -9199,6 +9804,7 @@
           "module": "../../game/core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9216,6 +9822,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9233,6 +9840,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9250,6 +9858,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9267,6 +9876,7 @@
           "module": "../generation/boardGen",
           "resolved": "src/game/generation/boardGen.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9284,6 +9894,7 @@
           "module": "../geometry/hexUtils",
           "resolved": "src/game/geometry/hexUtils.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9301,6 +9912,7 @@
           "module": "../mechanics/boardStats",
           "resolved": "src/game/mechanics/boardStats.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9318,6 +9930,7 @@
           "module": "../mechanics/resources",
           "resolved": "src/game/mechanics/resources.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9335,6 +9948,7 @@
           "module": "../rules/validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9343,7 +9957,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9352,6 +9967,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -9379,6 +9995,7 @@
           "module": "../core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9387,7 +10004,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9396,6 +10014,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -9404,7 +10023,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9413,6 +10033,7 @@
           "module": "../mechanics/trade",
           "resolved": "src/game/mechanics/trade.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -9430,6 +10051,7 @@
           "module": "../rules/validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9438,7 +10060,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9447,6 +10070,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -9474,6 +10098,7 @@
           "module": "../core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9482,7 +10107,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9491,6 +10117,7 @@
           "module": "../core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -9508,6 +10135,7 @@
           "module": "../core/validation",
           "resolved": "src/game/core/validation.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9525,6 +10153,7 @@
           "module": "./queries",
           "resolved": "src/game/rules/queries.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9542,6 +10171,7 @@
           "module": "./validator",
           "resolved": "src/game/rules/validator.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9550,7 +10180,8 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
+            "import",
+            "pre-compilation-only"
           ],
           "dynamic": false,
           "exoticallyRequired": false,
@@ -9559,6 +10190,7 @@
           "module": "boardgame.io",
           "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
           "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": true
         }
       ],
@@ -9586,6 +10218,7 @@
           "module": "../game/core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9603,6 +10236,7 @@
           "module": "react-router-dom",
           "resolved": "node_modules/react-router-dom/dist/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -9620,6 +10254,7 @@
           "module": "react-tooltip",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.cjs",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -9637,6 +10272,7 @@
           "module": "react-tooltip/dist/react-tooltip.css",
           "resolved": "node_modules/react-tooltip/dist/react-tooltip.min.css",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -9664,6 +10300,7 @@
           "module": "./core/config",
           "resolved": "src/game/core/config.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9681,6 +10318,7 @@
           "module": "./core/types",
           "resolved": "src/game/core/types.ts",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -9706,6 +10344,7 @@
           "module": "./App",
           "resolved": "src/App.tsx",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9723,6 +10362,7 @@
           "module": "./styles/index.css",
           "resolved": "src/styles/index.css",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         },
         {
@@ -9731,6 +10371,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
+            "npm-dev",
             "import"
           ],
           "dynamic": false,
@@ -9740,6 +10381,7 @@
           "module": "react",
           "resolved": "node_modules/react/index.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         },
         {
@@ -9757,6 +10399,7 @@
           "module": "react-dom/client",
           "resolved": "node_modules/react-dom/client.js",
           "valid": true,
+          "preCompilationOnly": false,
           "matchesDoNotFollow": true
         }
       ],
@@ -9852,7 +10495,7 @@
       "tsConfig": {
         "fileName": "tsconfig.app.json"
       },
-      "tsPreCompilationDeps": true,
+      "tsPreCompilationDeps": "specify",
       "args": "src"
     },
     "ruleSetUsed": {
