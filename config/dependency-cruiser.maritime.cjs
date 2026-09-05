@@ -12,5 +12,8 @@ module.exports = {
   options: {
     ...baseConfig.options,
     exclude: EVIDENCE_EXCLUDE,
+    // compact-architecture can distinguish secondary type/pre-compilation
+    // relationships only when dependency-cruiser emits that evidence explicitly.
+    tsPreCompilationDeps: 'specify',
   },
 };
