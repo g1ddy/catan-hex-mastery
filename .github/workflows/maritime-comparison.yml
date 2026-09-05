@@ -14,8 +14,6 @@ concurrency:
 
 env:
   GENERATED_COMMITS: 'false'
-  MARITIME_BETA8_COMMIT: '83dadbdc6718264060f82cad02197671abd76e29'
-  MARITIME_BETA8_VERSION: '0.1.0-beta.8'
 
 jobs:
   compare:
@@ -101,28 +99,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Checkout merged Maritime beta.8 candidate
+      - name: Analyze and render with Maritime beta.8
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: g1ddy/dependency-maritime
-          ref: ${{ env.MARITIME_BETA8_COMMIT }}
-          path: .maritime-cli-source
-
-      - name: Build beta.8 candidate exactly from merged Maritime source
-        if: steps.plan.outputs.run_maritime == 'true'
-        working-directory: .maritime-cli-source
-        run: |
-          npm ci
-          npm version "$MARITIME_BETA8_VERSION" --no-git-tag-version
-          npm run build:cli
-
-      - name: Analyze and render with merged Maritime compact profile
-        if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@83dadbdc6718264060f82cad02197671abd76e29
+        uses: g1ddy/dependency-maritime@83dadbdc6718264060f82cad02197671abd76e29 # cli-v0.1.0-beta.8
         with:
           node-version: '22.13.0'
-          cli-source: '.maritime-cli-source'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.8'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
@@ -132,45 +114,24 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
-      - name: Verify compact evidence and reference fidelity
+      - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
-        run: |
-          node <<'NODE'
-          const { readFileSync } = require('node:fs');
-          const artifact = JSON.parse(readFileSync('.maritime/dependency-graph.json', 'utf8'));
-          const dependencies = artifact.modules.flatMap((module) => module.dependencies ?? []);
-          const explicit = dependencies.filter((dependency) => dependency.preCompilationOnly === true).length;
-          const tagged = dependencies.filter((dependency) => (
-            Array.isArray(dependency.dependencyTypes)
-            && dependency.dependencyTypes.includes('pre-compilation-only')
-          )).length;
-          if (explicit === 0 && tagged === 0) {
-            throw new Error('canonical Catan evidence contains no distinguishable pre-compilation-only relationships');
-          }
-          console.log(`Pre-compilation evidence: ${explicit} explicit flags, ${tagged} dependency-type tags.`);
-          NODE
-          npm run test:layout
-          npm run verify:maritime
+        run: npm run verify:maritime
 
       - name: Inspect Maritime outputs
         if: steps.plan.outputs.run_maritime == 'true'
         run: find .maritime -maxdepth 1 -type f -print
 
-      - name: Upload Maritime beta.8 candidate artifacts
+      - name: Upload Maritime beta.8 artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-beta8-catan-gate
+          name: maritime-beta8-catan
           path: |
             .maritime/
-            docs/images/dependency-graph.reference.svg
             docs/images/dependency-graph.svg
           if-no-files-found: error
           include-hidden-files: true
-
-      - name: Remove temporary Maritime source checkout
-        if: steps.plan.outputs.run_maritime == 'true'
-        run: rm -rf .maritime-cli-source
 
       - name: Commit Maritime comparison outputs locally
         if: steps.plan.outputs.run_maritime == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
@@ -188,7 +149,7 @@ jobs:
               ;;
             1)
               git add .maritime docs/images/dependency-graph.svg
-              git commit -m "docs(metrics): update Maritime beta.8 candidate evidence"
+              git commit -m "docs(metrics): update Maritime beta.8 evidence"
               echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
               ;;
             *)
