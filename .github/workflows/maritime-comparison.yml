@@ -99,7 +99,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Analyze and render with Maritime beta.8
+      - name: Analyze and render compact graph with Maritime beta.8
         if: steps.plan.outputs.run_maritime == 'true'
         uses: g1ddy/dependency-maritime@83dadbdc6718264060f82cad02197671abd76e29 # cli-v0.1.0-beta.8
         with:
@@ -114,13 +114,23 @@ jobs:
           graph-profile: 'compact-architecture'
           upload-artifact: 'false'
 
+      - name: Render architecture overview from canonical evidence
+        if: steps.plan.outputs.run_maritime == 'true'
+        run: >-
+          npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph
+          --input .maritime
+          --output docs/images/dependency-overview.svg
+          --graph-profile architecture-overview
+
       - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
         run: npm run verify:maritime
 
       - name: Inspect Maritime outputs
         if: steps.plan.outputs.run_maritime == 'true'
-        run: find .maritime -maxdepth 1 -type f -print
+        run: |
+          find .maritime -maxdepth 1 -type f -print
+          ls -l docs/images/dependency-graph.svg docs/images/dependency-overview.svg
 
       - name: Upload Maritime beta.8 artifacts
         if: steps.plan.outputs.run_maritime == 'true'
@@ -130,6 +140,7 @@ jobs:
           path: |
             .maritime/
             docs/images/dependency-graph.svg
+            docs/images/dependency-overview.svg
           if-no-files-found: error
           include-hidden-files: true
 
@@ -146,9 +157,11 @@ jobs:
             0)
               echo "Maritime comparison outputs are already current."
               git restore -- .maritime docs/images/dependency-graph.svg
+              rm -f docs/images/dependency-overview.svg
+              git restore -- docs/images/dependency-overview.svg 2>/dev/null || true
               ;;
             1)
-              git add .maritime docs/images/dependency-graph.svg
+              git add .maritime docs/images/dependency-graph.svg docs/images/dependency-overview.svg
               git commit -m "docs(metrics): update Maritime beta.8 evidence"
               echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
               ;;

@@ -4,7 +4,7 @@ const EXPECTED_TOOL_VERSION = '0.1.0-beta.8';
 const EXPECTED_SOURCE_ROOT = 'src';
 const TEST_MODULE_PATTERN = /(^|[/])(__tests__[/]|.*\.(test|spec)\.[cm]?[jt]sx?$)/;
 
-function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
+function validateMaritimeArtifactContent({ manifest, graph, metrics, compactSvg, overviewSvg }) {
   const errors = [];
   const summary = manifest?.summary ?? {};
   const modules = Array.isArray(graph?.modules) ? graph.modules : [];
@@ -74,14 +74,24 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
     }
   }
 
-  if (typeof svg !== 'string' || !svg.includes('<svg')) {
-    errors.push('dependency graph presentation is not SVG');
-  } else if (!svg.includes('local:src/')) {
+  if (typeof compactSvg !== 'string' || !compactSvg.includes('<svg')) {
+    errors.push('compact dependency graph presentation is not SVG');
+  } else if (!compactSvg.includes('local:src/')) {
     errors.push('compact dependency graph SVG contains no local src/ file nodes');
-  } else if (svg.includes('folder:src/')) {
+  } else if (compactSvg.includes('folder:src/')) {
     errors.push('compact dependency graph must remain file-level rather than folder-aggregated');
-  } else if (svg.includes('external:') || svg.includes('External packages')) {
-    errors.push('dependency graph SVG must omit external package nodes');
+  } else if (compactSvg.includes('external:') || compactSvg.includes('External packages')) {
+    errors.push('compact dependency graph SVG must omit external package nodes');
+  }
+
+  if (typeof overviewSvg !== 'string' || !overviewSvg.includes('<svg')) {
+    errors.push('architecture overview presentation is not SVG');
+  } else if (!overviewSvg.includes('folder:')) {
+    errors.push('architecture overview must aggregate local files into folder nodes');
+  } else if (overviewSvg.includes('local:src/')) {
+    errors.push('architecture overview must not retain individual local file nodes');
+  } else if (overviewSvg.includes('external:') || overviewSvg.includes('External packages')) {
+    errors.push('architecture overview must omit external package nodes');
   }
 
   return errors;
@@ -89,19 +99,21 @@ function validateMaritimeArtifactContent({ manifest, graph, metrics, svg }) {
 
 function validateMaritimeArtifacts(
   maritimeDirectory = '.maritime',
-  svgPath = 'docs/images/dependency-graph.svg',
+  compactSvgPath = 'docs/images/dependency-graph.svg',
+  overviewSvgPath = 'docs/images/dependency-overview.svg',
 ) {
   const manifest = JSON.parse(readFileSync(`${maritimeDirectory}/manifest.json`, 'utf8'));
   const graph = JSON.parse(readFileSync(`${maritimeDirectory}/dependency-graph.json`, 'utf8'));
   const metrics = JSON.parse(readFileSync(`${maritimeDirectory}/complexity-metrics.json`, 'utf8'));
-  const svg = readFileSync(svgPath, 'utf8');
-  const errors = validateMaritimeArtifactContent({ manifest, graph, metrics, svg });
+  const compactSvg = readFileSync(compactSvgPath, 'utf8');
+  const overviewSvg = readFileSync(overviewSvgPath, 'utf8');
+  const errors = validateMaritimeArtifactContent({ manifest, graph, metrics, compactSvg, overviewSvg });
 
   if (errors.length > 0) {
     throw new Error(`Invalid Maritime consumer artifacts:\n- ${errors.join('\n- ')}`);
   }
 
-  return { manifest, graph, metrics, svg };
+  return { manifest, graph, metrics, compactSvg, overviewSvg };
 }
 
 if (require.main === module) {

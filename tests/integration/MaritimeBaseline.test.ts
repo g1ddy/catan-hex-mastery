@@ -29,7 +29,8 @@ type MaritimeArtifactsFixture = {
   };
   graph: { modules: MaritimeModuleFixture[] };
   metrics: Record<string, MaritimeMetricFixture>;
-  svg: string;
+  compactSvg: string;
+  overviewSvg: string;
 };
 
 const createBundle = (): Bundle => new Map([
@@ -65,7 +66,8 @@ const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   metrics: {
     'src/game/core/types.ts': { scanned: true, complexity: 1, loc: 10, fanIn: 0, fanOut: 0 },
   },
-  svg: '<svg><title>local:src/game/core/types.ts</title></svg>',
+  compactSvg: '<svg><title>local:src/game/core/types.ts</title></svg>',
+  overviewSvg: '<svg><title>folder:src/game/core</title></svg>',
 });
 
 describe('Maritime substantive baseline comparison', () => {
@@ -108,28 +110,41 @@ describe('Maritime substantive baseline comparison', () => {
 });
 
 describe('Maritime released consumer contract', () => {
-  it('pins graph generation to published beta.8 compact-architecture', () => {
+  it('pins compact and overview rendering to published beta.8 profiles', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
+    const workflow = readFileSync('.github/workflows/maritime-comparison.yml', 'utf8');
 
     expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.8');
     expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
+    expect(workflow).toContain('npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph');
+    expect(workflow).toContain('--output docs/images/dependency-overview.svg');
+    expect(workflow).toContain('--graph-profile architecture-overview');
   });
 });
 
 describe('Maritime consumer contract', () => {
-  it('accepts a measured production bundle with explicit pre-compilation evidence and rendered local files', () => {
+  it('accepts one measured production bundle rendered as compact and overview presentations', () => {
     expect(validateMaritimeArtifactContent(createValidArtifacts())).toEqual([]);
   });
 
-  it('rejects folder aggregation because compact-architecture is file-level', () => {
+  it('rejects folder aggregation in compact-architecture because it is file-level', () => {
     const artifacts = createValidArtifacts();
-    artifacts.svg = '<svg><title>folder:src/game/core</title></svg>';
+    artifacts.compactSvg = '<svg><title>folder:src/game/core</title></svg>';
 
     expect(validateMaritimeArtifactContent(artifacts)).toEqual(expect.arrayContaining([
       'compact dependency graph SVG contains no local src/ file nodes',
     ]));
+  });
+
+  it('rejects individual file nodes in architecture-overview because it is folder-aggregated', () => {
+    const artifacts = createValidArtifacts();
+    artifacts.overviewSvg = '<svg><title>folder:src/game/core</title><title>local:src/game/core/types.ts</title></svg>';
+
+    expect(validateMaritimeArtifactContent(artifacts)).toContain(
+      'architecture overview must not retain individual local file nodes',
+    );
   });
 
   it('rejects an empty bundle even if it reports a perfect health score', () => {
@@ -138,7 +153,8 @@ describe('Maritime consumer contract', () => {
     artifacts.manifest.summary.scannedCount = 0;
     artifacts.graph.modules = [];
     artifacts.metrics = {};
-    artifacts.svg = '<svg></svg>';
+    artifacts.compactSvg = '<svg></svg>';
+    artifacts.overviewSvg = '<svg></svg>';
 
     expect(validateMaritimeArtifactContent(artifacts)).toEqual(expect.arrayContaining([
       'manifest summary.totalFiles must be greater than zero',
@@ -146,15 +162,21 @@ describe('Maritime consumer contract', () => {
       'dependency graph must contain local src/ modules',
       'dependency graph must preserve explicit pre-compilation evidence for compact edge semantics',
       'compact dependency graph SVG contains no local src/ file nodes',
+      'architecture overview must aggregate local files into folder nodes',
     ]));
   });
 
-  it('rejects external package nodes in the local-only graph presentation', () => {
-    const artifacts = createValidArtifacts();
-    artifacts.svg = '<svg><title>local:src/game/core/types.ts</title><title>external:react</title></svg>';
+  it('rejects external package nodes in either local-only presentation', () => {
+    const compactArtifacts = createValidArtifacts();
+    compactArtifacts.compactSvg = '<svg><title>local:src/game/core/types.ts</title><title>external:react</title></svg>';
+    expect(validateMaritimeArtifactContent(compactArtifacts)).toContain(
+      'compact dependency graph SVG must omit external package nodes',
+    );
 
-    expect(validateMaritimeArtifactContent(artifacts)).toContain(
-      'dependency graph SVG must omit external package nodes',
+    const overviewArtifacts = createValidArtifacts();
+    overviewArtifacts.overviewSvg = '<svg><title>folder:src/game/core</title><title>external:react</title></svg>';
+    expect(validateMaritimeArtifactContent(overviewArtifacts)).toContain(
+      'architecture overview must omit external package nodes',
     );
   });
 

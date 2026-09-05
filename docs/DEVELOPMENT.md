@@ -78,7 +78,7 @@ npm run test:debug
 ```
 
 *Verification Rules:*
-*   **No Fixed Timeouts**: Avoid `waitForTimeout` in E2E tests as it causes flakiness. Wait for explicit DOM elements or state conditions (e.g. `expect(locator).toBeVisible()`).
+*   **No Fixed Timeouts**: Avoid `waitForTimeout` in E2E tests as it causes flakiness. Wait for explicit DOM elements or state conditions (e.g., `expect(locator).toBeVisible()`).
 *   **Base URL**: E2E tests run against the preview/dev server configured in `config/playwright.config.ts`. Use relative paths for `page.goto('/')`.
 
 ---
@@ -87,9 +87,9 @@ npm run test:debug
 
 All architectural and complexity evidence is generated programmatically rather than maintained manually.
 
-The **Generated Artifacts** workflow in [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the single PR-branch writer for generated artifacts. It runs Maritime evidence generation and graph rendering before any commit, verifies the consumer contract, optionally generates documentation screenshots, and performs one final push. The generators retain separate artifact ownership; the orchestration prevents competing bot pushes to the same branch.
+The **Generated Artifacts** workflow in [`.github/workflows/maritime-comparison.yml`](../.github/workflows/maritime-comparison.yml) is the single PR-branch writer for generated artifacts. It runs Maritime evidence generation once, renders both architecture presentations from that canonical evidence, verifies the consumer contract, optionally generates documentation screenshots, and performs one final push. The generators retain separate artifact ownership; the orchestration prevents competing bot pushes to the same branch.
 
-Documentation screenshots regenerate when UI or screenshot-generation inputs change, including `src/`, `public/`, the screenshot spec/config, package manifests, and relevant Vite/Tailwind/PostCSS entry configuration. Documentation prose changes alone do not regenerate application screenshots.
+Documentation screenshots regenerate when UI or screenshot-generation inputs change, including `src/`, `public/`, the screenshot spec/config, package manifests, and relevant Vite/Tailwind/PostCSS entry configuration. Documentation prose and Maritime presentation-only workflow changes do not regenerate application screenshots.
 
 ### 1. Layered Architecture Verification
 
@@ -103,34 +103,37 @@ This runs `depcruise src --config config/dependency-cruiser.cjs`. The same unfil
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow consumes the released Maritime beta.8 Action at immutable commit `83dadbdc6718264060f82cad02197671abd76e29` (`cli-v0.1.0-beta.8`) together with the matching published package `@dependency-maritime/cli@0.1.0-beta.8`. It analyzes `src/`, validates the artifact bundle, and renders the graph from that same run. Do not edit generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow consumes the released Maritime beta.8 Action at immutable commit `83dadbdc6718264060f82cad02197671abd76e29` (`cli-v0.1.0-beta.8`) together with the matching published package `@dependency-maritime/cli@0.1.0-beta.8`. It analyzes `src/`, validates the artifact bundle, and renders the graphs from that same run. Do not edit generated Maritime outputs manually.
 
 For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. That file inherits all rules from `config/dependency-cruiser.cjs`, excludes `.test` / `.spec` modules from the evidence graph, and sets `tsPreCompilationDeps: 'specify'` so the compact renderer can distinguish secondary type/pre-compilation relationships. This does **not** relax `npm run check:arch`, `npm run build`, or `npm test`.
 
 `docs/COMPLEXITY.md` is a stable guide to the generated artifacts. Current health and hotspot values are read directly from `.maritime/complexity-report.md`; there is no second Catan-owned complexity-report generator.
 
-For local reproduction, install the matching published prerelease without saving it as a Catan dependency, then run the same repository commands used by CI:
+For local reproduction, install the matching published prerelease without saving it as a Catan dependency, then run the same analysis and rendering commands used by CI:
 
 ```bash
 npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.8
 npm run analyze:maritime
-npm run verify:maritime
 npm run generate:graph
+npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph \
+  --input .maritime \
+  --output docs/images/dependency-overview.svg \
+  --graph-profile architecture-overview
+npm run verify:maritime
 ```
 
 See [COMPLEXITY.md](./COMPLEXITY.md) for metric definitions, thresholds, and artifact ownership.
 
 ### 3. Architecture & Dependency Diagrams
 
-Dependency diagram presentation is derived directly from canonical Maritime evidence. `.maritime/dependency-graph.json` is the canonical machine evidence, and `docs/images/dependency-graph.svg` is the derived Maritime/Graphviz presentation. The SVG is not hand-edited; folder hierarchy and module relationships are derived recursively by Maritime from production module paths. Architecture policy and layer boundary rules remain governed by `config/dependency-cruiser.cjs`.
+Dependency diagram presentation is derived directly from canonical Maritime evidence. `.maritime/dependency-graph.json` is the canonical machine evidence. Catan commits two derived views:
 
-To render the visual dependency graph locally from already-generated canonical `.maritime` evidence:
+- `docs/images/dependency-overview.svg` uses Maritime's `architecture-overview` profile to aggregate individual files into source-root-relative folder nodes. Use this for the high-level architectural shape and major area-to-area coupling.
+- `docs/images/dependency-graph.svg` uses Maritime's `compact-architecture` profile to preserve individual file nodes while reducing visual noise. Use this when investigating concrete dependencies.
 
-```bash
-npm run generate:graph
-```
+The detailed graph retains the repository script `npm run generate:graph`. The overview is rendered directly by the Generated Artifacts workflow with the same pinned Maritime beta.8 package rather than adding a package script solely for documentation generation.
 
-`generate:graph` uses the published `@dependency-maritime/cli@0.1.0-beta.8` package and selects Maritime's `compact-architecture` profile: a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies the resulting evidence contract directly rather than maintaining a repository-owned renderer or historical reference image.
+The overview deliberately changes information granularity through folder aggregation; the compact graph remains a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies both resulting presentations rather than maintaining a repository-owned renderer or historical reference image.
 
 ### 4. Code Quality & Linting
 
@@ -148,7 +151,7 @@ Before submitting a PR or marking a task complete:
 
 1.  **Test-Driven Development**: Write tests alongside or before implementing game logic.
 2.  **Verify Build & Architecture**: Ensure `npm run build && npm test` completes with 0 errors.
-3.  **Generated Evidence Ownership**: Let the Generated Artifacts workflow update `.maritime/*` and the dependency SVG; do not hand-edit generated evidence.
+3.  **Generated Evidence Ownership**: Let the Generated Artifacts workflow update `.maritime/*` and both dependency SVGs; do not hand-edit generated evidence.
 4.  **No Stale History**: Update `docs/ROADMAP.md` when completing items. Do not commit temporary logs or manual complexity snapshot tables.
 5.  **Strict Typing**: Ensure strict TypeScript compliance with no `any` types.
 
