@@ -116,7 +116,11 @@ jobs:
 
       - name: Render architecture overview from canonical evidence
         if: steps.plan.outputs.run_maritime == 'true'
-        run: npm run generate:overview
+        run: >-
+          npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph
+          --input .maritime
+          --output docs/images/dependency-overview.svg
+          --graph-profile architecture-overview
 
       - name: Verify Maritime consumer contract
         if: steps.plan.outputs.run_maritime == 'true'
