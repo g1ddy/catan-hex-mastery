@@ -1,8 +1,12 @@
 const { execFileSync } = require('node:child_process');
-const { readFileSync, readdirSync } = require('node:fs');
+const { existsSync, readFileSync, readdirSync } = require('node:fs');
 const { join, relative, sep } = require('node:path');
 
 const MARITIME_DIRECTORY = '.maritime';
+const GENERATED_PRESENTATIONS = [
+  'docs/images/dependency-graph.svg',
+  'docs/images/dependency-overview.svg',
+];
 
 function normalizeMaritimeContent(filePath, content) {
   if (filePath === 'manifest.json') {
@@ -68,12 +72,31 @@ function readBaselineBundle() {
   return bundle;
 }
 
+function generatedPresentationsChanged(paths = GENERATED_PRESENTATIONS) {
+  return paths.some((filePath) => {
+    if (!existsSync(filePath)) return false;
+
+    try {
+      const baseline = execFileSync('git', ['show', `HEAD:${filePath}`], { encoding: 'utf8' });
+      return baseline !== readFileSync(filePath, 'utf8');
+    } catch {
+      return true;
+    }
+  });
+}
+
 if (require.main === module) {
-  const unchanged = compareBundles(readBaselineBundle(), readGeneratedBundle());
+  const evidenceUnchanged = compareBundles(readBaselineBundle(), readGeneratedBundle());
+  const presentationsChanged = generatedPresentationsChanged();
+  const unchanged = evidenceUnchanged && !presentationsChanged;
   console.log(unchanged
     ? 'Maritime comparison outputs have no substantive changes.'
     : 'Maritime comparison outputs contain substantive changes.');
   process.exitCode = unchanged ? 0 : 1;
 }
 
-module.exports = { compareBundles, normalizeMaritimeContent };
+module.exports = {
+  compareBundles,
+  generatedPresentationsChanged,
+  normalizeMaritimeContent,
+};
