@@ -1,10 +1,10 @@
-import type { Move } from '../../adapters/runtime/boardgame';
-import { GameState, Resources } from '../core/types';
+import type { MoveArguments, MoveHandler } from '../core/types';
+import { Resources } from '../core/types';
 import { STAGES } from '../core/constants';
 import { RuleEngine } from '../rules/validator';
 import { getValidRobberVictims } from '../rules/queries';
 
-export const dismissRobber: Move<GameState> = ({ G, ctx, events, random }, hexID: string, victimID?: string) => {
+export const dismissRobber: MoveHandler<MoveArguments['dismissRobber']> = ({ G, ctx, events, random }, hexID: string, victimID?: string) => {
     // 1. Validate the move (including victim choice)
     RuleEngine.validateMoveOrThrow(G, ctx, 'dismissRobber', [hexID, victimID]);
 

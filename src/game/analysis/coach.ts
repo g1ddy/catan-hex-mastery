@@ -149,7 +149,7 @@ export class Coach {
         }
 
         const player = this.G.players[playerID];
-        const stage = ctx.activePlayers?.[playerID] ?? ctx.phase;
+        const stage = ctx.stagesByPlayer?.[playerID] ?? ctx.phase;
 
         if (stage === STAGES.PLACE_SETTLEMENT) return { text: STRATEGIC_ADVICE.SETUP.SETTLEMENT, recommendedMoves: [] };
         if (stage === STAGES.PLACE_ROAD) return { text: STRATEGIC_ADVICE.SETUP.ROAD, recommendedMoves: [] };

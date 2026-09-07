@@ -1,6 +1,8 @@
 import { MCTSBot } from '../adapters/runtime/boardgame';
 import { Game, Ctx } from '../adapters/runtime/boardgame';
 import { GameState, GameAction } from '../game/core/types';
+import { GameContext } from '../game/core/types';
+import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { WINNING_SCORE } from '../game/core/constants';
 import { calculatePlayerPotentialPips } from '../game/analysis/analyst';
 
@@ -17,7 +19,7 @@ function getPlayerPotentialPips(gameState: GameState): Record<string, Record<str
 
 interface BotConfig {
     game: Game;
-    enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
+    enumerate: (G: GameState, ctx: GameContext, playerID: string) => GameAction[];
     seed?: string | number;
     playerID?: string;
     [key: string]: any;
@@ -27,6 +29,8 @@ export class MonteCatanoBot extends MCTSBot {
     constructor(config: BotConfig) {
         super({
             ...config,
+            enumerate: (G: GameState, ctx: Ctx, playerID: string) =>
+                config.enumerate(G, toGameContext(ctx), playerID),
             iterations: 200, // Higher iterations
             playoutDepth: 50, // Constrained depth
             objectives: (_G: GameState, _ctx: Ctx, playerID: string | undefined) => {

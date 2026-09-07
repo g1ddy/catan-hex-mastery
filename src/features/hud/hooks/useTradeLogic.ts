@@ -14,7 +14,7 @@ export interface UseTradeLogicResult {
 
 export const useTradeLogic = (G: GameState, ctx: GameContext): UseTradeLogicResult => {
     return useMemo(() => {
-        const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
         const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
         const canTradeBank = allowedMoves && (allowedMoves as readonly string[]).includes('tradeBank');
 
@@ -33,5 +33,5 @@ export const useTradeLogic = (G: GameState, ctx: GameContext): UseTradeLogicResu
             canTrade,
             highlightedPortEdgeId
         };
-    }, [G, ctx.currentPlayer, ctx.activePlayers, ctx.phase]);
+    }, [G, ctx.currentPlayer, ctx.stagesByPlayer, ctx.phase]);
 };

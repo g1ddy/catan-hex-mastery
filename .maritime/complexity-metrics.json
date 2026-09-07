@@ -17,9 +17,9 @@
   },
   "src/adapters/runtime/boardgame.ts": {
     "complexity": 1,
-    "loc": 7,
-    "instability": 0.18,
-    "fanIn": 9,
+    "loc": 8,
+    "instability": 0.33,
+    "fanIn": 4,
     "fanOut": 2,
     "scanned": true
   },
@@ -33,10 +33,34 @@
   },
   "src/bots/CatanBot.ts": {
     "complexity": 10,
-    "loc": 113,
-    "instability": 0.5,
+    "loc": 120,
+    "instability": 0.55,
     "fanIn": 5,
-    "fanOut": 5,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/adapters/runtime/boardgameMoves.ts": {
+    "complexity": 2,
+    "loc": 41,
+    "instability": 0.38,
+    "fanIn": 5,
+    "fanOut": 3,
+    "scanned": true
+  },
+  "src/game/core/constants.ts": {
+    "complexity": 1,
+    "loc": 31,
+    "instability": 0,
+    "fanIn": 20,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/core/types.ts": {
+    "complexity": 1,
+    "loc": 201,
+    "instability": 0.01,
+    "fanIn": 72,
+    "fanOut": 1,
     "scanned": true
   },
   "src/game/analysis/coach.ts": {
@@ -45,22 +69,6 @@
     "instability": 0.43,
     "fanIn": 16,
     "fanOut": 12,
-    "scanned": true
-  },
-  "src/game/core/types.ts": {
-    "complexity": 1,
-    "loc": 179,
-    "instability": 0,
-    "fanIn": 71,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/core/constants.ts": {
-    "complexity": 1,
-    "loc": 27,
-    "instability": 0,
-    "fanIn": 18,
-    "fanOut": 0,
     "scanned": true
   },
   "src/game/core/validation.ts": {
@@ -257,10 +265,10 @@
   },
   "src/bots/CatanMCTSBot.ts": {
     "complexity": 3,
-    "loc": 45,
-    "instability": 0.75,
+    "loc": 49,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/bots/DefensiveBot.ts": {
@@ -281,10 +289,10 @@
   },
   "src/bots/MonteCatanoBot.ts": {
     "complexity": 5,
-    "loc": 113,
-    "instability": 0.8,
+    "loc": 117,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 4,
+    "fanOut": 5,
     "scanned": true
   },
   "src/GameClient.tsx": {
@@ -297,10 +305,10 @@
   },
   "src/adapters/runtime/BoardgameView.tsx": {
     "complexity": 1,
-    "loc": 9,
-    "instability": 0.75,
+    "loc": 15,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/features/game/GameScreen.tsx": {
@@ -777,10 +785,10 @@
   },
   "src/game/Game.ts": {
     "complexity": 9,
-    "loc": 121,
+    "loc": 131,
     "instability": 0.94,
     "fanIn": 1,
-    "fanOut": 16,
+    "fanOut": 17,
     "scanned": true
   },
   "src/game/core/utils/sanitize.ts": {
@@ -793,10 +801,10 @@
   },
   "src/game/analysis/CoachPlugin.ts": {
     "complexity": 1,
-    "loc": 11,
-    "instability": 0.75,
+    "loc": 10,
+    "instability": 0.67,
     "fanIn": 1,
-    "fanOut": 3,
+    "fanOut": 2,
     "scanned": true
   },
   "src/game/generation/boardGen.ts": {
@@ -825,10 +833,10 @@
   },
   "src/game/moves/build.ts": {
     "complexity": 3,
-    "loc": 79,
-    "instability": 0.86,
+    "loc": 78,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 6,
+    "fanOut": 5,
     "scanned": true
   },
   "src/game/rules/validator.ts": {
@@ -881,10 +889,10 @@
   },
   "src/game/moves/trade.ts": {
     "complexity": 2,
-    "loc": 29,
-    "instability": 0.83,
+    "loc": 28,
+    "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 5,
+    "fanOut": 4,
     "scanned": true
   },
   "src/game/rules/enumerator.ts": {

@@ -30,5 +30,5 @@ export function useBoardInteractions(
         // We pass checkCost=true to ensure users can only interact with spots they can afford.
         return getValidMovesForStage(G, ctx, playerID, true);
 
-    }, [G.board, G.players, ctx.phase, ctx.activePlayers, ctx.currentPlayer, playerID]);
+    }, [G.board, G.players, ctx.phase, ctx.stagesByPlayer, ctx.currentPlayer, playerID]);
 }

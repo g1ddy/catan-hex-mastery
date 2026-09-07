@@ -37,7 +37,7 @@ function checkContextPropsEqual(prevCtx: HexOverlaysProps['ctx'], nextCtx: HexOv
     return (
         prevCtx.phase === nextCtx.phase &&
         prevCtx.currentPlayer === nextCtx.currentPlayer &&
-        prevCtx.activePlayers?.[prevCtx.currentPlayer] === nextCtx.activePlayers?.[nextCtx.currentPlayer]
+        prevCtx.stagesByPlayer?.[prevCtx.currentPlayer] === nextCtx.stagesByPlayer?.[nextCtx.currentPlayer]
     );
 }
 

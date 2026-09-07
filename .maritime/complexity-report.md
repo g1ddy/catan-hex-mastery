@@ -5,8 +5,8 @@
 ### 🏥 Repository Health Score: **92.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 115
-*   **Measured Files**: 115
+*   **Total Graph Files**: 116
+*   **Measured Files**: 116
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -15,7 +15,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `src/features/board/components/HexOverlays.tsx` | **87.2** | 148 | 19 | 9 | 0.82 |
-| `src/game/Game.ts` | **80.9** | 121 | 9 | 16 | 0.94 |
+| `src/game/Game.ts` | **84** | 131 | 9 | 17 | 0.94 |
 | `src/features/board/components/HexEdges.tsx` | **78.5** | 140 | 11 | 12 | 0.92 |
 | `src/features/game/GameLayout.tsx` | **77.5** | 210 | 7 | 12 | 0.92 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
@@ -35,6 +35,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
 | `src/game/rules/validator.ts` | **11** | 75 |
 | `src/pages/GamePage.tsx` | **11** | 94 |
-| `src/bots/CatanBot.ts` | **10** | 113 |
+| `src/bots/CatanBot.ts` | **10** | 120 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |

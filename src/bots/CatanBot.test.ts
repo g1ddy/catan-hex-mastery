@@ -48,6 +48,10 @@ describe('CatanBot', () => {
                  expect(action.payload.type).toBe('rollDice');
             }
         }
-        expect(mockEnumerate).toHaveBeenCalledWith(G, ctx, '0');
+        expect(mockEnumerate).toHaveBeenCalledWith(G, expect.objectContaining({
+            currentPlayer: '0',
+            numPlayers: 2,
+            stagesByPlayer: {},
+        }), '0');
     });
 });

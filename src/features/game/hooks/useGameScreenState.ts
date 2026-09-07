@@ -35,7 +35,7 @@ export const useGameScreenState = (
     // Reset pending robber hex on turn/stage change
     useEffect(() => {
         setPendingRobberHex(null);
-    }, [ctx.currentPlayer, ctx.activePlayers]);
+    }, [ctx.currentPlayer, ctx.stagesByPlayer]);
 
     // Auto-expand Coach Panel on entering Gameplay Phase (Desktop only)
     useEffect(() => {
@@ -50,7 +50,7 @@ export const useGameScreenState = (
 
     const handleHexClick = useCallback((hex: Hex) => {
         const { G, ctx } = stateRef.current;
-        const stage = ctx.activePlayers?.[ctx.currentPlayer];
+        const stage = ctx.stagesByPlayer?.[ctx.currentPlayer];
         if (ctx.phase === PHASES.GAMEPLAY && stage === STAGES.ROBBER) {
             if (getValidRobberLocations(G).has(hex.id)) {
                 setPendingRobberHex(hex.id);
@@ -68,7 +68,7 @@ export const useGameScreenState = (
     const handleCustomMessageClear = () => setCustomBannerMessage(null);
 
     const canRegenerateBoard = useMemo(() => {
-         const stage = ctx.activePlayers?.[ctx.currentPlayer];
+         const stage = ctx.stagesByPlayer?.[ctx.currentPlayer];
          if (!stage) return false;
 
          if (stage in STAGE_MOVES) {
@@ -76,7 +76,7 @@ export const useGameScreenState = (
              return (allowedMoves as readonly string[]).includes('regenerateBoard');
          }
          return false;
-    }, [ctx.activePlayers, ctx.currentPlayer]);
+    }, [ctx.stagesByPlayer, ctx.currentPlayer]);
 
     return {
         isMobile,

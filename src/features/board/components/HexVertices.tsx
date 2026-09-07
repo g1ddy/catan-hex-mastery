@@ -112,7 +112,7 @@ export function HexVertices({
                 const vertex = safeGet(G.board.vertices, vId);
                 const ownerColor = vertex ? G.players[vertex.owner]?.color : null;
                 const isSetup = ctx.phase === PHASES.SETUP;
-                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+                const currentStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
                 const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
                 const { isClickable, isGhost, recommendationData, heatmapColor, isTop3 } = getVertexInteractiveState(

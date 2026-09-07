@@ -1,10 +1,9 @@
-import type { Move } from '../../adapters/runtime/boardgame';
+import type { MoveArguments, MoveHandler } from '../core/types';
 import { BANK_TRADE_RECEIVE_AMOUNT } from '../core/config';
-import { GameState } from '../core/types';
 import { RuleEngine } from '../rules/validator';
 import { TradeResult } from '../mechanics/trade';
 
-export const tradeBank: Move<GameState> = ({ G, ctx }) => {
+export const tradeBank: MoveHandler<MoveArguments['tradeBank']> = ({ G, ctx }) => {
     // 1. Delegate Validation and Get Execution Details
     const result = RuleEngine.validateMoveOrThrow<'tradeBank', TradeResult>(G, ctx, 'tradeBank', []);
 

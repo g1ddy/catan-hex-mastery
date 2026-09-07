@@ -3,4 +3,5 @@
  * and AI implementations. Application modules must not import the package directly.
  */
 export { Bot, MCTSBot, RandomBot } from 'boardgame.io/ai';
-export type { Game, Ctx, Move } from 'boardgame.io';
+// AI migration is owned by #471; these types are quarantined to bot runtime code.
+export type { Game, Ctx } from 'boardgame.io';

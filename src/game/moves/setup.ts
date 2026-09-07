@@ -1,5 +1,5 @@
-import type { Move } from '../../adapters/runtime/boardgame';
-import { GameState, TerrainType } from '../core/types';
+import type { MoveArguments, MoveHandler } from '../core/types';
+import { TerrainType } from '../core/types';
 import { STAGES } from '../core/constants';
 import { getHexesForVertex } from '../geometry/hexUtils';
 import { isValidHexId } from '../core/validation';
@@ -9,7 +9,7 @@ import { generateBoard } from '../generation/boardGen';
 import { calculateBoardStats } from '../mechanics/boardStats';
 import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
-export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: string) => {
+export const placeSettlement: MoveHandler<MoveArguments['placeSettlement']> = ({ G, ctx, events }, vertexId: string) => {
 
   // 0. Security Validation
   if (!isValidHexId(vertexId)) {
@@ -52,7 +52,7 @@ export const placeSettlement: Move<GameState> = ({ G, ctx, events }, vertexId: s
   }
 };
 
-export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) => {
+export const placeRoad: MoveHandler<MoveArguments['placeRoad']> = ({ G, ctx, events }, edgeId: string) => {
 
   // 1. Delegate Validation to Rule Engine
   RuleEngine.validateMoveOrThrow(G, ctx, 'placeRoad', [edgeId]);
@@ -67,7 +67,7 @@ export const placeRoad: Move<GameState> = ({ G, ctx, events }, edgeId: string) =
   }
 };
 
-export const regenerateBoard: Move<GameState> = ({ G }) => {
+export const regenerateBoard: MoveHandler<MoveArguments['regenerateBoard']> = ({ G }) => {
     // SECURITY: Prevent board regeneration if any pieces have been placed
     const anyPiecePlaced = Object.values(G.players).some(p => p.settlements.length > 0 || p.roads.length > 0);
     if (anyPiecePlaced) {

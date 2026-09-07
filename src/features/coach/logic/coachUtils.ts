@@ -15,7 +15,7 @@ export const getCoachMode = (
     uiMode: UiMode,
     buildMode: BuildMode
 ): CoachMode => {
-    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const currentStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
 
     // Setup Phase
     if (ctx.phase === PHASES.SETUP && uiMode === 'placing') {

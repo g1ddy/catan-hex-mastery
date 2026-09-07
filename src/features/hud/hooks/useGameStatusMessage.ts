@@ -58,7 +58,7 @@ export function useGameStatusMessage(
             return { message: "Wait for your turn...", colorClass: "text-amber-400" };
         }
 
-        const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
 
         // Setup Phase
         const setupMsg = getSetupMessage(ctx, activeStage, uiMode);

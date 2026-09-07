@@ -1,10 +1,10 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { GameState, TerrainType, Hex } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
-type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
+type MoveFn = (args: { G: GameState; ctx: GameContext }, ...payload: unknown[]) => unknown;
 
 describe('Gameplay Moves', () => {
     let G: GameState;
@@ -43,7 +43,7 @@ describe('Gameplay Moves', () => {
 
     describe('buildRoad', () => {
         it('should fail if not enough resources', () => {
-             const call = () => (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, '0,0,0::1,0,-1');
+             const call = () => (buildRoad as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, '0,0,0::1,0,-1');
              expect(call).toThrow("Not enough resources to build a road");
         });
 
@@ -55,7 +55,7 @@ describe('Gameplay Moves', () => {
 
              safeSet(G.board.vertices, vId, { owner: '0', type: 'settlement' });
 
-             (buildRoad as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, eId);
+             (buildRoad as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, eId);
 
              expect(safeGet(G.board.edges, eId)).toBeDefined();
              expect(safeGet(G.board.edges, eId)).toBeDefined();
@@ -68,7 +68,7 @@ describe('Gameplay Moves', () => {
     describe('buildSettlement', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
-             const call = () => (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+             const call = () => (buildSettlement as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, vId);
              expect(call).toThrow("Not enough resources to build a settlement");
         });
 
@@ -79,7 +79,7 @@ describe('Gameplay Moves', () => {
             const eId = "0,0,0::1,-1,0";
             safeSet(G.board.edges, eId, { owner: '0' });
 
-            (buildSettlement as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+            (buildSettlement as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, vId);
 
             expect(safeGet(G.board.vertices, vId)).toBeDefined();
             expect(safeGet(G.board.vertices, vId)?.owner).toBe('0');
@@ -92,7 +92,7 @@ describe('Gameplay Moves', () => {
          it('should fail if not enough resources', () => {
              const vId = "0,0,0::1,-1,0::0,-1,1";
              safeSet(G.board.vertices, vId, { owner: '0', type: 'settlement' });
-             const call = () => (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+             const call = () => (buildCity as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, vId);
              expect(call).toThrow("Not enough resources to build a city");
         });
 
@@ -104,7 +104,7 @@ describe('Gameplay Moves', () => {
              G.players['0'].settlements.push(vId);
              G.players['0'].victoryPoints = 1;
 
-             (buildCity as MoveFn)({ G, ctx } as { G: GameState; ctx: Ctx }, vId);
+             (buildCity as unknown as MoveFn)({ G, ctx } as { G: GameState; ctx: GameContext }, vId);
 
              expect(safeGet(G.board.vertices, vId)?.type).toBe('city');
              expect(G.players['0'].victoryPoints).toBe(2);

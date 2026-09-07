@@ -30,7 +30,7 @@ export const enumerate = (G: GameState, ctx: GameContext, playerID: string): Gam
         return [];
     }
 
-    const stage = ctx.activePlayers?.[playerID];
+    const stage = ctx.stagesByPlayer?.[playerID];
     if (!stage) {
         return [];
     }

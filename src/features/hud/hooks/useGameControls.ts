@@ -37,7 +37,7 @@ export const useGameControls = (
 ): UseGameControlsResult => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
-    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
     const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
 

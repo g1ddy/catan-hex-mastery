@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { getBestSettlementSpots, Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex, BoardStats } from '../core/types';
 import { STRATEGIC_ADVICE } from './adviceConstants';
@@ -27,14 +27,12 @@ jest.mock('../geometry/hexUtils', () => ({
 }));
 
 describe('Coach Analysis', () => {
-    const mockCtx: Ctx = {
+    const mockGameContext: GameContext = {
         numPlayers: 1,
         turn: 1,
         currentPlayer: '0',
-        playOrder: ['0'],
-        playOrderPos: 0,
-        activePlayers: null,
-        phase: ''
+        stagesByPlayer: {},
+        phase: undefined
     };
 
     const HEX_A_ID = '0,0,0';
@@ -136,7 +134,7 @@ describe('Coach Analysis', () => {
             // Total = 13. Unique=3 => Diversity=1.2x. Synergy(Wood+Brick)=+2.
             // Expected: (13 * 1.2) + 2 = 15.6 + 2 = 17.6
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(17.6);
             expect(target?.details.pips).toBe(13);
@@ -151,7 +149,7 @@ describe('Coach Analysis', () => {
             // Total = 4. Diversity=1.2. Synergy=+2.
             // Expected: (4 * 1.2) + 2 = 4.8 + 2 = 6.8
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.score).toBeCloseTo(6.8);
             expect(target?.details.pips).toBe(4);
@@ -171,7 +169,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 0, [], stats);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(20.7);
@@ -189,7 +187,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 0, [], stats);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.score).toBeCloseTo(17.6);
@@ -206,7 +204,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.details.diversityBonus).toBe(true);
@@ -220,7 +218,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             expect(target?.details.diversityBonus).toBe(false);
@@ -237,7 +235,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
@@ -250,7 +248,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(true);
             expect(target?.score).toBeCloseTo(17.6);
@@ -263,7 +261,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target?.details.synergyBonus).toBe(false);
             expect(target?.score).toBeCloseTo(15.6);
@@ -282,7 +280,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 1, ['wood', 'brick']);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             // Base 13 * 1.2 = 15.6. Bonus +15. Total 30.6.
@@ -300,7 +298,7 @@ describe('Coach Analysis', () => {
                 { id: HEX_C_ID, terrain: TerrainType.Pasture, value: 9 }
             ];
             const G = createMockState(hexes, 1, ['wood']);
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
 
             // Base 13 * 1.2 = 15.6. Bonus +10. Total 25.6.
@@ -322,7 +320,7 @@ describe('Coach Analysis', () => {
             // Occupy the target
             safeSet(G.board.vertices, TARGET_VERTEX_ID, { owner: '1', type: 'settlement' });
 
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target).toBeUndefined();
         });
@@ -337,7 +335,7 @@ describe('Coach Analysis', () => {
             const neighborID = `${HEX_A_ID}::${HEX_B_ID}::some_other_hex`;
             safeSet(G.board.vertices, neighborID, { owner: '1', type: 'settlement' });
 
-            const results = getBestSettlementSpots(G, '0', mockCtx);
+            const results = getBestSettlementSpots(G, '0', mockGameContext);
             const target = results.find(r => r.vertexId === TARGET_VERTEX_ID);
             expect(target).toBeUndefined();
         });
@@ -345,7 +343,7 @@ describe('Coach Analysis', () => {
         test('Should return no results if playerID is not currentPlayer', () => {
             const hexes = [{ id: HEX_A_ID, terrain: TerrainType.Forest, value: 6 }];
             const G = createMockState(hexes);
-            const results = getBestSettlementSpots(G, '1', mockCtx); // '1' is not current
+            const results = getBestSettlementSpots(G, '1', mockGameContext); // '1' is not current
             expect(results).toHaveLength(0);
         });
     });
@@ -359,7 +357,7 @@ describe('Coach Analysis', () => {
             // Even if ctx says it's this player's turn, if the ID is suspicious/invalid in G, it should fail
             const suspiciousId = '__proto__';
             // Force context to match suspicious ID so the first check passes
-            const ctxWithSuspicious = { ...mockCtx, currentPlayer: suspiciousId };
+            const ctxWithSuspicious = { ...mockGameContext, currentPlayer: suspiciousId };
 
             const advice = coach.getStrategicAdvice(suspiciousId, ctxWithSuspicious);
             expect(advice.text).toBe(STRATEGIC_ADVICE.ERROR.INVALID_PLAYER);
@@ -371,7 +369,7 @@ describe('Coach Analysis', () => {
             const coach = new Coach(G);
 
             // Set stage to ACTING
-            const ctx = { ...mockCtx, phase: 'gameplay', activePlayers: { '0': 'acting' } };
+            const ctx: GameContext = { ...mockGameContext, phase: 'gameplay', stagesByPlayer: { '0': 'acting' } };
 
             // Early game (< 5 VP)
             const advice = coach.getStrategicAdvice('0', ctx);

@@ -203,7 +203,7 @@ export const getValidMovesForStage = (G: GameState, ctx: GameContext, playerID: 
         return EMPTY_VALID_MOVES;
     }
 
-    const currentStage = ctx.activePlayers?.[playerID];
+    const currentStage = ctx.stagesByPlayer?.[playerID];
     const currentPhase = ctx.phase;
 
     if (currentPhase === PHASES.SETUP) {

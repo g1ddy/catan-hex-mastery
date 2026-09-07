@@ -35,7 +35,7 @@ function getEdgeInteractiveState(
     let tooltip: string | undefined;
 
     const isSetup = ctx.phase === PHASES.SETUP;
-    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const currentStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
     const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
     if ((isSetup && currentStage === STAGES.PLACE_ROAD && uiMode === 'placing') ||

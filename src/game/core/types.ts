@@ -1,3 +1,5 @@
+import type { GamePhase, GameStage } from './constants';
+
 export interface CubeCoordinates {
   q: number;
   r: number;
@@ -112,11 +114,31 @@ export interface GameState {
 export interface GameContext {
   currentPlayer: string;
   turn: number;
-  phase?: string;
-  activePlayers?: Record<string, string> | null;
+  phase?: GamePhase;
+  stagesByPlayer?: Partial<Record<string, GameStage>>;
   numPlayers: number;
   gameover?: { winner?: string; draw?: boolean } | null;
 }
+
+export interface GameEvents {
+  endTurn: () => void;
+  setActivePlayers: (stages: Partial<Record<string, GameStage>>) => void;
+}
+
+export interface GameRandom {
+  Die: (sides: number) => number;
+  Shuffle: <T>(values: T[]) => T[];
+}
+
+export interface MoveContext {
+  G: GameState;
+  ctx: GameContext;
+  events: GameEvents;
+  random: GameRandom;
+}
+
+export type MoveHandler<Args extends unknown[] = []> =
+  (context: MoveContext, ...args: Args) => void | GameState | 'INVALID_MOVE';
 
 // Map of Move Names to their Argument Tuples
 export interface MoveArguments {

@@ -1,4 +1,5 @@
-import { Bot } from '../adapters/runtime/boardgame';
+import { Bot, Ctx } from '../adapters/runtime/boardgame';
+import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/core/types';
 import { Coach, CoachGameContext } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
@@ -14,9 +15,15 @@ export type CatanBotConfig = {
 
 export class CatanBot extends Bot {
     protected profile: BotProfile;
+    private readonly catanEnumerate: CatanBotConfig['enumerate'];
 
     constructor(config: CatanBotConfig = { enumerate: () => [] }, profile: BotProfile = BALANCED_PROFILE) {
-        super(config);
+        super({
+            ...config,
+            enumerate: (G: GameState, ctx: Ctx, playerID: string) =>
+                config.enumerate(G, toGameContext(ctx), playerID),
+        });
+        this.catanEnumerate = config.enumerate;
         this.profile = profile;
     }
 
@@ -41,8 +48,9 @@ export class CatanBot extends Bot {
         return index;
     }
 
-    async play(state: { G: GameState; ctx: GameContext }, playerID: string): Promise<any> {
-        const { G, ctx } = state;
+    async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+        const { G } = state;
+        const ctx = toGameContext(state.ctx);
 
         // 0. Safety: Never attempt a move if it's not our turn
         // This prevents console spam and unauthorized move attempts.
@@ -51,8 +59,7 @@ export class CatanBot extends Bot {
         }
 
         // 1. Get ALL valid moves from the base enumerator
-        const enumerate = this.enumerate as unknown as CatanBotConfig['enumerate'];
-        const allMoves = enumerate.call(this, G, ctx, playerID) as GameAction[];
+        const allMoves = this.catanEnumerate(G, ctx, playerID);
 
         if (!allMoves || allMoves.length === 0) {
             return;
@@ -78,7 +85,7 @@ export class CatanBot extends Bot {
         const selectedMove = candidates[selectedIndex];
 
         if (!selectedMove) {
-            console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.activePlayers?.[playerID]}'.`);
+            console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.stagesByPlayer?.[playerID]}'.`);
             return;
         }
 

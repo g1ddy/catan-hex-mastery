@@ -19,7 +19,7 @@ export const useCoachData = (
 ): CoachData => {
     // We only depend on the relevant parts of G to prevent unnecessary re-runs
     const currentPlayerSettlements = G.players[ctx.currentPlayer]?.settlements;
-    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
 
     return React.useMemo(() => {
         if (!isCoachModeEnabled) {

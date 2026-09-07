@@ -96,7 +96,7 @@ export const validateEndTurn = (G: GameState, ctx: GameContext, playerID: string
         return { isValid: false, reason: "Invalid player" };
     }
 
-    const stage = ctx.activePlayers?.[playerID];
+    const stage = ctx.stagesByPlayer?.[playerID];
     if (!stage) {
         return { isValid: false, reason: "It is not your turn to act." };
     }
