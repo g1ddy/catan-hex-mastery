@@ -6,6 +6,14 @@ This document is the single authoritative source for unfinished product, engine,
 
 ---
 
+## 🏛️ Architecture Modernization & Engine Seams
+
+- [ ] **Engine & State Abstraction Seam**: Establish a clean abstraction seam isolating state management and multiplayer game-loop orchestration.
+- [ ] **Custom SVG Board Rendering**: Remove `react-hexgrid` dependency and transition board rendering to a dedicated Catan-owned SVG rendering pipeline.
+- [ ] **Game Engine Decoupling**: Complete transition away from direct `boardgame.io` coupling toward pure Hex-Mastery state handlers.
+
+---
+
 ## 🎲 Phase 7: Full Game Loop
 
 ### 1. Trade System
@@ -35,7 +43,7 @@ This document is the single authoritative source for unfinished product, engine,
 
 ---
 
-## 🧹 Architecture & Quality Stewardship
+## 🧹 Code Quality & Complexity Stewardship
 
 - [ ] Preserve feature-isolated React component structure (`src/features/`).
 - [ ] Maintain strict separation between decision logic, rule evaluation, and move execution (`docs/ARCHITECTURE.md`).
@@ -45,16 +53,8 @@ This document is the single authoritative source for unfinished product, engine,
 
 ## ⏸️ Intentional Deferrals
 
-The following architectural and structural proposals are deliberately postponed. Each states when it should be reconsidered:
+The following proposals are deliberately postponed. Each states when it should be reconsidered:
 
-*   **Replace `boardgame.io`**:
-    *   *Status*: Deferred.
-    *   *Rationale*: The existing framework adequately supports state management, move validation, turn flow, and local multiplayer.
-    *   *Reconsideration Trigger*: Reevaluate if framework limitations materially block advanced networking, server persistence, or complex multi-stage turn flows.
-*   **Replace `react-hexgrid`**:
-    *   *Status*: Deferred.
-    *   *Rationale*: Current SVG-based rendering provides stable hex layout and interactive overlays.
-    *   *Reconsideration Trigger*: Reevaluate when custom canvas/SVG geometry rendering offers clear performance or interaction advantages.
 *   **Test-Framework Migration (e.g., Jest to Vitest)**:
     *   *Status*: Deferred.
     *   *Rationale*: The current Jest setup (`ts-jest`, JSDOM) reliably tests core engine logic and components.

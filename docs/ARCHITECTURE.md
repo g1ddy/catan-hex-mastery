@@ -85,7 +85,7 @@ graph TD
 *   **`src/game/core/types.ts`**: Global type definitions.
 *   **`src/game/core/constants.ts`**: Game constants (e.g., `STAGES`, `PHASES`).
 *   **`src/game/core/config.ts`**: Configuration (e.g., `BOARD_CONFIG`).
-*   **Responsibility**: The vocabulary of the system. Instability $I=0$ (no internal dependencies).
+*   **Responsibility**: Vocabulary of the system. Instability $I=0$ (no internal dependencies).
 
 ### 0. Foundation Layer (Mechanics & Geometry)
 *   **`src/game/geometry/*.ts`**: Pure spatial utilities (`math.ts`, `hexUtils.ts`, `staticGeometry.ts`).
@@ -97,15 +97,15 @@ graph TD
 *   **Responsibility**: Creating initial game state.
 
 ### 1.5. Rules Layer (Validation & Enumeration)
-*   **`src/game/rules/validator.ts`**: The Facade for **Validation** (`RuleEngine.validateMove`).
-*   **`src/game/rules/queries.ts`**: The Facade for **Availability** (`getValidSettlementSpots`).
-*   **`src/game/rules/enumerator.ts`**: The **Generator** for legal turn actions.
+*   **`src/game/rules/validator.ts`**: Facade for **Validation** (`RuleEngine.validateMove`).
+*   **`src/game/rules/queries.ts`**: Facade for **Availability** (`getValidSettlementSpots`).
+*   **`src/game/rules/enumerator.ts`**: **Generator** for legal turn actions.
 *   **Internal Rules**: `gameplay.ts` (turn order, stages) and `spatial.ts` (distance rule, connectivity).
 *   **Responsibility**: Enforce game rules and define legal possibilities.
 
 ### 2. Evaluation Layer (The "Analyst")
 *   **`src/game/analysis/coach.ts`**: Scores actions based on game theory, pips, scarcity, and synergy.
-*   **Responsibility**: Provide strategic advice and heatmaps. Consumes the Rules layer to evaluate legal options.
+*   **Responsibility**: Provide strategic advice and heatmaps. Consumes Rules layer to evaluate legal options.
 
 ### 3. Decision Layer (The "Bot" & Moves)
 *   **`src/bots/BotCoach.ts`**: Selects best actions using bot personality weights, Coach strategy, and tactical heatmaps.
@@ -114,19 +114,48 @@ graph TD
 
 ---
 
-## 🎨 UI Architecture & Boundaries
+## 🎨 UI Architecture & Feature Isolation
 
-Frontend UI components are organized by **Feature Domain** (`src/features/`) rather than technical type.
+Frontend UI components are organized by **Feature Domain** (`src/features/`) rather than technical type:
+
+*   **`src/features/board/`**: Board rendering, hex geometry, vertex/edge overlays, and heatmaps.
+*   **`src/features/coach/`**: Coach panel, Analyst dashboard, production potential bars, and strategy tooltips.
+*   **`src/features/game/`**: Screen orchestrators (`GameScreen.tsx`, `GameLayout.tsx`) assembling board, coach, and HUD.
+*   **`src/features/hud/`**: Controls, dice roll banners, turn indicators, player panels, and notifications.
+*   **`src/features/shared/`**: Generic, reusable UI primitives (buttons, tooltips, cards, modal drawers).
 
 ### Key Invariants
 
-1.  **Feature Isolation**: Each feature (`board`, `coach`, `hud`) is self-contained. Cross-feature orchestration is managed by container components like `src/features/game/components/GameScreen.tsx`.
-2.  **Shared Components**: Primitive UI elements (`src/shared/`) cannot depend on `src/features/` or complex game logic.
+1.  **Feature Isolation**: Each feature (`board`, `coach`, `hud`) is self-contained. Cross-feature orchestration is managed by `src/features/game/GameScreen.tsx`.
+2.  **Shared UI Primitives**: Reusable elements (`src/features/shared/`) cannot depend on specific feature domains or complex game state.
 3.  **Strict UI/Logic Boundary**: Game logic (`src/game/`) is pure TypeScript and never imports React or UI components. UI components import game logic to render state, but logic does not bleed into component render trees.
 
-### Logic Extraction Guidelines
-*   Complex calculations (Coach scoring loops, animation effects) are extracted into dedicated custom hooks in `src/features/{feature}/hooks/`.
-*   Components render purely determined by their props, using `React.memo` where appropriate for heavy board rendering.
+---
+
+## 📂 Project Structure and File Placement Guide
+
+To answer where a new concept or component belongs:
+
+```
+src/
+├── game/               # Pure Game Engine (No React dependencies)
+│   ├── core/           # Vocabulary (types, constants, config) — Layer -1
+│   ├── geometry/       # Spatial math & hex utilities — Layer 0
+│   ├── mechanics/      # Game mechanics (costs, scoring) — Layer 0
+│   ├── generation/     # Setup & board generation — Layer 1
+│   ├── rules/          # Rule validation, queries & enumeration — Layer 1.5
+│   ├── analysis/       # Strategic evaluation (Coach, Analyst) — Layer 2
+│   └── moves/          # Move execution handlers — Layer 3
+├── bots/               # AI decision layer & bot profiles — Layer 3
+├── features/           # UI Domain Feature Modules
+│   ├── board/          # Hex grid SVG & interactive overlays
+│   ├── coach/          # Strategy coach & analyst panel UI
+│   ├── game/           # Main game screen orchestrators (GameScreen.tsx)
+│   ├── hud/            # Controls, player stats, notifications
+│   └── shared/         # Reusable UI primitives (buttons, modals, hooks)
+├── pages/              # Top-level page views (SetupPage.tsx, GamePage.tsx)
+└── GameClient.tsx      # boardgame.io client composition root
+```
 
 ---
 
@@ -138,13 +167,13 @@ These diagrams present the current dependency structure observed in the codebase
 
 ![Architecture Overview](images/dependency-overview.svg)
 
-*Generated by Maritime's `architecture-overview` profile from `.maritime/dependency-graph.json`. It aggregates file-level relationships into folder nodes for major structural scanning.*
+*Generated by Maritime's `architecture-overview` profile from `.maritime/dependency-graph.json`. Aggregates file-level relationships into folder nodes for major structural scanning.*
 
 ### Detailed Dependency Graph
 
 ![Dependency Graph](images/dependency-graph.svg)
 
-*Generated by Maritime's `compact-architecture` profile from `.maritime/dependency-graph.json`. It preserves file-level nodes while removing external package noise.*
+*Generated by Maritime's `compact-architecture` profile from `.maritime/dependency-graph.json`. Preserves file-level nodes while removing external package noise.*
 
 ---
 

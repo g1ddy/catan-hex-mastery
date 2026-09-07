@@ -10,7 +10,7 @@ Reference material tells us what exists in Catan. The implementation model descr
 
 $$\text{Catan Rules \& Reference Material} \longrightarrow \text{Engine Domain Representation} \longrightarrow \text{Rules + Strategy Model} \longrightarrow \text{Coach / Analyst Interpretation} \longrightarrow \text{UI Presentation}$$
 
-1. **Catan Reference Material**: The standard board configuration, 2d6 probability curve, and official rules (`docs/Catan Strategy and Starting Rules.pdf`).
+1. **Catan Reference Material**: Standard board configuration, 2d6 probability curve, and official rules (`docs/Catan Strategy and Starting Rules.pdf`).
 2. **Engine Domain Representation**: Board state, hex grid, vertex locations, and resource/pip distributions (`src/game/core/`, `src/game/geometry/`).
 3. **Rules + Strategy Model**: Legal move enumeration (`enumerator.ts`) paired with Hex-Mastery evaluation heuristics (`coach.ts`, `analyst.ts`).
 4. **Coach / Analyst Interpretation**: Normalization of raw heuristic scores into heatmap weights, rank tiers, and strategic advice strings.
@@ -38,11 +38,12 @@ Catan is a game of managing a **Probability Density Function (PDF)**. Two six-si
 | **11** | 5+6, 6+5 | 2 | 5.56% | Low |
 | **12** | 6+6 | 1 | 2.78% | Low |
 
-### 1.2 "Pip" Implementation
+### 1.2 "Pip" Implementation & Board Constraints
 
 The fundamental value of a settlement spot is the sum of the pips of its adjacent hexes.
-*   **Maximum Single Spot Value**: A settlement at a 6-8-5 intersection = **14 Pips** (5+5+4).
-*   **Engine Tracking**: The `Analyst` module calculates `G.pips` per player in real-time to compute production potential vs. actual card yields.
+*   **Maximum Viable Spot Value**: **13 Pips** (e.g., a 6-9-5 or 8-9-5 intersection, 5+4+4 pips).
+    *   *Board Invariant*: The board generator (`src/game/generation/boardGen.ts`) strictly enforces `isValidBoard`, rejecting any board layout where a 6 is adjacent to another 6 or 8. Therefore, no settlement vertex can be adjacent to both a 6 and an 8.
+*   **Engine Tracking**: The `Analyst` module (`src/game/analysis/analyst.ts`) provides `calculatePlayerPotentialPips(G)`, which derives a per-player, per-resource pip potential map from placed settlements and cities. The UI renders these derived pips to show production capacity.
 
 ---
 
@@ -65,7 +66,7 @@ The standard 19-hex board contains a fixed resource distribution:
 
 ## 3. The "Coach" Scoring Model
 
-The `Coach` module (`src/game/analysis/coach.ts`) evaluates every valid intersection vertex on the board using a multi-factor scoring function:
+The `Coach` module (`src/game/analysis/coach.ts`) evaluates valid settlement vertices using a multi-factor scoring function:
 
 ### 3.1 Base Production Score
 Sum of adjacent pips for the candidate vertex:
@@ -79,10 +80,10 @@ The Coach measures board-wide pip totals for each resource type. If a resource h
 *   **Resource Diversity**: Securing 3 distinct resource types is weighted higher than 3 duplicate hexes.
 *   **Expansion Synergy**: Complementary pairs (Brick + Wood for Roads; Ore + Wheat for Cities) grant additional synergy bonuses.
 
-### 3.4 Heatmap & Top Move Badges
-Scores across all legal vertices are normalized:
+### 3.4 Heatmap & Color Mapping
+Candidate spot scores are normalized relative to `minScore` and `maxScore`:
 *   **Gold Rings (Top Moves)**: Highlight the top 3 statistically scored settlement locations.
-*   **Heatmap Gradient**: Renders relative strength across the board from high (green/gold) to low (neutral).
+*   **Heatmap Color Mapping**: Handled by `getHeatmapColor(score, min, max)`, which maps the minimum score to hue 0 (red) and the maximum score to hue 120 (green) via HSL string interpolation.
 
 ![Resource Heatmap](./images/coach-heatmap.png)
 ![Coach Logic Tooltip](./images/coach-tooltip.png)

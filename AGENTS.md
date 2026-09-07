@@ -75,9 +75,13 @@ npm run test:e2e
 ├── src/
 │   ├── bots/                 # Decision Layer (Bot logic & profiles)
 │   ├── features/             # Feature-isolated UI components & hooks
+│   │   ├── board/            # Board SVG rendering & interactive overlays
+│   │   ├── coach/            # Analyst panel & Coach heatmap/tooltip overlays
+│   │   ├── game/             # Orchestrator views (GameScreen.tsx, GameLayout.tsx)
+│   │   ├── hud/              # HUD controls, player panels, notifications
+│   │   └── shared/           # Reusable UI primitives, hooks & constants
 │   ├── game/                 # Pure game engine (Core, Geometry, Mechanics, Rules, Analysis, Moves)
 │   ├── pages/                # Top-level page views (SetupPage, GamePage)
-│   ├── shared/               # Generic UI primitives
 │   └── styles/               # Global CSS / Tailwind styles
 └── tests/                    # E2E (Playwright) & integration test suites
 ```
