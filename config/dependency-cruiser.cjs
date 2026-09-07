@@ -55,7 +55,7 @@ module.exports = {
       },
       to: {
         dependencyTypes: ['npm'],
-        path: '^(boardgame[.]io|react-hexgrid)',
+        path: '(^|/)node_modules/(boardgame[.]io|react-hexgrid)(/|$)',
       },
       comment: 'Catan domain and feature code must use the owned runtime and rendering contracts in src/adapters.',
     },
