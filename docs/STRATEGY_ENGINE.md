@@ -1,16 +1,28 @@
-# The Strategy Engine: Game Theory & Heuristics
+# Strategy Engine: Implementation Model & Heuristics
 
-Hex-Mastery is not just a game; it is a **computational analysis tool** designed to decode the complex probability landscape of Catan. This document details the mathematical models, placement heuristics, and "Coach" logic used to evaluate board positions.
+`docs/STRATEGY_ENGINE.md` is Hex-Mastery's **implementation-facing strategy model**. It details how domain theory, probability math, and placement heuristics are converted into executable software in the Coach and Analyst modules (`src/game/analysis/`).
+
+---
+
+## 🔄 Transformation Pipeline
+
+Reference material tells us what exists in Catan. The implementation model describes what Hex-Mastery means by it and how those concepts become player-facing guidance:
+
+$$\text{Catan Rules \& Reference Material} \longrightarrow \text{Engine Domain Representation} \longrightarrow \text{Rules + Strategy Model} \longrightarrow \text{Coach / Analyst Interpretation} \longrightarrow \text{UI Presentation}$$
+
+1. **Catan Reference Material**: The standard board configuration, 2d6 probability curve, and official rules (`docs/Catan Strategy and Starting Rules.pdf`).
+2. **Engine Domain Representation**: Board state, hex grid, vertex locations, and resource/pip distributions (`src/game/core/`, `src/game/geometry/`).
+3. **Rules + Strategy Model**: Legal move enumeration (`enumerator.ts`) paired with Hex-Mastery evaluation heuristics (`coach.ts`, `analyst.ts`).
+4. **Coach / Analyst Interpretation**: Normalization of raw heuristic scores into heatmap weights, rank tiers, and strategic advice strings.
+5. **UI Presentation**: Heatmap overlays, gold ring badges, production bars, and tooltip summaries (`src/features/coach/`, `src/features/hud/`).
 
 ---
 
 ## 1. The Probabilistic Landscape
 
-Catan is a game of managing a **Probability Density Function (PDF)**. The central engine—two six-sided dice (2d6)—creates a bell curve of outcomes that dictates the economic pulse of the game.
+Catan is a game of managing a **Probability Density Function (PDF)**. Two six-sided dice (2d6) generate a bell curve of outcomes across 36 permutations.
 
 ### 1.1 The 2d6 Bell Curve ("Pips")
-
-There are 36 possible permutations when rolling two dice. We visualize these probabilities using "pips" (dots).
 
 | Number | Combinations | Pips | Probability | Frequency |
 | :---: | :--- | :---: | :---: | :---: |
@@ -26,19 +38,17 @@ There are 36 possible permutations when rolling two dice. We visualize these pro
 | **11** | 5+6, 6+5 | 2 | 5.56% | Low |
 | **12** | 6+6 | 1 | 2.78% | Low |
 
-### 1.2 "Pip" Strategy
+### 1.2 "Pip" Implementation
 
-The fundamental value of a settlement is the sum of the pips of its adjacent hexes.
-*   **Maximum Value**: A settlement on 6-9-5 (5+4+4) = **13 Pips**.
-*   **Minimum Viable**: A settlement on 2-3-12 (1+2+1) = **4 Pips**.
-
-**Hex-Mastery Implementation**: The `Analyst` module calculates `G.pips` for every player in real-time, allowing you to see your "Production Potential" (Total Pips) vs. your actual production (Cards received).
+The fundamental value of a settlement spot is the sum of the pips of its adjacent hexes.
+*   **Maximum Single Spot Value**: A settlement at a 6-8-5 intersection = **14 Pips** (5+5+4).
+*   **Engine Tracking**: The `Analyst` module calculates `G.pips` per player in real-time to compute production potential vs. actual card yields.
 
 ---
 
-## 2. The Geometry of Scarcity
+## 2. Geometry of Scarcity & Bottlenecks
 
-The standard 19-hex board is designed to create resource bottlenecks. The distribution is fixed in the base game:
+The standard 19-hex board contains a fixed resource distribution:
 
 *   **Forest (Wood)**: 4 Hexes
 *   **Pasture (Sheep)**: 4 Hexes
@@ -47,50 +57,46 @@ The standard 19-hex board is designed to create resource bottlenecks. The distri
 *   **Mountains (Ore)**: 3 Hexes ⚠️
 *   **Desert**: 1 Hex
 
-**Strategic Insight**: Brick and Ore are the natural bottlenecks.
-*   **Brick**: Limits early expansion (Roads/Settlements).
-*   **Ore**: Limits late-game consolidation (Cities/Dev Cards).
+**Strategic Insight**: Brick and Ore are natural bottlenecks.
+*   **Brick**: Critical for early expansion (Roads & Settlements).
+*   **Ore**: Critical for mid-to-late game consolidation (Cities & Development Cards).
 
 ---
 
-## 3. The "Coach" Algorithm
+## 3. The "Coach" Scoring Model
 
-The `Coach` module (`src/game/analysis/coach.ts`) evaluates every possible intersection on the board and assigns a score based on three factors:
+The `Coach` module (`src/game/analysis/coach.ts`) evaluates every valid intersection vertex on the board using a multi-factor scoring function:
 
-### 3.1 Base Score (Pips)
-The raw production potential.
-`Score = Sum(Pips)`
+### 3.1 Base Production Score
+Sum of adjacent pips for the candidate vertex:
+$$\text{Base Score} = \sum \text{Pips}_{\text{adjacent}}$$
 
 ### 3.2 Scarcity Multiplier
-The Coach analyzes the board layout. If a resource has low total pip availability board-wide (e.g., all Ore is on 2, 3, and 11), that resource becomes "Scarce."
-*   **Scarcity Bonus**: Settlements providing scarce resources receive a **1.2x multiplier**.
+The Coach measures board-wide pip totals for each resource type. If a resource has low overall board availability (e.g., total board Ore pips < threshold), that resource is classified as scarce.
+*   **Scarcity Adjustment**: Spots yielding scarce resources receive a scarcity weighting bonus (1.2x multiplier).
 
-### 3.3 Synergy & Diversity
-*   **Resource Diversity**: Access to 3 unique resources is better than 3 hexes of the same type.
-    *   *Bonus*: **1.2x multiplier** for high diversity.
-*   **Combo Bonus**: Specific pairs (Brick + Wood) or (Ore + Wheat) enable critical actions (Road building / City building).
-    *   *Bonus*: Flat score addition for securing a complete combo.
+### 3.3 Synergy & Resource Diversity
+*   **Resource Diversity**: Securing 3 distinct resource types is weighted higher than 3 duplicate hexes.
+*   **Expansion Synergy**: Complementary pairs (Brick + Wood for Roads; Ore + Wheat for Cities) grant additional synergy bonuses.
 
-### 3.4 The Resource Heatmap
-The resulting scores are normalized and projected onto the board as a "Heatmap Overlay."
-*   **Gold Rings**: Indicate the Top 3 statistically best moves.
-*   **Color Gradient**: Green (Good) to Red (Poor).
+### 3.4 Heatmap & Top Move Badges
+Scores across all legal vertices are normalized:
+*   **Gold Rings (Top Moves)**: Highlight the top 3 statistically scored settlement locations.
+*   **Heatmap Gradient**: Renders relative strength across the board from high (green/gold) to low (neutral).
 
 ![Resource Heatmap](./images/coach-heatmap.png)
 ![Coach Logic Tooltip](./images/coach-tooltip.png)
 
 ---
 
-## 4. The Setup Phase: "Snake Draft"
+## 4. Setup Draft ("Snake Draft") Logic
 
-The game is often won or lost in the setup. Hex-Mastery simulates the official tournament turn order:
+Hex-Mastery implements the standard tournament snake draft sequence for initial settlement placement:
 
-`1 -> 2 -> 3 -> 4 -> 4 -> 3 -> 2 -> 1`
+$$1 \longrightarrow 2 \longrightarrow 3 \longrightarrow 3 \longrightarrow 2 \longrightarrow 1 \quad \text{(for 3-player games)}$$
 
-### Positional Strategy
-*   **First Position (Player 1)**: Gets the best single spot on the board but waits the longest for their second pick. **Strategy**: Must prioritize the highest pip count or scarcest resource.
-*   **Fourth Position (Player 4)**: The "Wheel." Places two settlements back-to-back. **Strategy**: Create instant synergy (e.g., secure a Monopoly on Ore) or block a large territory.
+*   **Position 1**: First choice on highest raw pip spot, but longest delay before second settlement.
+*   **Position 3 ("The Wheel")**: Back-to-back placement allowance enabling immediate production combo synergy.
 
 ---
-
-*For technical implementation details, see the [Development Guide](./DEVELOPMENT.md).*
+*For architectural layer boundaries, see [ARCHITECTURE.md](./ARCHITECTURE.md).*

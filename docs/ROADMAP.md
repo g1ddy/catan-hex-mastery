@@ -1,40 +1,61 @@
 # Roadmap
 
-This document is the single authoritative source for unfinished product, engine, and maintenance work across **Hex-Mastery**.
+This document is the single authoritative source for unfinished product, engine, architecture, and maintenance work across **Hex-Mastery**.
+
+*Note: Roadmap entries define high-level unfinished intent. Detailed execution scopes, task breakdown, and acceptance criteria are managed in GitHub issues.*
 
 ---
 
 ## 🎲 Phase 7: Full Game Loop
 
 ### 1. Trade System
-- [ ] Implement the player-to-player trade lifecycle: offer, counter-offer, accept, and reject.
-- [ ] Add the trade interface and player notifications.
+- [ ] Player-to-player trade lifecycle (offer, counter-offer, accept, reject).
+- [ ] Interactive trade interface and player notification state.
 
 ### 2. Robber Mechanics & Discarding
-- [ ] Implement discarding for players with > 7 cards when a 7 is rolled.
-- [ ] Implement robber relocation and target player selection (stealing resources).
+- [ ] Mandatory card discarding when holding > 7 cards on a 7 roll.
+- [ ] Robber relocation and target player resource stealing.
 
 ### 3. Development Cards
-- [ ] Implement Development Card deck initialization and random shuffling.
-- [ ] Add `buyDevCard` and `playDevCard` moves.
-- [ ] Implement Knight, Road Building, Year of Plenty, Monopoly, and Victory Point cards.
+- [ ] Development Card deck initialization and random draw pool.
+- [ ] Development Card purchase and play move handlers (`buyDevCard`, `playDevCard`).
+- [ ] Knight, Road Building, Year of Plenty, Monopoly, and Victory Point card effects.
 
 ### 4. Special Awards & Victory Conditions
-- [ ] Implement continuous-path calculation algorithm for Longest Road (minimum 5 continuous segments).
-- [ ] Track played Knight cards per player for Largest Army (minimum 3 Knights).
-- [ ] Integrate special award VP allocations and end-game win detection (reaching 10 Victory Points).
+- [ ] Continuous graph traversal algorithm for Longest Road (minimum 5 continuous segments).
+- [ ] Largest Army tracking and award transfers (minimum 3 played Knights).
+- [ ] Special award VP allocations and end-game win condition detection (10 Victory Points).
 
 ---
 
 ## 🎨 UI & UX Refinement
 
-- [ ] Ensure `NumberToken` components are legible and styled consistently across all resolutions.
-- [ ] Enhance mobile drawer interactions for Robber target selection and Trading.
+- [ ] High-contrast `NumberToken` legibility across all screen resolutions.
+- [ ] Responsive mobile drawer interaction flows for Robber targeting and Trading.
 
 ---
 
-## 🧹 Code Quality & Complexity Stewardship
+## 🧹 Architecture & Quality Stewardship
 
-- [ ] Maintain modular feature-based UI design (`src/features/`) and avoid monolithic components.
-- [ ] Keep decision logic and move execution separated according to multi-layer architecture guidelines in `docs/ARCHITECTURE.md`.
-- [ ] Monitor complexity metrics reported in `docs/COMPLEXITY.md` and address threshold breaches as Phase 7 features are integrated.
+- [ ] Preserve feature-isolated React component structure (`src/features/`).
+- [ ] Maintain strict separation between decision logic, rule evaluation, and move execution (`docs/ARCHITECTURE.md`).
+- [ ] Track and resolve complexity threshold breaches in `.maritime/complexity-report.md` as Phase 7 features land.
+
+---
+
+## ⏸️ Intentional Deferrals
+
+The following architectural and structural proposals are deliberately postponed. Each states when it should be reconsidered:
+
+*   **Replace `boardgame.io`**:
+    *   *Status*: Deferred.
+    *   *Rationale*: The existing framework adequately supports state management, move validation, turn flow, and local multiplayer.
+    *   *Reconsideration Trigger*: Reevaluate if framework limitations materially block advanced networking, server persistence, or complex multi-stage turn flows.
+*   **Replace `react-hexgrid`**:
+    *   *Status*: Deferred.
+    *   *Rationale*: Current SVG-based rendering provides stable hex layout and interactive overlays.
+    *   *Reconsideration Trigger*: Reevaluate when custom canvas/SVG geometry rendering offers clear performance or interaction advantages.
+*   **Test-Framework Migration (e.g., Jest to Vitest)**:
+    *   *Status*: Deferred.
+    *   *Rationale*: The current Jest setup (`ts-jest`, JSDOM) reliably tests core engine logic and components.
+    *   *Reconsideration Trigger*: Reevaluate if Jest configuration creates major friction for Vite/TypeScript updates or execution speed.
