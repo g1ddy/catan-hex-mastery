@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../game/core/types';
 import { GameState, GameAction, BotMove } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
@@ -23,7 +23,7 @@ export class BotCoach {
      * @param ctx The boardgame.io context object
      * @returns A sorted list of optimal moves (best first)
      */
-    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: GameContext): GameAction[] {
         return this.filter.filterOptimalMoves(allMoves, playerID, ctx);
     }
 }

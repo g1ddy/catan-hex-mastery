@@ -130,6 +130,15 @@ Frontend UI components are organized by **Feature Domain** (`src/features/`) rat
 2.  **Shared UI Primitives**: Reusable elements (`src/features/shared/`) cannot depend on specific feature domains or complex game state.
 3.  **Strict UI/Logic Boundary**: Game logic (`src/game/`) is pure TypeScript and never imports React or UI components. UI components import game logic to render state, but logic does not bleed into component render trees.
 
+### Runtime and Rendering Adapters
+
+Application code depends on Catan vocabulary rather than vendor APIs:
+
+*   **Runtime contract**: `GameContext`, `MoveContext`, `MoveHandler`, `GameCommands`, and `GameViewProps` live in `src/game/core/types.ts`. They expose typed Catan phases, per-player stages, lifecycle services, and commands without adopting framework contracts.
+*   **Runtime adapter**: `src/adapters/runtime/` is the gateway to `boardgame.io`. It translates framework contexts and move invocations into Catan-owned contracts before calling views, rules, or moves. `GameClient.tsx` remains the composition root and `src/game/Game.ts` remains the framework game-definition boundary. Bot runtime classes retain quarantined AI-framework coupling pending the dedicated bot migration.
+*   **Rendering adapter**: `src/adapters/rendering/hexgrid.ts` owns the `react-hexgrid` dependency and exposes Catan-named `BoardSurface`, `BoardLayout`, and `HexTile` primitives. Board features use only those local names.
+*   **Dependency direction**: Runtime adapters depend inward on Catan contracts; domain modules never depend on runtime adapters. Features consume Catan view contracts, while bots may temporarily enter through the quarantined AI gateway. `config/dependency-cruiser.cjs` rejects direct framework imports and rejects domain-to-runtime-adapter dependencies.
+
 ---
 
 ## 📂 Project Structure and File Placement Guide
@@ -138,6 +147,7 @@ To answer where a new concept or component belongs:
 
 ```
 src/
+├── adapters/           # External runtime and rendering integration gateways
 ├── game/               # Pure Game Engine (No React dependencies)
 │   ├── core/           # Vocabulary (types, constants, config) — Layer -1
 │   ├── geometry/       # Spatial math & hex utilities — Layer 0

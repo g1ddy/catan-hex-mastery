@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import { GameStatusBanner } from './GameStatusBanner';
 import { GameState, RollStatus } from '../../../game/core/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import '@testing-library/jest-dom';
 
 describe('GameStatusBanner', () => {
@@ -20,15 +20,15 @@ describe('GameStatusBanner', () => {
         notification: null,
     } as unknown as GameState;
 
-    const mockCtx = {
+    const mockGameContext = {
         phase: PHASES.SETUP,
-        activePlayers: { '0': STAGES.PLACE_SETTLEMENT },
+        stagesByPlayer: { '0': STAGES.PLACE_SETTLEMENT },
         currentPlayer: '0',
-    } as unknown as Ctx;
+    } as unknown as GameContext;
 
     const props = {
         G: mockG,
-        ctx: mockCtx,
+        ctx: mockGameContext,
         playerID: '0',
         uiMode: 'viewing' as const,
         buildMode: null,
@@ -48,31 +48,31 @@ describe('GameStatusBanner', () => {
     });
 
     test('renders gameplay instruction', () => {
-         const gameplayCtx = { ...mockCtx, phase: PHASES.GAMEPLAY, activePlayers: { '0': STAGES.ACTING } };
-         const gameplayProps = { ...props, ctx: gameplayCtx, buildMode: 'road' as const };
+         const gameplayGameContext = { ...mockGameContext, phase: PHASES.GAMEPLAY, stagesByPlayer: { '0': STAGES.ACTING } };
+         const gameplayProps = { ...props, ctx: gameplayGameContext, buildMode: 'road' as const };
          render(<GameStatusBanner {...gameplayProps} />);
          expect(screen.getByText('Place Road')).toBeInTheDocument();
     });
 
     test('renders Win message', () => {
-        const gameOverCtx = { ...mockCtx, gameover: { winner: '0' } };
-        const gameOverProps = { ...props, ctx: gameOverCtx };
+        const gameOverGameContext = { ...mockGameContext, gameover: { winner: '0' } };
+        const gameOverProps = { ...props, ctx: gameOverGameContext };
         render(<GameStatusBanner {...gameOverProps} />);
         // Use regex to match text + emoji
         expect(screen.getByText(/You Win!!!/)).toBeInTheDocument();
     });
 
     test('renders Lose message', () => {
-        const gameOverCtx = { ...mockCtx, gameover: { winner: '1' } };
-        const gameOverProps = { ...props, ctx: gameOverCtx };
+        const gameOverGameContext = { ...mockGameContext, gameover: { winner: '1' } };
+        const gameOverProps = { ...props, ctx: gameOverGameContext };
         render(<GameStatusBanner {...gameOverProps} />);
         // Use regex to match text + emoji
         expect(screen.getByText(/You Lose/)).toBeInTheDocument();
     });
 
     test('renders Draw message', () => {
-        const gameOverCtx = { ...mockCtx, gameover: { draw: true } };
-        const gameOverProps = { ...props, ctx: gameOverCtx };
+        const gameOverGameContext = { ...mockGameContext, gameover: { draw: true } };
+        const gameOverProps = { ...props, ctx: gameOverGameContext };
         render(<GameStatusBanner {...gameOverProps} />);
         // Use regex to match text + emoji
         expect(screen.getByText(/Draw!/)).toBeInTheDocument();

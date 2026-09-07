@@ -16,7 +16,7 @@ All engine logic, UI features, and AI algorithms must obey these core invariants
 *   **Coordinate System**: Cube Coordinates (`q, r, s`) are mandatory for all board geometry and state logic. Do not use offset coordinates.
 *   **Distance Rule**: Strictly enforce that no settlement or city may be adjacent to another vertex occupied by a settlement/city (1-edge distance rule).
 *   **Probability & Pips**: Dice rolls follow standard 2d6 probability (36 outcomes). Pips (1 to 5 dots) measure production probability.
-*   **Layer Boundaries**: Engine logic in MOVES (`src/game/moves/`) must never import from BOTS (`src/bots/`). UI components (`src/features/`) consume game state; logic must not bleed into component render trees.
+*   **Layer Boundaries**: Engine logic in MOVES (`src/game/moves/`) must never import from BOTS (`src/bots/`). UI components (`src/features/`) consume game state; logic must not bleed into component render trees. External game-runtime and hex-rendering APIs must enter through `src/adapters/`; see the [Architecture Guide](./docs/ARCHITECTURE.md).
 *   **Strict Typing**: Always use strict TypeScript interfaces. Do not use `any`.
 *   **Generated Artifact Contract**: `.maritime/*` evidence and generated dependency SVGs in `docs/images/` are produced by automated workflows. Never hand-edit generated artifacts.
 
@@ -73,6 +73,7 @@ npm run test:e2e
 │   └── scripts/              # Screenshot generation spec
 ├── scripts/                  # Bootstrap & Maritime validation scripts
 ├── src/
+│   ├── adapters/             # External runtime and rendering integration boundaries
 │   ├── bots/                 # Decision Layer (Bot logic & profiles)
 │   ├── features/             # Feature-isolated UI components & hooks
 │   │   ├── board/            # Board SVG rendering & interactive overlays

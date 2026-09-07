@@ -1,20 +1,18 @@
 import { regenerateBoard } from './setup';
 import { GameState, TerrainType, Player } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { createMockGameState } from '../testUtils';
 
-type MoveFn = (args: { G: GameState; ctx: Ctx }) => unknown;
+type MoveFn = (args: { G: GameState; ctx: GameContext }) => unknown;
 
 // Mock context
-const mockCtx: Ctx = {
+const mockGameContext: GameContext = {
     currentPlayer: '0',
     numPlayers: 2,
-    playOrder: ['0', '1'],
-    playOrderPos: 0,
-    activePlayers: null,
+    stagesByPlayer: {},
     turn: 1,
     phase: 'setup',
-} as Ctx;
+} as GameContext;
 
 const createFullPlayer = (p: Partial<Player>): Player => ({
     id: '0',
@@ -34,7 +32,7 @@ describe('regenerateBoard Move', () => {
         // Ensure hexes are empty initially so we can see them populate if they weren't
         G.board.hexes = {};
 
-        const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+        const result = (regenerateBoard as unknown as MoveFn)({ G, ctx: mockGameContext });
 
         expect(result).not.toBe('INVALID_MOVE');
         expect(Object.keys(G.board.hexes).length).toBeGreaterThan(0);
@@ -43,7 +41,7 @@ describe('regenerateBoard Move', () => {
     it('should update robberLocation to the new desert hex', () => {
         const G = createMockGameState();
 
-        (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+        (regenerateBoard as unknown as MoveFn)({ G, ctx: mockGameContext });
 
         const desertHex = Object.values(G.board.hexes).find(h => h.terrain === TerrainType.Desert);
         expect(desertHex).toBeDefined();
@@ -54,7 +52,7 @@ describe('regenerateBoard Move', () => {
         const G = createMockGameState();
         G.players['0'].settlements.push('0,0,0'); // Player 0 placed a settlement
 
-        const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+        const result = (regenerateBoard as unknown as MoveFn)({ G, ctx: mockGameContext });
 
         expect(result).toBe('INVALID_MOVE');
     });
@@ -69,7 +67,7 @@ describe('regenerateBoard Move', () => {
         });
         G.players['1'].roads.push('0,0,0::1,-1,0'); // Player 1 placed a road
 
-        const result = (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+        const result = (regenerateBoard as unknown as MoveFn)({ G, ctx: mockGameContext });
 
         expect(result).toBe('INVALID_MOVE');
     });
@@ -86,7 +84,7 @@ describe('regenerateBoard Move', () => {
         expect(G.players['0'].name).toBe('Bot 1');
         expect(G.players['1'].name).toBe('Bot 2');
 
-        (regenerateBoard as MoveFn)({ G, ctx: mockCtx });
+        (regenerateBoard as unknown as MoveFn)({ G, ctx: mockGameContext });
 
         // Verify state after regeneration
         expect(G.players['0'].name).toBe('Bot 1');

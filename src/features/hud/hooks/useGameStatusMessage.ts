@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { UiMode, BuildMode } from '../../shared/types';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../components/constants/emojis';
 import {
@@ -14,7 +14,7 @@ import {
 export type { CustomMessage };
 
 export function useGameStatusMessage(
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string | null,
     uiMode: UiMode,
     buildMode: BuildMode,
@@ -58,7 +58,7 @@ export function useGameStatusMessage(
             return { message: "Wait for your turn...", colorClass: "text-amber-400" };
         }
 
-        const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
 
         // Setup Phase
         const setupMsg = getSetupMessage(ctx, activeStage, uiMode);

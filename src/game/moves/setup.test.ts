@@ -1,6 +1,6 @@
 import { placeSettlement, placeRoad } from './setup';
 import { GameState, RollStatus, TerrainType, Hex } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { EventsAPI } from 'boardgame.io/dist/types/src/plugins/events/events';
 import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
@@ -20,12 +20,10 @@ const createMockEvents = (): EventsAPI => ({
     setStage: jest.fn(),
 });
 
-// Create a safe Mock Ctx object with defaults
-const createMockCtx = (overrides?: Partial<Ctx>): Ctx => ({
+// Create a safe Mock GameContext object with defaults
+const createMockGameContext = (overrides?: Partial<GameContext>): GameContext => ({
     numPlayers: 2,
-    playOrder: ['0', '1'],
-    playOrderPos: 0,
-    activePlayers: null,
+    stagesByPlayer: {},
     currentPlayer: '0',
     turn: 1,
     phase: 'setup',
@@ -75,12 +73,12 @@ const createMockGameState = (overrides?: Partial<GameState>): GameState => ({
 
 describe('Setup Phase Moves', () => {
     let G: GameState;
-    let ctx: Ctx;
+    let ctx: GameContext;
     let events: EventsAPI;
 
     beforeEach(() => {
         G = createMockGameState();
-        ctx = createMockCtx();
+        ctx = createMockGameContext();
         events = createMockEvents();
     });
 

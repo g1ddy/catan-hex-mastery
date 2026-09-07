@@ -1,10 +1,9 @@
-import { Ctx } from 'boardgame.io';
 import { GameState } from '../core/types';
 import { Coach } from './coach';
 
 export const CoachPlugin = {
     name: 'coach',
-    api: ({ G }: { G: GameState, ctx: Ctx }) => {
+    api: ({ G }: { G: GameState }) => {
         return new Coach(G);
     }
 };

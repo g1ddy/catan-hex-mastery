@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { GameAction, GameState } from '../../game/core/types';
 import { Coach } from '../../game/analysis/coach';
 import { CoachRecommendation } from '../../game/analysis/types';
@@ -99,7 +99,7 @@ export class OptimalMoveFilter {
         return [bestMove, ...others];
     }
 
-    private handleSetupSettlements(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+    private handleSetupSettlements(allMoves: GameAction[], playerID: string, ctx: GameContext): GameAction[] {
         const bestSpots = this.coach.getBestSettlementSpots(playerID, ctx);
         const movesByVertex = new Map<string, GameAction>();
         for (const m of allMoves) {
@@ -125,7 +125,7 @@ export class OptimalMoveFilter {
         sortedMoves: GameAction[],
         moveWeights: Map<GameAction, number>,
         playerID: string,
-        ctx: Ctx
+        ctx: GameContext
     ): GameAction[] {
         const topWeight = moveWeights.get(sortedMoves[0])!;
         const topMoves = sortedMoves.filter(m => moveWeights.get(m)! >= topWeight * TOP_TIER_WEIGHT_THRESHOLD);
@@ -161,7 +161,7 @@ export class OptimalMoveFilter {
         return sortedMoves;
     }
 
-    private validateContext(playerID: string, ctx: Ctx): boolean {
+    private validateContext(playerID: string, ctx: GameContext): boolean {
         if (typeof playerID !== 'string' || playerID.includes('__proto__') || playerID.includes('constructor')) {
             return false;
         }
@@ -178,7 +178,7 @@ export class OptimalMoveFilter {
         return true;
     }
 
-    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: Ctx): GameAction[] {
+    public filterOptimalMoves(allMoves: GameAction[], playerID: string, ctx: GameContext): GameAction[] {
         if (!this.validateContext(playerID, ctx)) return [];
         if (!allMoves || allMoves.length === 0) return [];
 

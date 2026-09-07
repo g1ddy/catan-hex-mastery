@@ -1,11 +1,11 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { GameState } from '../../../game/core/types';
 import { StrategicAdvice } from '../../../game/analysis/coach';
 import { PlayerProductionPotential } from './PlayerProductionPotential';
 
 export interface CoachPanelProps {
     G?: GameState;
-    ctx?: Ctx;
+    ctx?: GameContext;
     showResourceHeatmap: boolean;
     setShowResourceHeatmap: (show: boolean) => void;
     isCoachModeEnabled: boolean;

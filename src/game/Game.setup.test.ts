@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 import { CatanGame } from './Game';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../game/core/types';
 import { GameState } from './core/types';
 
 // Mock the full Setup Context required by boardgame.io
 // This avoids using 'as any' and satisfies the type requirements for the setup function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createMockSetupContext = (ctx: Ctx): any => ({
+const createMockSetupContext = (ctx: GameContext): any => ({
     ctx,
     events: {} as any,
     random: {} as any,
@@ -17,18 +17,16 @@ const createMockSetupContext = (ctx: Ctx): any => ({
 });
 
 describe('CatanGame.setup', () => {
-    const mockCtx: Ctx = {
+    const mockGameContext: GameContext = {
         numPlayers: 3,
-        playOrder: ['0', '1', '2'],
-        playOrderPos: 0,
-        activePlayers: null,
+        stagesByPlayer: {},
         currentPlayer: '0',
         turn: 1,
         phase: 'setup',
-    } as Ctx;
+    } as GameContext;
 
     it('should initialize with default player names if no setupData provided', () => {
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx)) as GameState;
+        const G = CatanGame.setup!(createMockSetupContext(mockGameContext)) as GameState;
 
         expect(G.players['0'].name).toBe('Player 1');
         expect(G.players['1'].name).toBe('Player 2');
@@ -44,7 +42,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData) as GameState;
+        const G = CatanGame.setup!(createMockSetupContext(mockGameContext), setupData) as GameState;
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Bob (Bot)');
@@ -60,7 +58,7 @@ describe('CatanGame.setup', () => {
             }
         };
 
-        const G = CatanGame.setup!(createMockSetupContext(mockCtx), setupData) as GameState;
+        const G = CatanGame.setup!(createMockSetupContext(mockGameContext), setupData) as GameState;
 
         expect(G.players['0'].name).toBe('Alice (Bot)');
         expect(G.players['1'].name).toBe('Player 2'); // Fallback
@@ -68,7 +66,7 @@ describe('CatanGame.setup', () => {
     });
 
     it('should throw error if numPlayers is invalid', () => {
-        const invalidCtx = { ...mockCtx, numPlayers: 1 };
-        expect(() => CatanGame.setup!(createMockSetupContext(invalidCtx))).toThrow("Number of players must be between 2 and 4");
+        const invalidGameContext = { ...mockGameContext, numPlayers: 1 };
+        expect(() => CatanGame.setup!(createMockSetupContext(invalidGameContext))).toThrow("Number of players must be between 2 and 4");
     });
 });

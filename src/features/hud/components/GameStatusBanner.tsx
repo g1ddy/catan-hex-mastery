@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { UiMode, BuildMode } from '../../shared/types';
 import { useGameStatusMessage, CustomMessage } from '../hooks/useGameStatusMessage';
 
 export interface GameStatusBannerProps {
-    ctx: Ctx;
+    ctx: GameContext;
     playerID: string | null;
     uiMode: UiMode;
     buildMode: BuildMode;

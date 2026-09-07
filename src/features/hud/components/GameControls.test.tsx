@@ -5,7 +5,7 @@ import { GameControls } from './GameControls';
 import { BuildMode, UiMode } from '../../shared/types';
 import { GameState, RollStatus, ClientMoves } from '../../../game/core/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import '@testing-library/jest-dom';
 
 // Mock Lucide icons
@@ -56,16 +56,14 @@ describe('GameControls Accessibility', () => {
         notification: null,
     } as unknown as GameState;
 
-    const mockCtx = {
+    const mockGameContext = {
         phase: PHASES.GAMEPLAY,
-        activePlayers: { '0': STAGES.ACTING },
+        stagesByPlayer: { '0': STAGES.ACTING },
         currentPlayer: '0',
         numPlayers: 1,
-        playOrder: ['0'],
-        playOrderPos: 0,
         turn: 1,
         gameover: undefined,
-    } as unknown as Ctx;
+    } as unknown as GameContext;
 
     const mockMoves = {
         rollDice: jest.fn(),
@@ -75,7 +73,7 @@ describe('GameControls Accessibility', () => {
 
     const props = {
         G: mockG,
-        ctx: mockCtx,
+        ctx: mockGameContext,
         moves: mockMoves,
         buildMode: null as BuildMode,
         setBuildMode: jest.fn(),
@@ -84,8 +82,8 @@ describe('GameControls Accessibility', () => {
     };
 
     test('Setup Placing Mode shows Cancel button', () => {
-        const setupCtx = { ...mockCtx, phase: PHASES.SETUP, activePlayers: { '0': STAGES.PLACE_SETTLEMENT } };
-        const setupProps = { ...props, ctx: setupCtx, uiMode: 'placing' as UiMode };
+        const setupGameContext = { ...mockGameContext, phase: PHASES.SETUP, stagesByPlayer: { '0': STAGES.PLACE_SETTLEMENT } };
+        const setupProps = { ...props, ctx: setupGameContext, uiMode: 'placing' as UiMode };
 
         render(<GameControls {...setupProps} />);
 
@@ -153,9 +151,9 @@ describe('GameControls Accessibility', () => {
     test('Roll button shows "Rolling..." when status is ROLLING', () => {
         const rollingG = { ...mockG, rollStatus: RollStatus.ROLLING };
         // Assuming we are in rolling stage
-        const rollingCtx = { ...mockCtx, activePlayers: { '0': STAGES.ROLLING } };
+        const rollingGameContext = { ...mockGameContext, stagesByPlayer: { '0': STAGES.ROLLING } };
 
-        render(<GameControls {...props} G={rollingG} ctx={rollingCtx} />);
+        render(<GameControls {...props} G={rollingG} ctx={rollingGameContext} />);
 
         const rollButton = screen.getByRole('button', { name: /Rolling.../i });
         expect(rollButton).toBeInTheDocument();

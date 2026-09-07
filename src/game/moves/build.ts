@@ -1,11 +1,10 @@
-import { Move } from 'boardgame.io';
-import { GameState } from '../core/types';
+import type { MoveArguments, MoveHandler } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
 import { isValidHexId } from '../core/validation';
 import { RuleEngine } from '../rules/validator';
 import { safeSet, safeGet } from '../../game/core/utils/objectUtils';
 
-export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
+export const buildRoad: MoveHandler<MoveArguments['buildRoad']> = ({ G, ctx }, edgeId: string) => {
     // 0. Security Validation
     if (!isValidHexId(edgeId)) {
         throw new Error("Invalid edge ID format");
@@ -24,7 +23,7 @@ export const buildRoad: Move<GameState> = ({ G, ctx }, edgeId: string) => {
     player.resources.brick -= cost.brick;
 };
 
-export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+export const buildSettlement: MoveHandler<MoveArguments['buildSettlement']> = ({ G, ctx }, vertexId: string) => {
     // 0. Security Validation
     if (!isValidHexId(vertexId)) {
         throw new Error("Invalid vertex ID format");
@@ -46,7 +45,7 @@ export const buildSettlement: Move<GameState> = ({ G, ctx }, vertexId: string) =
     player.resources.sheep -= cost.sheep;
 };
 
-export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
+export const buildCity: MoveHandler<MoveArguments['buildCity']> = ({ G, ctx }, vertexId: string) => {
     // 0. Security Validation
     if (!isValidHexId(vertexId)) {
         throw new Error("Invalid vertex ID format");
@@ -68,7 +67,7 @@ export const buildCity: Move<GameState> = ({ G, ctx }, vertexId: string) => {
     player.resources.wheat -= cost.wheat;
 };
 
-export const endTurn: Move<GameState> = ({ G, ctx, events }) => {
+export const endTurn: MoveHandler<MoveArguments['endTurn']> = ({ G, ctx, events }) => {
     // 1. Delegate Validation to Rule Engine
     RuleEngine.validateMoveOrThrow(G, ctx, 'endTurn', []);
 

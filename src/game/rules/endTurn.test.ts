@@ -1,11 +1,11 @@
 import { RuleEngine } from './validator';
 import { GameState, RollStatus } from '../core/types';
 import { STAGES } from '../core/constants';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 
 describe('endTurn validation', () => {
     let G: GameState;
-    let ctx: Ctx;
+    let ctx: GameContext;
 
     beforeEach(() => {
         G = {
@@ -19,8 +19,8 @@ describe('endTurn validation', () => {
 
         ctx = {
             currentPlayer: '0',
-            activePlayers: { '0': STAGES.ACTING },
-        } as unknown as Ctx;
+            stagesByPlayer: { '0': STAGES.ACTING },
+        } as unknown as GameContext;
     });
 
     it('should be valid in ACTING stage', () => {
@@ -29,21 +29,21 @@ describe('endTurn validation', () => {
     });
 
     it('should be invalid in ROLLING stage', () => {
-        ctx.activePlayers = { '0': STAGES.ROLLING };
+        ctx.stagesByPlayer = { '0': STAGES.ROLLING };
         const result = RuleEngine.validateMove(G, ctx, 'endTurn', []);
         expect(result.isValid).toBe(false);
         expect(result.reason).toContain('acting phase');
     });
 
     it('should be invalid in ROBBER stage', () => {
-        ctx.activePlayers = { '0': STAGES.ROBBER };
+        ctx.stagesByPlayer = { '0': STAGES.ROBBER };
         const result = RuleEngine.validateMove(G, ctx, 'endTurn', []);
         expect(result.isValid).toBe(false);
         expect(result.reason).toContain('acting phase');
     });
 
     it('should be invalid if not the active player', () => {
-        ctx.activePlayers = { '1': STAGES.ACTING };
+        ctx.stagesByPlayer = { '1': STAGES.ACTING };
         const result = RuleEngine.validateMove(G, ctx, 'endTurn', []);
         expect(result.isValid).toBe(false);
         expect(result.reason).toBe("It is not your turn to act.");

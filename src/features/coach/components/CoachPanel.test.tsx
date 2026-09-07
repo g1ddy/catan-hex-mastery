@@ -4,7 +4,7 @@
 import { render, screen } from '@testing-library/react';
 import { CoachPanel } from './CoachPanel';
 import { createMockGameState } from '../../../game/testUtils';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import * as analyst from '../../../game/analysis/analyst';
 import '@testing-library/jest-dom';
 import { Player } from '../../../game/core/types';
@@ -32,7 +32,7 @@ describe('CoachPanel', () => {
             '1': { wood: 0, brick: 1, sheep: 0, wheat: 0, ore: 0 }
         });
 
-        const ctx = { currentPlayer: '0' } as Ctx;
+        const ctx = { currentPlayer: '0' } as GameContext;
 
         render(
             <CoachPanel

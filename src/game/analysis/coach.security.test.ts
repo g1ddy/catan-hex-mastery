@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { Coach } from './coach';
 import { GameState, TerrainType, Player, BoardState, Hex } from '../core/types';
 
@@ -33,13 +33,11 @@ jest.mock('./advisors/SpatialAdvisor', () => {
 });
 
 describe('Coach Security', () => {
-    const mockCtx: Ctx = {
+    const mockGameContext: GameContext = {
         numPlayers: 2,
         turn: 1,
         currentPlayer: '0',
-        playOrder: ['0', '1'],
-        playOrderPos: 0,
-        activePlayers: null,
+        stagesByPlayer: {},
         phase: 'gameplay'
     };
 
@@ -78,7 +76,7 @@ describe('Coach Security', () => {
 
         // Player 0 asks for Player 1's road scores
         // Vulnerability: If this returns data, Player 0 can spy on Player 1
-        const results = coach.getAllRoadScores('1', mockCtx);
+        const results = coach.getAllRoadScores('1', mockGameContext);
 
         // Expectation: Should be empty array if secure
         expect(results).toEqual([]);
@@ -89,7 +87,7 @@ describe('Coach Security', () => {
         const coach = new Coach(G);
 
         // Player 0 asks for Player 1's trade evaluation
-        const result = coach.evaluateTrade('1', mockCtx);
+        const result = coach.evaluateTrade('1', mockGameContext);
 
         // Expectation: Should be marked unsafe/unauthorized
         expect(result.isSafe).toBe(false);

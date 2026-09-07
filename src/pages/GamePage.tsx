@@ -7,8 +7,8 @@ import { DefensiveBot } from '../bots/DefensiveBot';
 import { ExpansiveBot } from '../bots/ExpansiveBot';
 import { CatanMCTSBot } from '../bots/CatanMCTSBot';
 import { MonteCatanoBot } from '../bots/MonteCatanoBot';
-import { RandomBot } from 'boardgame.io/ai';
-import { Bot } from 'boardgame.io/ai';
+import { RandomBot } from '../adapters/runtime/boardgame';
+import { Bot } from '../adapters/runtime/boardgame';
 
 const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 

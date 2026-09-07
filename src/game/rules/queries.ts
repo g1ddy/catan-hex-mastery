@@ -1,5 +1,5 @@
 import { GameState } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import {
     validateSettlementLocation,
     isValidSetupRoadPlacement,
@@ -197,13 +197,13 @@ export const getValidSetupRoadSpots = (G: GameState, playerID: string): Set<stri
  * Returns all valid moves for the current stage, handling both Setup and Gameplay rules.
  * Automatically checks affordability for Gameplay moves unless checkCost is false.
  */
-export const getValidMovesForStage = (G: GameState, ctx: Ctx, playerID: string, checkCost = true): ValidMoves => {
+export const getValidMovesForStage = (G: GameState, ctx: GameContext, playerID: string, checkCost = true): ValidMoves => {
     // Validate playerID before any other checks
     if (!isValidPlayer(playerID, G)) {
         return EMPTY_VALID_MOVES;
     }
 
-    const currentStage = ctx.activePlayers?.[playerID];
+    const currentStage = ctx.stagesByPlayer?.[playerID];
     const currentPhase = ctx.phase;
 
     if (currentPhase === PHASES.SETUP) {
