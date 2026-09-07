@@ -1,8 +1,36 @@
 # Development Guide
 
-This guide covers local environment setup, verification standards, generated evidence workflows, and contribution expectations for **Hex-Mastery**.
+This guide covers local environment setup, verification standards, generated evidence workflows, documentation ownership, and contribution expectations for **Hex-Mastery**.
 
 For architectural structure and file placement guidance, see [ARCHITECTURE.md](./ARCHITECTURE.md). For planned features and roadmap tasks, see [ROADMAP.md](./ROADMAP.md).
+
+---
+
+## 📚 Documentation Ownership Standard
+
+Hex-Mastery enforces a single-owner documentation model: **One concern → one authoritative document → many references when needed.**
+
+| Document | Owns | Does not own |
+| :--- | :--- | :--- |
+| **`README.md`** | Product purpose, intended users, current high-level capabilities, quick start, concise documentation index, representative screenshots | Detailed architecture, internal implementation, generated metric values, maintenance backlog, detailed domain algorithms |
+| **`AGENTS.md`** | Concise agent operating rules, durable invariants, high-level repository map, canonical verification entry points, links to authoritative docs | Full setup instructions, duplicated architecture specifications, product roadmap, generated metrics, issue-specific guidance |
+| **`docs/ARCHITECTURE.md`** | Stable layers, responsibility boundaries, dependency direction, namespaces/file placement, game/UI boundaries, conceptual architecture | Local setup, test procedures, transient measurements, backlog, implementation history |
+| **`docs/DEVELOPMENT.md`** | Prerequisites, local setup, canonical commands, verification, generated-artifact workflow, contributor expectations, documentation ownership | Product roadmap, game theory, current hotspot snapshots, architecture rationale already owned elsewhere |
+| **`docs/COMPLEXITY.md`** | Metric definitions, thresholds, canonical `.maritime/` evidence, regeneration, interpretation | Hand-copied current hotspot tables, duplicated architecture policy, roadmap work |
+| **`docs/ROADMAP.md`** | Meaningful unfinished product, engine, architecture, and maintenance work plus explicit intentional deferrals | Completed history, release notes, issue-level acceptance criteria, current system contracts |
+| **`docs/STRATEGY_ENGINE.md`** | Hex-Mastery's implementation-facing strategy model and how domain concepts become Coach/Analyst behavior | Exhaustive Catan rules/reference material, unsupported strategy claims, repository architecture |
+| **`docs/Catan Strategy and Starting Rules.*`** | Broad Catan rules/strategy/research reference corpus | Executable Hex-Mastery behavior, architecture contracts, implementation status |
+
+### Rules for Creating Specialized Documents
+
+A new permanent documentation file is acceptable only when all of the following criteria are met:
+1. **Distinct concern**: The subject does not fit naturally into an existing authoritative document.
+2. **Durable lifecycle**: It will remain useful across multiple issues and releases.
+3. **Meaningful size**: Adding it to an existing owner would materially reduce navigability.
+4. **Clear ownership**: The document explicitly states what it owns and what existing docs continue to own.
+5. **Independent audience/workflow**: There is a clear operational reason someone would intentionally open it directly.
+
+*Note: Use GitHub issues, PR descriptions, comments, or generated reports for temporary notes, single-issue analyses, or transient status updates.*
 
 ---
 
@@ -49,35 +77,31 @@ The project is built on a modern React stack, leveraging `boardgame.io` for stat
 
 ## 🧪 Testing & Verification Standards
 
-We enforce rigorous test coverage and visual verification standards.
-
-### 1. Unit & Logic Tests (Jest)
-
-Unit tests focus on game engine logic, rules, move validation, bots, geometry, and repository integration contracts.
+We enforce rigorous test coverage and visual verification standards using canonical repository scripts:
 
 ```bash
+# Build the project (runs dependency-cruiser architecture check, tsc, and vite build)
+npm run build
+
 # Run all unit and integration tests
 npm test
 
-# Run a specific unit test file
-npm test -- src/game/rules/moveValidation.test.ts
-```
+# Verify layered architecture rules directly
+npm run check:arch
 
-*Note on JSDOM*: The default Jest environment is `node`. Any React component or DOM-dependent test file must include `/** @jest-environment jsdom */` at the top of the file.
-
-### 2. End-to-End & Visual Verification (Playwright)
-
-UI/UX changes must be visually verified using Playwright.
-
-```bash
-# Run E2E test suite
+# Run E2E Playwright test suite
 npm run test:e2e
 
-# Run with Playwright UI / Debugger
+# Run Playwright tests with UI / Debugger
 npm run test:debug
+
+# Run ESLint check
+npm run lint
 ```
 
-*Verification Rules:*
+### Verification Rules
+
+*   **JSDOM Context**: The default Jest environment is `node`. Any React component or DOM-dependent test file must include `/** @jest-environment jsdom */` at the top of the file.
 *   **No Fixed Timeouts**: Avoid `waitForTimeout` in E2E tests as it causes flakiness. Wait for explicit DOM elements or state conditions (e.g., `expect(locator).toBeVisible()`).
 *   **Base URL**: E2E tests run against the preview/dev server configured in `config/playwright.config.ts`. Use relative paths for `page.goto('/')`.
 
@@ -134,14 +158,6 @@ Dependency diagram presentation is derived directly from canonical Maritime evid
 The detailed graph retains the repository script `npm run generate:graph`. The overview is rendered directly by the Generated Artifacts workflow with the same pinned Maritime beta.8 package rather than adding a package script solely for documentation generation.
 
 The overview deliberately changes information granularity through folder aggregation; the compact graph remains a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies both resulting presentations rather than maintaining a repository-owned renderer or historical reference image.
-
-### 4. Code Quality & Linting
-
-Run ESLint checks:
-
-```bash
-npm run lint
-```
 
 ---
 

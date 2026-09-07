@@ -14,15 +14,15 @@
 
 Most Catan clones are just games. **Hex-Mastery is a trainer.**
 
-We realized that to truly improve, players need immediate, data-driven feedback on their decisions. Hex-Mastery integrates a real-time **Coach** that analyzes the board state using advanced heuristics—evaluating scarcity, pip distribution, and production synergy—to grade your moves as you make them.
+To truly improve, players need immediate, data-driven feedback on their decisions. Hex-Mastery integrates a real-time **Coach** that analyzes the board state using advanced heuristics—evaluating scarcity, pip distribution, and production synergy—to grade your moves as you make them.
 
 ## ✨ Key Features
 
 ### 🧠 Coach Mode
-Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes the "Winning Moves" using a dynamic heatmap.
+Don't just guess—know. The Coach analyzes every valid settlement spot on the board and visualizes top choices using a dynamic heatmap.
 
 **Key Features:**
-*   **Resource Heatmap**: See "Winning Moves" directly on the board with a color-coded overlay.
+*   **Resource Heatmap**: See winning moves directly on the board with a color-coded overlay.
 *   **Player Production Potential**: Compare your resource-generating power against your opponents at a glance.
 
 **Heatmap Factors:**
@@ -44,7 +44,7 @@ A real-time sidebar that acts as your HUD.
 ### 🐍 The Setup Trainer
 Practice the most critical phase of the game: The Snake Draft.
 *   **Play against Smart Bots**: Test your strategies against AI opponents.
-*   **Optimized for 3 Players**: The game is designed for balanced 3-player matches.
+*   **Optimized for 3 Players**: Designed for balanced 3-player matches.
 *   **Flexible Configurations**:
     *   **Solo**: 1 Human + 2 Bots
     *   **Local Multiplayer**: 2 Humans + 1 Bot
@@ -53,35 +53,29 @@ Practice the most critical phase of the game: The Snake Draft.
 
 ![Setup Phase / Snake Draft](docs/images/setup-draft.png)
 
-### 📱 Mobile First Design
-Play and train anywhere. The interface is fully responsive, and the advanced Coach features are available on any device. Even on mobile, you get the same "golden ring" suggestions for top-tier moves. On devices with a stylus or mouse, you can even access the "Why?" tooltips to understand the Coach's reasoning.
+### 📱 Mobile-First Design
+Play and train anywhere. The interface is fully responsive, and advanced Coach features are available on any device. Even on mobile, you get the same golden ring suggestions for top-tier moves and bottom drawers for board visibility.
 
 ![Mobile Coach Tooltip showing a recommendation](docs/images/mobile-coach-tooltip.png)
 
-The Coach Panel is also fully accessible, tucking away into a clean bottom drawer to maximize board visibility.
-
 ![Mobile view with Coach Panel open](docs/images/mobile-production.png)
-
-## 📚 Documentation
-
-Whether you are a player looking to improve your win rate or a developer looking to contribute, we have you covered:
-
-*   **[Development Guide](./docs/DEVELOPMENT.md)**
-    *Local setup, testing/verification standards, generated evidence workflows, and contribution guidelines.*
-*   **[Architecture Guide](./docs/ARCHITECTURE.md)**
-    *Layered architecture, dependency directions, game/UI boundaries, and namespace and file-placement practices.*
-*   **[Roadmap](./docs/ROADMAP.md)**
-    *The authoritative single source for unfinished product and maintenance work, including remaining full-game-loop features.*
-*   **[Complexity & Code Health](./docs/COMPLEXITY.md)**
-    *Metric definitions, thresholds, and instructions for generating or checking code complexity evidence.*
-*   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)**
-    *The game theory, placement heuristics, and probability math powering the Coach and Analyst.*
 
 ## 🚀 Getting Started
 
-1.  **Select a Mode**: Choose "Single Player (vs AI)" to practice or "Pass & Play" for local games.
-2.  **Enable Coach Mode**: Turn on the assistant and use the **Resource Heatmap** to visualize winning moves.
-3.  **Master the Setup**: Use the recommendations to learn *why* certain spots are better than others.
+1. **Launch the App**: Open the [live app](https://g1ddy.github.io/catan-hex-mastery/) or run `npm run dev` locally.
+2. **Select a Mode**: Choose "Single Player (vs AI)" to practice or "Pass & Play" for local games.
+3. **Enable Coach Mode**: Turn on the assistant and use the **Resource Heatmap** to visualize winning moves.
+4. **Master the Setup**: Use recommendations to learn *why* certain spots offer better long-term potential.
+
+## 📚 Documentation Index
+
+For detailed guidelines, contracts, and technical specifications, refer to the authoritative documents:
+
+*   **[Development Guide](./docs/DEVELOPMENT.md)** — Prerequisites, local setup, canonical commands, verification standards, generated evidence workflows, and documentation ownership.
+*   **[Architecture Guide](./docs/ARCHITECTURE.md)** — Layered architecture (Layers -1 to 3), responsibility boundaries, dependency rules, and conceptual vs. generated structure.
+*   **[Roadmap](./docs/ROADMAP.md)** — The single source for unfinished product, engine, architecture, and maintenance work plus intentional deferrals.
+*   **[Complexity & Code Health](./docs/COMPLEXITY.md)** — Metric definitions, warning thresholds, canonical `.maritime/` evidence profile, and interpretation rules.
+*   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)** — Hex-Mastery's implementation-facing strategy model, probability calculations, and Coach/Analyst behavior rules.
 
 ---
 *Built with React, TypeScript, and boardgame.io. Open Source and designed for the community.*
