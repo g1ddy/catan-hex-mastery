@@ -17,10 +17,10 @@
   },
   "src/adapters/runtime/boardgame.ts": {
     "complexity": 1,
-    "loc": 8,
-    "instability": 0.33,
+    "loc": 10,
+    "instability": 0.5,
     "fanIn": 4,
-    "fanOut": 2,
+    "fanOut": 4,
     "scanned": true
   },
   "src/bots/AggressiveBot.ts": {
@@ -32,8 +32,8 @@
     "scanned": true
   },
   "src/bots/CatanBot.ts": {
-    "complexity": 10,
-    "loc": 120,
+    "complexity": 9,
+    "loc": 111,
     "instability": 0.55,
     "fanIn": 5,
     "fanOut": 6,

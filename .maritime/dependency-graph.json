@@ -417,6 +417,42 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/client",
+          "resolved": "node_modules/boardgame.io/dist/cjs/client.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/multiplayer",
+          "resolved": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -451,6 +487,41 @@
     },
     {
       "source": "node_modules/boardgame.io/dist/cjs/ai.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts",
+        "src/GameClient.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "export"
+      ]
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/client.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "export"
+      ]
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
       "valid": true,
       "dependencies": [],
       "dependents": [
@@ -3283,23 +3354,6 @@
         "src/pages/GamePage.tsx"
       ],
       "orphan": false
-    },
-    {
-      "source": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/GameClient.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
     },
     {
       "source": "node_modules/boardgame.io/dist/cjs/react.js",
@@ -10321,8 +10375,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 134,
-    "totalDependenciesCruised": 460,
+    "totalCruised": 135,
+    "totalDependenciesCruised": 462,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
@@ -10379,7 +10433,7 @@
             "dependencyTypes": [
               "npm"
             ],
-            "path": "^(boardgame[.]io|react-hexgrid)"
+            "path": "(^|/)node_modules/(boardgame[.]io|react-hexgrid)(/|$)"
           },
           "comment": "Catan domain and feature code must use the owned runtime and rendering contracts in src/adapters.",
           "scope": "module"

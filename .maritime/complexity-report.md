@@ -35,6 +35,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
 | `src/game/rules/validator.ts` | **11** | 75 |
 | `src/pages/GamePage.tsx` | **11** | 94 |
-| `src/bots/CatanBot.ts` | **10** | 120 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |
+| `src/features/board/components/Port.tsx` | **10** | 102 |
