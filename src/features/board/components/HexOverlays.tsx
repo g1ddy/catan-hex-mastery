@@ -1,6 +1,6 @@
 import { useMemo, memo } from 'react';
-import { Hexagon } from 'react-hexgrid';
-import { BoardProps } from 'boardgame.io/react';
+import { HexTile } from '../../../adapters/rendering/hexgrid';
+import { GameContext } from '../../../game/core/types';
 import { GameState, Hex, ClientMoves } from '../../../game/core/types';
 import { getHexGeometry } from '../../../game/geometry/staticGeometry';
 import { BuildMode, UiMode } from '../../shared/types';
@@ -19,7 +19,7 @@ export interface CoachData {
 interface HexOverlaysProps {
     hex: Hex;
     G: GameState;
-    ctx: BoardProps<GameState>['ctx'];
+    ctx: GameContext;
     moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
@@ -37,7 +37,7 @@ function checkContextPropsEqual(prevCtx: HexOverlaysProps['ctx'], nextCtx: HexOv
     return (
         prevCtx.phase === nextCtx.phase &&
         prevCtx.currentPlayer === nextCtx.currentPlayer &&
-        prevCtx.activePlayers?.[prevCtx.currentPlayer] === nextCtx.activePlayers?.[nextCtx.currentPlayer]
+        prevCtx.stagesByPlayer?.[prevCtx.currentPlayer] === nextCtx.stagesByPlayer?.[nextCtx.currentPlayer]
     );
 }
 
@@ -111,7 +111,7 @@ function HexOverlaysComponent({
     const { vertices, edges, currentHexIdStr } = useMemo(() => getHexGeometry(hex), [hex]);
 
     return (
-        <Hexagon q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
+        <HexTile q={hex.coords.q} r={hex.coords.r} s={hex.coords.s} cellStyle={{ fill: 'none', stroke: 'none' }}>
             <HexVertices
                 vertices={vertices}
                 G={G}
@@ -140,7 +140,7 @@ function HexOverlaysComponent({
                 currentHexIdStr={currentHexIdStr}
                 coachData={coachData}
             />
-        </Hexagon>
+        </HexTile>
     );
 }
 

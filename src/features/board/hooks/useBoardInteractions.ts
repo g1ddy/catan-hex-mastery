@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BoardProps } from 'boardgame.io/react';
+import { GameContext } from '../../../game/core/types';
 import { GameState } from '../../../game/core/types';
 import { getValidMovesForStage } from '../../../game/rules/queries';
 
@@ -11,7 +11,7 @@ export interface BoardInteractions {
 
 export function useBoardInteractions(
     G: GameState,
-    ctx: BoardProps<GameState>['ctx'],
+    ctx: GameContext,
     playerID: string
 ): BoardInteractions {
     return useMemo(() => {
@@ -30,5 +30,5 @@ export function useBoardInteractions(
         // We pass checkCost=true to ensure users can only interact with spots they can afford.
         return getValidMovesForStage(G, ctx, playerID, true);
 
-    }, [G.board, G.players, ctx.phase, ctx.activePlayers, ctx.currentPlayer, playerID]);
+    }, [G.board, G.players, ctx.phase, ctx.stagesByPlayer, ctx.currentPlayer, playerID]);
 }

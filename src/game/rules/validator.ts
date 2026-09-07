@@ -1,5 +1,5 @@
 import { GameState, MoveArguments } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { validateBuildRoad, validateBuildSettlement, validateBuildCity, validateTradeBank, validateRobberMove, validateRoll, validateResolveRoll, validateEndTurn } from './moveValidation';
 import {
     validateSettlementLocation,
@@ -15,7 +15,7 @@ export const RuleEngine = {
     /**
      * Validates a move and returns a result object.
      */
-    validateMove: <M extends keyof MoveArguments>(G: GameState, ctx: Ctx, moveName: M, args: MoveArguments[M]): ValidationResult => {
+    validateMove: <M extends keyof MoveArguments>(G: GameState, ctx: GameContext, moveName: M, args: MoveArguments[M]): ValidationResult => {
         const playerID = ctx.currentPlayer;
         // Cast args to any[] internally to simplify access in switch cases,
         // relying on the correlation between moveName and args enforced by the signature.
@@ -64,7 +64,7 @@ export const RuleEngine = {
      * @returns The data payload from the validation result if valid (and if present).
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    validateMoveOrThrow: <M extends keyof MoveArguments, T = any>(G: GameState, ctx: Ctx, moveName: M, args: MoveArguments[M]): T | undefined => {
+    validateMoveOrThrow: <M extends keyof MoveArguments, T = any>(G: GameState, ctx: GameContext, moveName: M, args: MoveArguments[M]): T | undefined => {
         const result = RuleEngine.validateMove(G, ctx, moveName, args);
         if (!result.isValid) {
             throw new Error(result.reason || "Invalid move");

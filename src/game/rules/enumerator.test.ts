@@ -28,7 +28,7 @@ jest.mock('./queries', () => {
         getValidRobberVictims: jest.fn(() => new Set()),
         // Mock the new consolidated function
         getValidMovesForStage: jest.fn((_G, ctx, playerID) => {
-            const stage = ctx.activePlayers?.[playerID];
+            const stage = ctx.stagesByPlayer?.[playerID];
             if (stage === 'placeSettlement') {
                 return {
                     validSettlements: new Set(['1_1_1']),
@@ -107,7 +107,7 @@ describe('ai.enumerate', () => {
             }
         } as unknown as GameState;
         ctx = {
-            activePlayers: { '0': STAGES.ACTING }
+            stagesByPlayer: { '0': STAGES.ACTING }
         };
         (RuleEngine.validateMove as jest.Mock).mockReturnValue({ isValid: true });
     });
@@ -117,19 +117,19 @@ describe('ai.enumerate', () => {
     });
 
     it('should return nothing if stage is unknown', () => {
-        ctx.activePlayers = {};
+        ctx.stagesByPlayer = {};
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([]);
     });
 
     it('should enumerate setup settlements', () => {
-        ctx.activePlayers['0'] = STAGES.PLACE_SETTLEMENT;
+        ctx.stagesByPlayer['0'] = STAGES.PLACE_SETTLEMENT;
         const moves = enumerate(G, ctx, '0');
         expect(moves).toContainEqual(expectedAction('placeSettlement', ['1_1_1']));
     });
 
     it('should enumerate setup roads', () => {
-        ctx.activePlayers['0'] = STAGES.PLACE_ROAD;
+        ctx.stagesByPlayer['0'] = STAGES.PLACE_ROAD;
         const moves = enumerate(G, ctx, '0');
         expect(moves).toContainEqual(expectedAction('placeRoad', ['edge_1']));
     });
@@ -144,7 +144,7 @@ describe('ai.enumerate', () => {
     });
 
     it('should enumerate rolling when IDLE', () => {
-        ctx.activePlayers['0'] = STAGES.ROLLING;
+        ctx.stagesByPlayer['0'] = STAGES.ROLLING;
         G.rollStatus = RollStatus.IDLE;
 
         // Mock RuleEngine to allow rollDice but not resolveRoll when IDLE
@@ -159,7 +159,7 @@ describe('ai.enumerate', () => {
     });
 
     it('should enumerate resolveRoll when ROLLING', () => {
-        ctx.activePlayers['0'] = STAGES.ROLLING;
+        ctx.stagesByPlayer['0'] = STAGES.ROLLING;
         G.rollStatus = RollStatus.ROLLING;
 
         // Mock RuleEngine to allow resolveRoll but not rollDice when ROLLING
@@ -174,7 +174,7 @@ describe('ai.enumerate', () => {
     });
 
     it('should enumerate dismissRobber with valid targets', () => {
-        ctx.activePlayers['0'] = STAGES.ROBBER;
+        ctx.stagesByPlayer['0'] = STAGES.ROBBER;
         // Mock board with hexes A, B, C
         G.board = {
             hexes: {
@@ -197,13 +197,13 @@ describe('ai.enumerate', () => {
     });
 
     it('should correctly enumerate single moves from custom stages', () => {
-        ctx.activePlayers['0'] = 'test_single';
+        ctx.stagesByPlayer['0'] = 'test_single';
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([expectedAction('rollDice', [])]);
     });
 
     it('should correctly enumerate multiple moves from custom stages', () => {
-        ctx.activePlayers['0'] = 'test_multi';
+        ctx.stagesByPlayer['0'] = 'test_multi';
         const moves = enumerate(G, ctx, '0');
 
         // Should contain both moves
@@ -213,7 +213,7 @@ describe('ai.enumerate', () => {
     });
 
     it('should log error for unknown stage (not in STAGE_MOVES)', () => {
-        ctx.activePlayers['0'] = 'unknown_stage';
+        ctx.stagesByPlayer['0'] = 'unknown_stage';
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const moves = enumerate(G, ctx, '0');
         expect(moves).toEqual([]);

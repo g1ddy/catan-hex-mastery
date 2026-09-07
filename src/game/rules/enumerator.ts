@@ -1,5 +1,5 @@
 import { GameState, GameAction, BotMove, MoveArguments } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { STAGE_MOVES } from '../core/constants';
 import { isValidPlayer } from '../core/validation';
 // Import the helper directly, not from RuleEngine object
@@ -25,12 +25,12 @@ const PARAMETERIZED_MOVES = new Set([
  * Enumerates all legally possible moves for the player in the current state.
  * Uses the RuleEngine to check validity of potential moves.
  */
-export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[] => {
+export const enumerate = (G: GameState, ctx: GameContext, playerID: string): GameAction[] => {
     if (!isValidPlayer(playerID, G)) {
         return [];
     }
 
-    const stage = ctx.activePlayers?.[playerID];
+    const stage = ctx.stagesByPlayer?.[playerID];
     if (!stage) {
         return [];
     }
@@ -75,7 +75,7 @@ export const enumerate = (G: GameState, ctx: Ctx, playerID: string): GameAction[
 function addMovesForType(
     moveName: string,
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string,
     spots: Set<string> | undefined,
     moves: GameAction[]
@@ -105,7 +105,7 @@ function handleParameterizedSpatialMoves(moveName: string, spots: Set<string>, m
 /**
  * Handles enumerating the 'tradeBank' move.
  */
-function handleTradeBankMove(G: GameState, ctx: Ctx, moves: GameAction[]) {
+function handleTradeBankMove(G: GameState, ctx: GameContext, moves: GameAction[]) {
     // Special Case: Transactional Move (0-arg but conditional)
     // Delegate to RuleEngine for consistency
     if (RuleEngine.validateMove(G, ctx, 'tradeBank', []).isValid) {
@@ -116,7 +116,7 @@ function handleTradeBankMove(G: GameState, ctx: Ctx, moves: GameAction[]) {
 /**
  * Handles enumerating other non-parameterized moves.
  */
-function handleNonParameterizedMove(moveName: string, G: GameState, ctx: Ctx, moves: GameAction[]) {
+function handleNonParameterizedMove(moveName: string, G: GameState, ctx: GameContext, moves: GameAction[]) {
     // Handle Non-Parameterized Moves (Everything else)
     // Use RuleEngine for ALL non-parameterized moves to ensure correctness
     // Create a union of all MoveArguments keys where the argument tuple is empty

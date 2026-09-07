@@ -1,8 +1,8 @@
-import { Bot } from 'boardgame.io/ai';
+import { Bot, Ctx } from '../adapters/runtime/boardgame';
+import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { GameState, GameAction, BotMove, MakeMoveAction } from '../game/core/types';
-import { Coach, CoachCtx } from '../game/analysis/coach';
+import { Coach } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
-import { Ctx } from 'boardgame.io';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 
 const DEFAULT_GREED_FACTOR = 0.6;
@@ -16,6 +16,8 @@ export class CatanBot extends Bot {
     protected profile: BotProfile;
 
     constructor(config: CatanBotConfig = { enumerate: () => [] }, profile: BotProfile = BALANCED_PROFILE) {
+        // boardgame.io owns this runtime-facing enumerator contract. Keep it intact here and
+        // translate the lifecycle context only after the runtime has selected the bot to play.
         super(config);
         this.profile = profile;
     }
@@ -42,7 +44,8 @@ export class CatanBot extends Bot {
     }
 
     async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
-        const { G, ctx } = state;
+        const { G } = state;
+        const ctx = toGameContext(state.ctx);
 
         // 0. Safety: Never attempt a move if it's not our turn
         // This prevents console spam and unauthorized move attempts.
@@ -50,20 +53,16 @@ export class CatanBot extends Bot {
             return;
         }
 
-        // 1. Get ALL valid moves from the base enumerator
-        const allMoves = this.enumerate(G, ctx, playerID) as GameAction[];
+        // 1. Ask the runtime enumerator with the raw runtime context exactly once.
+        // CatanGame.ai.enumerate owns the conversion into GameContext for domain rules.
+        const allMoves = this.enumerate(G, state.ctx, playerID) as GameAction[];
 
         if (!allMoves || allMoves.length === 0) {
             return;
         }
 
-        // 2. Use BotCoach to filter/rank these moves
-        let coach = (ctx as CoachCtx).coach;
-        if (!coach) {
-            console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');
-            coach = new Coach(G);
-        }
-
+        // 2. Use BotCoach to filter/rank these moves using only the Catan-owned context.
+        const coach = new Coach(G);
         const botCoach = new BotCoach(G, coach, this.profile);
         // Note: filterOptimalMoves returns a sorted list where index 0 is best
         const bestMoves = botCoach.filterOptimalMoves(allMoves, playerID, ctx);
@@ -77,7 +76,7 @@ export class CatanBot extends Bot {
         const selectedMove = candidates[selectedIndex];
 
         if (!selectedMove) {
-            console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.activePlayers?.[playerID]}'.`);
+            console.warn(`CatanBot (${playerID}): No move selected from ${candidates.length} candidates during stage '${ctx.stagesByPlayer?.[playerID]}'.`);
             return;
         }
 

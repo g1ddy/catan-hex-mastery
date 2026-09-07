@@ -1,6 +1,6 @@
 import { tradeBank } from './trade';
 import { createMockGameState } from '../testUtils';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 
 describe('Trade Logic', () => {
     describe('tradeBank Move', () => {
@@ -25,7 +25,7 @@ describe('Trade Logic', () => {
                 }
             });
 
-            const ctx = { currentPlayer: '0' } as Ctx;
+            const ctx = { currentPlayer: '0' } as GameContext;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (tradeBank as any)({ G, ctx }, 'wood', 'brick');
@@ -56,7 +56,7 @@ describe('Trade Logic', () => {
                 }
             });
 
-            const ctx = { currentPlayer: '0' } as Ctx;
+            const ctx = { currentPlayer: '0' } as GameContext;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             expect(() => (tradeBank as any)({ G, ctx }, 'wood', 'brick')).toThrow("You need at least 4 of a resource (or less with ports) to trade.");

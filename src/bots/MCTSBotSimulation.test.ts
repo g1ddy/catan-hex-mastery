@@ -1,8 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Client } from 'boardgame.io/client';
-import { Local } from 'boardgame.io/multiplayer';
+import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { CatanMCTSBot } from './CatanMCTSBot';
 import { MonteCatanoBot } from './MonteCatanoBot';

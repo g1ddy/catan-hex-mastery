@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GameState, RollStatus, Resources, ClientMoves } from '../../../game/core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
 import { getAffordableBuilds } from '../../../game/mechanics/costs';
 import { useTradeLogic } from './useTradeLogic';
@@ -31,13 +31,13 @@ export interface UseGameControlsResult {
 
 export const useGameControls = (
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     moves: ClientMoves,
     setBuildMode: (mode: BuildMode) => void
 ): UseGameControlsResult => {
     const isSetup = ctx.phase === PHASES.SETUP;
     const isGameplay = ctx.phase === PHASES.GAMEPLAY;
-    const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
     const isRollingStage = isGameplay && activeStage === STAGES.ROLLING;
     const isRobberStage = isGameplay && activeStage === STAGES.ROBBER;
 

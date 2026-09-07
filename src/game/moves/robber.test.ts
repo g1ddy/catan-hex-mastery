@@ -3,7 +3,7 @@ import { STAGES } from '../core/constants';
 import { createMockGameState } from '../testUtils';
 import { RuleEngine } from '../rules/validator';
 import { TerrainType, Hex, Vertex, Player } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { safeSet } from '../../game/core/utils/objectUtils';
 
 jest.mock('../rules/validator', () => ({
@@ -39,7 +39,7 @@ describe('Robber Moves', () => {
         const events = {
             setActivePlayers: jest.fn()
         };
-        const ctx: Ctx = { currentPlayer: '0' } as Ctx;
+        const ctx: GameContext = { currentPlayer: '0' } as GameContext;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const random: any = { Shuffle: (arr: any[]) => arr }; // Simple mock
 
@@ -83,7 +83,7 @@ describe('Robber Moves', () => {
 
 
          const events = { setActivePlayers: jest.fn() };
-         const ctx: Ctx = { currentPlayer: thiefID } as Ctx;
+         const ctx: GameContext = { currentPlayer: thiefID } as GameContext;
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
          const random: any = { Shuffle: (arr: any[]) => arr }; // Returns first element (wheat)
 

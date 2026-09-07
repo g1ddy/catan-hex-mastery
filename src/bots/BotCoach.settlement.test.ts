@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../game/core/types';
 import { GameState, BotMove, RollStatus } from '../game/core/types';
 import { Coach, CoachRecommendation } from '../game/analysis/coach';
 import { BotCoach } from './BotCoach';
@@ -15,7 +15,7 @@ const MockCoach = Coach as jest.MockedClass<typeof Coach>;
 
 describe('BotCoach Settlement Test', () => {
     let G: GameState;
-    let ctx: Ctx;
+    let ctx: GameContext;
     let botCoach: BotCoach;
     let mockCoachInstance: jest.Mocked<Coach>;
     let profile: BotProfile;
@@ -57,9 +57,9 @@ describe('BotCoach Settlement Test', () => {
         ctx = {
             numPlayers: 1,
             currentPlayer: '0',
-            phase: 'GAMEPLAY',
+            phase: 'gameplay',
             turn: 1,
-        } as Ctx;
+        } as GameContext;
 
         profile = { ...BALANCED_PROFILE };
         mockCoachInstance = new MockCoach(G) as jest.Mocked<Coach>;

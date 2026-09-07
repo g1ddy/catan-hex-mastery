@@ -201,6 +201,24 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../bots/AggressiveBot",
           "resolved": "src/bots/AggressiveBot.ts",
           "valid": true,
@@ -321,24 +339,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/ai",
-          "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -377,14 +377,120 @@
       "orphan": false
     },
     {
-      "source": "node_modules/boardgame.io/dist/cjs/ai.js",
+      "source": "src/adapters/runtime/boardgame.ts",
       "valid": true,
-      "dependencies": [],
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "export",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io",
+          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/ai",
+          "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/client",
+          "resolved": "node_modules/boardgame.io/dist/cjs/client.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/multiplayer",
+          "resolved": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        }
+      ],
       "dependents": [
         "src/pages/GamePage.tsx",
         "src/bots/CatanBot.ts",
         "src/bots/CatanMCTSBot.ts",
-        "src/bots/MonteCatanoBot.ts",
+        "src/bots/MonteCatanoBot.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/boardgameio.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts",
+        "src/adapters/runtime/boardgameMoves.ts",
+        "src/GameClient.tsx",
+        "src/game/Game.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "type-only",
+        "export",
+        "pre-compilation-only"
+      ]
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/ai.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts",
         "src/GameClient.tsx"
       ],
       "coreModule": false,
@@ -394,7 +500,42 @@
       "matchesDoNotFollow": true,
       "dependencyTypes": [
         "npm",
-        "import"
+        "export"
+      ]
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/client.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "export"
+      ]
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgame.ts",
+        "src/GameClient.tsx"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "export"
       ]
     },
     {
@@ -447,6 +588,42 @@
       "source": "src/bots/CatanBot.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -519,43 +696,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/ai",
-          "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -568,58 +708,229 @@
       "orphan": false
     },
     {
-      "source": "node_modules/boardgame.io/dist/boardgameio.js",
+      "source": "src/adapters/runtime/boardgameMoves.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io",
+          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts",
+        "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/adapters/runtime/BoardgameView.tsx",
+        "src/game/Game.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/constants.ts",
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "src/bots/CatanBot.ts",
+        "src/adapters/runtime/boardgameMoves.ts",
+        "src/game/core/types.ts",
         "src/game/analysis/coach.ts",
         "src/game/rules/queries.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
         "src/bots/CatanMCTSBot.ts",
         "src/bots/MonteCatanoBot.ts",
-        "src/GameClient.tsx",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/coach/hooks/useCoachData.ts",
         "src/features/coach/logic/coachUtils.ts",
-        "src/features/hud/components/GameControls.tsx",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/HexVertices.tsx",
         "src/features/hud/hooks/useGameControls.ts",
         "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/coach/components/CoachPanel.tsx",
-        "src/features/hud/components/GameStatusBanner.tsx",
-        "src/features/hud/hooks/useGameStatusMessage.ts",
+        "src/features/hud/components/controls/SetupControls.tsx",
         "src/features/hud/logic/statusMessageUtils.ts",
-        "src/features/game/hooks/useAutoResolveRoll.ts",
         "src/features/game/hooks/useGameScreenState.ts",
         "src/game/Game.ts",
-        "src/game/analysis/CoachPlugin.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/validator.ts",
         "src/game/rules/moveValidation.ts",
         "src/game/moves/robber.ts",
         "src/game/moves/roll.ts",
         "src/game/moves/setup.ts",
-        "src/game/moves/trade.ts",
         "src/game/rules/enumerator.ts"
       ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import",
-        "pre-compilation-only"
-      ]
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/types.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts",
+        "src/adapters/runtime/boardgameMoves.ts",
+        "src/game/analysis/coach.ts",
+        "src/game/core/validation.ts",
+        "src/game/geometry/hexUtils.ts",
+        "src/game/rules/queries.ts",
+        "src/game/mechanics/costs.ts",
+        "src/game/core/config.ts",
+        "src/game/rules/robberRules.ts",
+        "src/game/mechanics/resources.ts",
+        "src/game/rules/spatial.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/game/analysis/analyst.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/analysis/advisors/TradeAdvisor.ts",
+        "src/game/mechanics/trade.ts",
+        "src/bots/BotCoach.ts",
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/utils/ActionUtils.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/adapters/runtime/BoardgameView.tsx",
+        "src/features/game/GameScreen.tsx",
+        "src/features/board/BoardLayer.tsx",
+        "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/board/components/GameHex.tsx",
+        "src/features/shared/config/uiConfig.tsx",
+        "src/features/board/components/helpers.tsx",
+        "src/features/board/components/HexOverlays.tsx",
+        "src/game/geometry/staticGeometry.ts",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/Port.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/components/GameControls.tsx",
+        "src/features/hud/hooks/useGameControls.ts",
+        "src/features/hud/hooks/useTradeLogic.ts",
+        "src/features/hud/components/controls/TurnControls.tsx",
+        "src/features/board/hooks/useBoardInteractions.ts",
+        "src/features/board/hooks/useGameEffects.ts",
+        "src/features/coach/components/AnalystPanel.tsx",
+        "src/features/coach/components/CoachPanel.tsx",
+        "src/features/coach/components/PlayerProductionPotential.tsx",
+        "src/features/shared/components/ResourceIconRow.tsx",
+        "src/features/coach/components/PlayerProduction.tsx",
+        "src/features/coach/components/ResourceDistribution.tsx",
+        "src/features/hud/components/GameNotification.tsx",
+        "src/features/hud/hooks/useAutoDismissNotification.ts",
+        "src/features/hud/components/notifications/ProductionNotification.tsx",
+        "src/features/hud/components/notifications/RobberNotification.tsx",
+        "src/features/hud/components/GameStatusBanner.tsx",
+        "src/features/hud/hooks/useGameStatusMessage.ts",
+        "src/features/hud/logic/statusMessageUtils.ts",
+        "src/features/hud/components/PlayerPanel.tsx",
+        "src/features/game/components/TooltipRenderers.tsx",
+        "src/features/game/hooks/useAutoResolveRoll.ts",
+        "src/features/game/hooks/useGameScreenState.ts",
+        "src/game/Game.ts",
+        "src/game/analysis/CoachPlugin.ts",
+        "src/game/generation/boardGen.ts",
+        "src/game/mechanics/boardStats.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/validator.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/rules/economy.ts",
+        "src/game/moves/robber.ts",
+        "src/game/moves/roll.ts",
+        "src/game/moves/setup.ts",
+        "src/game/moves/trade.ts",
+        "src/game/rules/enumerator.ts",
+        "src/game/testUtils.ts"
+      ],
+      "orphan": false
     },
     {
       "source": "src/game/analysis/coach.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -863,25 +1174,6 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -901,107 +1193,6 @@
         "src/features/hud/components/controls/BuildBar.tsx",
         "src/features/coach/components/CoachPanel.tsx",
         "src/game/analysis/CoachPlugin.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/constants.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/analysis/coach.ts",
-        "src/game/rules/queries.ts",
-        "src/bots/CatanMCTSBot.ts",
-        "src/bots/MonteCatanoBot.ts",
-        "src/features/coach/logic/coachUtils.ts",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/hud/components/controls/SetupControls.tsx",
-        "src/features/hud/logic/statusMessageUtils.ts",
-        "src/features/game/hooks/useGameScreenState.ts",
-        "src/game/Game.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/moves/robber.ts",
-        "src/game/moves/roll.ts",
-        "src/game/moves/setup.ts",
-        "src/game/rules/enumerator.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/types.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/bots/CatanBot.ts",
-        "src/game/analysis/coach.ts",
-        "src/game/core/validation.ts",
-        "src/game/geometry/hexUtils.ts",
-        "src/game/rules/queries.ts",
-        "src/game/mechanics/costs.ts",
-        "src/game/core/config.ts",
-        "src/game/rules/robberRules.ts",
-        "src/game/mechanics/resources.ts",
-        "src/game/rules/spatial.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts",
-        "src/game/analysis/analyst.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/game/analysis/advisors/TradeAdvisor.ts",
-        "src/game/mechanics/trade.ts",
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/utils/ActionUtils.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/bots/CatanMCTSBot.ts",
-        "src/bots/MonteCatanoBot.ts",
-        "src/features/game/GameScreen.tsx",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/coach/hooks/useCoachData.ts",
-        "src/features/coach/logic/coachUtils.ts",
-        "src/features/board/components/GameHex.tsx",
-        "src/features/shared/config/uiConfig.tsx",
-        "src/features/board/components/helpers.tsx",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/game/geometry/staticGeometry.ts",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/Port.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/components/GameControls.tsx",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/hud/components/controls/TurnControls.tsx",
-        "src/features/board/hooks/useBoardInteractions.ts",
-        "src/features/board/hooks/useGameEffects.ts",
-        "src/features/coach/components/AnalystPanel.tsx",
-        "src/features/coach/components/CoachPanel.tsx",
-        "src/features/coach/components/PlayerProductionPotential.tsx",
-        "src/features/shared/components/ResourceIconRow.tsx",
-        "src/features/coach/components/PlayerProduction.tsx",
-        "src/features/coach/components/ResourceDistribution.tsx",
-        "src/features/hud/components/GameNotification.tsx",
-        "src/features/hud/hooks/useAutoDismissNotification.ts",
-        "src/features/hud/components/notifications/ProductionNotification.tsx",
-        "src/features/hud/components/notifications/RobberNotification.tsx",
-        "src/features/hud/components/PlayerPanel.tsx",
-        "src/features/game/components/TooltipRenderers.tsx",
-        "src/features/game/hooks/useAutoResolveRoll.ts",
-        "src/features/game/hooks/useGameScreenState.ts",
-        "src/game/Game.ts",
-        "src/game/analysis/CoachPlugin.ts",
-        "src/game/generation/boardGen.ts",
-        "src/game/mechanics/boardStats.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/validator.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/rules/economy.ts",
-        "src/game/moves/robber.ts",
-        "src/game/moves/roll.ts",
-        "src/game/moves/setup.ts",
-        "src/game/moves/trade.ts",
-        "src/game/rules/enumerator.ts",
-        "src/game/testUtils.ts"
       ],
       "orphan": false
     },
@@ -1116,6 +1307,25 @@
       "source": "src/game/rules/queries.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -1242,25 +1452,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -1910,6 +2101,25 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -2084,25 +2294,6 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -2368,25 +2559,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -2491,25 +2663,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -2716,25 +2869,6 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -2804,6 +2938,42 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../game/core/constants",
           "resolved": "src/game/core/constants.ts",
           "valid": true,
@@ -2828,43 +2998,6 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/ai",
-          "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -2980,6 +3113,42 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../game/analysis/analyst",
           "resolved": "src/game/analysis/analyst.ts",
           "valid": true,
@@ -3022,43 +3191,6 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/ai",
-          "resolved": "node_modules/boardgame.io/dist/cjs/ai.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -3082,8 +3214,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./bots/CatanBot",
-          "resolved": "src/bots/CatanBot.ts",
+          "module": "./adapters/runtime/BoardgameView",
+          "resolved": "src/adapters/runtime/BoardgameView.tsx",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
@@ -3100,8 +3232,8 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./features/game/GameScreen",
-          "resolved": "src/features/game/GameScreen.tsx",
+          "module": "./bots/CatanBot",
+          "resolved": "src/bots/CatanBot.ts",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
@@ -3224,11 +3356,12 @@
       "orphan": false
     },
     {
-      "source": "node_modules/boardgame.io/dist/cjs/multiplayer.js",
+      "source": "node_modules/boardgame.io/dist/cjs/react.js",
       "valid": true,
       "dependencies": [],
       "dependents": [
-        "src/GameClient.tsx"
+        "src/GameClient.tsx",
+        "src/adapters/runtime/BoardgameView.tsx"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -3241,26 +3374,90 @@
       ]
     },
     {
-      "source": "node_modules/boardgame.io/dist/cjs/react.js",
+      "source": "src/adapters/runtime/BoardgameView.tsx",
       "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/GameClient.tsx",
-        "src/features/game/GameScreen.tsx",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/board/hooks/useBoardInteractions.ts"
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../features/game/GameScreen",
+          "resolved": "src/features/game/GameScreen.tsx",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/react",
+          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": true
+        }
       ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
+      "dependents": [
+        "src/GameClient.tsx"
+      ],
+      "orphan": false
     },
     {
       "source": "src/features/game/GameScreen.tsx",
@@ -3471,25 +3668,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/react",
-          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -3505,7 +3683,7 @@
         }
       ],
       "dependents": [
-        "src/GameClient.tsx"
+        "src/adapters/runtime/BoardgameView.tsx"
       ],
       "orphan": false
     },
@@ -3513,6 +3691,24 @@
       "source": "src/features/board/BoardLayer.tsx",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../adapters/rendering/hexgrid",
+          "resolved": "src/adapters/rendering/hexgrid.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -3702,25 +3898,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -3748,24 +3925,6 @@
           "moduleSystem": "es6",
           "module": "react-dom",
           "resolved": "node_modules/react-dom/index.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react-hexgrid",
-          "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": true
@@ -3830,25 +3989,6 @@
       ]
     },
     {
-      "source": "node_modules/react-hexgrid/lib/index.js",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/features/board/BoardLayer.tsx",
-        "src/features/board/components/GameHex.tsx",
-        "src/features/board/components/HexOverlays.tsx"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
-    },
-    {
       "source": "node_modules/react-tooltip/dist/react-tooltip.min.cjs",
       "valid": true,
       "dependencies": [],
@@ -3884,6 +4024,53 @@
       "dependencyTypes": [
         "npm",
         "import"
+      ]
+    },
+    {
+      "source": "src/adapters/rendering/hexgrid.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "react-hexgrid",
+          "resolved": "node_modules/react-hexgrid/lib/index.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/features/board/BoardLayer.tsx",
+        "src/features/board/components/GameHex.tsx",
+        "src/features/board/components/HexOverlays.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/react-hexgrid/lib/index.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/rendering/hexgrid.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "export"
       ]
     },
     {
@@ -3981,25 +4168,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         },
         {
           "circular": false,
@@ -4146,25 +4314,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -4218,6 +4367,24 @@
       "source": "src/features/board/components/GameHex.tsx",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../adapters/rendering/hexgrid",
+          "resolved": "src/adapters/rendering/hexgrid.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -4306,24 +4473,6 @@
           "moduleSystem": "es6",
           "module": "react",
           "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react-hexgrid",
-          "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": true
@@ -4583,6 +4732,24 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../adapters/rendering/hexgrid",
+          "resolved": "src/adapters/rendering/hexgrid.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import",
             "pre-compilation-only"
           ],
@@ -4729,25 +4896,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/react",
-          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -4757,24 +4905,6 @@
           "moduleSystem": "es6",
           "module": "react",
           "resolved": "node_modules/react/index.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "react-hexgrid",
-          "resolved": "node_modules/react-hexgrid/lib/index.js",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": true
@@ -5073,25 +5203,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/react",
-          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         },
         {
           "circular": false,
@@ -5435,25 +5546,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/react",
-          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -5725,25 +5817,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -5890,25 +5963,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -5986,25 +6040,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         },
         {
           "circular": false,
@@ -6397,25 +6432,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/react",
-          "resolved": "node_modules/boardgame.io/dist/cjs/react.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -6635,25 +6651,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -7394,6 +7391,25 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
@@ -7424,25 +7440,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -7466,6 +7463,25 @@
       "source": "src/features/hud/hooks/useGameStatusMessage.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -7520,25 +7536,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         },
         {
           "circular": false,
@@ -7601,6 +7598,25 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
+          "module": "../../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
           "module": "../../shared/types",
           "resolved": "src/features/shared/types.ts",
           "valid": true,
@@ -7624,25 +7640,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -8336,25 +8333,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -8495,25 +8473,6 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
             "npm-dev",
             "import"
           ],
@@ -8537,6 +8496,24 @@
       "source": "src/game/Game.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -8898,25 +8875,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9127,6 +9085,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
             "import",
             "pre-compilation-only"
           ],
@@ -9175,25 +9134,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9205,6 +9145,25 @@
       "source": "src/game/rules/validator.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -9259,25 +9218,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9294,6 +9234,25 @@
       "source": "src/game/rules/moveValidation.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -9473,25 +9432,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9629,6 +9569,26 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -9658,25 +9618,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9730,6 +9671,25 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
             "import"
           ],
           "dynamic": false,
@@ -9759,25 +9719,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -9831,6 +9772,25 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
             "import"
           ],
           "dynamic": false,
@@ -9950,25 +9910,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -10004,6 +9945,7 @@
           "couldNotResolve": false,
           "dependencyTypes": [
             "local",
+            "type-only",
             "import",
             "pre-compilation-only"
           ],
@@ -10053,25 +9995,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -10083,6 +10006,25 @@
       "source": "src/game/rules/enumerator.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -10173,25 +10115,6 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
         }
       ],
       "dependents": [
@@ -10452,8 +10375,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 130,
-    "totalDependenciesCruised": 468,
+    "totalCruised": 135,
+    "totalDependenciesCruised": 462,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
@@ -10500,6 +10423,33 @@
     },
     "ruleSetUsed": {
       "forbidden": [
+        {
+          "name": "framework-import-outside-adapters",
+          "severity": "error",
+          "from": {
+            "path": "^(src/game/(core|rules|geometry)|src/features|src/bots)"
+          },
+          "to": {
+            "dependencyTypes": [
+              "npm"
+            ],
+            "path": "(^|/)node_modules/(boardgame[.]io|react-hexgrid)(/|$)"
+          },
+          "comment": "Catan domain and feature code must use the owned runtime and rendering contracts in src/adapters.",
+          "scope": "module"
+        },
+        {
+          "name": "domain-runtime-adapter-dependency",
+          "severity": "error",
+          "from": {
+            "path": "^src/game/(core|rules|geometry|mechanics|generation|analysis|moves)"
+          },
+          "to": {
+            "path": "^src/adapters/runtime"
+          },
+          "comment": "Runtime adapters depend on Catan domain contracts; domain code must never depend on adapters.",
+          "scope": "module"
+        },
         {
           "name": "core-layer-violation",
           "severity": "error",

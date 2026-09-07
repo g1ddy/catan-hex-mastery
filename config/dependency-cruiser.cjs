@@ -47,6 +47,25 @@ module.exports = {
     },
   },
   forbidden: [
+    {
+      name: 'framework-import-outside-adapters',
+      severity: 'error',
+      from: {
+        path: '^(src/game/(core|rules|geometry)|src/features|src/bots)',
+      },
+      to: {
+        dependencyTypes: ['npm'],
+        path: '(^|/)node_modules/(boardgame[.]io|react-hexgrid)(/|$)',
+      },
+      comment: 'Catan domain and feature code must use the owned runtime and rendering contracts in src/adapters.',
+    },
+    {
+      name: 'domain-runtime-adapter-dependency',
+      severity: 'error',
+      from: { path: '^src/game/(core|rules|geometry|mechanics|generation|analysis|moves)' },
+      to: { path: '^src/adapters/runtime' },
+      comment: 'Runtime adapters depend on Catan domain contracts; domain code must never depend on adapters.',
+    },
     /* 0. Core Layer (Bottom) cannot import from higher layers */
     {
         name: 'core-layer-violation',

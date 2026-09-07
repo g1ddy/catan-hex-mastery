@@ -1,13 +1,13 @@
 import { buildRoad, buildSettlement, buildCity } from './build';
 import { placeRoad, placeSettlement } from './setup';
 import { GameState, RollStatus } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import * as _ from 'lodash';
 
-type MoveFn = (args: { G: GameState; ctx: Ctx }, ...payload: unknown[]) => unknown;
+type MoveFn = (args: { G: GameState; ctx: GameContext }, ...payload: unknown[]) => unknown;
 
 describe('Security Validation: Input Sanitization', () => {
-    const mockContext: Ctx = { currentPlayer: '0' } as Ctx;
+    const mockContext: GameContext = { currentPlayer: '0' } as GameContext;
 
     const baseG: GameState = {
         players: {
@@ -63,17 +63,17 @@ describe('Security Validation: Input Sanitization', () => {
     describe('Build Moves', () => {
         maliciousInputs.forEach(input => {
             it(`buildRoad should reject malicious input: ${input}`, () => {
-                const call = () => (buildRoad as MoveFn)({ G, ctx: mockContext }, input);
+                const call = () => (buildRoad as unknown as MoveFn)({ G, ctx: mockContext }, input);
                 expect(call).toThrow("Invalid edge ID format");
             });
 
             it(`buildSettlement should reject malicious input: ${input}`, () => {
-                const call = () => (buildSettlement as MoveFn)({ G, ctx: mockContext }, input);
+                const call = () => (buildSettlement as unknown as MoveFn)({ G, ctx: mockContext }, input);
                 expect(call).toThrow("Invalid vertex ID format");
             });
 
             it(`buildCity should reject malicious input: ${input}`, () => {
-                const call = () => (buildCity as MoveFn)({ G, ctx: mockContext }, input);
+                const call = () => (buildCity as unknown as MoveFn)({ G, ctx: mockContext }, input);
                 expect(call).toThrow("Invalid vertex ID format");
             });
         });
@@ -82,12 +82,12 @@ describe('Security Validation: Input Sanitization', () => {
     describe('Setup Moves', () => {
         maliciousInputs.forEach(input => {
             it(`placeRoad should reject malicious input: ${input}`, () => {
-                const call = () => (placeRoad as MoveFn)({ G, ctx: mockContext }, input);
+                const call = () => (placeRoad as unknown as MoveFn)({ G, ctx: mockContext }, input);
                 expect(call).toThrow("Invalid edge ID format");
             });
 
             it(`placeSettlement should reject malicious input: ${input}`, () => {
-                const call = () => (placeSettlement as MoveFn)({ G, ctx: mockContext }, input);
+                const call = () => (placeSettlement as unknown as MoveFn)({ G, ctx: mockContext }, input);
                 expect(call).toThrow("Invalid vertex ID format");
             });
         });

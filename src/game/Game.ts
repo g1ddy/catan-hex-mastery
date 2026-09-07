@@ -14,10 +14,20 @@ import { PLAYER_COLORS } from './core/config';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './rules/enumerator';
 import { stripHtml } from '../game/core/utils/sanitize';
+import { adaptMove, toGameContext } from '../adapters/runtime/boardgameMoves';
 
 const MOVE_MAP = {
-    rollDice, resolveRoll, buildRoad, buildSettlement, buildCity, tradeBank, endTurn,
-    placeSettlement, placeRoad, regenerateBoard, dismissRobber
+    rollDice: adaptMove(rollDice),
+    resolveRoll: adaptMove(resolveRoll),
+    buildRoad: adaptMove(buildRoad),
+    buildSettlement: adaptMove(buildSettlement),
+    buildCity: adaptMove(buildCity),
+    tradeBank: adaptMove(tradeBank),
+    endTurn: adaptMove(endTurn),
+    placeSettlement: adaptMove(placeSettlement),
+    placeRoad: adaptMove(placeRoad),
+    regenerateBoard: adaptMove(regenerateBoard),
+    dismissRobber: adaptMove(dismissRobber),
 };
 
 const getMovesForStage = (stage: keyof typeof STAGE_MOVES) => {
@@ -31,7 +41,7 @@ export const CatanGame: Game<GameState> = {
   maxPlayers: 4,
   plugins: [CoachPlugin],
   ai: {
-    enumerate,
+    enumerate: (G, ctx, playerID) => enumerate(G, toGameContext(ctx), playerID),
   },
 
   endIf: ({ G, ctx }) => {

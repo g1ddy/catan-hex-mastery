@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react';
-import { BoardProps } from 'boardgame.io/react';
+import { GameContext } from '../../../game/core/types';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
 import { getHeatmapColor, CoachRecommendation } from '../../../game/analysis/coach';
@@ -66,7 +66,7 @@ function getVertexInteractiveState(
 interface HexVerticesProps {
     vertices: { id: string; parts: string[]; x: number; y: number }[];
     G: GameState;
-    ctx: BoardProps<GameState>['ctx'];
+    ctx: GameContext;
     moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
@@ -112,7 +112,7 @@ export function HexVertices({
                 const vertex = safeGet(G.board.vertices, vId);
                 const ownerColor = vertex ? G.players[vertex.owner]?.color : null;
                 const isSetup = ctx.phase === PHASES.SETUP;
-                const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+                const currentStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
                 const isActingStage = ctx.phase === PHASES.GAMEPLAY && currentStage === STAGES.ACTING;
 
                 const { isClickable, isGhost, recommendationData, heatmapColor, isTop3 } = getVertexInteractiveState(

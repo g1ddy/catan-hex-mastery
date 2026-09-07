@@ -4,6 +4,8 @@ export const PHASES = {
   GAME_OVER: 'gameOver',
 } as const;
 
+export type GamePhase = typeof PHASES[keyof typeof PHASES];
+
 export const STAGES = {
   ROLLING: 'rolling',
   ACTING: 'acting',
@@ -14,6 +16,8 @@ export const STAGES = {
   // Future stages
   TRADING: 'trading',
 } as const;
+
+export type GameStage = typeof STAGES[keyof typeof STAGES];
 
 export const STAGE_MOVES = {
     [STAGES.ROLLING]: ['rollDice', 'resolveRoll'],

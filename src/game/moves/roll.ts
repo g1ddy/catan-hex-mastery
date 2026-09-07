@@ -1,10 +1,10 @@
-import { Move } from 'boardgame.io';
-import { GameState, RollStatus, Resources } from '../core/types';
+import type { MoveArguments, MoveHandler } from '../core/types';
+import { RollStatus, Resources } from '../core/types';
 import { RuleEngine } from '../rules/validator';
 import { STAGES } from '../core/constants';
 import { distributeResources, countResources } from '../mechanics/resources';
 
-export const rollDice: Move<GameState> = ({ G, ctx }) => {
+export const rollDice: MoveHandler<MoveArguments['rollDice']> = ({ G, ctx }) => {
     // Validate the move using the centralized RuleEngine
     RuleEngine.validateMoveOrThrow(G, ctx, 'rollDice', []);
 
@@ -15,7 +15,7 @@ export const rollDice: Move<GameState> = ({ G, ctx }) => {
     G.notification = null; // Clear previous event
 };
 
-export const resolveRoll: Move<GameState> = ({ G, ctx, random, events }) => {
+export const resolveRoll: MoveHandler<MoveArguments['resolveRoll']> = ({ G, ctx, random, events }) => {
      // Validate the move using the centralized RuleEngine
      RuleEngine.validateMoveOrThrow(G, ctx, 'resolveRoll', []);
 

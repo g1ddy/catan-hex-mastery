@@ -3,7 +3,7 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 import { Ctx, DefaultPluginAPIs } from 'boardgame.io';
 import { CatanGame } from './game/Game';
-import { GameScreen } from './features/game/GameScreen';
+import { BoardgameView } from './adapters/runtime/BoardgameView';
 import { CatanBot } from './bots/CatanBot';
 import { Bot } from 'boardgame.io/ai';
 
@@ -69,7 +69,7 @@ export function GameClient(props: GameClientProps) {
 
      return Client({
         game: GameWithSetupData,
-        board: GameScreen,
+        board: BoardgameView,
         numPlayers: numPlayers,
         debug: clientConfig.debug,
         multiplayer: clientConfig.multiplayer,

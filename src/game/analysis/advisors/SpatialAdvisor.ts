@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { GameState, TerrainType } from '../../core/types';
 import { getValidSetupSettlementSpots } from '../../rules/queries';
 import { isValidPlayer } from '../../core/validation';
@@ -173,7 +173,7 @@ export class SpatialAdvisor {
         };
     }
 
-    public getAllSettlementScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
+    public getAllSettlementScores(playerID: string, ctx: GameContext): CoachRecommendation[] {
         if (playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -185,7 +185,7 @@ export class SpatialAdvisor {
         return Array.from(candidates).map(vId => this.scoreVertex(vId, playerID, scarcityMap, existingResources));
     }
 
-    public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+    public getBestCitySpots(playerID: string, ctx: GameContext, candidates: string[]): CoachRecommendation[] {
         if (playerID !== ctx.currentPlayer) {
             return [];
         }

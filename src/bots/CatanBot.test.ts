@@ -1,6 +1,6 @@
 import { CatanBot } from './CatanBot';
 import { GameState } from '../game/core/types';
-import { Ctx } from 'boardgame.io';
+import type { Ctx } from '../adapters/runtime/boardgame';
 
 describe('CatanBot', () => {
     let G: GameState;
@@ -34,11 +34,12 @@ describe('CatanBot', () => {
         expect(mockEnumerate).not.toHaveBeenCalled();
     });
 
-    test('should call enumerate and return a move when it is the players turn', async () => {
+    test('should call enumerate with the raw runtime context and return a move when it is the players turn', async () => {
         const mockEnumerate = jest.fn().mockReturnValue([{ move: 'rollDice', args: [] }]);
         const bot = new CatanBot({ enumerate: mockEnumerate });
 
         ctx.currentPlayer = '0';
+        ctx.activePlayers = { '0': 'rolling' } as Ctx['activePlayers'];
         const result = await bot.play({ G, ctx }, '0');
 
         expect(result).toBeDefined();
@@ -49,5 +50,6 @@ describe('CatanBot', () => {
             }
         }
         expect(mockEnumerate).toHaveBeenCalledWith(G, ctx, '0');
+        expect(mockEnumerate.mock.calls[0]?.[1].activePlayers).toEqual({ '0': 'rolling' });
     });
 });

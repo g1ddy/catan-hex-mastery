@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { GameState } from '../../../game/core/types';
 import { calculateTrade, getExchangeRates, TradeResult, ExchangeRates } from '../../../game/mechanics/trade';
 import { STAGE_MOVES } from '../../../game/core/constants';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 
 export interface UseTradeLogicResult {
     rates: ExchangeRates['rates'];
@@ -12,9 +12,9 @@ export interface UseTradeLogicResult {
     highlightedPortEdgeId: string | undefined;
 }
 
-export const useTradeLogic = (G: GameState, ctx: Ctx): UseTradeLogicResult => {
+export const useTradeLogic = (G: GameState, ctx: GameContext): UseTradeLogicResult => {
     return useMemo(() => {
-        const activeStage = ctx.activePlayers?.[ctx.currentPlayer];
+        const activeStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
         const allowedMoves = activeStage && STAGE_MOVES[activeStage as keyof typeof STAGE_MOVES];
         const canTradeBank = allowedMoves && (allowedMoves as readonly string[]).includes('tradeBank');
 
@@ -33,5 +33,5 @@ export const useTradeLogic = (G: GameState, ctx: Ctx): UseTradeLogicResult => {
             canTrade,
             highlightedPortEdgeId
         };
-    }, [G, ctx.currentPlayer, ctx.activePlayers, ctx.phase]);
+    }, [G, ctx.currentPlayer, ctx.stagesByPlayer, ctx.phase]);
 };

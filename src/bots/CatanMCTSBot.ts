@@ -1,11 +1,13 @@
-import { MCTSBot } from 'boardgame.io/ai';
-import { Game, Ctx } from 'boardgame.io';
+import { MCTSBot } from '../adapters/runtime/boardgame';
+import { Game, Ctx } from '../adapters/runtime/boardgame';
 import { GameState, GameAction } from '../game/core/types';
+import { GameContext } from '../game/core/types';
+import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { WINNING_SCORE } from '../game/core/constants';
 
 interface BotConfig {
     game: Game;
-    enumerate: (G: GameState, ctx: Ctx, playerID: string) => GameAction[];
+    enumerate: (G: GameState, ctx: GameContext, playerID: string) => GameAction[];
     seed?: string | number;
     playerID?: string;
     [key: string]: any;
@@ -15,6 +17,8 @@ export class CatanMCTSBot extends MCTSBot {
     constructor(config: BotConfig) {
         super({
             ...config,
+            enumerate: (G: GameState, ctx: Ctx, playerID: string) =>
+                config.enumerate(G, toGameContext(ctx), playerID),
             iterations: 100,
             playoutDepth: 10,
             objectives: (_G: GameState, _ctx: Ctx, playerID: string | undefined) => {

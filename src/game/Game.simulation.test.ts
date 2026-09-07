@@ -1,9 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { Client } from 'boardgame.io/client';
-import { Local } from 'boardgame.io/multiplayer';
-import { Ctx } from 'boardgame.io';
+import { Client, Local, type Ctx } from '../adapters/runtime/boardgame';
+import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { CatanGame } from './Game';
 import { CatanBot } from '../bots/CatanBot';
 import { CoachPlugin } from './analysis/CoachPlugin';
@@ -14,6 +13,9 @@ interface SimulationState {
     G: GameState;
     ctx: Ctx;
 }
+
+const runtimeEnumerate = (G: GameState, ctx: Ctx, playerID: string) =>
+  enumerate(G, toGameContext(ctx), playerID);
 
 describe('Game Simulation with CatanBot', () => {
   it('should run a 2-player game without crashing', async () => {
@@ -37,8 +39,8 @@ describe('Game Simulation with CatanBot', () => {
     client1.start();
 
     const bots = {
-      '0': new CatanBot({ enumerate }),
-      '1': new CatanBot({ enumerate }),
+      '0': new CatanBot({ enumerate: runtimeEnumerate }),
+      '1': new CatanBot({ enumerate: runtimeEnumerate }),
     };
 
     const MAX_STEPS = 100;
@@ -61,7 +63,7 @@ describe('Game Simulation with CatanBot', () => {
         const bot = bots[playerID as keyof typeof bots];
         if (!bot) continue;
 
-        const enhancedCtx = { ...state.ctx, coach: CoachPlugin.api({ G: state.G, ctx: state.ctx }) };
+        const enhancedCtx = { ...state.ctx, coach: CoachPlugin.api({ G: state.G }) };
         const enhancedState = { ...state, ctx: enhancedCtx };
 
         const result = await bot.play(enhancedState, playerID);

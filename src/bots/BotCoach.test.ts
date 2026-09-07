@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../game/core/types';
 import { BotCoach } from './BotCoach';
 import { GameState, MakeMoveAction } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
@@ -37,7 +37,7 @@ describe('BotCoach', () => {
     let G: GameState;
     let coach: Coach;
     let botCoach: BotCoach;
-    let mockCtx: Ctx;
+    let mockGameContext: GameContext;
 
     beforeEach(() => {
         G = {
@@ -73,7 +73,7 @@ describe('BotCoach', () => {
         (coach.evaluateTrade as jest.Mock).mockReturnValue({ isSafe: true });
 
         botCoach = new BotCoach(G, coach);
-        mockCtx = { currentPlayer: '0' } as Ctx;
+        mockGameContext = { currentPlayer: '0' } as GameContext;
     });
 
     describe('filterOptimalMoves', () => {
@@ -82,7 +82,7 @@ describe('BotCoach', () => {
                 mockAction('placeRoad', ['e1']),
                 mockAction('placeRoad', ['e2'])
             ];
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             expect(result).toHaveLength(2);
         });
 
@@ -98,7 +98,7 @@ describe('BotCoach', () => {
                 { vertexId: 'v1' }, { vertexId: 'v3' }, { vertexId: 'v4' }
             ]);
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             expect(result).toHaveLength(2);
 
             // Verify args extraction - Cast to MakeMoveAction since we know the input
@@ -126,7 +126,7 @@ describe('BotCoach', () => {
                 { vertexId: 'v2', score: 10 }, { vertexId: 'v3', score: 5 }
              ]);
 
-             const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+             const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
              // Should pick the city (which one depends on analysis)
 
              const actions = result as MakeMoveAction[];
@@ -162,7 +162,7 @@ describe('BotCoach', () => {
                  mockAction('buildSettlement', ['v1']), // Weight 1
              ];
 
-             const result = flatCoach.filterOptimalMoves(moves, '0', mockCtx);
+             const result = flatCoach.filterOptimalMoves(moves, '0', mockGameContext);
              expect(result).toHaveLength(2);
         });
 
@@ -178,7 +178,7 @@ describe('BotCoach', () => {
                 mockAction('buildCity', ['v1'])  // Higher score
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
 
             expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
@@ -188,7 +188,7 @@ describe('BotCoach', () => {
             }
 
             // Verify coach was called correctly
-            expect(coach.getBestCitySpots).toHaveBeenCalledWith('0', mockCtx, ['v2', 'v1']);
+            expect(coach.getBestCitySpots).toHaveBeenCalledWith('0', mockGameContext, ['v2', 'v1']);
         });
 
         it('should choose the settlement recommended by Coach when building in gameplay', () => {
@@ -204,7 +204,7 @@ describe('BotCoach', () => {
                 mockAction('buildRoad', ['e1']) // Lower weight
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
 
             expect(result.length).toBeGreaterThanOrEqual(1);
             const action = result[0] as MakeMoveAction;
@@ -217,7 +217,7 @@ describe('BotCoach', () => {
         it('should handle invalid player ID gracefully', () => {
             const moves = [mockAction('endTurn')];
             // Match currentPlayer to bypass the first check
-            const ctxWithInvalidPlayer = { ...mockCtx, currentPlayer: '999' };
+            const ctxWithInvalidPlayer = { ...mockGameContext, currentPlayer: '999' };
             const result = botCoach.filterOptimalMoves(moves, '999', ctxWithInvalidPlayer);
             expect(result).toEqual([]);
         });
@@ -231,7 +231,7 @@ describe('BotCoach', () => {
             // Mock coach to return empty
             (coach.getBestSettlementSpots as jest.Mock).mockReturnValue([]);
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             expect(result).toHaveLength(2);
         });
 
@@ -255,7 +255,7 @@ describe('BotCoach', () => {
             // By default profile, EndTurn (1.0) > BuildRoad (~0.4 or whatever profile says).
             // With boost, Road should beat EndTurn.
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('buildRoad');
@@ -280,7 +280,7 @@ describe('BotCoach', () => {
                 mockAction('endTurn')
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             // Road penalized heavily
@@ -303,7 +303,7 @@ describe('BotCoach', () => {
             };
             const aggroCoach = new BotCoach(G, coach, aggroProfile);
 
-            const result = aggroCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = aggroCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('buildRoad');
@@ -320,7 +320,7 @@ describe('BotCoach', () => {
                 mockAction('buildSettlement', ['v1'])
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('buildSettlement');
@@ -336,7 +336,7 @@ describe('BotCoach', () => {
                 mockAction('tradeBank')
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('tradeBank');
@@ -359,7 +359,7 @@ describe('BotCoach', () => {
 
             const results = new Set<string>();
             for (let i = 0; i < 20; i++) {
-                const res = aggroCoach.filterOptimalMoves([...moves], '0', mockCtx) as MakeMoveAction[];
+                const res = aggroCoach.filterOptimalMoves([...moves], '0', mockGameContext) as MakeMoveAction[];
                 if (res[0].payload.type === 'buildRoad') {
                     // Extract args safely
                     const args = res[0].payload.args as string[];
@@ -382,7 +382,7 @@ describe('BotCoach', () => {
                 mockAction('tradeBank')
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('endTurn');
@@ -400,7 +400,7 @@ describe('BotCoach', () => {
                 mockAction('tradeBank')
             ];
 
-            const result = botCoach.filterOptimalMoves(moves, '0', mockCtx);
+            const result = botCoach.filterOptimalMoves(moves, '0', mockGameContext);
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('tradeBank');

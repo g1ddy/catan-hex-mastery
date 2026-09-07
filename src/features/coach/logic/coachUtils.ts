@@ -2,7 +2,7 @@ import { Coach, CoachRecommendation } from '../../../game/analysis/coach';
 import { GameState } from '../../../game/core/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { BuildMode, UiMode } from '../../shared/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { CoachData, EMPTY_COACH_DATA } from '../types';
 
 export type CoachMode = 'settlement' | 'city' | 'road' | null;
@@ -11,11 +11,11 @@ export type CoachMode = 'settlement' | 'city' | 'road' | null;
  * Determines the current mode for coach recommendations based on game state.
  */
 export const getCoachMode = (
-    ctx: Ctx,
+    ctx: GameContext,
     uiMode: UiMode,
     buildMode: BuildMode
 ): CoachMode => {
-    const currentStage = ctx.activePlayers?.[ctx.currentPlayer];
+    const currentStage = ctx.stagesByPlayer?.[ctx.currentPlayer];
 
     // Setup Phase
     if (ctx.phase === PHASES.SETUP && uiMode === 'placing') {
@@ -35,7 +35,7 @@ const getRecommendationsForMode = (
     coach: Coach,
     mode: CoachMode,
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string
 ): CoachRecommendation[] => {
     switch (mode) {
@@ -74,7 +74,7 @@ export const fetchRecommendations = (
     coach: Coach,
     mode: CoachMode,
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     requestingPlayerID: string | null
 ): CoachRecommendation[] => {
     if (!mode) return [];
