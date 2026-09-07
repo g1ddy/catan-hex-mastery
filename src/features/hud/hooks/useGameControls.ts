@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GameState, RollStatus, Resources, ClientMoves } from '../../../game/core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
 import { getAffordableBuilds } from '../../../game/mechanics/costs';
 import { useTradeLogic } from './useTradeLogic';
@@ -31,7 +31,7 @@ export interface UseGameControlsResult {
 
 export const useGameControls = (
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     moves: ClientMoves,
     setBuildMode: (mode: BuildMode) => void
 ): UseGameControlsResult => {

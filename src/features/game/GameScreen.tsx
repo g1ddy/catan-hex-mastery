@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { BoardProps } from 'boardgame.io/react';
-import { GameState, ClientMoves } from '../../game/core/types';
+import { GameViewProps } from '../../game/core/types';
 import { GameLayout } from './GameLayout';
 import { Coach, StrategicAdvice } from '../../game/analysis/coach';
 import { useTradeLogic } from '../hud/hooks/useTradeLogic';
@@ -14,7 +13,7 @@ import { BoardLayer } from '../board/BoardLayer';
 import { HUDLayer } from '../hud/HUDLayer';
 import { CoachLayer } from '../coach/CoachLayer';
 
-export interface GameScreenProps extends BoardProps<GameState> {
+export interface GameScreenProps extends GameViewProps {
   onPlayerChange?: (playerID: string) => void;
 }
 
@@ -54,7 +53,7 @@ export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScre
     const { highlightedPortEdgeId } = useTradeLogic(G, ctx);
 
     // 5. Roll Animation Enforcement
-    useAutoResolveRoll(G, ctx, moves as ClientMoves, playerID);
+    useAutoResolveRoll(G, ctx, moves, playerID);
 
     return (
         <GameLayout
@@ -62,7 +61,7 @@ export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScre
                 <BoardLayer
                     G={G}
                     ctx={ctx}
-                    moves={moves as ClientMoves}
+                    moves={moves}
                     coachData={coachData}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
@@ -95,7 +94,7 @@ export function GameScreen({ G, ctx, moves, playerID, onPlayerChange }: GameScre
                 <HUDLayer.Controls
                     G={G}
                     ctx={ctx}
-                    moves={moves as ClientMoves}
+                    moves={moves}
                     buildMode={buildMode}
                     setBuildMode={setBuildMode}
                     uiMode={uiMode}

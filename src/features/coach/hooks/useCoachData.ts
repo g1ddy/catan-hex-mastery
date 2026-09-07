@@ -1,8 +1,8 @@
 import React from 'react';
 import { GameState } from '../../../game/core/types';
-import { Coach, CoachCtx } from '../../../game/analysis/coach';
+import { Coach, CoachGameContext } from '../../../game/analysis/coach';
 import { BuildMode, UiMode } from '../../shared/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { CoachData, EMPTY_COACH_DATA } from '../types';
 import { getCoachMode, fetchRecommendations, processRecommendations } from '../logic/coachUtils';
 
@@ -11,7 +11,7 @@ export type { CoachData };
 
 export const useCoachData = (
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     buildMode: BuildMode,
     uiMode: UiMode,
     isCoachModeEnabled: boolean,
@@ -34,8 +34,8 @@ export const useCoachData = (
 
         // 2. Get Coach Instance
         // Use ctx.coach if available (Plugin), otherwise fall back to transient instance
-        const coach = (ctx as CoachCtx).coach || new Coach(G);
-        if (!(ctx as CoachCtx).coach) {
+        const coach = (ctx as CoachGameContext).coach || new Coach(G);
+        if (!(ctx as CoachGameContext).coach) {
             // Only warn if we really expected a plugin but didn't find one.
             // However, often Coach is just transient.
             // console.warn('Coach plugin not found in ctx, falling back to transient Coach instance');

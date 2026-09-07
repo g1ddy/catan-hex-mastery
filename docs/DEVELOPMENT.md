@@ -57,8 +57,8 @@ The project is built on a modern React stack, leveraging `boardgame.io` for stat
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/hex-mastery.git
-    cd hex-mastery
+    git clone https://github.com/g1ddy/catan-hex-mastery.git
+    cd catan-hex-mastery
     ```
 
 2.  **Bootstrap the environment:**

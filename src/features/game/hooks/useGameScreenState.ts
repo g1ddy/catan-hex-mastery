@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { GameState, Hex } from '../../../game/core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { PHASES, STAGES, STAGE_MOVES } from '../../../game/core/constants';
 import { useIsMobile } from '../../shared/hooks/useIsMobile';
 import { getValidRobberLocations } from '../../../game/rules/queries';
@@ -9,7 +9,7 @@ import { BuildMode, UiMode } from '../../shared/types';
 
 export const useGameScreenState = (
     G: GameState,
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string | null,
     onPlayerChange?: (playerID: string) => void
 ) => {

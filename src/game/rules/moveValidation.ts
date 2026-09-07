@@ -1,5 +1,5 @@
 import { GameState, RollStatus } from '../core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { STAGES } from '../core/constants';
 import { canAffordRoad, canAffordSettlement, canAffordCity } from './economy';
 import { isValidRoadPlacement, isValidCityPlacement, isValidSettlementPlacement, ValidationResult, isValidRobberPlacement } from './spatial';
@@ -91,7 +91,7 @@ export const validateRobberMove = (G: GameState, playerID: string, hexID: string
 /**
  * Validates the "End Turn" move.
  */
-export const validateEndTurn = (G: GameState, ctx: Ctx, playerID: string): ValidationResult => {
+export const validateEndTurn = (G: GameState, ctx: GameContext, playerID: string): ValidationResult => {
     if (!isValidPlayer(playerID, G)) {
         return { isValid: false, reason: "Invalid player" };
     }

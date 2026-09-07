@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { GameState, RollStatus, ClientMoves } from '../../../game/core/types';
 
 // The duration of the visual dice roll animation
@@ -12,7 +12,7 @@ const ROLL_ANIMATION_DURATION = 1000;
  * Bots or server-side logic should handle this transition immediately/independently.
  * Spectators or other players should NOT trigger this move.
  */
-export const useAutoResolveRoll = (G: GameState, ctx: Ctx, moves: ClientMoves, playerID: string | null) => {
+export const useAutoResolveRoll = (G: GameState, ctx: GameContext, moves: ClientMoves, playerID: string | null) => {
     useEffect(() => {
         // strict check: ensure we are in the correct state
         if (G.rollStatus === RollStatus.ROLLING) {

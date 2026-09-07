@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { UiMode, BuildMode } from '../../shared/types';
 import { PHASES, STAGES } from '../../../game/core/constants';
 import { LOSE_EMOJIS, getRandomEmoji } from '../components/constants/emojis';
@@ -31,7 +31,7 @@ export const getCustomMessage = (customMessage: CustomMessage): StatusMessage =>
 };
 
 export const getGameOverMessage = (
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string | null,
     emoji: string | null
 ): StatusMessage | null => {
@@ -60,7 +60,7 @@ export const getGameOverMessage = (
 };
 
 export const getSetupMessage = (
-    ctx: Ctx,
+    ctx: GameContext,
     activeStage: string | undefined,
     uiMode: UiMode
 ): StatusMessage | null => {
@@ -79,7 +79,7 @@ export const getSetupMessage = (
 }
 
 export const getGameplayMessage = (
-    ctx: Ctx,
+    ctx: GameContext,
     activeStage: string | undefined,
     buildMode: BuildMode
 ): StatusMessage | null => {

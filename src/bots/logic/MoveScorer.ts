@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { GameAction } from '../../game/core/types';
 import { BotProfile } from '../profiles/BotProfile';
 import { Coach } from '../../game/analysis/coach';
@@ -20,7 +20,7 @@ export interface ScoringContext {
     isRoadFatigued: boolean;
     coach: Coach;
     playerID: string;
-    ctx: Ctx;
+    ctx: GameContext;
 }
 
 export class MoveScorer {

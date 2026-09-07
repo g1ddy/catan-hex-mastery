@@ -1,5 +1,5 @@
-import { MCTSBot } from 'boardgame.io/ai';
-import { Game, Ctx } from 'boardgame.io';
+import { MCTSBot } from '../adapters/runtime/boardgame';
+import { Game, Ctx } from '../adapters/runtime/boardgame';
 import { GameState, GameAction } from '../game/core/types';
 import { WINNING_SCORE } from '../game/core/constants';
 

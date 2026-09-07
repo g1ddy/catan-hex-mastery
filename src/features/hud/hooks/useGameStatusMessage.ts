@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { UiMode, BuildMode } from '../../shared/types';
 import { WIN_EMOJIS, LOSE_EMOJIS, NO_YIELD_EMOJIS, getRandomEmoji } from '../components/constants/emojis';
 import {
@@ -14,7 +14,7 @@ import {
 export type { CustomMessage };
 
 export function useGameStatusMessage(
-    ctx: Ctx,
+    ctx: GameContext,
     playerID: string | null,
     uiMode: UiMode,
     buildMode: BuildMode,

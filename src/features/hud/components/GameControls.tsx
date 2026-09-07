@@ -1,5 +1,5 @@
 import { GameState, ClientMoves } from '../../../game/core/types';
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../../game/core/types';
 import { safeMove } from '../../shared/utils/feedback';
 import { StrategicAdvice } from '../../../game/analysis/coach';
 import { useGameControls } from '../hooks/useGameControls';
@@ -13,7 +13,7 @@ export type { BuildMode, UiMode };
 
 export interface GameControlsProps {
     G: GameState;
-    ctx: Ctx;
+    ctx: GameContext;
     moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;

@@ -1,4 +1,4 @@
-import { Move } from 'boardgame.io';
+import type { Move } from '../../adapters/runtime/boardgame';
 import { GameState } from '../core/types';
 import { BUILD_COSTS } from '../core/config';
 import { isValidHexId } from '../core/validation';

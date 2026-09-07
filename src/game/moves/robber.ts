@@ -1,4 +1,4 @@
-import { Move } from 'boardgame.io';
+import type { Move } from '../../adapters/runtime/boardgame';
 import { GameState, Resources } from '../core/types';
 import { STAGES } from '../core/constants';
 import { RuleEngine } from '../rules/validator';

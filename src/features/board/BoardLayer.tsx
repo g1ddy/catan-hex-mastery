@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { HexGrid, Layout } from 'react-hexgrid';
+import { BoardSurface, BoardLayout } from '../../adapters/rendering/hexgrid';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import { GameState, Hex, ClientMoves } from '../../game/core/types';
-import { Ctx } from 'boardgame.io';
+import { GameState, Hex, ClientMoves, GameContext } from '../../game/core/types';
 import { BOARD_CONFIG, BOARD_VIEWBOX } from '../../game/core/config';
 import { Z_INDEX_TOOLTIP } from '../shared/constants/z-indices';
 import { GameHex } from './components/GameHex';
@@ -17,7 +16,7 @@ import { renderTooltipContent } from './components/helpers';
 
 interface BoardLayerProps {
     G: GameState;
-    ctx: Ctx;
+    ctx: GameContext;
     moves: ClientMoves;
     coachData: CoachData;
     buildMode: BuildMode;
@@ -61,13 +60,13 @@ export function BoardLayer({
                 />,
                 document.body
             )}
-            <HexGrid
+            <BoardSurface
                 width="100%"
                 height="100%"
                 viewBox={BOARD_VIEWBOX}
                 className="hex-grid-svg absolute top-0 left-0 w-full h-full block"
             >
-                <Layout
+                <BoardLayout
                     size={BOARD_CONFIG.HEX_SIZE}
                     flat={false}
                     spacing={BOARD_CONFIG.HEX_SPACING}
@@ -106,8 +105,8 @@ export function BoardLayer({
                             />
                         ))}
                     </g>
-                </Layout>
-            </HexGrid>
+                </BoardLayout>
+            </BoardSurface>
         </div>
     );
 }

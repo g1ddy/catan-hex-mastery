@@ -108,6 +108,16 @@ export interface GameState {
   notification: GameEvent | null;
 }
 
+/** Framework-neutral lifecycle state exposed to Catan logic and views. */
+export interface GameContext {
+  currentPlayer: string;
+  turn: number;
+  phase?: string;
+  activePlayers?: Record<string, string> | null;
+  numPlayers: number;
+  gameover?: { winner?: string; draw?: boolean } | null;
+}
+
 // Map of Move Names to their Argument Tuples
 export interface MoveArguments {
   buildRoad: [string];
@@ -156,3 +166,13 @@ export type ValidMoveNames = Exclude<keyof MoveArguments, 'buyDevCard'>;
 export type ClientMoves = {
   [K in ValidMoveNames]: (...args: MoveArguments[K]) => void;
 };
+
+export type GameCommands = ClientMoves;
+
+/** Runtime-independent input consumed by the application screen. */
+export interface GameViewProps {
+  G: GameState;
+  ctx: GameContext;
+  moves: GameCommands;
+  playerID: string | null;
+}

@@ -1,4 +1,4 @@
-import { Move } from 'boardgame.io';
+import type { Move } from '../../adapters/runtime/boardgame';
 import { BANK_TRADE_RECEIVE_AMOUNT } from '../core/config';
 import { GameState } from '../core/types';
 import { RuleEngine } from '../rules/validator';

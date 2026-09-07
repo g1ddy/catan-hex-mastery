@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BoardProps } from 'boardgame.io/react';
+import { GameContext } from '../../../game/core/types';
 import { GameState } from '../../../game/core/types';
 import { getValidMovesForStage } from '../../../game/rules/queries';
 
@@ -11,7 +11,7 @@ export interface BoardInteractions {
 
 export function useBoardInteractions(
     G: GameState,
-    ctx: BoardProps<GameState>['ctx'],
+    ctx: GameContext,
     playerID: string
 ): BoardInteractions {
     return useMemo(() => {

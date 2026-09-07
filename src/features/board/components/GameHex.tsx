@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Hexagon } from 'react-hexgrid';
+import { HexTile } from '../../../adapters/rendering/hexgrid';
 import { Skull } from 'lucide-react';
 import { Hex } from '../../../game/core/types';
 import { NumberToken } from './NumberToken';
@@ -31,7 +31,7 @@ function GameHexComponent({ hex, onClick, isProducing, hasRobber, isPendingRobbe
 
   return (
     <g className={isProducing ? 'animate-pulse motion-reduce:animate-none' : ''}>
-        <Hexagon
+        <HexTile
         q={hex.coords.q}
         r={hex.coords.r}
         s={hex.coords.s}
@@ -55,7 +55,7 @@ function GameHexComponent({ hex, onClick, isProducing, hasRobber, isPendingRobbe
                 strokeWidth={1.5}
             />
         )}
-        </Hexagon>
+        </HexTile>
     </g>
   );
 }

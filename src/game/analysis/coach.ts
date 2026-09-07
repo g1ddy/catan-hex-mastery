@@ -1,4 +1,4 @@
-import { Ctx } from 'boardgame.io';
+import { GameContext } from '../../game/core/types';
 import { GameState, GameAction, BotMove } from '../core/types';
 import { isValidPlayer } from '../core/validation';
 import { PHASES, STAGES } from '../core/constants';
@@ -17,7 +17,7 @@ export interface StrategicAdvice {
     recommendedMoves: string[];
 }
 
-export interface CoachCtx extends Ctx {
+export interface CoachGameContext extends GameContext {
     coach?: Coach;
 }
 
@@ -65,7 +65,7 @@ export class Coach {
      * Evaluates if a Bank Trade is safe or advisable for the player.
      * Delegates to TradeAdvisor.
      */
-    public evaluateTrade(playerID: string, ctx: Ctx): { isSafe: boolean, reason?: string } {
+    public evaluateTrade(playerID: string, ctx: GameContext): { isSafe: boolean, reason?: string } {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return { isSafe: false, reason: "Unauthorized" };
         }
@@ -76,7 +76,7 @@ export class Coach {
      * Calculates scores for all valid settlement spots on the board.
      * Delegates to SpatialAdvisor.
      */
-    public getAllSettlementScores(playerID: string, ctx: Ctx): CoachRecommendation[] {
+    public getAllSettlementScores(playerID: string, ctx: GameContext): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -87,14 +87,14 @@ export class Coach {
      * Scores a list of specific vertices for City placement.
      * Delegates to SpatialAdvisor.
      */
-    public getBestCitySpots(playerID: string, ctx: Ctx, candidates: string[]): CoachRecommendation[] {
+    public getBestCitySpots(playerID: string, ctx: GameContext, candidates: string[]): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
         return this.spatialAdvisor.getBestCitySpots(playerID, ctx, candidates);
     }
 
-    public getBestSettlementSpots(playerID: string, ctx: Ctx): CoachRecommendation[] {
+    public getBestSettlementSpots(playerID: string, ctx: GameContext): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -106,7 +106,7 @@ export class Coach {
     /**
      * Calculates scores for all valid road spots.
      */
-    public getBestRoadSpots(playerID: string, ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
+    public getBestRoadSpots(playerID: string, ctx: GameContext, _profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -128,7 +128,7 @@ export class Coach {
     /**
      * Calculates scores for ALL unoccupied road spots on the board (Hypothetical analysis).
      */
-    public getAllRoadScores(playerID: string, ctx: Ctx, _profile?: AnalysisProfile): CoachRecommendation[] {
+    public getAllRoadScores(playerID: string, ctx: GameContext, _profile?: AnalysisProfile): CoachRecommendation[] {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return [];
         }
@@ -143,7 +143,7 @@ export class Coach {
         return this.roadAdvisor.getRoadRecommendations(playerID, validUnoccupiedEdges);
     }
 
-    public getStrategicAdvice(playerID: string, ctx: Ctx): StrategicAdvice {
+    public getStrategicAdvice(playerID: string, ctx: GameContext): StrategicAdvice {
         if (!isValidPlayer(playerID, this.G) || playerID !== ctx.currentPlayer) {
             return ERROR_ADVICE_RESULT;
         }
@@ -164,7 +164,7 @@ export class Coach {
         return { text: STRATEGIC_ADVICE.DEFAULT, recommendedMoves: [] };
     }
 
-    public scoreAction(playerID: string, action: GameAction, ctx: Ctx): number {
+    public scoreAction(playerID: string, action: GameAction, ctx: GameContext): number {
         const moveName = 'payload' in action ? action.payload.type : (action as BotMove).move;
         const args = 'payload' in action ? action.payload.args : (action as BotMove).args;
 
@@ -189,12 +189,12 @@ export class Coach {
 
 // --- Backward Compatibility Wrappers ---
 
-export function getAllSettlementScores(G: GameState, playerID: string, ctx: Ctx): CoachRecommendation[] {
+export function getAllSettlementScores(G: GameState, playerID: string, ctx: GameContext): CoachRecommendation[] {
     const coach = new Coach(G);
     return coach.getAllSettlementScores(playerID, ctx);
 }
 
-export function getBestSettlementSpots(G: GameState, playerID: string, ctx: Ctx): CoachRecommendation[] {
+export function getBestSettlementSpots(G: GameState, playerID: string, ctx: GameContext): CoachRecommendation[] {
     const coach = new Coach(G);
     return coach.getBestSettlementSpots(playerID, ctx);
 }

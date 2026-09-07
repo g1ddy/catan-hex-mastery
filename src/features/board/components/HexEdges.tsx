@@ -1,5 +1,5 @@
 import { useRef, useCallback, Fragment } from 'react';
-import { BoardProps } from 'boardgame.io/react';
+import { GameContext } from '../../../game/core/types';
 import { GameState, ClientMoves } from '../../../game/core/types';
 import { BuildMode, UiMode } from '../../shared/types';
 import { safeMove } from '../../shared/utils/feedback';
@@ -22,7 +22,7 @@ interface EdgeInteractiveState {
 
 function getEdgeInteractiveState(
     eId: string,
-    ctx: BoardProps<GameState>['ctx'],
+    ctx: GameContext,
     uiMode: UiMode,
     buildMode: BuildMode,
     validRoads: Set<string>,
@@ -61,7 +61,7 @@ function getEdgeInteractiveState(
 interface HexEdgesProps {
     edges: { id: string; parts: string[]; x: number; y: number }[];
     G: GameState;
-    ctx: BoardProps<GameState>['ctx'];
+    ctx: GameContext;
     moves: ClientMoves;
     buildMode: BuildMode;
     setBuildMode: (mode: BuildMode) => void;
