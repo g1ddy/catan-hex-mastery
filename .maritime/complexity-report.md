@@ -1,6 +1,22 @@
 ## 🚨 Automated Complexity Report
 
-**Last Updated:** 2026-09-07
+### 📐 Architectural Folder Coupling & Instability Metrics
+| Folder / Namespace | Modules | Afferent ($C_a$) | Efferent ($C_e$) | Instability ($I$) |
+| :--- | :--- | :--- | :--- | :--- |
+| `src` | 4 | 1 ($C_a$) | 7 ($C_e$) | **0.875** |
+| `src/adapters` | 4 | 9 ($C_a$) | 3 ($C_e$) | **0.25** |
+| `src/bots` | 12 | 2 ($C_a$) | 9 ($C_e$) | **0.818** |
+| `src/features/board` | 13 | 1 ($C_a$) | 14 ($C_e$) | **0.933** |
+| `src/features/coach` | 11 | 4 ($C_a$) | 10 ($C_e$) | **0.714** |
+| `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
+| `src/features/hud` | 18 | 3 ($C_a$) | 12 ($C_e$) | **0.8** |
+| `src/features/shared` | 8 | 27 ($C_a$) | 1 ($C_e$) | **0.036** |
+| `src/game` | 38 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
+| `src/pages` | 2 | 1 ($C_a$) | 9 ($C_e$) | **0.9** |
+| `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
+
+
+**Last Updated:** 2026-09-08
 
 ### 🏥 Repository Health Score: **92.0 / 100**
 

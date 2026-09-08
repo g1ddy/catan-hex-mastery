@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "toolVersion": "0.1.0-beta.8",
-  "generatedAt": "2026-09-07T18:28:53.954Z",
+  "toolVersion": "0.1.0-beta.9",
+  "generatedAt": "2026-09-08T03:18:42.429Z",
   "sourceRoots": [
     "src"
   ],
@@ -14,6 +14,87 @@
     "totalFiles": 116,
     "healthScore": 92,
     "scannedCount": 116,
-    "skippedCount": 0
+    "skippedCount": 0,
+    "architecture": {
+      "namespaces": [
+        {
+          "folder": "src",
+          "moduleCount": 4,
+          "afferentCoupling": 1,
+          "efferentCoupling": 7,
+          "instability": 0.875
+        },
+        {
+          "folder": "src/adapters",
+          "moduleCount": 4,
+          "afferentCoupling": 9,
+          "efferentCoupling": 3,
+          "instability": 0.25
+        },
+        {
+          "folder": "src/bots",
+          "moduleCount": 12,
+          "afferentCoupling": 2,
+          "efferentCoupling": 9,
+          "instability": 0.818
+        },
+        {
+          "folder": "src/features/board",
+          "moduleCount": 13,
+          "afferentCoupling": 1,
+          "efferentCoupling": 14,
+          "instability": 0.933
+        },
+        {
+          "folder": "src/features/coach",
+          "moduleCount": 11,
+          "afferentCoupling": 4,
+          "efferentCoupling": 10,
+          "instability": 0.714
+        },
+        {
+          "folder": "src/features/game",
+          "moduleCount": 7,
+          "afferentCoupling": 1,
+          "efferentCoupling": 19,
+          "instability": 0.95
+        },
+        {
+          "folder": "src/features/hud",
+          "moduleCount": 18,
+          "afferentCoupling": 3,
+          "efferentCoupling": 12,
+          "instability": 0.8
+        },
+        {
+          "folder": "src/features/shared",
+          "moduleCount": 8,
+          "afferentCoupling": 27,
+          "efferentCoupling": 1,
+          "instability": 0.036
+        },
+        {
+          "folder": "src/game",
+          "moduleCount": 38,
+          "afferentCoupling": 49,
+          "efferentCoupling": 1,
+          "instability": 0.02
+        },
+        {
+          "folder": "src/pages",
+          "moduleCount": 2,
+          "afferentCoupling": 1,
+          "efferentCoupling": 9,
+          "instability": 0.9
+        },
+        {
+          "folder": "src/styles",
+          "moduleCount": 2,
+          "afferentCoupling": 2,
+          "efferentCoupling": 0,
+          "instability": 0
+        }
+      ]
+    }
   }
 }
