@@ -132,12 +132,12 @@ Frontend UI components are organized by **Feature Domain** (`src/features/`) rat
 
 ### Runtime and Rendering Adapters
 
-Application code depends on Catan vocabulary rather than vendor APIs:
+Application and feature code depend on Catan-owned contracts rather than vendor framework APIs:
 
-*   **Runtime contract**: `GameContext`, `MoveContext`, `MoveHandler`, `GameCommands`, and `GameViewProps` live in `src/game/core/types.ts`. They expose typed Catan phases, per-player stages, lifecycle services, and commands without adopting framework contracts.
-*   **Runtime adapter**: `src/adapters/runtime/` is the gateway to `boardgame.io`. It translates framework contexts and move invocations into Catan-owned contracts before calling views, rules, or moves. `GameClient.tsx` remains the composition root and `src/game/Game.ts` remains the framework game-definition boundary. Bot runtime classes retain quarantined AI-framework coupling pending the dedicated bot migration.
-*   **Rendering adapter**: `src/adapters/rendering/hexgrid.ts` owns the `react-hexgrid` dependency and exposes Catan-named `BoardSurface`, `BoardLayout`, and `HexTile` primitives. Board features use only those local names.
-*   **Dependency direction**: Runtime adapters depend inward on Catan contracts; domain modules never depend on runtime adapters. Features consume Catan view contracts, while bots may temporarily enter through the quarantined AI gateway. `config/dependency-cruiser.cjs` rejects direct framework imports and rejects domain-to-runtime-adapter dependencies.
+*   **Runtime contracts**: Catan-owned interfaces (`GameContext`, `MoveContext`, `MoveHandler`, `GameCommands`, `GameViewProps`) live in `src/game/core/types.ts`. They expose typed Catan phases, per-player stages, lifecycle services, and commands without adopting vendor framework types.
+*   **Runtime adapter**: `src/adapters/runtime/` isolates `boardgame.io` as the active underlying game engine runtime. It translates framework contexts and move invocations into Catan-owned contracts before delegating to views, rules, or move handlers. `GameClient.tsx` serves as the runtime composition root and `src/game/Game.ts` serves as the framework game-definition boundary while the runtime migration is unfinished. Bot runtime classes retain quarantined AI-framework coupling pending dedicated bot migration.
+*   **Rendering adapter**: `src/adapters/rendering/hexgrid.ts` isolates `react-hexgrid` as the active underlying rendering implementation, exposing Catan-named `BoardSurface`, `BoardLayout`, and `HexTile` primitives so board components interact exclusively with local interfaces.
+*   **Dependency direction**: Adapter modules depend inward on Catan domain contracts; domain and feature modules never depend on vendor packages or runtime adapter implementations. Features consume Catan view contracts. Enforceable policy in `config/dependency-cruiser.cjs` rejects direct vendor framework imports from application code and rejects domain-to-adapter dependencies.
 
 ---
 
@@ -164,7 +164,7 @@ src/
 │   ├── hud/            # Controls, player stats, notifications
 │   └── shared/         # Reusable UI primitives (buttons, modals, hooks)
 ├── pages/              # Top-level page views (SetupPage.tsx, GamePage.tsx)
-└── GameClient.tsx      # boardgame.io client composition root
+└── GameClient.tsx      # Game client composition root
 ```
 
 ---
