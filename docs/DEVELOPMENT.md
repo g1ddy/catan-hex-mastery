@@ -127,19 +127,19 @@ This runs `depcruise src --config config/dependency-cruiser.cjs`. The same unfil
 
 ### 2. Canonical Complexity & Hotspot Evidence
 
-The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow consumes the released Maritime beta.8 Action at immutable commit `83dadbdc6718264060f82cad02197671abd76e29` (`cli-v0.1.0-beta.8`) together with the matching published package `@dependency-maritime/cli@0.1.0-beta.8`. It analyzes `src/`, validates the artifact bundle, and renders the graphs from that same run. Do not edit generated Maritime outputs manually.
+The tracked [`.maritime/`](../.maritime/) directory contains the canonical complexity and hotspot evidence. The **Generated Artifacts** workflow consumes the released Maritime beta.9 Action at immutable commit `a4bb1d8d2b65a75c18c2e3aafd4259adc57e3709` (`cli-v0.1.0-beta.9`) together with the matching published package `@dependency-maritime/cli@0.1.0-beta.9`. Maritime beta.9 requires Node 22.13 or newer; the workflow pins Node 22.13.0 for Maritime generation independently of Catan's broader application runtime support. It analyzes `src/`, validates the artifact bundle, and renders the graphs from that same run. Do not edit generated Maritime outputs manually.
 
 For generated evidence, Catan passes `config/dependency-cruiser.maritime.cjs`. That file inherits all rules from `config/dependency-cruiser.cjs`, excludes `.test` / `.spec` modules from the evidence graph, and sets `tsPreCompilationDeps: 'specify'` so the compact renderer can distinguish secondary type/pre-compilation relationships. This does **not** relax `npm run check:arch`, `npm run build`, or `npm test`.
 
 `docs/COMPLEXITY.md` is a stable guide to the generated artifacts. Current health and hotspot values are read directly from `.maritime/complexity-report.md`; there is no second Catan-owned complexity-report generator.
 
-For local reproduction, install the matching published prerelease without saving it as a Catan dependency, then run the same analysis and rendering commands used by CI:
+For local Maritime reproduction, use Node 22.13 or newer and install the matching published prerelease without saving it as a Catan dependency, then run the same analysis and rendering commands used by CI:
 
 ```bash
-npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.8
+npm install --no-save --package-lock=false @dependency-maritime/cli@0.1.0-beta.9
 npm run analyze:maritime
 npm run generate:graph
-npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph \
+npx --yes --package=@dependency-maritime/cli@0.1.0-beta.9 maritime graph \
   --input .maritime \
   --output docs/images/dependency-overview.svg \
   --graph-profile architecture-overview
@@ -155,7 +155,7 @@ Dependency diagram presentation is derived directly from canonical Maritime evid
 - `docs/images/dependency-overview.svg` uses Maritime's `architecture-overview` profile to aggregate individual files into source-root-relative folder nodes. Use this for the high-level architectural shape and major area-to-area coupling.
 - `docs/images/dependency-graph.svg` uses Maritime's `compact-architecture` profile to preserve individual file nodes while reducing visual noise. Use this when investigating concrete dependencies.
 
-The detailed graph retains the repository script `npm run generate:graph`. The overview is rendered directly by the Generated Artifacts workflow with the same pinned Maritime beta.8 package rather than adding a package script solely for documentation generation.
+The detailed graph retains the repository script `npm run generate:graph`. The overview is rendered directly by the Generated Artifacts workflow with the same pinned Maritime beta.9 package rather than adding a package script solely for documentation generation.
 
 The overview deliberately changes information granularity through folder aggregation; the compact graph remains a local-only **file-level LR** graph with recursive folder namespaces, compact spacing, semantic node theming, secondary type/pre-compilation edges, sole-source-root elision, and edges-first paint order. Catan verifies both resulting presentations rather than maintaining a repository-owned renderer or historical reference image.
 
