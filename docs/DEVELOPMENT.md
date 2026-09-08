@@ -39,7 +39,7 @@ A new permanent documentation file is acceptable only when all of the following 
 The project is built on a modern React stack using Catan-owned domain contracts, backed by `boardgame.io` as the active underlying game runtime and `react-hexgrid` as the active rendering implementation.
 
 *   **Frontend**: React + TypeScript + Vite
-*   **Game Engine Runtime**: Catan game contracts backed by [boardgame.io](https://boardgame.io/) as active underlying runtime (state management, move validation, and multiplayer networking)
+*   **Game Engine Runtime**: Catan game contracts backed by [boardgame.io](https://boardgame.io/) as active underlying runtime (runtime lifecycle, move orchestration, and local multiplayer/pass-and-play support)
 *   **Visualization**: Catan rendering boundary backed by `react-hexgrid` (SVG-based board rendering)
 *   **Styling**: Tailwind CSS
 *   **Testing & Verification**: Jest (Unit/Logic), Playwright (E2E/Visual Verification)
