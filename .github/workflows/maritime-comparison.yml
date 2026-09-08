@@ -99,12 +99,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Analyze and render compact graph with Maritime beta.8
+      - name: Analyze and render compact graph with Maritime beta.9
         if: steps.plan.outputs.run_maritime == 'true'
-        uses: g1ddy/dependency-maritime@83dadbdc6718264060f82cad02197671abd76e29 # cli-v0.1.0-beta.8
+        uses: g1ddy/dependency-maritime@a4bb1d8d2b65a75c18c2e3aafd4259adc57e3709 # cli-v0.1.0-beta.9
         with:
           node-version: '22.13.0'
-          cli-source: '@dependency-maritime/cli@0.1.0-beta.8'
+          cli-source: '@dependency-maritime/cli@0.1.0-beta.9'
           source-roots: 'src'
           depcruise-config: 'config/dependency-cruiser.maritime.cjs'
           output-dir: '.maritime'
@@ -117,7 +117,7 @@ jobs:
       - name: Render architecture overview from canonical evidence
         if: steps.plan.outputs.run_maritime == 'true'
         run: >-
-          npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph
+          npx --yes --package=@dependency-maritime/cli@0.1.0-beta.9 maritime graph
           --input .maritime
           --output docs/images/dependency-overview.svg
           --graph-profile architecture-overview
@@ -132,11 +132,11 @@ jobs:
           find .maritime -maxdepth 1 -type f -print
           ls -l docs/images/dependency-graph.svg docs/images/dependency-overview.svg
 
-      - name: Upload Maritime beta.8 artifacts
+      - name: Upload Maritime beta.9 artifacts
         if: steps.plan.outputs.run_maritime == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: maritime-beta8-catan
+          name: maritime-beta9-catan
           path: |
             .maritime/
             docs/images/dependency-graph.svg
@@ -162,7 +162,7 @@ jobs:
               ;;
             1)
               git add .maritime docs/images/dependency-graph.svg docs/images/dependency-overview.svg
-              git commit -m "docs(metrics): update Maritime beta.8 evidence"
+              git commit -m "docs(metrics): update Maritime beta.9 evidence"
               echo "GENERATED_COMMITS=true" >> "$GITHUB_ENV"
               ;;
             *)
