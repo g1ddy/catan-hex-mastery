@@ -43,7 +43,7 @@ const createBundle = (): Bundle => new Map([
 const createValidArtifacts = (): MaritimeArtifactsFixture => ({
   manifest: {
     schemaVersion: '1.0.0',
-    toolVersion: '0.1.0-beta.8',
+    toolVersion: '0.1.0-beta.9',
     sourceRoots: ['src'],
     summary: {
       totalFiles: 1,
@@ -96,7 +96,6 @@ describe('Maritime substantive baseline comparison', () => {
     const baseline = createBundle();
     const generated = createBundle();
     generated.set(filePath, content);
-
     expect(compareBundles(baseline, generated)).toBe(false);
   });
 
@@ -104,21 +103,21 @@ describe('Maritime substantive baseline comparison', () => {
     const baseline = createBundle();
     const generated = createBundle();
     generated.set('new-evidence.json', '{}\n');
-
     expect(compareBundles(baseline, generated)).toBe(false);
   });
 });
 
 describe('Maritime released consumer contract', () => {
-  it('pins compact and overview rendering to published beta.8 profiles', () => {
+  it('pins compact and overview rendering to published beta.9 profiles', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       scripts?: Record<string, string>;
     };
     const workflow = readFileSync('.github/workflows/maritime-comparison.yml', 'utf8');
 
-    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.8');
+    expect(packageJson.scripts?.['generate:graph']).toContain('@dependency-maritime/cli@0.1.0-beta.9');
     expect(packageJson.scripts?.['generate:graph']).toContain('--graph-profile compact-architecture');
-    expect(workflow).toContain('npx --yes --package=@dependency-maritime/cli@0.1.0-beta.8 maritime graph');
+    expect(workflow).toContain('npx --yes --package=@dependency-maritime/cli@0.1.0-beta.9 maritime graph');
+    expect(workflow).toContain('uses: g1ddy/dependency-maritime@a4bb1d8d2b65a75c18c2e3aafd4259adc57e3709');
     expect(workflow).toContain('--output docs/images/dependency-overview.svg');
     expect(workflow).toContain('--graph-profile architecture-overview');
   });
