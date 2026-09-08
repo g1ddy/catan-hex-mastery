@@ -81,4 +81,4 @@ For detailed guidelines, contracts, and technical specifications, refer to the a
 *   **[Strategy Engine Deep Dive](./docs/STRATEGY_ENGINE.md)** — Hex-Mastery's implementation-facing strategy model, probability calculations, board invariants, and Coach/Analyst behavior.
 
 ---
-*Built with React, TypeScript, and boardgame.io. Open Source and designed for the community.*
+*Built with React, TypeScript, and boardgame.io (as active underlying runtime). Open Source and designed for the community.*

@@ -8,9 +8,9 @@ This document is the single authoritative source for unfinished product, engine,
 
 ## 🏛️ Architecture Modernization & Engine Seams
 
-- [ ] **Engine & State Abstraction Seam**: Establish a clean abstraction seam isolating state management and multiplayer game-loop orchestration.
-- [ ] **Custom SVG Board Rendering**: Remove `react-hexgrid` dependency and transition board rendering to a dedicated Catan-owned SVG rendering pipeline.
-- [ ] **Game Engine Decoupling**: Complete transition away from direct `boardgame.io` coupling toward pure Hex-Mastery state handlers.
+- [ ] **Native SVG Board Rendering**: Replace `react-hexgrid` with a dedicated Catan-owned SVG board rendering pipeline (#469).
+- [ ] **Framework-Neutral Game Engine Runtime**: Transition game state and runtime lifecycle management from `boardgame.io` to the framework-neutral Catan runtime (#470).
+- [ ] **Bot & AI Framework Decoupling**: Remove remaining bot/MCTS `boardgame.io/ai` coupling and final package dependency (#471).
 
 ---
 
