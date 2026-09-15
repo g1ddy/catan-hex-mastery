@@ -10588,7 +10588,7 @@
       ]
     },
     "environment": {
-      "version": "18.2.0",
+      "version": "18.3.1",
       "nodeVersionSupported": "^22||^24||>=26",
       "nodeVersionFound": "v22.13.0",
       "osVersionFound": "x64 linux@6.17.0-1022-azure",
