@@ -77,7 +77,6 @@ describe('CatanSearchGame Adapter', () => {
   it('handles robber destination and victim choices', () => {
     const { hexes, ports } = generateBoard();
     const hexList = Object.values(hexes);
-    const targetHex = hexList[0];
     const otherHex = hexList[1];
 
     const game = createMockGameState({
