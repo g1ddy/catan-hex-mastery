@@ -9,10 +9,11 @@ import { rollDice, resolveRoll } from './moves/roll';
 import { dismissRobber } from './moves/robber';
 import { TurnOrder } from 'boardgame.io/core';
 import { calculateBoardStats } from './mechanics/boardStats';
-import { PHASES, STAGES, STAGE_MOVES, WINNING_SCORE } from './core/constants';
+import { PHASES, STAGES, STAGE_MOVES } from './core/constants';
 import { PLAYER_COLORS } from './core/config';
 import { CoachPlugin } from './analysis/CoachPlugin';
 import { enumerate } from './rules/enumerator';
+import { checkTerminalResult } from './rules/lifecycle';
 import { stripHtml } from '../game/core/utils/sanitize';
 import { adaptMove, toGameContext } from '../adapters/runtime/boardgameMoves';
 
@@ -45,10 +46,8 @@ export const CatanGame: Game<GameState> = {
   },
 
   endIf: ({ G, ctx }) => {
-    const MAX_TURNS = 200; // Increased limit
-    const winner = Object.values(G.players).find(p => p.victoryPoints >= WINNING_SCORE);
-    if (winner) return { winner: winner.id };
-    if (ctx.turn > MAX_TURNS) return { draw: true };
+    const result = checkTerminalResult(G, toGameContext(ctx));
+    return result || undefined;
   },
 
   setup: ({ ctx }, setupData?: { botNames?: Record<string, string> }): GameState => {

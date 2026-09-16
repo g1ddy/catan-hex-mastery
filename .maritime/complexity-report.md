@@ -11,18 +11,18 @@
 | `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
 | `src/features/hud` | 18 | 3 ($C_a$) | 12 ($C_e$) | **0.8** |
 | `src/features/shared` | 8 | 27 ($C_a$) | 1 ($C_e$) | **0.036** |
-| `src/game` | 38 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
+| `src/game` | 49 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
 | `src/pages` | 2 | 1 ($C_a$) | 9 ($C_e$) | **0.9** |
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
 
-**Last Updated:** 2026-09-15
+**Last Updated:** 2026-09-16
 
-### 🏥 Repository Health Score: **92.0 / 100**
+### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 116
-*   **Measured Files**: 116
+*   **Total Graph Files**: 127
+*   **Measured Files**: 127
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -31,7 +31,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `src/features/board/components/HexOverlays.tsx` | **87.2** | 148 | 19 | 9 | 0.82 |
-| `src/game/Game.ts` | **84** | 131 | 9 | 17 | 0.94 |
+| `src/game/Game.ts` | **85.9** | 130 | 9 | 18 | 0.95 |
+| `src/game/moves/execution.ts` | **85.2** | 114 | 20 | 8 | 0.89 |
 | `src/features/board/components/HexEdges.tsx` | **78.5** | 140 | 11 | 12 | 0.92 |
 | `src/features/game/GameLayout.tsx` | **77.5** | 210 | 7 | 12 | 0.92 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
@@ -39,11 +40,11 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
 | `src/pages/GamePage.tsx` | **69.6** | 94 | 11 | 10 | 0.91 |
 | `src/game/rules/queries.ts` | **68.8** | 234 | 9 | 8 | 0.57 |
-| `src/game/analysis/advisors/RoadAdvisor.ts` | **68.4** | 233 | 8 | 6 | 0.86 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
+| `src/game/moves/execution.ts` | **20** | 114 |
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
@@ -53,4 +54,3 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/pages/GamePage.tsx` | **11** | 94 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |
-| `src/features/board/components/Port.tsx` | **10** | 102 |
