@@ -2,6 +2,7 @@ import { CatanSearchGame } from './CatanSearchGame';
 import { createMockGameState, createTestPlayer } from '../../testUtils';
 import { PHASES, STAGES } from '../../core/constants';
 import type { CatanSearchState } from './CatanSearchState';
+import type { BotMove } from '../../core/types';
 
 describe('CatanSearchAction', () => {
   it('does not expose forward-compatible but unimplemented development-card purchase', () => {
@@ -23,6 +24,6 @@ describe('CatanSearchAction', () => {
 
     const actions = new CatanSearchGame().getLegalActions(state);
 
-    expect(actions.some(action => action.move === 'buyDevCard')).toBe(false);
+    expect((actions as BotMove[]).some(action => action.move === 'buyDevCard')).toBe(false);
   });
 });
