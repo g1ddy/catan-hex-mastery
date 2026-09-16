@@ -17,8 +17,8 @@ import {
   RandomRolloutPolicy,
   DefaultSelectionPolicy,
   MostVisitedSelectionStrategy,
-  UctSelectionPolicy,
 } from './MctsPolicies';
+import { UctSelectionPolicy } from './UctSelectionPolicy';
 
 export interface MctsOptions<S, A> {
   selectionPolicy?: SelectionPolicy<S, A>;

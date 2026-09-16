@@ -3,8 +3,6 @@ import type { SearchRandom } from './SearchRandom';
 import type { SearchCandidate } from './SearchResult';
 import type { MctsNode } from './MctsNode';
 
-export * from './UctSelectionPolicy';
-
 /**
  * Absolute per-player utility vector mapping player ID -> normalized reward in [0, 1].
  */

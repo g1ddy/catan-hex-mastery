@@ -11,7 +11,7 @@
 | `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
 | `src/features/hud` | 18 | 3 ($C_a$) | 12 ($C_e$) | **0.8** |
 | `src/features/shared` | 8 | 27 ($C_a$) | 1 ($C_e$) | **0.036** |
-| `src/game` | 53 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
+| `src/game` | 52 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
 | `src/pages` | 2 | 1 ($C_a$) | 9 ($C_e$) | **0.9** |
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
@@ -21,8 +21,8 @@
 ### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 131
-*   **Measured Files**: 131
+*   **Total Graph Files**: 130
+*   **Measured Files**: 130
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)
@@ -38,8 +38,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **75.5** | 209 | 11 | 12 | 0.43 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
-| `src/game/ai/search/MctsEngine.ts` | **69.8** | 198 | 7 | 9 | 0.9 |
 | `src/pages/GamePage.tsx` | **69.6** | 94 | 11 | 10 | 0.91 |
+| `src/game/rules/queries.ts` | **68.8** | 234 | 9 | 8 | 0.57 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |

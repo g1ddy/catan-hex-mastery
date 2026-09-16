@@ -1,10 +1,13 @@
 /**
- * Lightweight UCT Exploration Constant Benchmark Fixture (#479)
+ * Lightweight UCT Exploration Constant Catan Benchmark Fixture (#479)
  *
  * Purpose:
  * Provides a repeatable, fast benchmark mechanism to compare candidate exploration constants
  * (C = 0.25, 0.5, 1.0, sqrt(2), 2.0) on representative Catan search states without turning CI
  * into an expensive simulation suite.
+ *
+ * NOTE: This is a policy-behavior benchmark, not a Catan-strength benchmark.
+ * Strategic gameplay evaluation and tuning will be performed in #480 and #482/#483.
  *
  * Assumptions:
  * - Uses fixed seed ('uct-catan-benchmark-seed') for strict determinism.
