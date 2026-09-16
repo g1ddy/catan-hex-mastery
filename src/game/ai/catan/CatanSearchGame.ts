@@ -19,7 +19,7 @@ function createGameRandomAdapter(random: SearchRandom): GameRandom {
         const j = random.integer(i + 1);
         const temp = arr[i];
         arr[i] = arr[j];
-        arr[j] = temp;
+        arr[j] = arr[i];
       }
       return arr;
     },
@@ -46,7 +46,7 @@ export class CatanSearchGame implements SearchGame<CatanSearchState, CatanSearch
     }
     const currentPlayer = this.getCurrentPlayer(state);
     const actions = enumerate(state.game, state.context, currentPlayer);
-    return actions as readonly CatanSearchAction[];
+    return actions.filter((action): action is CatanSearchAction => action.move !== 'buyDevCard');
   }
 
   isTerminal(state: CatanSearchState): boolean {
