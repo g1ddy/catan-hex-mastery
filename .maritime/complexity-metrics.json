@@ -921,7 +921,7 @@
   },
   "src/game/ai/catan/CatanSearchAction.ts": {
     "complexity": 1,
-    "loc": 4,
+    "loc": 11,
     "instability": 0.33,
     "fanIn": 2,
     "fanOut": 1,

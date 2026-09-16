@@ -46,7 +46,7 @@ export class CatanSearchGame implements SearchGame<CatanSearchState, CatanSearch
     }
     const currentPlayer = this.getCurrentPlayer(state);
     const actions = enumerate(state.game, state.context, currentPlayer);
-    return actions.filter((action): action is CatanSearchAction => action.move !== 'buyDevCard');
+    return actions.filter((action): action is CatanSearchAction => 'move' in action && action.move !== 'buyDevCard');
   }
 
   isTerminal(state: CatanSearchState): boolean {
