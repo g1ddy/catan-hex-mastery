@@ -28,3 +28,4 @@ export const STAGE_MOVES = {
 } as const;
 
 export const WINNING_SCORE = 10;
+export const MAX_TURNS = 200;

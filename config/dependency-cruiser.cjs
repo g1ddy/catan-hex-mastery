@@ -146,10 +146,11 @@ module.exports = {
             path: L.RULES,
             pathNot: [
                 '^src/game/rules/validator.ts',
-                '^src/game/rules/queries.ts'
+                '^src/game/rules/queries.ts',
+                '^src/game/rules/lifecycle.ts'
             ]
         },
-        comment: 'Moves must access rules via the RuleEngine facade (validator.ts) or Query facade (queries.ts).'
+        comment: 'Moves must access rules via the RuleEngine facade (validator.ts), Query facade (queries.ts), or Lifecycle rules (lifecycle.ts).'
     },
     /* 6. UI Structure: Logic cannot import UI */
     {
