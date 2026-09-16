@@ -18,12 +18,14 @@ import {
   DefaultSelectionPolicy,
   MostVisitedSelectionStrategy,
 } from './MctsPolicies';
+import { UctSelectionPolicy } from './UctSelectionPolicy';
 
 export interface MctsOptions<S, A> {
   selectionPolicy?: SelectionPolicy<S, A>;
   rolloutPolicy?: RolloutPolicy<S, A>;
   evaluator?: SearchEvaluator<S>;
   finalSelectionStrategy?: FinalSelectionStrategy<A>;
+  explorationConstant?: number;
 }
 
 /**
@@ -44,7 +46,11 @@ export class MctsEngine<S, A> {
   readonly finalSelectionStrategy: FinalSelectionStrategy<A>;
 
   constructor(options: MctsOptions<S, A> = {}) {
-    this.selectionPolicy = options.selectionPolicy ?? new DefaultSelectionPolicy();
+    this.selectionPolicy =
+      options.selectionPolicy ??
+      (options.explorationConstant !== undefined
+        ? new UctSelectionPolicy({ explorationConstant: options.explorationConstant })
+        : new DefaultSelectionPolicy());
     this.rolloutPolicy = options.rolloutPolicy ?? new RandomRolloutPolicy();
     this.evaluator = options.evaluator ?? new DefaultSearchEvaluator();
     this.finalSelectionStrategy =
@@ -54,7 +60,12 @@ export class MctsEngine<S, A> {
   /**
    * Selection Phase: Descends tree while current node is fully expanded, non-terminal, and below maxDepth.
    */
-  select(node: MctsNode<S, A>, game: SearchGame<S, A>, maxDepth: number): MctsNode<S, A> {
+  select(
+    node: MctsNode<S, A>,
+    game: SearchGame<S, A>,
+    maxDepth: number,
+    selectionPolicy: SelectionPolicy<S, A> = this.selectionPolicy
+  ): MctsNode<S, A> {
     let curr = node;
     while (
       !curr.isTerminal &&
@@ -62,7 +73,7 @@ export class MctsEngine<S, A> {
       curr.isFullyExpanded() &&
       curr.children.length > 0
     ) {
-      curr = this.selectionPolicy.selectChild(curr, game);
+      curr = selectionPolicy.selectChild(curr, game);
     }
     return curr;
   }
@@ -147,9 +158,14 @@ export class MctsEngine<S, A> {
 
     const root = new MctsNode(initialState, game, null, null, 0);
 
+    const activeSelectionPolicy: SelectionPolicy<S, A> =
+      config.explorationConstant !== undefined
+        ? new UctSelectionPolicy({ explorationConstant: config.explorationConstant })
+        : this.selectionPolicy;
+
     if (!root.isTerminal && root.untriedActions.length > 0) {
       for (let i = 0; i < config.iterations; i++) {
-        const selectedNode = this.select(root, game, config.maxDepth);
+        const selectedNode = this.select(root, game, config.maxDepth, activeSelectionPolicy);
         const expandedNode = this.expand(selectedNode, game, random, config.maxDepth);
         const utility = this.rollout(expandedNode, game, random, config.maxDepth);
         this.backpropagate(expandedNode, utility);
