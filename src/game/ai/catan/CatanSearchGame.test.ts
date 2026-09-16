@@ -5,6 +5,7 @@ import { createMockGameState, createTestPlayer } from '../../testUtils';
 import { GameContext, TerrainType } from '../../core/types';
 import { PHASES, STAGES, WINNING_SCORE } from '../../core/constants';
 import { generateBoard } from '../../generation/boardGen';
+import { getVerticesForHex } from '../../geometry/hexUtils';
 
 function createMockSetupState(): CatanSearchState {
   const { hexes, ports } = generateBoard();
@@ -74,25 +75,32 @@ describe('CatanSearchGame Adapter', () => {
     expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.PLACE_ROAD });
   });
 
-  it('handles robber destination and victim choices', () => {
+  it('handles parameterized robber destination and victim choices with resource stealing', () => {
     const { hexes, ports } = generateBoard();
     const hexList = Object.values(hexes);
-    const otherHex = hexList[1];
+    const destinationHex = hexList[0];
+    const initialRobberHex = hexList[1];
+
+    // Find vertex IDs on destinationHex
+    const targetVertexId = getVerticesForHex(destinationHex.coords)[0];
 
     const game = createMockGameState({
       board: {
-        hexes,
+        hexes: {
+          [destinationHex.id]: destinationHex,
+          [initialRobberHex.id]: initialRobberHex,
+        },
         ports,
         vertices: {
-          'v1': { owner: '1', type: 'settlement' },
+          [targetVertexId]: { owner: '1', type: 'settlement' },
         },
         edges: {},
       },
       players: {
-        '0': createTestPlayer('0'),
-        '1': createTestPlayer('1', { resources: { wood: 2, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),
+        '0': createTestPlayer('0', { resources: { wood: 0, brick: 0, sheep: 0, wheat: 0, ore: 0 } }),
+        '1': createTestPlayer('1', { resources: { wood: 2, brick: 0, sheep: 0, wheat: 0, ore: 0 }, settlements: [targetVertexId] }),
       },
-      robberLocation: otherHex.id,
+      robberLocation: initialRobberHex.id,
     });
 
     const context: GameContext = {
@@ -107,14 +115,38 @@ describe('CatanSearchGame Adapter', () => {
     const state: CatanSearchState = { game, context };
     const legalActions = catanGame.getLegalActions(state);
 
+    // Verify multiple robber moves are enumerated for valid hex destinations
     expect(legalActions.length).toBeGreaterThan(0);
     expect(legalActions.every(a => a.move === 'dismissRobber')).toBe(true);
 
-    const rng = new SeededSearchRandom(12345);
-    const dismissAction = legalActions[0];
-    const nextState = catanGame.applyAction(state, dismissAction, rng);
+    // Find a dismissRobber action targeting destinationHex with victim '1'
+    const specificAction = legalActions.find(
+      a => a.move === 'dismissRobber' && a.args[0] === destinationHex.id && a.args[1] === '1'
+    );
+    expect(specificAction).toBeDefined();
 
-    expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.ACTING });
+    if (specificAction && specificAction.move === 'dismissRobber') {
+      const rng = new SeededSearchRandom(12345);
+      const nextState = catanGame.applyAction(state, specificAction, rng);
+
+      // Verify robber location is updated to target hex
+      expect(nextState.game.robberLocation).toBe(destinationHex.id);
+
+      // Verify stage transition to ACTING
+      expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.ACTING });
+
+      // Verify resource transfer: 1 wood stolen from player 1 by player 0
+      expect(nextState.game.players['1'].resources.wood).toBe(1);
+      expect(nextState.game.players['0'].resources.wood).toBe(1);
+
+      // Verify robber notification event was generated
+      expect(nextState.game.notification).toEqual({
+        type: 'robber',
+        thief: '0',
+        victim: '1',
+        resource: 'wood',
+      });
+    }
   });
 
   it('detects terminal winner state', () => {
