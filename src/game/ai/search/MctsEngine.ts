@@ -34,7 +34,7 @@ export interface MctsOptions<S, A> {
  *    At each parent node N, selection evaluates children based on acting player N.player's utility.
  * 2. Expansion: Selects an untried legal action, executes it via game.applyAction(), and creates a child node.
  * 3. Simulation / Rollout: Simulates state transitions using rolloutPolicy until terminal or maxDepth.
- *    Evaluates the resulting state using evaluator (the seam responsible for non-terminal depth boundary valuation).
+ *    Evaluates the resulting state using evaluator with explicit `isTerminal: boolean` indicator.
  * 4. Backpropagation: Propagates absolute per-player utilities (SearchUtility) up the path to root.
  */
 export class MctsEngine<S, A> {
@@ -89,7 +89,7 @@ export class MctsEngine<S, A> {
 
   /**
    * Simulation/Rollout Phase: Advances simulation state using rolloutPolicy until terminal or maxDepth.
-   * Evaluates the resulting terminal or depth-limited non-terminal state via evaluator.
+   * Evaluates the resulting terminal or depth-limited non-terminal state via evaluator with explicit `isTerminal`.
    */
   rollout(
     node: MctsNode<S, A>,
@@ -98,7 +98,7 @@ export class MctsEngine<S, A> {
     maxDepth: number
   ): SearchUtility {
     if (node.isTerminal) {
-      return this.evaluator.evaluate(game, node.state);
+      return this.evaluator.evaluate(game, node.state, true);
     }
 
     let currState = node.state;
@@ -113,7 +113,8 @@ export class MctsEngine<S, A> {
       currDepth += 1;
     }
 
-    return this.evaluator.evaluate(game, currState);
+    const isTerminal = game.isTerminal(currState);
+    return this.evaluator.evaluate(game, currState, isTerminal);
   }
 
   /**

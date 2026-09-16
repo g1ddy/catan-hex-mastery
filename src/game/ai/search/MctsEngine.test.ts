@@ -184,6 +184,30 @@ describe('MctsEngine Unit Tests', () => {
     expect(result.candidates).toEqual([]);
   });
 
+  it('explicitly establishes SearchResult.action contract across root states', () => {
+    // 1. Terminal root -> action === null
+    const terminalState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: '0', isTerminal: true };
+    const terminalResult = engine.search(game, terminalState, { iterations: 10, maxDepth: 5, seed: 42 });
+    expect(terminalResult.action).toBeNull();
+
+    // 2. No legal actions root -> action === null
+    const noActionsState: ToyState = {
+      player: '0',
+      players: ['0', '1'],
+      depth: 0,
+      winner: null,
+      isTerminal: false,
+      noLegalActions: true,
+    };
+    const noActionsResult = engine.search(game, noActionsState, { iterations: 10, maxDepth: 5, seed: 42 });
+    expect(noActionsResult.action).toBeNull();
+
+    // 3. Normal search root -> non-null action A
+    const normalState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
+    const normalResult = engine.search(game, normalState, { iterations: 10, maxDepth: 5, seed: 42 });
+    expect(normalResult.action).toEqual({ name: 'left' });
+  });
+
   it('expands nodes one untried action at a time in order', () => {
     const state: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
     const rng = new SeededSearchRandom(1);
@@ -279,9 +303,37 @@ describe('MctsEngine Unit Tests', () => {
     expect(result.action).not.toBeNull();
   });
 
+  it('strictly enforces root depth 0 + maxDepth = 1 resulting in exactly 1 state transition total', () => {
+    let transitionsCount = 0;
+
+    class TransitionCountingGame implements SearchGame<ToyState, ToyAction> {
+      getCurrentPlayer(state: ToyState): string { return state.player; }
+      getPlayers(_state: ToyState): readonly string[] { return ['0', '1']; }
+      getLegalActions(_state: ToyState): readonly ToyAction[] { return [{ name: 'step' }]; }
+      applyAction(state: ToyState, action: ToyAction, _random: SearchRandom): ToyState {
+        transitionsCount += 1;
+        return {
+          ...state,
+          depth: state.depth + 1,
+          path: [...(state.path ?? []), action.name],
+        };
+      }
+      isTerminal(_state: ToyState): boolean { return false; }
+      getTerminalResult(_state: ToyState): SearchTerminalResult | null { return null; }
+    }
+
+    const tcGame = new TransitionCountingGame();
+    const rootState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
+
+    transitionsCount = 0;
+    engine.search(tcGame, rootState, { iterations: 1, maxDepth: 1, seed: 123 });
+
+    expect(transitionsCount).toBe(1);
+  });
+
   it('maintains explicit multiplayer value propagation and player perspective', () => {
     class CustomEvaluator implements SearchEvaluator<ToyState> {
-      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState): SearchUtility {
+      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState, _isTerminal: boolean): SearchUtility {
         // Player 0 prefers left path, Player 1 prefers right path
         const isLeft = state.path && state.path[0] === 'left';
         return {
@@ -310,16 +362,8 @@ describe('MctsEngine Unit Tests', () => {
   });
 
   it('models alternating player perspective choices correctly in multiplayer tree search', () => {
-    // Setup game tree:
-    // Depth 0 (Player 0 turn): Actions 'left' and 'right'.
-    // Depth 1 (Player 1 turn):
-    //   After 'left': Actions 'sub_a' (Utility: P0=0.8, P1=0.2) vs 'sub_b' (Utility: P0=0.1, P1=0.9).
-    //     -> Player 1 will select 'sub_b' (maximizing P1's reward), yielding P0=0.1.
-    //   After 'right': Actions 'sub_a' (Utility: P0=0.6, P1=0.4) vs 'sub_b' (Utility: P0=0.5, P1=0.5).
-    //     -> Player 1 will select 'sub_b' (maximizing P1's reward), yielding P0=0.5.
-    // Anticipating Player 1's optimal response, Player 0 should choose 'right' to get 0.5 instead of 0.1.
     class AlternatingTreeEvaluator implements SearchEvaluator<ToyState> {
-      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState): SearchUtility {
+      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState, _isTerminal: boolean): SearchUtility {
         const p = state.path?.join('-') ?? '';
         if (p === 'left-sub_a') return { '0': 0.8, '1': 0.2 };
         if (p === 'left-sub_b') return { '0': 0.1, '1': 0.9 };
@@ -344,13 +388,14 @@ describe('MctsEngine Unit Tests', () => {
     const defaultEvaluator = new DefaultSearchEvaluator<ToyState>();
     const state: ToyState = { player: '0', players: ['0', '1', '2'], depth: 0, winner: null, isTerminal: false };
 
-    const utility = defaultEvaluator.evaluate(game, state);
+    const utility = defaultEvaluator.evaluate(game, state, false);
     expect(utility).toEqual({ '0': 1 / 3, '1': 1 / 3, '2': 1 / 3 });
   });
 
   it('uses custom evaluator as the contract seam to extract value at maxDepth rollout boundaries', () => {
     class DepthBoundaryEvaluator implements SearchEvaluator<ToyState> {
-      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState): SearchUtility {
+      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState, isTerminal: boolean): SearchUtility {
+        expect(isTerminal).toBe(false);
         return {
           '0': state.depth / 10,
           '1': 1 - state.depth / 10,
@@ -371,15 +416,13 @@ describe('MctsEngine Unit Tests', () => {
     expect(utility['1']).toBe(0.8);
   });
 
-  it('guarantees fixed-seed reproducibility', () => {
+  it('guarantees fixed-seed reproducibility across the complete SearchResult contract excluding elapsedMs', () => {
     const state: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
 
     const res1 = engine.search(game, state, { iterations: 50, maxDepth: 5, seed: 'test-seed-xyz' });
     const res2 = engine.search(game, state, { iterations: 50, maxDepth: 5, seed: 'test-seed-xyz' });
 
-    expect(res1.action).toEqual(res2.action);
-    expect(res1.candidates).toEqual(res2.candidates);
-    expect(res1.rootVisits).toBe(res2.rootVisits);
+    expect({ ...res1, elapsedMs: 0 }).toEqual({ ...res2, elapsedMs: 0 });
   });
 
   it('enforces exact iteration budget', () => {
