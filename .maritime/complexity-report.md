@@ -11,7 +11,7 @@
 | `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
 | `src/features/hud` | 18 | 3 ($C_a$) | 12 ($C_e$) | **0.8** |
 | `src/features/shared` | 8 | 27 ($C_a$) | 1 ($C_e$) | **0.036** |
-| `src/game` | 52 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
+| `src/game` | 49 | 49 ($C_a$) | 1 ($C_e$) | **0.02** |
 | `src/pages` | 2 | 1 ($C_a$) | 9 ($C_e$) | **0.9** |
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
@@ -21,8 +21,8 @@
 ### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
-*   **Total Graph Files**: 130
-*   **Measured Files**: 130
+*   **Total Graph Files**: 127
+*   **Measured Files**: 127
 *   **Unmeasured Files**: 0
 
 ### 🔥 Top 10 High-Complexity Files (Compound Score)

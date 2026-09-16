@@ -15,7 +15,7 @@ import type {
 import {
   DefaultSearchEvaluator,
   RandomRolloutPolicy,
-  Ucb1SelectionPolicy,
+  DefaultSelectionPolicy,
   MostVisitedSelectionStrategy,
 } from './MctsPolicies';
 
@@ -44,7 +44,7 @@ export class MctsEngine<S, A> {
   readonly finalSelectionStrategy: FinalSelectionStrategy<A>;
 
   constructor(options: MctsOptions<S, A> = {}) {
-    this.selectionPolicy = options.selectionPolicy ?? new Ucb1SelectionPolicy();
+    this.selectionPolicy = options.selectionPolicy ?? new DefaultSelectionPolicy();
     this.rolloutPolicy = options.rolloutPolicy ?? new RandomRolloutPolicy();
     this.evaluator = options.evaluator ?? new DefaultSearchEvaluator();
     this.finalSelectionStrategy =

@@ -75,18 +75,22 @@ export class RandomRolloutPolicy<S, A> implements RolloutPolicy<S, A> {
 /**
  * Tree selection policy operating on expanded nodes.
  * Selection evaluates candidate child nodes from the perspective of the acting player at the parent node (`node.player`).
+ * Note: #479 owns UCT policy tuning and exploration constant experimentation.
  */
 export interface SelectionPolicy<S, A> {
   selectChild(node: MctsNode<S, A>, game: SearchGame<S, A>): MctsNode<S, A>;
 }
 
 /**
- * Standard UCB1 tree selection policy.
+ * Default framework-neutral selection policy.
+ * Provides a provisional upper-confidence-bound selection rule for tree traversal.
  * For a parent node N with active player P = N.player, evaluates each child C using P's reward:
  *   score(C) = meanValue_P(C) + explorationConstant * sqrt(ln(N.visits) / C.visits)
  * where meanValue_P(C) = C.totalReward[P] / C.visits.
+ *
+ * Note: Algorithmic UCT tuning and exploration constant experiments are owned by #479.
  */
-export class Ucb1SelectionPolicy<S, A> implements SelectionPolicy<S, A> {
+export class DefaultSelectionPolicy<S, A> implements SelectionPolicy<S, A> {
   constructor(public readonly explorationConstant: number = Math.SQRT2) {}
 
   selectChild(node: MctsNode<S, A>, _game: SearchGame<S, A>): MctsNode<S, A> {
@@ -117,6 +121,10 @@ export class Ucb1SelectionPolicy<S, A> implements SelectionPolicy<S, A> {
     return bestChild;
   }
 }
+
+/** Alias for backward compatibility */
+export const Ucb1SelectionPolicy = DefaultSelectionPolicy;
+export type Ucb1SelectionPolicy<S, A> = DefaultSelectionPolicy<S, A>;
 
 export interface FinalSelectionStrategy<A> {
   selectAction(candidates: readonly SearchCandidate<A>[]): A | null;
