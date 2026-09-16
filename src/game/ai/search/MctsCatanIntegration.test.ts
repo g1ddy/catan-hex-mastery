@@ -2,6 +2,7 @@ import { CatanSearchGame } from '../catan/CatanSearchGame';
 import type { CatanSearchState } from '../catan/CatanSearchState';
 import type { CatanSearchAction } from '../catan/CatanSearchAction';
 import { MctsEngine } from './MctsEngine';
+import { UctSelectionPolicy } from './UctSelectionPolicy';
 import { createMockGameState, createTestPlayer } from '../../testUtils';
 import { GameContext, TerrainType } from '../../core/types';
 import { PHASES, STAGES } from '../../core/constants';
@@ -65,5 +66,29 @@ describe('MctsEngine Integration with CatanSearchGame Adapter', () => {
     // Verify input state was not mutated
     expect(JSON.stringify(initialState.game)).toBe(initialGameSnapshot);
     expect(JSON.stringify(initialState.context)).toBe(initialContextSnapshot);
+  });
+
+  it('runs MctsEngine with explicit UCT SelectionPolicy on Catan search state', () => {
+    const catanGame = new CatanSearchGame();
+    const uctPolicy = new UctSelectionPolicy<CatanSearchState, CatanSearchAction>({
+      explorationConstant: 1.414,
+    });
+    const engine = new MctsEngine<CatanSearchState, CatanSearchAction>({
+      selectionPolicy: uctPolicy,
+    });
+
+    const initialState = createMockSetupState();
+    const result = engine.search(catanGame, initialState, {
+      iterations: 30,
+      maxDepth: 4,
+      seed: 'catan-uct-integration-456',
+    });
+
+    expect(result.action).not.toBeNull();
+    expect(result.action?.move).toBe('placeSettlement');
+    expect(result.rootPlayer).toBe('0');
+    expect(result.iterations).toBe(30);
+    expect(result.rootVisits).toBe(30);
+    expect(result.candidates.length).toBeGreaterThan(0);
   });
 });
