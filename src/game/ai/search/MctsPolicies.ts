@@ -74,57 +74,32 @@ export class RandomRolloutPolicy<S, A> implements RolloutPolicy<S, A> {
 
 /**
  * Tree selection policy operating on expanded nodes.
- * Selection evaluates candidate child nodes from the perspective of the acting player at the parent node (`node.player`).
- * Note: #479 owns UCT policy tuning and exploration constant experimentation.
+ *
+ * The selection-policy seam intentionally does not prescribe UCT or another exploration
+ * algorithm. #479 owns exploration-policy implementation and tuning. The default policy only
+ * guarantees a deterministic, valid choice and gives unvisited children first priority so the
+ * MCTS engine can make progress without embedding an exploration strategy.
  */
 export interface SelectionPolicy<S, A> {
   selectChild(node: MctsNode<S, A>, game: SearchGame<S, A>): MctsNode<S, A>;
 }
 
 /**
- * Default framework-neutral selection policy.
- * Provides a provisional upper-confidence-bound selection rule for tree traversal.
- * For a parent node N with active player P = N.player, evaluates each child C using P's reward:
- *   score(C) = meanValue_P(C) + explorationConstant * sqrt(ln(N.visits) / C.visits)
- * where meanValue_P(C) = C.totalReward[P] / C.visits.
+ * Minimal deterministic selection policy for the core MCTS engine.
  *
- * Note: Algorithmic UCT tuning and exploration constant experiments are owned by #479.
+ * Prefer the first unvisited child; once every child has been visited, choose the first child in
+ * the authoritative stable child order. This is deliberately not UCT. #479 replaces or augments
+ * this policy with the Catan search stack's configurable exploration policy.
  */
 export class DefaultSelectionPolicy<S, A> implements SelectionPolicy<S, A> {
-  constructor(public readonly explorationConstant: number = Math.SQRT2) {}
-
   selectChild(node: MctsNode<S, A>, _game: SearchGame<S, A>): MctsNode<S, A> {
     if (node.children.length === 0) {
       throw new Error('Cannot select child from a node with no children');
     }
 
-    const parentPlayer = node.player;
-    let bestChild: MctsNode<S, A> = node.children[0];
-    let bestScore = -Infinity;
-
-    for (const child of node.children) {
-      if (child.visits === 0) {
-        return child;
-      }
-
-      const meanValue = (child.totalReward[parentPlayer] ?? 0) / child.visits;
-      const exploration =
-        this.explorationConstant * Math.sqrt(Math.log(node.visits) / child.visits);
-      const score = meanValue + exploration;
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestChild = child;
-      }
-    }
-
-    return bestChild;
+    return node.children.find((child) => child.visits === 0) ?? node.children[0];
   }
 }
-
-/** Alias for backward compatibility */
-export const Ucb1SelectionPolicy = DefaultSelectionPolicy;
-export type Ucb1SelectionPolicy<S, A> = DefaultSelectionPolicy<S, A>;
 
 export interface FinalSelectionStrategy<A> {
   selectAction(candidates: readonly SearchCandidate<A>[]): A | null;
