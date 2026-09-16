@@ -946,8 +946,8 @@
   "src/game/ai/search/SearchGame.ts": {
     "complexity": 1,
     "loc": 15,
-    "instability": 0.33,
-    "fanIn": 2,
+    "instability": 0.17,
+    "fanIn": 5,
     "fanOut": 1,
     "scanned": true
   },
@@ -955,7 +955,7 @@
     "complexity": 3,
     "loc": 61,
     "instability": 0,
-    "fanIn": 3,
+    "fanIn": 5,
     "fanOut": 0,
     "scanned": true
   },
@@ -975,28 +975,52 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/game/ai/search/SearchConfig.ts": {
-    "complexity": 5,
-    "loc": 16,
-    "instability": 0,
+  "src/game/ai/search/MctsEngine.ts": {
+    "complexity": 6,
+    "loc": 182,
+    "instability": 0.9,
     "fanIn": 1,
-    "fanOut": 0,
+    "fanOut": 9,
+    "scanned": true
+  },
+  "src/game/ai/search/MctsNode.ts": {
+    "complexity": 6,
+    "loc": 47,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/game/ai/search/MctsPolicies.ts": {
+    "complexity": 10,
+    "loc": 149,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
     "scanned": true
   },
   "src/game/ai/search/SearchResult.ts": {
     "complexity": 1,
     "loc": 16,
     "instability": 0,
-    "fanIn": 1,
+    "fanIn": 3,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/ai/search/SearchConfig.ts": {
+    "complexity": 5,
+    "loc": 16,
+    "instability": 0,
+    "fanIn": 2,
     "fanOut": 0,
     "scanned": true
   },
   "src/game/ai/search/index.ts": {
     "complexity": 1,
-    "loc": 5,
+    "loc": 8,
     "instability": 1,
     "fanIn": 0,
-    "fanOut": 4,
+    "fanOut": 7,
     "scanned": true
   },
   "src/game/testUtils.ts": {
