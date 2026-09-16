@@ -2,7 +2,7 @@ import { CatanSearchGame } from './CatanSearchGame';
 import { CatanSearchState } from './CatanSearchState';
 import { SeededSearchRandom } from '../search/SearchRandom';
 import { createMockGameState, createTestPlayer } from '../../testUtils';
-import { GameContext, TerrainType } from '../../core/types';
+import { GameContext, TerrainType, RollStatus } from '../../core/types';
 import { PHASES, STAGES, WINNING_SCORE } from '../../core/constants';
 import { generateBoard } from '../../generation/boardGen';
 import { getVerticesForHex } from '../../geometry/hexUtils';
@@ -33,6 +33,30 @@ function createMockSetupState(): CatanSearchState {
   return { game, context };
 }
 
+function createMockGameplayState(): CatanSearchState {
+  const { hexes, ports } = generateBoard();
+  const desertHex = Object.values(hexes).find(h => h.terrain === TerrainType.Desert);
+  const game = createMockGameState({
+    board: { hexes, ports, vertices: {}, edges: {} },
+    players: {
+      '0': createTestPlayer('0', { victoryPoints: 0 }),
+      '1': createTestPlayer('1', { victoryPoints: 0 }),
+    },
+    robberLocation: desertHex?.id || '0',
+  });
+
+  const context: GameContext = {
+    currentPlayer: '0',
+    turn: 1,
+    phase: PHASES.GAMEPLAY,
+    stagesByPlayer: { '0': STAGES.ROLLING },
+    numPlayers: 2,
+    gameover: null,
+  };
+
+  return { game, context };
+}
+
 describe('CatanSearchGame Adapter', () => {
   let catanGame: CatanSearchGame;
 
@@ -53,8 +77,6 @@ describe('CatanSearchGame Adapter', () => {
 
     expect(legalActions1.length).toBeGreaterThan(0);
     expect(legalActions1.every(a => a.move === 'placeSettlement')).toBe(true);
-
-    // Verify deterministic action ordering across repeated invocations
     expect(JSON.stringify(legalActions1)).toBe(JSON.stringify(legalActions2));
   });
 
@@ -66,17 +88,80 @@ describe('CatanSearchGame Adapter', () => {
 
     const initialGameJson = JSON.stringify(state.game);
     const initialCtxJson = JSON.stringify(state.context);
-
     const nextState = catanGame.applyAction(state, chosenAction, rng);
 
-    // Verify input state was NOT mutated
     expect(JSON.stringify(state.game)).toBe(initialGameJson);
     expect(JSON.stringify(state.context)).toBe(initialCtxJson);
-
-    // Verify next state reflects settlement placement and transition to placeRoad stage
     expect(nextState.game.players['0'].settlements).toContain(chosenAction.args[0]);
     expect(nextState.context.currentPlayer).toBe('0');
     expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.PLACE_ROAD });
+  });
+
+  it('transitions setup settlement to road and then advances the snake draft after the road', () => {
+    const state = createMockSetupState();
+    const settlementAction = catanGame.getLegalActions(state)[0];
+    const afterSettlement = catanGame.applyAction(state, settlementAction, new SeededSearchRandom(1));
+    const roadActions = catanGame.getLegalActions(afterSettlement);
+
+    expect(roadActions.length).toBeGreaterThan(0);
+    expect(roadActions.every(a => a.move === 'placeRoad')).toBe(true);
+
+    const afterRoad = catanGame.applyAction(afterSettlement, roadActions[0], new SeededSearchRandom(1));
+    expect(afterRoad.context.currentPlayer).toBe('1');
+    expect(afterRoad.context.turn).toBe(2);
+    expect(afterRoad.context.stagesByPlayer).toEqual({ '1': STAGES.PLACE_SETTLEMENT });
+  });
+
+  it('rolls and resolves a turn without leaking runtime dependencies into search state', () => {
+    const state = createMockGameplayState();
+    const rollAction = catanGame.getLegalActions(state).find(a => a.move === 'rollDice');
+    expect(rollAction).toBeDefined();
+
+    const rolled = catanGame.applyAction(state, rollAction!, new SeededSearchRandom(7));
+    expect(rolled.game.rollStatus).toBe(RollStatus.ROLLING);
+
+    const resolveAction = catanGame.getLegalActions(rolled).find(a => a.move === 'resolveRoll');
+    expect(resolveAction).toBeDefined();
+    const resolved = catanGame.applyAction(rolled, resolveAction!, new SeededSearchRandom(7));
+
+    expect(resolved.game.rollStatus).toBe(RollStatus.RESOLVED);
+    expect(resolved.context.currentPlayer).toBe('0');
+    expect([STAGES.ACTING, STAGES.ROBBER]).toContain(resolved.context.stagesByPlayer?.['0']);
+  });
+
+  it('endTurn advances gameplay lifecycle to the next player', () => {
+    const state = createMockGameplayState();
+    state.context.stagesByPlayer = { '0': STAGES.ACTING };
+
+    const endTurnAction = catanGame.getLegalActions(state).find(a => a.move === 'endTurn');
+    expect(endTurnAction).toBeDefined();
+
+    const nextState = catanGame.applyAction(state, endTurnAction!, new SeededSearchRandom(3));
+    expect(nextState.context.currentPlayer).toBe('1');
+    expect(nextState.context.turn).toBe(2);
+    expect(nextState.context.stagesByPlayer).toEqual({ '1': STAGES.ROLLING });
+    expect(nextState.game.rollStatus).toBe(RollStatus.IDLE);
+  });
+
+  it('marks the search state game-over when a winning move crosses the terminal threshold', () => {
+    const state = createMockGameplayState();
+    state.context.stagesByPlayer = { '0': STAGES.ACTING };
+    state.game.players['0'].victoryPoints = WINNING_SCORE - 1;
+    const vertex = Object.keys(state.game.board.vertices)[0] ?? 'v0';
+    state.game.board.vertices[vertex] = { owner: '0', type: 'settlement' };
+    state.game.players['0'].settlements = [vertex];
+
+    // A city adds one VP and is therefore a compact terminal-transition fixture.
+    state.game.players['0'].resources.ore = 3;
+    state.game.players['0'].resources.wheat = 2;
+    const action = { move: 'buildCity' as const, args: [vertex] as [string] };
+    const nextState = catanGame.applyAction(state, action, new SeededSearchRandom(5));
+
+    expect(nextState.game.players['0'].victoryPoints).toBe(WINNING_SCORE);
+    expect(catanGame.getTerminalResult(nextState)).toEqual({ kind: 'winner', winnerId: '0' });
+    expect(nextState.context.gameover).toEqual({ winner: '0' });
+    expect(nextState.context.phase).toBe(PHASES.GAME_OVER);
+    expect(catanGame.getLegalActions(nextState)).toEqual([]);
   });
 
   it('handles parameterized robber destination and victim choices with resource stealing and deterministic action ordering', () => {
@@ -84,8 +169,6 @@ describe('CatanSearchGame Adapter', () => {
     const hexList = Object.values(hexes);
     const destinationHex = hexList[0];
     const initialRobberHex = hexList[1];
-
-    // Find vertex IDs on destinationHex
     const targetVertexId = getVerticesForHex(destinationHex.coords)[0];
 
     const game = createMockGameState({
@@ -120,34 +203,21 @@ describe('CatanSearchGame Adapter', () => {
     const legalActions1 = catanGame.getLegalActions(state);
     const legalActions2 = catanGame.getLegalActions(state);
 
-    // Verify multiple robber moves are enumerated for valid hex destinations
     expect(legalActions1.length).toBeGreaterThan(0);
     expect(legalActions1.every(a => a.move === 'dismissRobber')).toBe(true);
-
-    // Assert strict deterministic action ordering
     expect(JSON.stringify(legalActions1)).toBe(JSON.stringify(legalActions2));
 
-    // Find a dismissRobber action targeting destinationHex with victim '1'
     const specificAction = legalActions1.find(
       a => a.move === 'dismissRobber' && a.args[0] === destinationHex.id && a.args[1] === '1'
     );
     expect(specificAction).toBeDefined();
 
     if (specificAction && specificAction.move === 'dismissRobber') {
-      const rng = new SeededSearchRandom(12345);
-      const nextState = catanGame.applyAction(state, specificAction, rng);
-
-      // Verify robber location is updated to target hex
+      const nextState = catanGame.applyAction(state, specificAction, new SeededSearchRandom(12345));
       expect(nextState.game.robberLocation).toBe(destinationHex.id);
-
-      // Verify stage transition to ACTING
       expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.ACTING });
-
-      // Verify resource transfer: 1 wood stolen from player 1 by player 0
       expect(nextState.game.players['1'].resources.wood).toBe(1);
       expect(nextState.game.players['0'].resources.wood).toBe(1);
-
-      // Verify robber notification event was generated
       expect(nextState.game.notification).toEqual({
         type: 'robber',
         thief: '0',
@@ -178,7 +248,6 @@ describe('CatanSearchGame Adapter', () => {
   it('reproduces identical simulation traces given the same initial state and seed', () => {
     const state = createMockSetupState();
     const legalActions = catanGame.getLegalActions(state);
-
     const rng1 = new SeededSearchRandom('fixed-seed');
     const rng2 = new SeededSearchRandom('fixed-seed');
 
