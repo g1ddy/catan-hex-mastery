@@ -147,7 +147,7 @@ describe('CatanSearchGame Adapter', () => {
     const state = createMockGameplayState();
     state.context.stagesByPlayer = { '0': STAGES.ACTING };
     state.game.players['0'].victoryPoints = WINNING_SCORE - 1;
-    const vertex = Object.keys(state.game.board.vertices)[0] ?? 'v0';
+    const vertex = getVerticesForHex(Object.values(state.game.board.hexes)[0].coords)[0];
     state.game.board.vertices[vertex] = { owner: '0', type: 'settlement' };
     state.game.players['0'].settlements = [vertex];
 
