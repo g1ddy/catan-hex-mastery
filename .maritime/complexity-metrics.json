@@ -936,8 +936,8 @@
     "scanned": true
   },
   "src/game/moves/execution.ts": {
-    "complexity": 16,
-    "loc": 102,
+    "complexity": 20,
+    "loc": 114,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,

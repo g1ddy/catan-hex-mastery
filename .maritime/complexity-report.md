@@ -32,10 +32,10 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `src/features/board/components/HexOverlays.tsx` | **87.2** | 148 | 19 | 9 | 0.82 |
 | `src/game/Game.ts` | **85.9** | 130 | 9 | 18 | 0.95 |
+| `src/game/moves/execution.ts` | **85.2** | 114 | 20 | 8 | 0.89 |
 | `src/features/board/components/HexEdges.tsx` | **78.5** | 140 | 11 | 12 | 0.92 |
 | `src/features/game/GameLayout.tsx` | **77.5** | 210 | 7 | 12 | 0.92 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
-| `src/game/moves/execution.ts` | **76** | 102 | 16 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **75.5** | 209 | 11 | 12 | 0.43 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
 | `src/pages/GamePage.tsx` | **69.6** | 94 | 11 | 10 | 0.91 |
@@ -44,8 +44,8 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
+| `src/game/moves/execution.ts` | **20** | 114 |
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
-| `src/game/moves/execution.ts` | **16** | 102 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
 | `src/game/analysis/coach.ts` | **11** | 209 |
