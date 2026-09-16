@@ -1,4 +1,4 @@
-import type { GameState, GameContext, GameRandom, BotMove, MoveContext, MoveArguments } from '../core/types';
+import type { GameState, GameContext, GameRandom, BotMove } from '../core/types';
 import { PHASES } from '../core/constants';
 import { checkTerminalResult, advanceCatanTurn } from '../rules/lifecycle';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './build';
@@ -6,23 +6,6 @@ import { placeSettlement, placeRoad, regenerateBoard } from './setup';
 import { tradeBank } from './trade';
 import { rollDice, resolveRoll } from './roll';
 import { dismissRobber } from './robber';
-
-type SupportedMoveName = keyof MoveArguments;
-type MoveHandler = (context: MoveContext, ...args: never[]) => void | GameState | 'INVALID_MOVE';
-
-const MOVE_HANDLERS: Partial<Record<SupportedMoveName, MoveHandler>> = {
-  buildRoad: buildRoad as MoveHandler,
-  buildSettlement: buildSettlement as MoveHandler,
-  buildCity: buildCity as MoveHandler,
-  tradeBank: tradeBank as MoveHandler,
-  endTurn: endTurn as MoveHandler,
-  placeSettlement: placeSettlement as MoveHandler,
-  placeRoad: placeRoad as MoveHandler,
-  regenerateBoard: regenerateBoard as MoveHandler,
-  rollDice: rollDice as MoveHandler,
-  resolveRoll: resolveRoll as MoveHandler,
-  dismissRobber: dismissRobber as MoveHandler,
-};
 
 /**
  * Framework-neutral move execution and lifecycle transition seam for Catan simulation and search.
@@ -40,14 +23,14 @@ export function executeCatanMove(
   let endTurnCalled = false;
   let nextActiveStage: string | undefined;
 
-  const moveContext: MoveContext = {
+  const moveContext = {
     G: nextGame,
     ctx: nextContext,
     events: {
       endTurn: () => {
         endTurnCalled = true;
       },
-      setActivePlayers: (stages) => {
+      setActivePlayers: (stages: Partial<Record<string, string>>) => {
         if (stages.currentPlayer) {
           nextActiveStage = stages.currentPlayer;
         }
@@ -56,16 +39,51 @@ export function executeCatanMove(
     random,
   };
 
-  const handler = MOVE_HANDLERS[action.move];
-  if (!handler) {
-    throw new Error(`${action.move} is not supported by framework-neutral Catan execution`);
+  switch (action.move) {
+    case 'buildRoad':
+      buildRoad(moveContext, ...action.args);
+      break;
+    case 'buildSettlement':
+      buildSettlement(moveContext, ...action.args);
+      break;
+    case 'buildCity':
+      buildCity(moveContext, ...action.args);
+      break;
+    case 'tradeBank':
+      tradeBank(moveContext, ...action.args);
+      break;
+    case 'endTurn':
+      endTurn(moveContext, ...action.args);
+      break;
+    case 'placeSettlement':
+      placeSettlement(moveContext, ...action.args);
+      break;
+    case 'placeRoad':
+      placeRoad(moveContext, ...action.args);
+      break;
+    case 'regenerateBoard':
+      regenerateBoard(moveContext, ...action.args);
+      break;
+    case 'rollDice':
+      rollDice(moveContext, ...action.args);
+      break;
+    case 'resolveRoll':
+      resolveRoll(moveContext, ...action.args);
+      break;
+    case 'dismissRobber':
+      dismissRobber(moveContext, ...action.args);
+      break;
+    case 'buyDevCard':
+      throw new Error('buyDevCard is not supported yet');
+    default: {
+      const _exhaustiveCheck: never = action;
+      throw new Error(`Unhandled move type: ${(_exhaustiveCheck as BotMove).move}`);
+    }
   }
-
-  handler(moveContext, ...(action.args as never[]));
 
   if (nextActiveStage) {
     nextContext.stagesByPlayer = {
-      [nextContext.currentPlayer]: nextActiveStage as GameContext['stagesByPlayer'] extends Partial<Record<string, infer S>> ? S : never,
+      [nextContext.currentPlayer]: nextActiveStage as GameContext['stagesByPlayer'] extends Partial<Record<string, infer S>> ? S : never
     };
   }
 
