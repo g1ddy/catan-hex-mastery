@@ -19,7 +19,7 @@ function createGameRandomAdapter(random: SearchRandom): GameRandom {
         const j = random.integer(i + 1);
         const temp = arr[i];
         arr[i] = arr[j];
-        arr[j] = arr[i];
+        arr[j] = temp;
       }
       return arr;
     },
