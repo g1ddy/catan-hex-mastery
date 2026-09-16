@@ -1,5 +1,13 @@
 import type { SearchGame } from './SearchGame';
 
+/**
+ * Represents a node in the Monte Carlo Search Tree.
+ *
+ * Player perspective semantics:
+ * - `player` is the active acting player at `state` (i.e. `game.getCurrentPlayer(state)`).
+ * - `totalReward[pid]` accumulates absolute simulation utility for each player ID `pid`.
+ * - When parent node N evaluates child C, selection evaluates C's mean utility from N.player's perspective: `C.totalReward[N.player] / C.visits`.
+ */
 export class MctsNode<S, A> {
   readonly state: S;
   readonly player: string;

@@ -26,6 +26,17 @@ export interface MctsOptions<S, A> {
   finalSelectionStrategy?: FinalSelectionStrategy<A>;
 }
 
+/**
+ * Deterministic, framework-neutral Monte Carlo Tree Search Engine.
+ *
+ * Implements standard Max-N MCTS for arbitrary multiplayer games:
+ * 1. Selection: Descends tree from root through fully expanded nodes using selectionPolicy.
+ *    At each parent node N, selection evaluates children based on acting player N.player's utility.
+ * 2. Expansion: Selects an untried legal action, executes it via game.applyAction(), and creates a child node.
+ * 3. Simulation / Rollout: Simulates state transitions using rolloutPolicy until terminal or maxDepth.
+ *    Evaluates the resulting state using evaluator (the seam responsible for non-terminal depth boundary valuation).
+ * 4. Backpropagation: Propagates absolute per-player utilities (SearchUtility) up the path to root.
+ */
 export class MctsEngine<S, A> {
   readonly selectionPolicy: SelectionPolicy<S, A>;
   readonly rolloutPolicy: RolloutPolicy<S, A>;
@@ -40,6 +51,9 @@ export class MctsEngine<S, A> {
       options.finalSelectionStrategy ?? new MostVisitedSelectionStrategy();
   }
 
+  /**
+   * Selection Phase: Descends tree while current node is fully expanded, non-terminal, and below maxDepth.
+   */
   select(node: MctsNode<S, A>, game: SearchGame<S, A>, maxDepth: number): MctsNode<S, A> {
     let curr = node;
     while (
@@ -53,6 +67,9 @@ export class MctsEngine<S, A> {
     return curr;
   }
 
+  /**
+   * Expansion Phase: Takes next untried legal action, applies state transition, and attaches a new child node.
+   */
   expand(
     node: MctsNode<S, A>,
     game: SearchGame<S, A>,
@@ -70,6 +87,10 @@ export class MctsEngine<S, A> {
     return child;
   }
 
+  /**
+   * Simulation/Rollout Phase: Advances simulation state using rolloutPolicy until terminal or maxDepth.
+   * Evaluates the resulting terminal or depth-limited non-terminal state via evaluator.
+   */
   rollout(
     node: MctsNode<S, A>,
     game: SearchGame<S, A>,
@@ -95,6 +116,9 @@ export class MctsEngine<S, A> {
     return this.evaluator.evaluate(game, currState);
   }
 
+  /**
+   * Backpropagation Phase: Propagates absolute per-player utilities (SearchUtility) back up to root.
+   */
   backpropagate(node: MctsNode<S, A> | null, utility: SearchUtility): void {
     let curr: MctsNode<S, A> | null = node;
     while (curr !== null) {
@@ -106,6 +130,9 @@ export class MctsEngine<S, A> {
     }
   }
 
+  /**
+   * Main Search Entry Point: Runs MCTS for configured iterations budget and returns SearchResult.
+   */
   search(
     game: SearchGame<S, A>,
     initialState: S,

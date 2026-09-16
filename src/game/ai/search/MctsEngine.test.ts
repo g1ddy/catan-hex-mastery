@@ -4,7 +4,7 @@ import { SeededSearchRandom } from './SearchRandom';
 import { MctsEngine } from './MctsEngine';
 import { MctsNode } from './MctsNode';
 import type { SearchEvaluator, SearchUtility, FinalSelectionStrategy } from './MctsPolicies';
-import { Ucb1SelectionPolicy } from './MctsPolicies';
+import { Ucb1SelectionPolicy, DefaultSearchEvaluator } from './MctsPolicies';
 import type { SearchCandidate } from './SearchResult';
 
 interface ToyState {
@@ -83,6 +83,60 @@ class ToyGame implements SearchGame<ToyState, ToyAction> {
 
   getPlayers(state: ToyState): readonly string[] {
     return state.players;
+  }
+}
+
+class AlternatingMultiplayerToyGame implements SearchGame<ToyState, ToyAction> {
+  getCurrentPlayer(state: ToyState): string {
+    return state.player;
+  }
+
+  getPlayers(_state: ToyState): readonly string[] {
+    return ['0', '1'];
+  }
+
+  getLegalActions(state: ToyState): readonly ToyAction[] {
+    if (state.isTerminal) return [];
+    if (state.depth === 0) {
+      return [{ name: 'left' }, { name: 'right' }];
+    }
+    if (state.depth === 1) {
+      return [{ name: 'sub_a' }, { name: 'sub_b' }];
+    }
+    return [];
+  }
+
+  applyAction(state: ToyState, action: ToyAction, _random: SearchRandom): ToyState {
+    const nextPath = [...(state.path ?? []), action.name];
+
+    if (state.depth === 0) {
+      return {
+        player: '1',
+        players: ['0', '1'],
+        depth: 1,
+        winner: null,
+        isTerminal: false,
+        path: nextPath,
+      };
+    }
+
+    return {
+      player: '0',
+      players: ['0', '1'],
+      depth: 2,
+      winner: null,
+      isTerminal: true,
+      path: nextPath,
+    };
+  }
+
+  isTerminal(state: ToyState): boolean {
+    return state.isTerminal;
+  }
+
+  getTerminalResult(state: ToyState): SearchTerminalResult | null {
+    if (!state.isTerminal) return null;
+    return state.winner ? { kind: 'winner', winnerId: state.winner } : { kind: 'draw' };
   }
 }
 
@@ -253,6 +307,68 @@ describe('MctsEngine Unit Tests', () => {
 
     // Player 1 should choose 'right'
     expect(resultP1.action).toEqual({ name: 'right' });
+  });
+
+  it('models alternating player perspective choices correctly in multiplayer tree search', () => {
+    // Setup game tree:
+    // Depth 0 (Player 0 turn): Actions 'left' and 'right'.
+    // Depth 1 (Player 1 turn):
+    //   After 'left': Actions 'sub_a' (Utility: P0=0.8, P1=0.2) vs 'sub_b' (Utility: P0=0.1, P1=0.9).
+    //     -> Player 1 will select 'sub_b' (maximizing P1's reward), yielding P0=0.1.
+    //   After 'right': Actions 'sub_a' (Utility: P0=0.6, P1=0.4) vs 'sub_b' (Utility: P0=0.5, P1=0.5).
+    //     -> Player 1 will select 'sub_b' (maximizing P1's reward), yielding P0=0.5.
+    // Anticipating Player 1's optimal response, Player 0 should choose 'right' to get 0.5 instead of 0.1.
+    class AlternatingTreeEvaluator implements SearchEvaluator<ToyState> {
+      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState): SearchUtility {
+        const p = state.path?.join('-') ?? '';
+        if (p === 'left-sub_a') return { '0': 0.8, '1': 0.2 };
+        if (p === 'left-sub_b') return { '0': 0.1, '1': 0.9 };
+        if (p === 'right-sub_a') return { '0': 0.6, '1': 0.4 };
+        if (p === 'right-sub_b') return { '0': 0.5, '1': 0.5 };
+        return { '0': 0.5, '1': 0.5 };
+      }
+    }
+
+    const altEngine = new MctsEngine<ToyState, ToyAction>({
+      evaluator: new AlternatingTreeEvaluator(),
+    });
+    const altGame = new AlternatingMultiplayerToyGame();
+    const rootState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
+
+    const result = altEngine.search(altGame, rootState, { iterations: 100, maxDepth: 4, seed: 123 });
+
+    expect(result.action).toEqual({ name: 'right' });
+  });
+
+  it('returns neutral baseline valuation for default evaluator at non-terminal depth limits', () => {
+    const defaultEvaluator = new DefaultSearchEvaluator<ToyState>();
+    const state: ToyState = { player: '0', players: ['0', '1', '2'], depth: 0, winner: null, isTerminal: false };
+
+    const utility = defaultEvaluator.evaluate(game, state);
+    expect(utility).toEqual({ '0': 1 / 3, '1': 1 / 3, '2': 1 / 3 });
+  });
+
+  it('uses custom evaluator as the contract seam to extract value at maxDepth rollout boundaries', () => {
+    class DepthBoundaryEvaluator implements SearchEvaluator<ToyState> {
+      evaluate<A>(_game: SearchGame<ToyState, A>, state: ToyState): SearchUtility {
+        return {
+          '0': state.depth / 10,
+          '1': 1 - state.depth / 10,
+        };
+      }
+    }
+
+    const customEngine = new MctsEngine<ToyState, ToyAction>({
+      evaluator: new DepthBoundaryEvaluator(),
+    });
+
+    const state: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
+    const root = new MctsNode(state, game);
+    const rng = new SeededSearchRandom(1);
+
+    const utility = customEngine.rollout(root, game, rng, 2);
+    expect(utility['0']).toBe(0.2);
+    expect(utility['1']).toBe(0.8);
   });
 
   it('guarantees fixed-seed reproducibility', () => {
