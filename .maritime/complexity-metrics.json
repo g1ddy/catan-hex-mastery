@@ -993,7 +993,7 @@
   },
   "src/game/ai/search/MctsPolicies.ts": {
     "complexity": 10,
-    "loc": 149,
+    "loc": 124,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,

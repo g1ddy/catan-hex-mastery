@@ -3,8 +3,8 @@ import type { SearchRandom } from './SearchRandom';
 import { SeededSearchRandom } from './SearchRandom';
 import { MctsEngine } from './MctsEngine';
 import { MctsNode } from './MctsNode';
-import type { SearchEvaluator, SearchUtility, FinalSelectionStrategy } from './MctsPolicies';
-import { Ucb1SelectionPolicy, DefaultSearchEvaluator } from './MctsPolicies';
+import type { SearchEvaluator, SearchUtility, FinalSelectionStrategy, SelectionPolicy } from './MctsPolicies';
+import { DefaultSearchEvaluator, DefaultSelectionPolicy } from './MctsPolicies';
 import type { SearchCandidate } from './SearchResult';
 
 interface ToyState {
@@ -239,7 +239,7 @@ describe('MctsEngine Unit Tests', () => {
     engine.backpropagate(childLeft, { '0': 1, '1': 0 });
     engine.backpropagate(childRight, { '0': 0, '1': 1 });
 
-    // With UCB1, selection through fully expanded root should pick childLeft (higher value for player 0)
+    // With DefaultSelectionPolicy, selection through fully expanded root should pick the first child
     const selected = engine.select(root, game, 5);
     expect(selected).toBe(childLeft);
   });
@@ -255,9 +255,9 @@ describe('MctsEngine Unit Tests', () => {
     // One child visited, one child unvisited
     engine.backpropagate(root.children[0], { '0': 1, '1': 0 });
 
-    const ucb1 = new Ucb1SelectionPolicy();
-    // UCB1 must pick the unvisited child
-    const selected = ucb1.selectChild(root, game);
+    const selectionPolicy = new DefaultSelectionPolicy<ToyState, ToyAction>();
+    // DefaultSelectionPolicy must pick the unvisited child
+    const selected = selectionPolicy.selectChild(root, game);
     expect(selected).toBe(root.children[1]);
   });
 
@@ -343,8 +343,22 @@ describe('MctsEngine Unit Tests', () => {
       }
     }
 
+    class TestGreedySelection implements SelectionPolicy<ToyState, ToyAction> {
+      selectChild(node: MctsNode<ToyState, ToyAction>): MctsNode<ToyState, ToyAction> {
+        const unvisited = node.children.find((c) => c.visits === 0);
+        if (unvisited) return unvisited;
+
+        return node.children.reduce((best, current) => {
+          const bestVal = (best.totalReward[node.player] ?? 0) / best.visits;
+          const currentVal = (current.totalReward[node.player] ?? 0) / current.visits;
+          return currentVal > bestVal ? current : best;
+        });
+      }
+    }
+
     const customEngine = new MctsEngine<ToyState, ToyAction>({
       evaluator: new CustomEvaluator(),
+      selectionPolicy: new TestGreedySelection(),
     });
 
     const rootState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
@@ -373,8 +387,22 @@ describe('MctsEngine Unit Tests', () => {
       }
     }
 
+    class TestGreedySelection implements SelectionPolicy<ToyState, ToyAction> {
+      selectChild(node: MctsNode<ToyState, ToyAction>): MctsNode<ToyState, ToyAction> {
+        const unvisited = node.children.find((c) => c.visits === 0);
+        if (unvisited) return unvisited;
+
+        return node.children.reduce((best, current) => {
+          const bestVal = (best.totalReward[node.player] ?? 0) / best.visits;
+          const currentVal = (current.totalReward[node.player] ?? 0) / current.visits;
+          return currentVal > bestVal ? current : best;
+        });
+      }
+    }
+
     const altEngine = new MctsEngine<ToyState, ToyAction>({
       evaluator: new AlternatingTreeEvaluator(),
+      selectionPolicy: new TestGreedySelection(),
     });
     const altGame = new AlternatingMultiplayerToyGame();
     const rootState: ToyState = { player: '0', players: ['0', '1'], depth: 0, winner: null, isTerminal: false };
