@@ -49,9 +49,9 @@
   },
   "src/game/core/constants.ts": {
     "complexity": 1,
-    "loc": 32,
+    "loc": 31,
     "instability": 0,
-    "fanIn": 22,
+    "fanIn": 20,
     "fanOut": 0,
     "scanned": true
   },
@@ -59,7 +59,7 @@
     "complexity": 1,
     "loc": 201,
     "instability": 0.01,
-    "fanIn": 77,
+    "fanIn": 72,
     "fanOut": 1,
     "scanned": true
   },
@@ -785,10 +785,10 @@
   },
   "src/game/Game.ts": {
     "complexity": 9,
-    "loc": 130,
-    "instability": 0.95,
+    "loc": 131,
+    "instability": 0.94,
     "fanIn": 1,
-    "fanOut": 18,
+    "fanOut": 17,
     "scanned": true
   },
   "src/game/core/utils/sanitize.ts": {
@@ -827,15 +827,15 @@
     "complexity": 3,
     "loc": 16,
     "instability": 0,
-    "fanIn": 2,
+    "fanIn": 1,
     "fanOut": 0,
     "scanned": true
   },
   "src/game/moves/build.ts": {
     "complexity": 3,
     "loc": 78,
-    "instability": 0.71,
-    "fanIn": 2,
+    "instability": 0.83,
+    "fanIn": 1,
     "fanOut": 5,
     "scanned": true
   },
@@ -866,49 +866,41 @@
   "src/game/moves/robber.ts": {
     "complexity": 8,
     "loc": 75,
-    "instability": 0.71,
-    "fanIn": 2,
+    "instability": 0.83,
+    "fanIn": 1,
     "fanOut": 5,
     "scanned": true
   },
   "src/game/moves/roll.ts": {
     "complexity": 4,
     "loc": 51,
-    "instability": 0.71,
-    "fanIn": 2,
+    "instability": 0.83,
+    "fanIn": 1,
     "fanOut": 5,
     "scanned": true
   },
   "src/game/moves/setup.ts": {
     "complexity": 7,
     "loc": 89,
-    "instability": 0.83,
-    "fanIn": 2,
+    "instability": 0.91,
+    "fanIn": 1,
     "fanOut": 10,
     "scanned": true
   },
   "src/game/moves/trade.ts": {
     "complexity": 2,
     "loc": 28,
-    "instability": 0.67,
-    "fanIn": 2,
+    "instability": 0.8,
+    "fanIn": 1,
     "fanOut": 4,
     "scanned": true
   },
   "src/game/rules/enumerator.ts": {
     "complexity": 6,
     "loc": 153,
-    "instability": 0.75,
-    "fanIn": 2,
+    "instability": 0.86,
+    "fanIn": 1,
     "fanOut": 6,
-    "scanned": true
-  },
-  "src/game/rules/lifecycle.ts": {
-    "complexity": 6,
-    "loc": 73,
-    "instability": 0.57,
-    "fanIn": 3,
-    "fanOut": 4,
     "scanned": true
   },
   "src/pages/SetupPage.tsx": {
@@ -916,86 +908,6 @@
     "loc": 167,
     "instability": 0.8,
     "fanIn": 1,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchAction.ts": {
-    "complexity": 1,
-    "loc": 4,
-    "instability": 0.33,
-    "fanIn": 2,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchGame.ts": {
-    "complexity": 4,
-    "loc": 80,
-    "instability": 0.89,
-    "fanIn": 1,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/moves/execution.ts": {
-    "complexity": 16,
-    "loc": 102,
-    "instability": 0.89,
-    "fanIn": 1,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchGame.ts": {
-    "complexity": 1,
-    "loc": 17,
-    "instability": 0.33,
-    "fanIn": 2,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchRandom.ts": {
-    "complexity": 3,
-    "loc": 61,
-    "instability": 0,
-    "fanIn": 3,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchState.ts": {
-    "complexity": 1,
-    "loc": 7,
-    "instability": 0.33,
-    "fanIn": 2,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/catan/index.ts": {
-    "complexity": 1,
-    "loc": 4,
-    "instability": 1,
-    "fanIn": 0,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchConfig.ts": {
-    "complexity": 6,
-    "loc": 16,
-    "instability": 0,
-    "fanIn": 1,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchResult.ts": {
-    "complexity": 1,
-    "loc": 16,
-    "instability": 0,
-    "fanIn": 1,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/search/index.ts": {
-    "complexity": 1,
-    "loc": 5,
-    "instability": 1,
-    "fanIn": 0,
     "fanOut": 4,
     "scanned": true
   },

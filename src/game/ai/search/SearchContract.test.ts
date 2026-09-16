@@ -1,5 +1,5 @@
 import { SearchGame, SearchTerminalResult } from './SearchGame';
-import { SeededSearchRandom } from './SearchRandom';
+import { SearchRandom, SeededSearchRandom } from './SearchRandom';
 import { validateSearchConfig } from './SearchConfig';
 
 interface ToyState {
@@ -20,7 +20,7 @@ class ToySearchGame implements SearchGame<ToyState, ToyAction> {
     return [{ type: 'INCREMENT', amount: 1 }, { type: 'END_GAME' }];
   }
 
-  applyAction(state: ToyState, action: ToyAction, random: SeededSearchRandom): ToyState {
+  applyAction(state: ToyState, action: ToyAction, random: SearchRandom): ToyState {
     if (action.type === 'END_GAME') {
       return { ...state, count: 100 };
     }
@@ -62,7 +62,7 @@ describe('Framework-neutral Search Contract', () => {
 
     it('verifies state isolation when applying actions', () => {
       const game = new ToySearchGame();
-      const rng = new SeededSearchRandom(42);
+      const rng: SearchRandom = new SeededSearchRandom(42);
       const initialState: ToyState = { player: '0', count: 0, players: ['0', '1'] };
       const nextState = game.applyAction(initialState, { type: 'INCREMENT', amount: 1 }, rng);
 
@@ -74,7 +74,7 @@ describe('Framework-neutral Search Contract', () => {
 
     it('handles terminal state detection and result', () => {
       const game = new ToySearchGame();
-      const rng = new SeededSearchRandom(42);
+      const rng: SearchRandom = new SeededSearchRandom(42);
       const state: ToyState = { player: '0', count: 0, players: ['0', '1'] };
       const terminalState = game.applyAction(state, { type: 'END_GAME' }, rng);
 
@@ -122,14 +122,14 @@ describe('Framework-neutral Search Contract', () => {
 
   describe('validateSearchConfig', () => {
     it('accepts valid configurations', () => {
-      expect(() => validateSearchConfig({ iterations: 100 })).not.toThrow();
+      expect(() => validateSearchConfig({ iterations: 100, maxDepth: 10 })).not.toThrow();
       expect(() => validateSearchConfig({ iterations: 50, maxDepth: 10, seed: 'abc' })).not.toThrow();
     });
 
     it('rejects invalid iterations or maxDepth', () => {
-      expect(() => validateSearchConfig({ iterations: 0 })).toThrow('iterations must be a positive integer');
-      expect(() => validateSearchConfig({ iterations: -10 })).toThrow('iterations must be a positive integer');
-      expect(() => validateSearchConfig({ iterations: 10.5 })).toThrow('iterations must be a positive integer');
+      expect(() => validateSearchConfig({ iterations: 0, maxDepth: 10 })).toThrow('iterations must be a positive integer');
+      expect(() => validateSearchConfig({ iterations: -10, maxDepth: 10 })).toThrow('iterations must be a positive integer');
+      expect(() => validateSearchConfig({ iterations: 10.5, maxDepth: 10 })).toThrow('iterations must be a positive integer');
       expect(() => validateSearchConfig({ iterations: 100, maxDepth: 0 })).toThrow('maxDepth must be a positive integer');
     });
   });

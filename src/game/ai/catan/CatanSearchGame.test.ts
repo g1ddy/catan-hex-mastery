@@ -46,12 +46,16 @@ describe('CatanSearchGame Adapter', () => {
     expect(catanGame.getPlayers(state)).toEqual(['0', '1']);
   });
 
-  it('enumerates legal placement actions during setup phase', () => {
+  it('enumerates legal placement actions during setup phase with deterministic ordering', () => {
     const state = createMockSetupState();
-    const legalActions = catanGame.getLegalActions(state);
+    const legalActions1 = catanGame.getLegalActions(state);
+    const legalActions2 = catanGame.getLegalActions(state);
 
-    expect(legalActions.length).toBeGreaterThan(0);
-    expect(legalActions.every(a => a.move === 'placeSettlement')).toBe(true);
+    expect(legalActions1.length).toBeGreaterThan(0);
+    expect(legalActions1.every(a => a.move === 'placeSettlement')).toBe(true);
+
+    // Verify deterministic action ordering across repeated invocations
+    expect(JSON.stringify(legalActions1)).toBe(JSON.stringify(legalActions2));
   });
 
   it('applies a legal placement action and updates lifecycle state deterministically without mutating input state', () => {
@@ -75,7 +79,7 @@ describe('CatanSearchGame Adapter', () => {
     expect(nextState.context.stagesByPlayer).toEqual({ '0': STAGES.PLACE_ROAD });
   });
 
-  it('handles parameterized robber destination and victim choices with resource stealing', () => {
+  it('handles parameterized robber destination and victim choices with resource stealing and deterministic action ordering', () => {
     const { hexes, ports } = generateBoard();
     const hexList = Object.values(hexes);
     const destinationHex = hexList[0];
@@ -113,14 +117,18 @@ describe('CatanSearchGame Adapter', () => {
     };
 
     const state: CatanSearchState = { game, context };
-    const legalActions = catanGame.getLegalActions(state);
+    const legalActions1 = catanGame.getLegalActions(state);
+    const legalActions2 = catanGame.getLegalActions(state);
 
     // Verify multiple robber moves are enumerated for valid hex destinations
-    expect(legalActions.length).toBeGreaterThan(0);
-    expect(legalActions.every(a => a.move === 'dismissRobber')).toBe(true);
+    expect(legalActions1.length).toBeGreaterThan(0);
+    expect(legalActions1.every(a => a.move === 'dismissRobber')).toBe(true);
+
+    // Assert strict deterministic action ordering
+    expect(JSON.stringify(legalActions1)).toBe(JSON.stringify(legalActions2));
 
     // Find a dismissRobber action targeting destinationHex with victim '1'
-    const specificAction = legalActions.find(
+    const specificAction = legalActions1.find(
       a => a.move === 'dismissRobber' && a.args[0] === destinationHex.id && a.args[1] === '1'
     );
     expect(specificAction).toBeDefined();

@@ -1,6 +1,6 @@
 export interface SearchConfig {
   iterations: number;
-  maxDepth?: number;
+  maxDepth: number;
   seed?: string | number;
 }
 
@@ -9,7 +9,7 @@ export function validateSearchConfig(config: SearchConfig): void {
     throw new Error(`Invalid search config: iterations must be a positive integer, got ${config.iterations}`);
   }
 
-  if (config.maxDepth !== undefined && (!Number.isInteger(config.maxDepth) || config.maxDepth <= 0)) {
+  if (!Number.isInteger(config.maxDepth) || config.maxDepth <= 0) {
     throw new Error(`Invalid search config: maxDepth must be a positive integer, got ${config.maxDepth}`);
   }
 }
