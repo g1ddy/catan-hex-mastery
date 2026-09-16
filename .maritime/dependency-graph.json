@@ -10699,6 +10699,9 @@
       ],
       "dependents": [
         "src/game/ai/catan/CatanSearchGame.ts",
+        "src/game/ai/search/MctsEngine.ts",
+        "src/game/ai/search/MctsNode.ts",
+        "src/game/ai/search/MctsPolicies.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -10710,6 +10713,8 @@
       "dependents": [
         "src/game/ai/catan/CatanSearchGame.ts",
         "src/game/ai/search/SearchGame.ts",
+        "src/game/ai/search/MctsEngine.ts",
+        "src/game/ai/search/MctsPolicies.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -10808,10 +10813,303 @@
       "orphan": false
     },
     {
-      "source": "src/game/ai/search/SearchConfig.ts",
+      "source": "src/game/ai/search/MctsEngine.ts",
       "valid": true,
-      "dependencies": [],
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsNode",
+          "resolved": "src/game/ai/search/MctsNode.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsPolicies",
+          "resolved": "src/game/ai/search/MctsPolicies.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsPolicies",
+          "resolved": "src/game/ai/search/MctsPolicies.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchConfig",
+          "resolved": "src/game/ai/search/SearchConfig.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchConfig",
+          "resolved": "src/game/ai/search/SearchConfig.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchGame",
+          "resolved": "src/game/ai/search/SearchGame.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchRandom",
+          "resolved": "src/game/ai/search/SearchRandom.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchRandom",
+          "resolved": "src/game/ai/search/SearchRandom.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchResult",
+          "resolved": "src/game/ai/search/SearchResult.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
       "dependents": [
+        "src/game/ai/search/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/ai/search/MctsNode.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchGame",
+          "resolved": "src/game/ai/search/SearchGame.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/ai/search/MctsEngine.ts",
+        "src/game/ai/search/MctsPolicies.ts",
+        "src/game/ai/search/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/ai/search/MctsPolicies.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsNode",
+          "resolved": "src/game/ai/search/MctsNode.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchGame",
+          "resolved": "src/game/ai/search/SearchGame.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchRandom",
+          "resolved": "src/game/ai/search/SearchRandom.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchResult",
+          "resolved": "src/game/ai/search/SearchResult.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -10821,6 +11119,18 @@
       "valid": true,
       "dependencies": [],
       "dependents": [
+        "src/game/ai/search/MctsEngine.ts",
+        "src/game/ai/search/MctsPolicies.ts",
+        "src/game/ai/search/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/ai/search/SearchConfig.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -10829,6 +11139,60 @@
       "source": "src/game/ai/search/index.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsEngine",
+          "resolved": "src/game/ai/search/MctsEngine.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsNode",
+          "resolved": "src/game/ai/search/MctsNode.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsPolicies",
+          "resolved": "src/game/ai/search/MctsPolicies.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -11076,8 +11440,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 146,
-    "totalDependenciesCruised": 493,
+    "totalCruised": 149,
+    "totalDependenciesCruised": 510,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
