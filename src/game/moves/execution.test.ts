@@ -206,6 +206,40 @@ describe('Catan Lifecycle Rules Seam', () => {
       expect(result.ctx.stagesByPlayer).toEqual({ '0': STAGES.ROBBER });
     });
 
+    it('merges active stages without replacing unrelated players during transition', () => {
+      const G = createMockGameState({
+        players: {
+          '0': createTestPlayer('0'),
+          '1': createTestPlayer('1')
+        },
+        rollStatus: RollStatus.ROLLING,
+      });
+      const ctx: GameContext = {
+        currentPlayer: '0',
+        turn: 1,
+        phase: PHASES.GAMEPLAY,
+        stagesByPlayer: {
+          '0': STAGES.ROLLING,
+          '1': STAGES.TRADING // Player 1 is already in trading stage
+        },
+        numPlayers: 2,
+      };
+
+      // Mock roll 3+4=7 to trigger setActivePlayers
+      let rollCount = 0;
+      const rng: GameRandom = {
+        Die: () => (++rollCount === 1 ? 3 : 4),
+        Shuffle: (arr) => arr,
+      };
+
+      const result = executeCatanMove(G, ctx, { move: 'resolveRoll', args: [] }, rng);
+
+      expect(result.ctx.stagesByPlayer).toEqual({
+        '0': STAGES.ROBBER,
+        '1': STAGES.TRADING // The unrelated active stage must survive
+      });
+    });
+
     it('executes setup placeSettlement and transitions stage to PLACE_ROAD', () => {
       const { hexes, ports } = generateBoard();
       const hexList = Object.values(hexes);

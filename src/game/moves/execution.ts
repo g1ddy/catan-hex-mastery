@@ -21,7 +21,7 @@ export function executeCatanMove(
   const nextContext: GameContext = JSON.parse(JSON.stringify(ctx));
 
   let endTurnCalled = false;
-  let nextActiveStage: string | undefined;
+  let nextActiveStages: Partial<Record<string, string>> | undefined;
 
   const moveContext = {
     G: nextGame,
@@ -31,9 +31,7 @@ export function executeCatanMove(
         endTurnCalled = true;
       },
       setActivePlayers: (stages: Partial<Record<string, string>>) => {
-        if (stages.currentPlayer) {
-          nextActiveStage = stages.currentPlayer;
-        }
+        nextActiveStages = stages;
       },
     },
     random,
@@ -81,10 +79,24 @@ export function executeCatanMove(
     }
   }
 
-  if (nextActiveStage) {
-    nextContext.stagesByPlayer = {
-      [nextContext.currentPlayer]: nextActiveStage as GameContext['stagesByPlayer'] extends Partial<Record<string, infer S>> ? S : never
-    };
+  if (nextActiveStages) {
+    type StageType = GameContext['stagesByPlayer'] extends Partial<Record<string, infer S>> ? S : never;
+
+    // Initialize if undefined to allow merging
+    if (!nextContext.stagesByPlayer) {
+      nextContext.stagesByPlayer = {};
+    }
+
+    for (const [key, stage] of Object.entries(nextActiveStages)) {
+      if (stage) {
+        if (key === 'currentPlayer') {
+          nextContext.stagesByPlayer[nextContext.currentPlayer] = stage as StageType;
+        } else {
+          // eslint-disable-next-line security/detect-object-injection -- Player IDs from events are safe
+          nextContext.stagesByPlayer[key] = stage as StageType;
+        }
+      }
+    }
   }
 
   if (endTurnCalled) {
