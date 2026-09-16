@@ -5,7 +5,7 @@ export interface SearchCandidate<A> {
 }
 
 export interface SearchResult<A> {
-  action: A;
+  action: A | null;
   rootPlayer: string;
   iterations: number;
   rootVisits: number;

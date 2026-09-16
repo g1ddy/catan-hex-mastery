@@ -238,7 +238,29 @@ interface SearchConfig {
 
 `iterations` and `maxDepth` must be positive integers.
 
-Search results expose the selected action, root player, iteration/root-visit diagnostics, and candidate visit/value information. MCTS implementation details such as node classes and UCT bookkeeping do not leak into the game contract.
+Search results expose the selected action, root player, iteration/root-visit diagnostics, and candidate visit/value information:
+
+```ts
+interface SearchCandidate<A> {
+  action: A;
+  visits: number;
+  value: number;
+}
+
+interface SearchResult<A> {
+  action: A | null;
+  rootPlayer: string;
+  iterations: number;
+  rootVisits: number;
+  candidates: readonly SearchCandidate<A>[];
+  seed?: string | number;
+  elapsedMs?: number;
+}
+```
+
+When search is executed on a state that is already terminal or has no legal actions available, `action` returns `null` and `candidates` is empty (`[]`). In active non-terminal states with legal actions, `action` returns the non-null selected candidate action `A`.
+
+MCTS implementation details such as node classes and UCT bookkeeping do not leak into the game contract.
 
 ## 13. Implementation sequence
 
