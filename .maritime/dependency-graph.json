@@ -10702,6 +10702,7 @@
         "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/MctsNode.ts",
         "src/game/ai/search/MctsPolicies.ts",
+        "src/game/ai/search/UctSelectionPolicy.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -11019,6 +11020,7 @@
       "dependents": [
         "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/MctsPolicies.ts",
+        "src/game/ai/search/UctSelectionPolicy.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -11106,10 +11108,47 @@
           "valid": true,
           "preCompilationOnly": true,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./UctSelectionPolicy",
+          "resolved": "src/game/ai/search/UctSelectionPolicy.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "cycle": [
+            {
+              "name": "src/game/ai/search/UctSelectionPolicy.ts",
+              "dependencyTypes": [
+                "local",
+                "export"
+              ]
+            },
+            {
+              "name": "src/game/ai/search/MctsPolicies.ts",
+              "dependencyTypes": [
+                "local",
+                "type-only",
+                "import",
+                "pre-compilation-only"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
         "src/game/ai/search/MctsEngine.ts",
+        "src/game/ai/search/UctSelectionPolicy.ts",
         "src/game/ai/search/index.ts"
       ],
       "orphan": false
@@ -11122,6 +11161,94 @@
         "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/MctsPolicies.ts",
         "src/game/ai/search/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/ai/search/UctSelectionPolicy.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsNode",
+          "resolved": "src/game/ai/search/MctsNode.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MctsPolicies",
+          "resolved": "src/game/ai/search/MctsPolicies.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "cycle": [
+            {
+              "name": "src/game/ai/search/MctsPolicies.ts",
+              "dependencyTypes": [
+                "local",
+                "type-only",
+                "import",
+                "pre-compilation-only"
+              ]
+            },
+            {
+              "name": "src/game/ai/search/UctSelectionPolicy.ts",
+              "dependencyTypes": [
+                "local",
+                "export"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SearchGame",
+          "resolved": "src/game/ai/search/SearchGame.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/ai/search/MctsPolicies.ts"
       ],
       "orphan": false
     },
@@ -11440,8 +11567,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 149,
-    "totalDependenciesCruised": 510,
+    "totalCruised": 150,
+    "totalDependenciesCruised": 514,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
