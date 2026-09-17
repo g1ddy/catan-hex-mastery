@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Auto Play Mode', () => {
   test('should allow 4 bots to play by themselves', async ({ page }) => {
-    // 1. Navigate to Setup Page
-    await page.goto('/');
+    // Use the fast heuristic scenario so this browser smoke test does not invoke MCTS.
+    await page.goto('/?bot_scenario=fast-autoplay');
 
     // 2. Click "0 Players (Auto Play)" button
     // It should be visible in production build too
@@ -11,8 +11,8 @@ test.describe('Auto Play Mode', () => {
     await expect(autoPlayBtn).toBeVisible();
     await autoPlayBtn.click();
 
-    // 3. Verify navigation to Game Page
-    await expect(page).toHaveURL(/\/game/);
+    // 3. Verify navigation to Game Page and scenario propagation
+    await expect(page).toHaveURL(/\/game\?bot_scenario=fast-autoplay/);
 
     // 4. Verify Game Board loads
     const gameBoard = page.locator('[data-testid="game-layout"]');
@@ -21,7 +21,6 @@ test.describe('Auto Play Mode', () => {
     // 5. Verify Bots are Playing
     // Wait for at least one settlement to appear on the board.
     // The BuildingIcon component uses data-testid="settlement-icon"
-    // We increase timeout as bots might take a moment to analyze and move.
     await expect(async () => {
         const settlements = page.getByTestId('settlement-icon');
         const count = await settlements.count();

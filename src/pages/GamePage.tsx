@@ -42,28 +42,20 @@ export function GamePage() {
     const botNamesResult: Record<string, string> = {};
 
     const startBotIndex = numPlayers - numBots;
-    let botTypeIndex = 0;
+    const scenarioKey = new URLSearchParams(location.search).get('bot_scenario');
+    const botScenario = scenarioKey ? BOT_SCENARIOS[scenarioKey] : undefined;
 
-    // Get bot scenario if any
-    const searchParams = new URLSearchParams(window.location.search);
-    const botScenarioKey = searchParams.get('bot_scenario');
-    const botScenario = botScenarioKey ? BOT_SCENARIOS[botScenarioKey] : null;
+    for (let botTypeIndex = 0, i = startBotIndex; i < numPlayers; i++, botTypeIndex++) {
+      const botConfig = botScenario
+        ? botScenario[botTypeIndex % botScenario.length]
+        : BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
 
-    for (let i = startBotIndex; i < numPlayers; i++) {
-        let botConfig = BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
-        if (botScenario) {
-             // Using `botTypeIndex` correctly cycles through the scenario explicitly
-             botConfig = botScenario[botTypeIndex % botScenario.length];
-        }
-
-        botsResult[i.toString()] = botConfig.class;
-        botNamesResult[i.toString()] = botConfig.name;
-
-        botTypeIndex++;
+      botsResult[i.toString()] = botConfig.class;
+      botNamesResult[i.toString()] = botConfig.name;
     }
 
     return { bots: botsResult, botNames: botNamesResult };
-  }, [numBots, numPlayers]);
+  }, [location.search, numBots, numPlayers]);
 
   const setupData = useMemo(() => ({ botNames }), [botNames]);
 
