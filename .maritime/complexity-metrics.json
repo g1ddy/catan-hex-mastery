@@ -937,7 +937,7 @@
   },
   "src/game/moves/execution.ts": {
     "complexity": 7,
-    "loc": 141,
+    "loc": 138,
     "instability": 0.89,
     "fanIn": 1,
     "fanOut": 8,

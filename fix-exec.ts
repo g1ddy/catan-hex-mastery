@@ -1,4 +1,4 @@
-import type { GameState, GameContext, GameRandom, BotMove } from '../core/types';
+import type { GameState, GameContext, GameRandom, BotMove, MoveContext } from '../core/types';
 import { PHASES } from '../core/constants';
 import { checkTerminalResult, advanceCatanTurn } from '../rules/lifecycle';
 import { buildRoad, buildSettlement, buildCity, endTurn } from './build';
@@ -7,8 +7,7 @@ import { tradeBank } from './trade';
 import { rollDice, resolveRoll } from './roll';
 import { dismissRobber } from './robber';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function executeBuildMove(moveContext: any, action: BotMove): boolean {
+function executeBuildMove(moveContext: MoveContext, action: BotMove): boolean {
   switch (action.move) {
     case 'buildRoad':
       buildRoad(moveContext, ...action.args);
@@ -23,8 +22,7 @@ function executeBuildMove(moveContext: any, action: BotMove): boolean {
   return false;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function executeSetupMove(moveContext: any, action: BotMove): boolean {
+function executeSetupMove(moveContext: MoveContext, action: BotMove): boolean {
   switch (action.move) {
     case 'placeSettlement':
       placeSettlement(moveContext, ...action.args);
@@ -39,8 +37,7 @@ function executeSetupMove(moveContext: any, action: BotMove): boolean {
   return false;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function executeMiscMove(moveContext: any, action: BotMove): boolean {
+function executeMiscMove(moveContext: MoveContext, action: BotMove): boolean {
   switch (action.move) {
     case 'tradeBank':
       tradeBank(moveContext, ...action.args);
@@ -99,7 +96,7 @@ export function executeCatanMove(
   let endTurnCalled = false;
   let nextActiveStages: Partial<Record<string, string>> | undefined;
 
-  const moveContext = {
+  const moveContext: MoveContext = {
     G: nextGame,
     ctx: nextContext,
     events: {
@@ -118,7 +115,8 @@ export function executeCatanMove(
                   executeMiscMove(moveContext, action);
 
   if (!handled) {
-    throw new Error(`Unhandled move type: ${(action as any).move}`);
+    const _exhaustiveCheck: never = action;
+    throw new Error(`Unhandled move type: ${(_exhaustiveCheck as BotMove).move}`);
   }
 
   if (nextActiveStages) {

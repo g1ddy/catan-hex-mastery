@@ -422,7 +422,7 @@ describe('Catan Lifecycle Rules Seam', () => {
       const G = createMockGameState({
         board: { hexes, ports, vertices: {}, edges: {} },
         players: { '0': createTestPlayer('0') },
-        robberLocation: hexList[0].id,
+        board: { hexes, ports, vertices: {}, edges: {}, robberHexId: hexList[0].id },
       });
       const ctx: GameContext = {
         currentPlayer: '0',
@@ -432,9 +432,9 @@ describe('Catan Lifecycle Rules Seam', () => {
         numPlayers: 1,
       };
 
-      const result = executeCatanMove(G, ctx, { move: 'dismissRobber', args: [hId, undefined] }, mockRng);
+      const result = executeCatanMove(G, ctx, { move: 'dismissRobber', args: [hId, null] }, mockRng);
 
-      expect(result.G.robberLocation).toBe(hId);
+      expect(result.G.board.robberHexId).toBe(hId);
       expect(result.ctx.stagesByPlayer).toEqual({ '0': STAGES.ACTING });
     });
 
@@ -442,14 +442,12 @@ describe('Catan Lifecycle Rules Seam', () => {
       const { hexes, ports } = generateBoard();
       const hexList = Object.values(hexes);
       const vId = getVerticesForHex(hexList[0].coords)[0];
-      const eId = getEdgesForHex(hexList[0].coords)[0];
 
       const G = createMockGameState({
-        board: { hexes, ports, vertices: {}, edges: { [eId]: { owner: '0' } } },
+        board: { hexes, ports, vertices: {}, edges: {} },
         players: {
           '0': createTestPlayer('0', {
             resources: { wood: 1, brick: 1, sheep: 1, wheat: 1, ore: 0 },
-            roads: [eId]
           }),
         },
       });

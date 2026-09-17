@@ -1,0 +1,19 @@
+--- src/game/moves/execution.test.ts
++++ src/game/moves/execution.test.ts
+@@ -424,7 +424,7 @@
+       const G = createMockGameState({
+         board: { hexes, ports, vertices: {}, edges: {} },
+         players: { '0': createTestPlayer('0') },
+-        boardStats: { robberHexId: hexList[0].id, bank: { wood: 19, brick: 19, sheep: 19, wheat: 19, ore: 19 }, devCards: [], longestRoad: { playerId: null, length: 0 }, largestArmy: { playerId: null, size: 0 } },
++        board: { hexes, ports, vertices: {}, edges: {}, robberHexId: hexList[0].id },
+       });
+       const ctx: GameContext = {
+         currentPlayer: '0',
+@@ -436,7 +436,7 @@
+
+       const result = executeCatanMove(G, ctx, { move: 'dismissRobber', args: [hId, null] }, mockRng);
+
+-      expect(result.G.boardStats.robberHexId).toBe(hId);
++      expect(result.G.board.robberHexId).toBe(hId);
+       expect(result.ctx.stagesByPlayer).toEqual({ '0': STAGES.ACTING });
+     });

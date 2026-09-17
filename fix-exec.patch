@@ -1,60 +1,48 @@
 --- src/game/moves/execution.ts
 +++ src/game/moves/execution.ts
-@@ -8,6 +8,67 @@
+@@ -1,4 +1,4 @@
+-import type { GameState, GameContext, GameRandom, BotMove } from '../core/types';
++import type { GameState, GameContext, GameRandom, BotMove, MoveContext } from '../core/types';
+ import { PHASES } from '../core/constants';
+ import { checkTerminalResult, advanceCatanTurn } from '../rules/lifecycle';
+ import { buildRoad, buildSettlement, buildCity, endTurn } from './build';
+@@ -8,8 +8,7 @@
  import { dismissRobber } from './robber';
 
-+function executeBuildMove(moveContext: any, action: BotMove): boolean {
-+  switch (action.move) {
-+    case 'buildRoad':
-+      buildRoad(moveContext, ...action.args);
-+      return true;
-+    case 'buildSettlement':
-+      buildSettlement(moveContext, ...action.args);
-+      return true;
-+    case 'buildCity':
-+      buildCity(moveContext, ...action.args);
-+      return true;
-+  }
-+  return false;
-+}
-+
-+function executeSetupMove(moveContext: any, action: BotMove): boolean {
-+  switch (action.move) {
-+    case 'placeSettlement':
-+      placeSettlement(moveContext, ...action.args);
-+      return true;
-+    case 'placeRoad':
-+      placeRoad(moveContext, ...action.args);
-+      return true;
-+    case 'regenerateBoard':
-+      regenerateBoard(moveContext, ...action.args);
-+      return true;
-+  }
-+  return false;
-+}
-+
-+function executeMiscMove(moveContext: any, action: BotMove): boolean {
-+  switch (action.move) {
-+    case 'tradeBank':
-+      tradeBank(moveContext, ...action.args);
-+      return true;
-+    case 'endTurn':
-+      endTurn(moveContext, ...action.args);
-+      return true;
-+    case 'rollDice':
-+      rollDice(moveContext, ...action.args);
-+      return true;
-+    case 'resolveRoll':
-+      resolveRoll(moveContext, ...action.args);
-+      return true;
-+    case 'dismissRobber':
-+      dismissRobber(moveContext, ...action.args);
-+      return true;
-+    case 'buyDevCard':
-+      throw new Error('buyDevCard is not supported yet');
-+  }
-+  return false;
-+}
-+
- /**
-  * Framework-neutral move execution and lifecycle transition seam for Catan simulation and search.
+-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+-function executeBuildMove(moveContext: any, action: BotMove): boolean {
++function executeBuildMove(moveContext: MoveContext, action: BotMove): boolean {
+   switch (action.move) {
+     case 'buildRoad':
+       buildRoad(moveContext, ...action.args);
+@@ -23,8 +22,7 @@
+   return false;
+ }
+
+-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+-function executeSetupMove(moveContext: any, action: BotMove): boolean {
++function executeSetupMove(moveContext: MoveContext, action: BotMove): boolean {
+   switch (action.move) {
+     case 'placeSettlement':
+       placeSettlement(moveContext, ...action.args);
+@@ -38,8 +36,7 @@
+   return false;
+ }
+
+-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+-function executeMiscMove(moveContext: any, action: BotMove): boolean {
++function executeMiscMove(moveContext: MoveContext, action: BotMove): boolean {
+   switch (action.move) {
+     case 'tradeBank':
+       tradeBank(moveContext, ...action.args);
+@@ -107,8 +104,8 @@
+                   executeMiscMove(moveContext, action);
+
+   if (!handled) {
+-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-    throw new Error(`Unhandled move type: ${(action as any).move}`);
++    const _exhaustiveCheck: never = action;
++    throw new Error(`Unhandled move type: ${(_exhaustiveCheck as BotMove).move}`);
+   }
+
+   if (nextActiveStages) {
