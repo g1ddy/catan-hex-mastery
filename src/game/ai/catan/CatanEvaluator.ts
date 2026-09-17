@@ -1,180 +1,85 @@
 import type { SearchGame } from '../search/SearchGame';
 import type { SearchEvaluator, SearchUtility } from '../search/MctsPolicies';
 import type { CatanSearchState } from './CatanSearchState';
-import { calculatePlayerPotentialPips } from '../../mechanics/production';
+import { calculatePlayerPotentialPips } from '../../analysis/production';
 import { isValidPlayer } from '../../core/validation';
 import { safeGet } from '../../core/utils/objectUtils';
 import { getValidSetupSettlementSpots, getValidSettlementSpots } from '../../rules/queries';
 
 export interface CatanEvaluatorWeights {
-  victoryPoints: number;
-  productionPips: number;
-  resourceDiversity: number;
-  synergyOreWheat: number;
-  synergyWoodBrick: number;
-  cities: number;
-  settlements: number;
-  roadLength: number;
-  settlementSpots: number;
-  ports: number;
-  /** Production advantage/disadvantage versus the highest-producing opponent; not spatial blocking pressure. */
-  opponentPressure: number;
+  victoryPoints: number; productionPips: number; resourceDiversity: number; synergyOreWheat: number;
+  synergyWoodBrick: number; cities: number; settlements: number; roadLength: number;
+  settlementSpots: number; ports: number; productionAdvantage: number;
+  /** @deprecated Compatibility alias for productionAdvantage. */ opponentPressure?: number;
 }
 
 export const DEFAULT_CATAN_EVALUATOR_WEIGHTS: Readonly<CatanEvaluatorWeights> = Object.freeze({
-  victoryPoints: 10.0,
-  productionPips: 1.0,
-  resourceDiversity: 3.0,
-  synergyOreWheat: 4.0,
-  synergyWoodBrick: 3.0,
-  cities: 4.0,
-  settlements: 2.0,
-  roadLength: 0.5,
-  settlementSpots: 1.0,
-  ports: 2.0,
-  opponentPressure: 1.0,
+  victoryPoints: 10, productionPips: 1, resourceDiversity: 3, synergyOreWheat: 4, synergyWoodBrick: 3,
+  cities: 4, settlements: 2, roadLength: 0.5, settlementSpots: 1, ports: 2, productionAdvantage: 1,
 });
 
-export function validateEvaluatorWeights(weights: Record<string, number>): void {
-  for (const [key, val] of Object.entries(weights)) {
-    if (typeof val !== 'number' || !Number.isFinite(val) || val < 0) {
-      throw new Error(`Invalid evaluator weight '${key}': ${val}. Weights must be non-negative finite numbers.`);
+export function validateEvaluatorWeights(weights: Record<string, number | undefined>): void {
+  for (const [key, value] of Object.entries(weights)) {
+    if (value !== undefined && (!Number.isFinite(value) || value < 0)) {
+      throw new Error(`Invalid evaluator weight '${key}': ${value}. Weights must be non-negative finite numbers.`);
     }
   }
 }
 
-export function evaluateVictoryPoints(state: CatanSearchState, playerID: string): number {
-  return state.game.players[playerID]?.victoryPoints ?? 0;
+export function evaluateVictoryPoints(state: CatanSearchState, playerID: string): number { return state.game.players[playerID]?.victoryPoints ?? 0; }
+export function evaluateProductionPips(pips: Record<string, number>): number { return Object.values(pips).reduce((sum, value) => sum + value, 0); }
+export function evaluateResourceDiversity(pips: Record<string, number>): number {
+  const active = Object.values(pips).filter((value) => value > 0).length;
+  return active >= 4 ? 1 : active === 3 ? 0.5 : 0;
 }
-
-export function evaluateProductionPips(myPips: Record<string, number>): number {
-  return Object.values(myPips).reduce((sum, p) => sum + p, 0);
+export function evaluateResourceSynergy(pips: Record<string, number>): { oreWheat: number; woodBrick: number } {
+  return { oreWheat: pips.ore > 0 && pips.wheat > 0 ? 1 : 0, woodBrick: pips.wood > 0 && pips.brick > 0 ? 1 : 0 };
 }
-
-export function evaluateResourceDiversity(myPips: Record<string, number>): number {
-  const activeCount = Object.values(myPips).filter((p) => p > 0).length;
-  if (activeCount >= 4) return 1.0;
-  if (activeCount === 3) return 0.5;
-  return 0.0;
-}
-
-export function evaluateResourceSynergy(myPips: Record<string, number>): { oreWheat: number; woodBrick: number } {
-  return {
-    oreWheat: (myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0 ? 1.0 : 0.0,
-    woodBrick: (myPips.wood || 0) > 0 && (myPips.brick || 0) > 0 ? 1.0 : 0.0,
-  };
-}
-
 export function evaluateStructures(state: CatanSearchState, playerID: string): { cityCount: number; settlementCount: number } {
-  const player = state.game.players[playerID];
-  if (!player) return { cityCount: 0, settlementCount: 0 };
-
-  let cityCount = 0;
-  let settlementCount = 0;
-  for (const vId of player.settlements) {
-    const v = safeGet(state.game.board.vertices, vId);
-    if (v?.type === 'city') cityCount++;
-    else if (v?.type === 'settlement') settlementCount++;
-  }
+  const player = state.game.players[playerID]; if (!player) return { cityCount: 0, settlementCount: 0 };
+  let cityCount = 0, settlementCount = 0;
+  for (const vertexId of player.settlements) { const vertex = safeGet(state.game.board.vertices, vertexId); if (vertex?.type === 'city') cityCount++; else if (vertex?.type === 'settlement') settlementCount++; }
   return { cityCount, settlementCount };
 }
-
-export function evaluateRoadExpansion(state: CatanSearchState, playerID: string): number {
-  return state.game.players[playerID]?.roads.length ?? 0;
-}
-
+export function evaluateRoadExpansion(state: CatanSearchState, playerID: string): number { return state.game.players[playerID]?.roads.length ?? 0; }
 export function evaluateSettlementOpportunities(state: CatanSearchState, playerID: string): number {
-  if (state.context.phase === 'setup') {
-    if (state.context.currentPlayer !== playerID) return 0;
-    return getValidSetupSettlementSpots(state.game).size;
-  }
+  if (state.context.phase === 'setup') return state.context.currentPlayer === playerID ? getValidSetupSettlementSpots(state.game).size : 0;
   return getValidSettlementSpots(state.game, playerID, false).size;
 }
-
 export function evaluatePortAccess(state: CatanSearchState, playerID: string): number {
-  const player = state.game.players[playerID];
-  if (!player) return 0;
-  return Object.values(state.game.board.ports || {}).filter((port) =>
-    port.vertices.some((vId) => player.settlements.includes(vId))
-  ).length;
+  const player = state.game.players[playerID]; if (!player) return 0;
+  return Object.values(state.game.board.ports || {}).filter((port) => port.vertices.some((id) => player.settlements.includes(id))).length;
 }
-
-/** Relative production advantage versus the strongest opponent, used as a competitive proxy. */
-export function evaluateOpponentPressure(
-  playerID: string,
-  players: readonly string[],
-  pipsByPlayer: Record<string, Record<string, number>>
-): number {
-  const myPipsTotal = evaluateProductionPips(pipsByPlayer[playerID] || {});
-  let maxOpponentPips = 0;
-  for (const oppID of players) {
-    if (oppID === playerID) continue;
-    maxOpponentPips = Math.max(maxOpponentPips, evaluateProductionPips(pipsByPlayer[oppID] || {}));
-  }
-  return Math.max(-10.0, Math.min(10.0, myPipsTotal - maxOpponentPips));
+/** Production lead/deficit versus the highest-producing opponent; this is not spatial blocking pressure. */
+export function evaluateProductionAdvantage(playerID: string, players: readonly string[], pipsByPlayer: Record<string, Record<string, number>>): number {
+  const mine = evaluateProductionPips(pipsByPlayer[playerID] || {}); let highestOpponent = 0;
+  for (const opponent of players) if (opponent !== playerID) highestOpponent = Math.max(highestOpponent, evaluateProductionPips(pipsByPlayer[opponent] || {}));
+  return Math.max(-10, Math.min(10, mine - highestOpponent));
 }
+/** @deprecated Use evaluateProductionAdvantage. */
+export const evaluateOpponentPressure = evaluateProductionAdvantage;
 
-/**
- * Catan state evaluator. Non-terminal values are independent per-player estimates bounded to [0.01, 0.98].
- * Opponent pressure is intentionally limited to production differential; spatial blocking belongs to later
- * Catan-owned analysis primitives rather than being inferred here.
- */
 export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
   private readonly weights: CatanEvaluatorWeights;
-
   constructor(weights: Partial<CatanEvaluatorWeights> = {}) {
-    const combined = { ...DEFAULT_CATAN_EVALUATOR_WEIGHTS, ...weights };
-    validateEvaluatorWeights(combined);
-    this.weights = combined;
+    const normalized = { ...weights } as Partial<CatanEvaluatorWeights>;
+    if (normalized.opponentPressure !== undefined && normalized.productionAdvantage === undefined) normalized.productionAdvantage = normalized.opponentPressure;
+    const combined = { ...DEFAULT_CATAN_EVALUATOR_WEIGHTS, ...normalized }; validateEvaluatorWeights(combined); this.weights = combined;
   }
-
   public evaluate<A>(game: SearchGame<CatanSearchState, A>, state: CatanSearchState, isTerminal: boolean): SearchUtility {
-    const players = game.getPlayers(state);
-    const utility: Record<string, number> = Object.create(null);
-
-    if (isTerminal) {
-      const term = game.getTerminalResult(state);
-      if (term?.kind === 'winner') {
-        for (const p of players) utility[p] = p === term.winnerId ? 1.0 : 0.0;
-      } else {
-        for (const p of players) utility[p] = 0.5;
-      }
-      return utility;
-    }
-
+    const players = game.getPlayers(state); const utility: Record<string, number> = Object.create(null);
+    if (isTerminal) { const terminal = game.getTerminalResult(state); for (const player of players) utility[player] = terminal?.kind === 'winner' ? (terminal.winnerId === player ? 1 : 0) : 0.5; return utility; }
     const pipsByPlayer = calculatePlayerPotentialPips(state.game);
     for (const playerID of players) {
-      if (!isValidPlayer(playerID, state.game) || !state.game.players[playerID]) {
-        utility[playerID] = 0.0;
-        continue;
-      }
-
-      const myPips = pipsByPlayer[playerID] || {};
-      const vp = evaluateVictoryPoints(state, playerID);
-      const pips = evaluateProductionPips(myPips);
-      const diversity = evaluateResourceDiversity(myPips);
-      const synergy = evaluateResourceSynergy(myPips);
-      const { cityCount, settlementCount } = evaluateStructures(state, playerID);
-      const roads = evaluateRoadExpansion(state, playerID);
-      const settlementSpots = evaluateSettlementOpportunities(state, playerID);
-      const ports = evaluatePortAccess(state, playerID);
-      const opponentPressure = evaluateOpponentPressure(playerID, players, pipsByPlayer);
-
-      let rawScore = 0.0;
-      rawScore += vp * this.weights.victoryPoints;
-      rawScore += pips * this.weights.productionPips;
-      rawScore += diversity * this.weights.resourceDiversity;
-      rawScore += synergy.oreWheat * this.weights.synergyOreWheat;
-      rawScore += synergy.woodBrick * this.weights.synergyWoodBrick;
-      rawScore += cityCount * this.weights.cities + settlementCount * this.weights.settlements;
-      rawScore += roads * this.weights.roadLength;
-      rawScore += settlementSpots * this.weights.settlementSpots;
-      rawScore += ports * this.weights.ports;
-      rawScore += opponentPressure * this.weights.opponentPressure;
-
-      const expVal = Math.exp(-rawScore / 40.0);
-      const normalized = Math.min(0.98, Math.max(0.01, 0.01 + 0.97 / (1.0 + expVal)));
-      utility[playerID] = Math.round(normalized * 10000) / 10000;
+      if (!isValidPlayer(playerID, state.game) || !state.game.players[playerID]) { utility[playerID] = 0; continue; }
+      const pips = pipsByPlayer[playerID] || {}; const synergy = evaluateResourceSynergy(pips); const structures = evaluateStructures(state, playerID);
+      let raw = evaluateVictoryPoints(state, playerID) * this.weights.victoryPoints;
+      raw += evaluateProductionPips(pips) * this.weights.productionPips + evaluateResourceDiversity(pips) * this.weights.resourceDiversity;
+      raw += synergy.oreWheat * this.weights.synergyOreWheat + synergy.woodBrick * this.weights.synergyWoodBrick;
+      raw += structures.cityCount * this.weights.cities + structures.settlementCount * this.weights.settlements;
+      raw += evaluateRoadExpansion(state, playerID) * this.weights.roadLength + evaluateSettlementOpportunities(state, playerID) * this.weights.settlementSpots;
+      raw += evaluatePortAccess(state, playerID) * this.weights.ports + evaluateProductionAdvantage(playerID, players, pipsByPlayer) * this.weights.productionAdvantage;
+      const normalized = 0.01 + 0.97 / (1 + Math.exp(-raw / 40)); utility[playerID] = Math.round(Math.min(0.98, Math.max(0.01, normalized)) * 10000) / 10000;
     }
     return utility;
   }

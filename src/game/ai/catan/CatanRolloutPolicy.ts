@@ -1,85 +1,31 @@
 import type { SearchGame } from '../search/SearchGame';
 import type { RolloutPolicy } from '../search/MctsPolicies';
 import type { SearchRandom } from '../search/SearchRandom';
-import { SeededSearchRandom } from '../search/SearchRandom';
 import type { CatanSearchState } from './CatanSearchState';
 import type { CatanSearchAction } from './CatanSearchAction';
 import { CatanEvaluator } from './CatanEvaluator';
 
-export interface CatanRolloutPolicyOptions {
-  evaluator?: CatanEvaluator;
-  evalWeight?: number;
-  customWeights?: Partial<Record<string, number>>;
-}
-
-const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = {
-  placeSettlement: 10.0,
-  buildSettlement: 10.0,
-  buildCity: 12.0,
-  placeRoad: 3.0,
-  buildRoad: 3.0,
-  rollDice: 15.0,
-  resolveRoll: 15.0,
-  dismissRobber: 6.0,
-  tradeBank: 2.0,
-  endTurn: 1.0,
-  regenerateBoard: 0.1,
-};
-
-const STOCHASTIC_LOOKAHEAD_MOVES = new Set(['rollDice', 'resolveRoll']);
+export interface CatanRolloutPolicyOptions { evaluator?: CatanEvaluator; evalWeight?: number; customWeights?: Partial<Record<string, number>>; }
+const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = { placeSettlement: 10, buildSettlement: 10, buildCity: 12, placeRoad: 3, buildRoad: 3, rollDice: 15, resolveRoll: 15, dismissRobber: 6, tradeBank: 2, endTurn: 1, regenerateBoard: 0.1 };
+const STOCHASTIC_ACTIONS = new Set(['rollDice', 'resolveRoll', 'regenerateBoard']);
 
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
-  private readonly evaluator: CatanEvaluator;
-  private readonly evalWeight: number;
-  private readonly baseWeights: Readonly<Record<string, number>>;
-
-  constructor(options: CatanRolloutPolicyOptions = {}) {
-    this.evaluator = options.evaluator ?? new CatanEvaluator();
-    this.evalWeight = options.evalWeight ?? 10.0;
-    const weights: Record<string, number> = { ...DEFAULT_ACTION_BASE_WEIGHTS };
-    if (options.customWeights) {
-      for (const [key, val] of Object.entries(options.customWeights)) {
-        if (val !== undefined) weights[key] = val;
-      }
-    }
-    this.baseWeights = weights;
-  }
-
+  private readonly evaluator: CatanEvaluator; private readonly evalWeight: number; private readonly baseWeights: Readonly<Record<string, number>>;
+  constructor(options: CatanRolloutPolicyOptions = {}) { this.evaluator = options.evaluator ?? new CatanEvaluator(); this.evalWeight = options.evalWeight ?? 10; this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights ?? {}) }; }
   public selectAction(game: SearchGame<CatanSearchState, CatanSearchAction>, state: CatanSearchState, random: SearchRandom): CatanSearchAction | null {
-    if (game.isTerminal(state)) return null;
-    const legalActions = game.getLegalActions(state);
-    if (legalActions.length === 0) return null;
-    if (legalActions.length === 1) return legalActions[0];
-
-    const actingPlayer = game.getCurrentPlayer(state);
-    const weights: number[] = new Array(legalActions.length);
-    let totalWeight = 0.0;
-
+    if (game.isTerminal(state)) return null; const legalActions = game.getLegalActions(state); if (legalActions.length === 0) return null; if (legalActions.length === 1) return legalActions[0];
+    const actingPlayer = game.getCurrentPlayer(state); const weights: number[] = new Array(legalActions.length); let totalWeight = 0;
     for (let i = 0; i < legalActions.length; i++) {
-      const action = legalActions[i];
-      const baseWeight = this.baseWeights[action.move] ?? 1.0;
-      let evalBonus = 0.0;
-
-      // Candidate lookahead is deliberately limited to deterministic transitions. We do not sample
-      // dice/roll resolution here because chance-node architecture is outside this rollout issue.
-      if (this.evalWeight > 0 && !STOCHASTIC_LOOKAHEAD_MOVES.has(action.move)) {
-        const evalRng = new SeededSearchRandom(`rollout-lookahead:${action.move}:${i}`);
-        const nextState = game.applyAction(state, action, evalRng);
-        const evalUtility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState));
-        evalBonus = (evalUtility[actingPlayer] ?? 0.0) * this.evalWeight;
+      const action = legalActions[i]; const baseWeight = this.baseWeights[action.move] ?? 1; let evalBonus = 0;
+      if (this.evalWeight > 0 && !STOCHASTIC_ACTIONS.has(action.move)) {
+        const deterministicRandom: SearchRandom = { next: () => 0.5, integer: (max) => Math.floor(0.5 * max), pick: (items) => items[0], die: () => 1 };
+        const nextState = game.applyAction(state, action, deterministicRandom);
+        const utility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState)); evalBonus = (utility[actingPlayer] ?? 0) * this.evalWeight;
       }
-
-      const validWeight = Math.max(0.01, baseWeight + evalBonus);
-      weights[i] = validWeight;
-      totalWeight += validWeight;
+      const weight = Math.max(0.01, baseWeight + evalBonus); weights[i] = weight; totalWeight += weight;
     }
-
-    const threshold = random.next() * totalWeight;
-    let accumulated = 0.0;
-    for (let i = 0; i < legalActions.length; i++) {
-      accumulated += weights[i];
-      if (accumulated >= threshold) return legalActions[i];
-    }
+    const threshold = random.next() * totalWeight; let accumulated = 0;
+    for (let i = 0; i < legalActions.length; i++) { accumulated += weights[i]; if (accumulated >= threshold) return legalActions[i]; }
     return legalActions[legalActions.length - 1];
   }
 }
