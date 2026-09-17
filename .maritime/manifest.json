@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.9",
-  "generatedAt": "2026-09-16T20:53:50.393Z",
+  "generatedAt": "2026-09-17T02:19:09.116Z",
   "sourceRoots": [
     "src"
   ],
@@ -11,9 +11,9 @@
     "report": "complexity-report.md"
   },
   "summary": {
-    "totalFiles": 131,
-    "healthScore": 91,
-    "scannedCount": 131,
+    "totalFiles": 133,
+    "healthScore": 90,
+    "scannedCount": 133,
     "skippedCount": 0,
     "architecture": {
       "namespaces": [
@@ -75,7 +75,7 @@
         },
         {
           "folder": "src/game",
-          "moduleCount": 53,
+          "moduleCount": 55,
           "afferentCoupling": 49,
           "efferentCoupling": 1,
           "instability": 0.02
