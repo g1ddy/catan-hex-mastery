@@ -49,7 +49,7 @@ describe('probability domain primitives', () => {
     expect(totalProb).toBeCloseTo(1.0, 10);
   });
 
-  it('verifies hex expected production for resource tiles vs desert/sea', () => {
+  it('verifies hex expected production for resource tiles vs desert/sea/token 7', () => {
     const forestHex = {
       id: '0,0,0',
       coords: { q: 0, r: 0, s: 0 },
@@ -57,6 +57,16 @@ describe('probability domain primitives', () => {
       tokenValue: 6,
     };
     expect(getHexExpectedProduction(forestHex)).toBeCloseTo(5 / 36, 8);
+
+    // Token 7 on resource hex produces 0 resources (triggers robber) while dice probability remains 6/36
+    const token7Hex = {
+      id: '0,0,0',
+      coords: { q: 0, r: 0, s: 0 },
+      terrain: TerrainType.Forest,
+      tokenValue: 7,
+    };
+    expect(get2d6Probability(7)).toBeCloseTo(6 / 36, 8);
+    expect(getHexExpectedProduction(token7Hex)).toBe(0);
 
     const desertHex = {
       id: '0,0,0',
@@ -120,7 +130,7 @@ describe('probability domain primitives', () => {
     expect(getVertexExpectedProduction(G, vertexId)).toBeCloseTo(12 / 36, 8);
   });
 
-  it('calculates player resource-level expected production summaries', () => {
+  it('calculates player resource-level expected production summaries, excluding token 7', () => {
     const G = createMockGameState();
     G.board.hexes['0,0,0'] = {
       id: '0,0,0',
@@ -138,7 +148,7 @@ describe('probability domain primitives', () => {
       id: '1,0,-1',
       coords: { q: 1, r: 0, s: -1 },
       terrain: TerrainType.Mountains,
-      tokenValue: 8, // ore, prob 5/36, pips 5
+      tokenValue: 7, // token 7 yields 0 resource production
     };
 
     const vertexId = '0,0,0::1,-1,0::1,0,-1';
@@ -151,11 +161,11 @@ describe('probability domain primitives', () => {
     const summary = getPlayerExpectedProduction(G, '0');
     expect(summary.byResource.wood).toBeCloseTo(10 / 36, 8);
     expect(summary.byResource.brick).toBeCloseTo(8 / 36, 8);
-    expect(summary.byResource.ore).toBeCloseTo(10 / 36, 8);
+    expect(summary.byResource.ore).toBe(0); // token 7 produces 0 ore
     expect(summary.byResource.sheep).toBe(0);
     expect(summary.byResource.wheat).toBe(0);
 
-    expect(summary.totalExpectedProduction).toBeCloseTo(28 / 36, 8);
-    expect(summary.totalPips).toBe(2 * (5 + 4 + 5)); // 28 pips
+    expect(summary.totalExpectedProduction).toBeCloseTo(18 / 36, 8);
+    expect(summary.totalPips).toBe(2 * (5 + 4 + 0)); // 18 pips
   });
 });

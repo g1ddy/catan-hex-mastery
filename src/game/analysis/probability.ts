@@ -34,7 +34,7 @@ export function get2d6RollStats(roll: number): RollStats {
   };
 }
 
-/** Returns exact probability of rolling `roll` on 2d6 (combinations / 36). */
+/** Returns exact dice probability of rolling `roll` on 2d6 (combinations / 36). */
 export function get2d6Probability(roll: number): number {
   return (COMBINATIONS_2D6[roll] ?? 0) / 36;
 }
@@ -51,10 +51,11 @@ export function get2d6PipWeight(roll: number): number {
 
 /**
  * Expected production probability yield per dice roll for a single hex.
- * Returns 0 if desert, sea, or missing token value.
+ * Returns 0 if desert, sea, missing token value, or token value 7 (which triggers robber, producing 0 resources).
  */
 export function getHexExpectedProduction(hex: Hex | null | undefined): number {
   if (!hex || !hex.tokenValue || !hex.terrain) return 0;
+  if (PIP_MAP[hex.tokenValue] === 0) return 0; // Token 7 or desert/unproductive tile yield 0 resources
   const resource = TERRAIN_CONFIG[hex.terrain];
   if (!resource) return 0;
   return get2d6Probability(hex.tokenValue);
@@ -78,6 +79,7 @@ function sumHexProductionProbability(
   for (const hexId of hexes) {
     const hex = safeGet(G.board.hexes, hexId);
     if (!hex || !hex.tokenValue || !hex.terrain) continue;
+    if (PIP_MAP[hex.tokenValue] === 0) continue; // Token 7 yields 0 resource production
     if (options.checkRobber && G.robberLocation === hexId) continue;
     const resource = TERRAIN_CONFIG[hex.terrain];
     if (!resource) continue;
@@ -88,8 +90,10 @@ function sumHexProductionProbability(
 
 /**
  * Expected resource yield for an EXISTING structure on a vertex.
- * Returns 0 if no structure exists on the vertex.
- * Applies 1x multiplier for settlement, 2x multiplier for city.
+ * Contract:
+ * - Unoccupied vertex (no structure record in G.board.vertices) -> 0
+ * - Settlement -> 1x multiplier
+ * - City -> 2x multiplier
  */
 export function getVertexExpectedProduction(
   G: GameState,
@@ -97,7 +101,7 @@ export function getVertexExpectedProduction(
   options: ExpectedProductionOptions = {}
 ): number {
   const vertex = safeGet(G.board.vertices, vertexId);
-  if (!vertex) return 0;
+  if (!vertex) return 0; // Unoccupied vertex yields 0 expected production for an existing structure
   const multiplier = vertex.type === 'city' ? 2 : 1;
   return sumHexProductionProbability(G, vertexId, options) * multiplier;
 }
@@ -160,6 +164,7 @@ export function getPlayerExpectedProduction(
     for (const hexId of getHexesForVertex(vertexId)) {
       const hex = safeGet(G.board.hexes, hexId);
       if (!hex || !hex.tokenValue || !hex.terrain) continue;
+      if (PIP_MAP[hex.tokenValue] === 0) continue; // Token 7 yields 0 resource production
       if (options.checkRobber && G.robberLocation === hexId) continue;
       const resource = TERRAIN_CONFIG[hex.terrain] as keyof Resources | null;
       if (!resource) continue;
