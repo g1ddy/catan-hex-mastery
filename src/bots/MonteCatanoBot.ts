@@ -1,10 +1,10 @@
 import { MCTSBot } from '../adapters/runtime/boardgame';
 import { Game, Ctx } from '../adapters/runtime/boardgame';
 import { GameState, GameAction } from '../game/core/types';
-import { GameContext } from '../game/core/types';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { WINNING_SCORE } from '../game/core/constants';
 import { calculatePlayerPotentialPips } from '../game/analysis/analyst';
+import { CatanGame } from '../game/Game';
 
 const pipsCache = new WeakMap<GameState, Record<string, Record<string, number>>>();
 
@@ -18,8 +18,8 @@ function getPlayerPotentialPips(gameState: GameState): Record<string, Record<str
 }
 
 interface BotConfig {
-    game: Game;
-    enumerate: (G: GameState, ctx: GameContext, playerID: string) => GameAction[];
+    game?: Game;
+    enumerate: (G: GameState, ctx: any, playerID: string) => GameAction[];
     seed?: string | number;
     playerID?: string;
     [key: string]: any;
@@ -29,6 +29,7 @@ export class MonteCatanoBot extends MCTSBot {
     constructor(config: BotConfig) {
         super({
             ...config,
+            game: config.game || CatanGame,
             enumerate: (G: GameState, ctx: Ctx, playerID: string) =>
                 config.enumerate(G, toGameContext(ctx), playerID),
             iterations: 200, // Higher iterations
