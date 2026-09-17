@@ -9,7 +9,7 @@
   },
   "src/pages/GamePage.tsx": {
     "complexity": 11,
-    "loc": 86,
+    "loc": 80,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -25,7 +25,7 @@
   },
   "src/bots/botCycle.ts": {
     "complexity": 1,
-    "loc": 19,
+    "loc": 27,
     "instability": 0.88,
     "fanIn": 1,
     "fanOut": 7,
@@ -929,7 +929,7 @@
   },
   "src/pages/SetupPage.tsx": {
     "complexity": 5,
-    "loc": 167,
+    "loc": 171,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
