@@ -3,6 +3,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Auto Play Mode', () => {
   test('should allow 4 bots to play by themselves', async ({ page }) => {
     // 1. Navigate to Setup Page
+    await page.addInitScript(() => {
+        window.localStorage.setItem('E2E_FAST_BOTS', 'true');
+    });
     await page.goto('/');
 
     // 2. Click "0 Players (Auto Play)" button

@@ -44,8 +44,15 @@ export function GamePage() {
     const startBotIndex = numPlayers - numBots;
     let botTypeIndex = 0;
 
+    // Use fast bots only for E2E testing to prevent timeouts
+    const useFastBots = typeof window !== 'undefined' && window.localStorage?.getItem('E2E_FAST_BOTS') === 'true';
+    console.log(`[Browser] GamePage evaluated useFastBots: ${useFastBots} (localStorage: ${typeof window !== 'undefined' ? window.localStorage?.getItem('E2E_FAST_BOTS') : 'none'})`);
+    const activeBotCycle = useFastBots
+        ? BOT_CYCLE.filter(b => ['Balanced', 'Aggressive Bot', 'Defensive Bot'].includes(b.name))
+        : BOT_CYCLE;
+
     for (let i = startBotIndex; i < numPlayers; i++) {
-        const botConfig = BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
+        const botConfig = activeBotCycle[botTypeIndex % activeBotCycle.length];
 
         botsResult[i.toString()] = botConfig.class;
         botNamesResult[i.toString()] = botConfig.name;

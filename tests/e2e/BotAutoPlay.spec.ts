@@ -12,11 +12,14 @@ test.describe('Bot Auto Play', () => {
             }
             if (text.includes('[Move]')) {
                 moveLogs.push(text);
-                console.log(`[Browser] ${text}`);
             }
+            console.log(`[Browser] ${text}`);
         });
 
         // 1. Go to Setup Page
+        await page.addInitScript(() => {
+            window.localStorage.setItem('E2E_FAST_BOTS', 'true');
+        });
         await page.goto('/');
 
         // 2. Select "0 Players (Auto Play)"
