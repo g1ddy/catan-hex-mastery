@@ -1,7 +1,6 @@
 import type { SearchGame } from '../search/SearchGame';
 import type { RolloutPolicy } from '../search/MctsPolicies';
 import type { SearchRandom } from '../search/SearchRandom';
-import { SeededSearchRandom } from '../search/SearchRandom';
 import type { CatanSearchState } from './CatanSearchState';
 import type { CatanSearchAction } from './CatanSearchAction';
 import { CatanEvaluator } from './CatanEvaluator';
@@ -68,24 +67,18 @@ export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, Catan
     const weights: number[] = new Array(legalActions.length);
     let totalWeight = 0.0;
 
-    // Draw a single seed derived from random for isolated lookahead simulations
-    const simSeed = Math.floor(random.next() * 1000000);
-
     for (let i = 0; i < legalActions.length; i++) {
       const action = legalActions[i];
       const baseWeight = this.baseWeights[action.move] ?? 1.0;
 
       let evalBonus = 0.0;
       if (this.evalWeight > 0) {
-        try {
-          const simRandom = new SeededSearchRandom(simSeed + i * 31);
-          const nextState = game.applyAction(state, action, simRandom);
-          const evalUtility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState));
-          const playerUtility = evalUtility[actingPlayer] ?? 0.0;
-          evalBonus = playerUtility * this.evalWeight;
-        } catch {
-          // Fallback to base weight if transition simulation fails
-        }
+        // Direct transition application through CatanSearchGame using injected random
+        // Errors surface directly to reveal game model or enumerator bugs
+        const nextState = game.applyAction(state, action, random);
+        const evalUtility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState));
+        const playerUtility = evalUtility[actingPlayer] ?? 0.0;
+        evalBonus = playerUtility * this.evalWeight;
       }
 
       const validWeight = Math.max(0.01, baseWeight + evalBonus);

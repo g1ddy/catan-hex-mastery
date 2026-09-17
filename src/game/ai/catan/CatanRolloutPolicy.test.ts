@@ -74,6 +74,24 @@ describe('CatanRolloutPolicy', () => {
     expect(action1).toEqual(action2);
   });
 
+  it('surfaces transition errors directly from applyAction rather than swallowing them', () => {
+    const state = createMockSetupState();
+    const rng = new SeededSearchRandom('error-test-seed');
+
+    const faultyGame: CatanSearchGame = {
+      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
+      getLegalActions: (s) => searchGame.getLegalActions(s),
+      isTerminal: (s) => searchGame.isTerminal(s),
+      getTerminalResult: (s) => searchGame.getTerminalResult(s),
+      getPlayers: (s) => searchGame.getPlayers(s),
+      applyAction: () => {
+        throw new Error('Transition boundary error in applyAction');
+      },
+    };
+
+    expect(() => policy.selectAction(faultyGame, state, rng)).toThrow('Transition boundary error in applyAction');
+  });
+
   it('prefers constructive actions over endTurn when choices are available', () => {
     const state = createMockSetupState();
     const legalActions = searchGame.getLegalActions(state);
@@ -105,7 +123,6 @@ describe('CatanRolloutPolicy', () => {
     expect(cityAction).toBeDefined();
     expect(endTurnAction).toBeDefined();
 
-    // High-evaluator rollout policy
     const strongPolicy = new CatanRolloutPolicy({ evalWeight: 100.0 });
 
     let cityChosenCount = 0;
@@ -119,7 +136,6 @@ describe('CatanRolloutPolicy', () => {
       }
     }
 
-    // Evaluator lookahead causes buildCity (stronger resulting evaluation) to be chosen significantly more than random chance
     expect(cityChosenCount).toBeGreaterThan(trials * 0.5);
   });
 

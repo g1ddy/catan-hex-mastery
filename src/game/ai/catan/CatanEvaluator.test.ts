@@ -8,6 +8,7 @@ import {
   evaluateRoadExpansion,
   evaluateSettlementOpportunities,
   evaluatePortAccess,
+  evaluateOpponentPressure,
 } from './CatanEvaluator';
 import { CatanSearchGame } from './CatanSearchGame';
 import type { CatanSearchState } from './CatanSearchState';
@@ -61,6 +62,10 @@ describe('CatanEvaluator', () => {
 
     it('rejects -Infinity weight', () => {
       expect(() => new CatanEvaluator({ cities: -Infinity })).toThrow('Invalid evaluator weight');
+    });
+
+    it('rejects negative weight', () => {
+      expect(() => new CatanEvaluator({ victoryPoints: -5.0 })).toThrow('Invalid evaluator weight');
     });
   });
 
@@ -263,6 +268,18 @@ describe('CatanEvaluator', () => {
 
       expect(evaluatePortAccess(state, '0')).toBe(1);
       expect(evaluatePortAccess(state, '1')).toBe(0);
+    });
+
+    it('evaluates opponent pressure signal directly', () => {
+      const pipsByPlayer = {
+        '0': { wood: 10 },
+        '1': { wood: 4 },
+      };
+      const pressure0 = evaluateOpponentPressure('0', ['0', '1'], pipsByPlayer);
+      const pressure1 = evaluateOpponentPressure('1', ['0', '1'], pipsByPlayer);
+
+      expect(pressure0).toBe(6);
+      expect(pressure1).toBe(-6);
     });
   });
 });

@@ -7,16 +7,28 @@ import { safeGet } from '../../core/utils/objectUtils';
 import { getValidSetupSettlementSpots, getValidSettlementSpots } from '../../rules/queries';
 
 export interface CatanEvaluatorWeights {
+  /** Weight for player's current victory points */
   victoryPoints: number;
+  /** Weight for total expected resource production pips */
   productionPips: number;
+  /** Weight for resource diversity across the 5 resource types */
   resourceDiversity: number;
+  /** Weight for having both Ore and Wheat production */
   synergyOreWheat: number;
+  /** Weight for having both Wood and Brick production */
   synergyWoodBrick: number;
+  /** Weight for cities owned */
   cities: number;
+  /** Weight for settlements owned */
   settlements: number;
+  /** Weight for road count */
   roadLength: number;
+  /** Weight for open settlement placement opportunities */
   settlementSpots: number;
+  /** Weight for port access */
   ports: number;
+  /** Weight for relative production / competitive position relative to top opponent */
+  opponentPressure: number;
 }
 
 export const DEFAULT_CATAN_EVALUATOR_WEIGHTS: Readonly<CatanEvaluatorWeights> = Object.freeze({
@@ -30,18 +42,23 @@ export const DEFAULT_CATAN_EVALUATOR_WEIGHTS: Readonly<CatanEvaluatorWeights> = 
   roadLength: 0.5,
   settlementSpots: 1.0,
   ports: 2.0,
+  opponentPressure: 1.0,
 });
 
-/** Validates that all evaluator weights are finite numbers */
+/**
+ * Validates that all evaluator weights are non-negative finite numbers.
+ * Evaluator weights represent non-negative strategic importances.
+ */
 export function validateEvaluatorWeights(weights: Record<string, number>): void {
   for (const [key, val] of Object.entries(weights)) {
-    if (typeof val !== 'number' || Number.isNaN(val) || !Number.isFinite(val)) {
-      throw new Error(`Invalid evaluator weight '${key}': ${val}. Weights must be finite numbers.`);
+    if (typeof val !== 'number' || Number.isNaN(val) || !Number.isFinite(val) || val < 0) {
+      throw new Error(`Invalid evaluator weight '${key}': ${val}. Weights must be non-negative finite numbers.`);
     }
   }
 }
 
 // Extracted Signal Evaluation Functions
+
 export function evaluateVictoryPoints(state: CatanSearchState, playerID: string): number {
   const player = state.game.players[playerID];
   return player?.victoryPoints ?? 0;
@@ -53,6 +70,10 @@ export function evaluateProductionPips(
   return Object.values(myPips).reduce((sum, p) => sum + p, 0);
 }
 
+/**
+ * Coarse v1 heuristic measuring resource diversity using a 3/4 threshold.
+ * Note: This is a simplified coarse heuristic rather than a full continuous entropy calculation.
+ */
 export function evaluateResourceDiversity(myPips: Record<string, number>): number {
   const activeCount = Object.values(myPips).filter((p) => p > 0).length;
   if (activeCount >= 4) return 1.0;
@@ -60,6 +81,10 @@ export function evaluateResourceDiversity(myPips: Record<string, number>): numbe
   return 0.0;
 }
 
+/**
+ * Coarse v1 heuristic measuring binary presence of key resource pairings (Ore/Wheat and Wood/Brick).
+ * Note: This is a binary presence indicator rather than a complex economic synergy solver.
+ */
 export function evaluateResourceSynergy(myPips: Record<string, number>): { oreWheat: number; woodBrick: number } {
   const oreWheat = (myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0 ? 1.0 : 0.0;
   const woodBrick = (myPips.wood || 0) > 0 && (myPips.brick || 0) > 0 ? 1.0 : 0.0;
@@ -83,6 +108,10 @@ export function evaluateStructures(state: CatanSearchState, playerID: string): {
   return { cityCount, settlementCount };
 }
 
+/**
+ * Coarse v1 heuristic measuring raw road count.
+ * Note: This counts total roads built rather than calculating topological network connectivity or longest contiguous road path.
+ */
 export function evaluateRoadExpansion(state: CatanSearchState, playerID: string): number {
   const player = state.game.players[playerID];
   return player?.roads.length ?? 0;
@@ -90,7 +119,6 @@ export function evaluateRoadExpansion(state: CatanSearchState, playerID: string)
 
 export function evaluateSettlementOpportunities(state: CatanSearchState, playerID: string): number {
   if (state.context.phase === 'setup') {
-    // In setup phase, only the active setup player has immediate setup settlement opportunities
     if (state.context.currentPlayer === playerID) {
       const spots = getValidSetupSettlementSpots(state.game);
       return spots.size;
@@ -98,7 +126,6 @@ export function evaluateSettlementOpportunities(state: CatanSearchState, playerI
     return 0;
   }
 
-  // In gameplay phase, count open settlement spots reachable by playerID's road network
   const spots = getValidSettlementSpots(state.game, playerID, false);
   return spots.size;
 }
@@ -115,6 +142,30 @@ export function evaluatePortAccess(state: CatanSearchState, playerID: string): n
     }
   }
   return portCount;
+}
+
+/**
+ * Evaluates relative production pips differential compared to the top opponent.
+ * Rewards leading the board in production and penalizes trailing top opponents.
+ */
+export function evaluateOpponentPressure(
+  playerID: string,
+  players: readonly string[],
+  pipsByPlayer: Record<string, Record<string, number>>
+): number {
+  const myPipsTotal = evaluateProductionPips(pipsByPlayer[playerID] || {});
+  let maxOpponentPips = 0;
+
+  for (const oppID of players) {
+    if (oppID !== playerID) {
+      const oppPipsTotal = evaluateProductionPips(pipsByPlayer[oppID] || {});
+      if (oppPipsTotal > maxOpponentPips) {
+        maxOpponentPips = oppPipsTotal;
+      }
+    }
+  }
+
+  return Math.max(-10.0, Math.min(10.0, myPipsTotal - maxOpponentPips));
 }
 
 export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
@@ -179,6 +230,7 @@ export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
       const roads = evaluateRoadExpansion(state, playerID);
       const settlementSpots = evaluateSettlementOpportunities(state, playerID);
       const ports = evaluatePortAccess(state, playerID);
+      const oppPressure = evaluateOpponentPressure(playerID, players, pipsByPlayer);
 
       let rawScore = 0.0;
       rawScore += vp * this.weights.victoryPoints;
@@ -190,6 +242,7 @@ export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
       rawScore += roads * this.weights.roadLength;
       rawScore += settlementSpots * this.weights.settlementSpots;
       rawScore += ports * this.weights.ports;
+      rawScore += oppPressure * this.weights.opponentPressure;
 
       // Smooth, non-saturating monotonic scaling: rawScore / (rawScore + 40) * 0.98
       const nonTerminalVal = (rawScore / (rawScore + 40.0)) * 0.98;
