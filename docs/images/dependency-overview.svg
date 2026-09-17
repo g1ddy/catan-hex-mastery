@@ -86,27 +86,27 @@
 <!-- folder:src/features/game -->
 <g id="node10" class="node">
 <title>folder:src/features/game</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="800.5,-482 799,-484 788.5,-484 787,-482 691.5,-482 691.5,-464 800.5,-464 800.5,-482"/>
-<text text-anchor="middle" x="746" y="-470.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/features/game</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="784.5,-482 783,-484 772.5,-484 771,-482 675.5,-482 675.5,-464 784.5,-464 784.5,-482"/>
+<text text-anchor="middle" x="730" y="-470.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/features/game</text>
 </g>
 <!-- folder:src/adapters/runtime&#45;&gt;folder:src/features/game -->
 <g id="edge6" class="edge">
 <title>folder:src/adapters/runtime&#45;&gt;folder:src/features/game</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M931.74,-518.95C892.39,-509.43 826.97,-493.6 785.2,-483.49"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="785.54,-481.41 779.21,-482.04 784.55,-485.49 785.54,-481.41"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M929.31,-518.95C886.91,-509.39 816.31,-493.47 771.51,-483.36"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="771.96,-481.31 765.64,-482.04 771.03,-485.41 771.96,-481.31"/>
 </g>
 <!-- folder:src/game/core -->
 <g id="node16" class="node">
 <title>folder:src/game/core</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="687,-18 685.5,-20 675,-20 673.5,-18 599,-18 599,0 687,0 687,-18"/>
-<text text-anchor="middle" x="643" y="-6.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/core</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="706,-18 704.5,-20 694,-20 692.5,-18 618,-18 618,0 706,0 706,-18"/>
+<text text-anchor="middle" x="662" y="-6.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/core</text>
 </g>
 <!-- folder:src/adapters/runtime&#45;&gt;folder:src/game/core -->
 <g id="edge7" class="edge">
 <title>folder:src/adapters/runtime&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M975.54,-518.88C1010.81,-491.74 1122.93,-405.51 1131,-400 1163.62,-377.75 1177.73,-380.5 1207,-354 1277.55,-290.12 1323,-269.17 1323,-174 1323,-174 1323,-174 1323,-72 1323,-8.79 850.95,-7.87 693.46,-9.32"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.07,-7.23 687.09,-9.38 693.11,-11.43 693.07,-7.23"/>
-<text text-anchor="middle" x="1301" y="-278.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M975.63,-518.73C1002.24,-498.12 1074.03,-443.02 1136,-400 1166.89,-378.56 1179.65,-379.8 1207,-354 1275.55,-289.35 1319,-268.22 1319,-174 1319,-174 1319,-174 1319,-72 1319,-11.12 866.08,-8.59 712.35,-9.49"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.11,-7.39 706.13,-9.53 712.14,-11.59 712.11,-7.39"/>
+<text text-anchor="middle" x="1297" y="-278.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
 </g>
 <!-- folder:src/bots&#45;&gt;folder:src/adapters/runtime -->
 <g id="edge8" class="edge">
@@ -157,8 +157,8 @@
 <!-- folder:src/bots&#45;&gt;folder:src/game/core -->
 <g id="edge12" class="edge">
 <title>folder:src/bots&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M845.38,-590.76C715.1,-589.57 181.24,-583.57 109,-565 74.73,-556.19 38,-564.38 38,-529 38,-529 38,-529 38,-72 38,-16.47 446.56,-10.34 592.19,-9.91"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="592.52,-12.01 598.51,-9.9 592.51,-7.81 592.52,-12.01"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M845.38,-590.76C715.1,-589.57 181.24,-583.57 109,-565 74.73,-556.19 38,-564.38 38,-529 38,-529 38,-529 38,-72 38,-14.49 463.2,-9.68 611.61,-9.75"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="611.62,-11.85 617.62,-9.76 611.63,-7.65 611.62,-11.85"/>
 <text text-anchor="middle" x="45" y="-310.8" font-family="Helvetica,sans-Serif" font-size="9.00">×6</text>
 </g>
 <!-- folder:src/bots/logic&#45;&gt;folder:src/bots/profiles -->
@@ -191,28 +191,28 @@
 <!-- folder:src/bots/logic&#45;&gt;folder:src/game/core -->
 <g id="edge16" class="edge">
 <title>folder:src/bots/logic&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M179.55,-335.75C184.26,-324.03 192,-301.79 192,-282 192,-282 192,-282 192,-72 192,-31.79 235.94,-45.55 275,-36 333.86,-21.6 506.74,-14.28 592.94,-11.45"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="593.07,-13.54 599,-11.25 592.93,-9.35 593.07,-13.54"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M179.55,-335.75C184.26,-324.03 192,-301.79 192,-282 192,-282 192,-282 192,-72 192,-31.79 235.93,-45.49 275,-36 337.45,-20.84 521.9,-13.83 611.72,-11.25"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="611.82,-13.35 617.76,-11.08 611.7,-9.15 611.82,-13.35"/>
 <text text-anchor="middle" x="199" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
 </g>
 <!-- folder:src/game/mechanics -->
 <g id="node19" class="node">
 <title>folder:src/game/mechanics</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="957,-146 955.5,-148 945,-148 943.5,-146 837,-146 837,-128 957,-128 957,-146"/>
-<text text-anchor="middle" x="897" y="-134.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/mechanics</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="953,-146 951.5,-148 941,-148 939.5,-146 833,-146 833,-128 953,-128 953,-146"/>
+<text text-anchor="middle" x="893" y="-134.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/mechanics</text>
 </g>
 <!-- folder:src/bots/logic&#45;&gt;folder:src/game/mechanics -->
 <g id="edge17" class="edge">
 <title>folder:src/bots/logic&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M218.11,-341.87C303.41,-337.39 490.95,-326.71 519,-318 588.23,-296.49 595.37,-268.85 660,-236 730.96,-199.93 750.01,-193.37 824,-164 838.1,-158.4 853.93,-152.69 867.25,-148.06"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="868.19,-149.95 873.17,-146.01 866.81,-145.98 868.19,-149.95"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M218.11,-341.87C303.41,-337.39 490.95,-326.71 519,-318 588.23,-296.49 595.49,-269.07 660,-236 729.76,-200.25 748.31,-193.33 821,-164 834.79,-158.44 850.27,-152.77 863.34,-148.15"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="864.19,-150.08 869.16,-146.11 862.8,-146.12 864.19,-150.08"/>
 <text text-anchor="middle" x="667" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/bots/utils&#45;&gt;folder:src/game/core -->
 <g id="edge18" class="edge">
 <title>folder:src/bots/utils&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#aaaaaa" stroke-dasharray="5,2" d="M251.7,-235.91C255.77,-222.99 263,-196.8 263,-174 263,-174 263,-174 263,-72 263,-49.06 279.08,-45.43 300,-36 350.87,-13.06 510.26,-9.76 592.62,-9.65"/>
-<polygon fill="none" stroke="#aaaaaa" points="592.89,-11.75 598.89,-9.64 592.89,-7.55 592.89,-11.75"/>
+<path fill="none" stroke="#aaaaaa" stroke-dasharray="5,2" d="M251.51,-235.9C255.28,-222.96 262,-196.74 262,-174 262,-174 262,-174 262,-72 262,-48.74 278.71,-45.38 300,-36 354.48,-11.99 525.77,-9.26 611.74,-9.48"/>
+<polygon fill="none" stroke="#aaaaaa" points="611.77,-11.58 617.78,-9.5 611.79,-7.38 611.77,-11.58"/>
 </g>
 <!-- folder:src/features/board -->
 <g id="node8" class="node">
@@ -275,34 +275,34 @@
 <!-- folder:src/features/board&#45;&gt;folder:src/game/core -->
 <g id="edge24" class="edge">
 <title>folder:src/features/board&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M628.73,-405C592.8,-399.84 548.43,-386.7 525,-354 520.34,-347.5 523.13,-343.78 525,-336 535.51,-292.33 571,-290.92 571,-246 571,-246 571,-246 571,-72 571,-47.57 595.09,-30.66 615.4,-20.74"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="616.46,-22.57 621.01,-18.13 614.68,-18.76 616.46,-22.57"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M628.73,-405C592.8,-399.84 548.43,-386.7 525,-354 520.34,-347.5 523.13,-343.78 525,-336 535.51,-292.33 571,-290.92 571,-246 571,-246 571,-246 571,-72 571,-45.19 598.32,-29.14 623.01,-20.12"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="623.91,-22.03 628.89,-18.08 622.53,-18.06 623.91,-22.03"/>
 <text text-anchor="middle" x="581" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">×17</text>
 </g>
 <!-- folder:src/game/geometry -->
 <g id="node18" class="node">
 <title>folder:src/game/geometry</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="867,-82 865.5,-84 855,-84 853.5,-82 751,-82 751,-64 867,-64 867,-82"/>
-<text text-anchor="middle" x="809" y="-70.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/geometry</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="863,-82 861.5,-84 851,-84 849.5,-82 747,-82 747,-64 863,-64 863,-82"/>
+<text text-anchor="middle" x="805" y="-70.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/geometry</text>
 </g>
 <!-- folder:src/features/board&#45;&gt;folder:src/game/geometry -->
 <g id="edge25" class="edge">
 <title>folder:src/features/board&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M686.66,-399.68C690.2,-387.87 696,-365.52 696,-346 696,-346 696,-346 696,-208 696,-177.67 764.51,-113.33 794.84,-86.33"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="796.26,-87.88 799.37,-82.33 793.48,-84.73 796.26,-87.88"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M686.66,-399.68C690.2,-387.87 696,-365.52 696,-346 696,-346 696,-346 696,-208 696,-178.09 762.17,-113.44 791.4,-86.34"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="793.09,-87.64 796.08,-82.03 790.24,-84.55 793.09,-87.64"/>
 <text text-anchor="middle" x="703" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/rules -->
 <g id="node21" class="node">
 <title>folder:src/game/rules</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="1017,-218 1015.5,-220 1005,-220 1003.5,-218 925,-218 925,-200 1017,-200 1017,-218"/>
-<text text-anchor="middle" x="971" y="-206.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/rules</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="1013,-218 1011.5,-220 1001,-220 999.5,-218 921,-218 921,-200 1013,-200 1013,-218"/>
+<text text-anchor="middle" x="967" y="-206.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/rules</text>
 </g>
 <!-- folder:src/features/board&#45;&gt;folder:src/game/rules -->
 <g id="edge26" class="edge">
 <title>folder:src/features/board&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M739.32,-402.38C764.57,-398.57 794.47,-392.29 820,-382 873.64,-360.39 877.26,-336.23 912,-290 929.51,-266.7 949.6,-239.32 961.24,-223.39"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="963.01,-224.53 964.85,-218.44 959.61,-222.05 963.01,-224.53"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M737.4,-399.96C768.77,-394.81 805.12,-388 820,-382 895.08,-351.75 944.54,-258.74 960.98,-223.62"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="962.9,-224.46 963.49,-218.13 959.08,-222.71 962.9,-224.46"/>
 </g>
 <!-- folder:src/features/coach&#45;&gt;folder:src/features/shared -->
 <g id="edge27" class="edge">
@@ -321,55 +321,55 @@
 <!-- folder:src/features/coach&#45;&gt;folder:src/game/core -->
 <g id="edge29" class="edge">
 <title>folder:src/features/coach&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M452.29,-335.95C462.46,-331.94 473.24,-326.16 481,-318 492.83,-305.56 495,-299.17 495,-282 495,-282 495,-282 495,-72 495,-28.59 549.84,-15.05 592.76,-11.11"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="593.19,-13.18 599,-10.59 592.84,-9 593.19,-13.18"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M452.29,-335.95C462.46,-331.94 473.24,-326.16 481,-318 492.83,-305.56 495,-299.17 495,-282 495,-282 495,-282 495,-72 495,-46.81 562.6,-28.58 611.78,-18.64"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="612.21,-20.7 617.69,-17.47 611.39,-16.58 612.21,-20.7"/>
 <text text-anchor="middle" x="502" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×8</text>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/features/board -->
 <g id="edge30" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/features/board</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M737.89,-463.89C727.37,-453.37 708.89,-434.89 696.55,-422.55"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="698.03,-421.06 692.31,-418.31 695.06,-424.03 698.03,-421.06"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M723.99,-463.89C716.32,-453.56 702.95,-435.54 693.8,-423.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="695.42,-421.87 690.16,-418.31 692.05,-424.38 695.42,-421.87"/>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/features/coach -->
 <g id="edge31" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/features/coach</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M691.31,-464.17C629.86,-453.4 529.03,-429.67 455,-382 445.75,-376.04 437.55,-366.69 431.77,-359.02"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="433.38,-357.67 428.17,-354.03 429.98,-360.12 433.38,-357.67"/>
-<text text-anchor="middle" x="532" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M680.65,-463.96C622.82,-452.78 525.9,-428.47 455,-382 445.91,-376.04 437.8,-366.85 432.02,-359.25"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="433.64,-357.9 428.4,-354.3 430.25,-360.38 433.64,-357.9"/>
+<text text-anchor="middle" x="528" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/features/hud -->
 <g id="edge32" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/features/hud</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M747.9,-463.73C752.76,-442.64 765.65,-386.61 771.74,-360.18"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="773.83,-360.45 773.13,-354.13 769.74,-359.51 773.83,-360.45"/>
-<text text-anchor="middle" x="770" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M732.95,-463.73C740.52,-442.55 760.67,-386.13 770.06,-359.84"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="772.05,-360.49 772.1,-354.13 768.1,-359.08 772.05,-360.49"/>
+<text text-anchor="middle" x="763" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/features/shared -->
 <g id="edge33" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/features/shared</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M691.45,-465.96C657.19,-461.64 612.23,-454.99 573,-446 460.84,-420.28 394.65,-449.86 331,-354 319.25,-336.3 328.58,-322.61 344,-308 351.23,-301.15 360.5,-296.02 369.76,-292.21"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M675.26,-464.44C575.22,-449.31 369.54,-411.76 331,-354 319.21,-336.33 328.58,-322.61 344,-308 351.23,-301.15 360.5,-296.02 369.76,-292.21"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="370.65,-294.12 375.5,-290.01 369.15,-290.19 370.65,-294.12"/>
-<text text-anchor="middle" x="359" y="-374.8" font-family="Helvetica,sans-Serif" font-size="9.00">×7</text>
+<text text-anchor="middle" x="370" y="-374.8" font-family="Helvetica,sans-Serif" font-size="9.00">×7</text>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/game/analysis -->
 <g id="edge34" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/game/analysis</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M758.99,-463.9C784.56,-447.11 840.86,-405.72 863,-354 871.05,-335.2 869,-327.83 864,-308 862.92,-303.72 860.99,-299.39 858.9,-295.51"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M745.62,-463.89C775.01,-447.64 837.82,-407.99 863,-354 871.64,-335.47 869,-327.83 864,-308 862.92,-303.72 860.99,-299.39 858.9,-295.51"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="860.64,-294.34 855.8,-290.23 857.02,-296.47 860.64,-294.34"/>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/game/core -->
 <g id="edge35" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M691.16,-469.48C599.94,-464.43 421.82,-450.6 369,-418 287.63,-367.78 314,-305.62 314,-210 314,-210 314,-210 314,-72 314,-15.96 500.65,-9.17 592.77,-9.23"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="592.97,-11.33 598.97,-9.24 592.98,-7.13 592.97,-11.33"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M675.47,-471.44C607.84,-468.9 490.32,-458.4 399,-418 358.3,-400 339.01,-395.12 322,-354 297.5,-294.77 314,-274.1 314,-210 314,-210 314,-210 314,-72 314,-42.13 515.35,-21.83 611.73,-13.82"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="612.12,-15.9 617.93,-13.31 611.77,-11.71 612.12,-15.9"/>
 <text text-anchor="middle" x="321" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×6</text>
 </g>
 <!-- folder:src/features/game&#45;&gt;folder:src/game/rules -->
 <g id="edge36" class="edge">
 <title>folder:src/features/game&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M768.02,-463.97C779.43,-459.4 793.37,-453.16 805,-446 821.67,-435.73 825.55,-432.22 839,-418 900.71,-352.77 918.1,-334.93 957,-254 961.64,-244.35 965.25,-232.79 967.64,-223.94"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="969.7,-224.38 969.16,-218.04 965.63,-223.33 969.7,-224.38"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M755.17,-463.93C768.03,-459.39 783.73,-453.19 797,-446 815.76,-435.84 820.35,-432.5 836,-418 890.38,-367.6 905.56,-354 943,-290 955.28,-269.01 961.77,-241.18 964.79,-224.49"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="966.88,-224.74 965.81,-218.47 962.73,-224.03 966.88,-224.74"/>
 </g>
 <!-- folder:src/features/hud&#45;&gt;folder:src/features/shared -->
 <g id="edge37" class="edge">
@@ -388,22 +388,22 @@
 <!-- folder:src/features/hud&#45;&gt;folder:src/game/core -->
 <g id="edge39" class="edge">
 <title>folder:src/features/hud&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M724.49,-339.87C689.81,-336.08 647.67,-329.3 634,-318 620.77,-307.06 620,-299.17 620,-282 620,-282 620,-282 620,-72 620,-54.44 628.21,-35.73 634.82,-23.51"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="636.77,-24.33 637.9,-18.07 633.12,-22.26 636.77,-24.33"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M724.49,-339.87C689.81,-336.08 647.67,-329.3 634,-318 620.77,-307.06 620,-299.17 620,-282 620,-282 620,-282 620,-72 620,-52.03 635.12,-33.7 647.22,-22.24"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="648.8,-23.63 651.83,-18.05 645.98,-20.52 648.8,-23.63"/>
 <text text-anchor="middle" x="630" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×19</text>
 </g>
 <!-- folder:src/features/hud&#45;&gt;folder:src/game/mechanics -->
 <g id="edge40" class="edge">
 <title>folder:src/features/hud&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M775.02,-335.61C775.34,-321.75 777.25,-293.46 787,-272 810.35,-220.57 858.57,-172.54 882.66,-150.56"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="884.36,-151.85 887.41,-146.27 881.55,-148.73 884.36,-151.85"/>
-<text text-anchor="middle" x="814" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M775.06,-335.63C775.44,-321.79 777.45,-293.55 787,-272 809.67,-220.86 856.46,-172.35 879.53,-150.34"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="881.15,-151.7 884.08,-146.06 878.27,-148.65 881.15,-151.7"/>
+<text text-anchor="middle" x="813" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/features/shared&#45;&gt;folder:src/game/core -->
 <g id="edge41" class="edge">
 <title>folder:src/features/shared&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M413.45,-271.65C419.88,-258.78 431,-233.18 431,-210 431,-210 431,-210 431,-72 431,-38.49 529.78,-21.84 592.49,-14.65"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="593.09,-16.69 598.82,-13.94 592.62,-12.52 593.09,-16.69"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M413.45,-271.65C419.88,-258.78 431,-233.18 431,-210 431,-210 431,-210 431,-72 431,-34.87 543.75,-19.36 611.71,-13.38"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="611.93,-15.47 617.73,-12.87 611.58,-11.29 611.93,-15.47"/>
 <text text-anchor="middle" x="438" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game&#45;&gt;folder:src/adapters/runtime -->
@@ -421,27 +421,27 @@
 <!-- folder:src/game&#45;&gt;folder:src/game/core -->
 <g id="edge44" class="edge">
 <title>folder:src/game&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1225.78,-590.92C1257.57,-589.64 1307.07,-584.32 1345,-565 1365.44,-554.59 1382,-551.94 1382,-529 1382,-529 1382,-529 1382,-72 1382,-25.18 1328.93,-45.06 1283,-36 1170.5,-13.82 823.93,-10.5 693.41,-10.05"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.37,-7.95 687.36,-10.03 693.36,-12.15 693.37,-7.95"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1225.78,-590.92C1257.57,-589.64 1307.07,-584.32 1345,-565 1365.44,-554.59 1382,-551.94 1382,-529 1382,-529 1382,-529 1382,-72 1382,-24.34 1327.78,-45.1 1281,-36 1172.63,-14.91 840.03,-10.93 712.5,-10.17"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.23,-8.07 706.21,-10.14 712.2,-12.27 712.23,-8.07"/>
 <text text-anchor="middle" x="1389" y="-310.8" font-family="Helvetica,sans-Serif" font-size="9.00">×6</text>
 </g>
 <!-- folder:src/game/generation -->
 <g id="node17" class="node">
 <title>folder:src/game/generation</title>
-<polygon fill="#ffffff" stroke="black" stroke-width="2" points="1222,-182 1220.5,-184 1210,-184 1208.5,-182 1100,-182 1100,-164 1222,-164 1222,-182"/>
-<text text-anchor="middle" x="1161" y="-170.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/generation</text>
+<polygon fill="#ffffff" stroke="black" stroke-width="2" points="1218,-182 1216.5,-184 1206,-184 1204.5,-182 1096,-182 1096,-164 1218,-164 1218,-182"/>
+<text text-anchor="middle" x="1157" y="-170.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">src/game/generation</text>
 </g>
 <!-- folder:src/game&#45;&gt;folder:src/game/generation -->
 <g id="edge45" class="edge">
 <title>folder:src/game&#45;&gt;folder:src/game/generation</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1225.81,-591.26C1269.84,-589.77 1344,-579.72 1344,-529 1344,-529 1344,-529 1344,-312 1344,-239.78 1252.01,-200.6 1198.47,-183.91"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="1198.81,-181.82 1192.46,-182.08 1197.59,-185.84 1198.81,-181.82"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1225.81,-591.26C1269.84,-589.77 1344,-579.72 1344,-529 1344,-529 1344,-529 1344,-312 1344,-239.01 1250.61,-200.26 1195.83,-183.81"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="1196.35,-181.78 1190,-182.1 1195.17,-185.81 1196.35,-181.78"/>
 </g>
 <!-- folder:src/game&#45;&gt;folder:src/game/mechanics -->
 <g id="edge46" class="edge">
 <title>folder:src/game&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1201.42,-582.87C1210.88,-571.63 1226,-550.32 1226,-529 1226,-529 1226,-529 1226,-376 1226,-356.32 1220.74,-350.09 1207,-336 1175.35,-303.56 1150.64,-319.22 1116,-290 1093.17,-270.74 1097.26,-256.98 1076,-236 1056.51,-216.77 1049.95,-213.28 1026,-200 1007.52,-189.76 1000.74,-191.75 982,-182 968.88,-175.17 966.99,-171.09 954,-164 943.86,-158.47 932.33,-153.05 922.31,-148.61"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="922.94,-146.59 916.6,-146.11 921.25,-150.44 922.94,-146.59"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1201.42,-582.87C1210.88,-571.63 1226,-550.32 1226,-529 1226,-529 1226,-529 1226,-376 1226,-356.32 1220.74,-350.09 1207,-336 1175.35,-303.56 1151.31,-318.41 1116,-290 1091.88,-270.59 1094.53,-257.23 1072,-236 1052.07,-217.22 1045.95,-213.28 1022,-200 1003.52,-189.76 996.74,-191.75 978,-182 964.88,-175.17 962.99,-171.09 950,-164 939.86,-158.47 928.33,-153.05 918.31,-148.61"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="918.94,-146.59 912.6,-146.11 917.25,-150.44 918.94,-146.59"/>
 <text text-anchor="middle" x="1233" y="-374.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/moves -->
@@ -460,9 +460,9 @@
 <!-- folder:src/game&#45;&gt;folder:src/game/rules -->
 <g id="edge48" class="edge">
 <title>folder:src/game&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1186.58,-582.87C1177.12,-571.63 1162,-550.32 1162,-529 1162,-529 1162,-529 1162,-440 1162,-425.85 1023.43,-268.94 982.34,-222.73"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="983.81,-221.22 978.25,-218.13 980.67,-224.01 983.81,-221.22"/>
-<text text-anchor="middle" x="1154" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1186.58,-582.87C1177.12,-571.63 1162,-550.32 1162,-529 1162,-529 1162,-529 1162,-440 1162,-411.59 1021.77,-265.97 979.15,-222.36"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="980.58,-220.82 974.89,-218.01 977.58,-223.76 980.58,-220.82"/>
+<text text-anchor="middle" x="1158" y="-406.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/ai -->
 <g id="node14" class="node">
@@ -479,9 +479,9 @@
 <!-- folder:src/game/ai&#45;&gt;folder:src/game/core -->
 <g id="edge50" class="edge">
 <title>folder:src/game/ai&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1175.47,-335.97C1191.88,-326.77 1217.65,-310.33 1234,-290 1269.29,-246.11 1285,-230.32 1285,-174 1285,-174 1285,-174 1285,-72 1285,-12.64 844.47,-9.08 693.25,-9.61"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.12,-7.51 687.13,-9.63 693.14,-11.71 693.12,-7.51"/>
-<text text-anchor="middle" x="1292" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×5</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1175.89,-335.89C1192.41,-326.74 1218.05,-310.44 1234,-290 1268.22,-246.15 1281,-229.63 1281,-174 1281,-174 1281,-174 1281,-72 1281,-15 860.05,-9.85 712.42,-9.79"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.02,-7.69 706.02,-9.79 712.02,-11.89 712.02,-7.69"/>
+<text text-anchor="middle" x="1288" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×5</text>
 </g>
 <!-- folder:src/game/ai&#45;&gt;folder:src/game/moves -->
 <g id="edge51" class="edge">
@@ -492,124 +492,125 @@
 <!-- folder:src/game/ai&#45;&gt;folder:src/game/rules -->
 <g id="edge52" class="edge">
 <title>folder:src/game/ai&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1143.8,-335.92C1125.01,-326.2 1093.46,-308.82 1069,-290 1041.85,-269.11 1041.06,-257 1014,-236 1007.08,-230.63 998.97,-225.47 991.68,-221.19"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="992.53,-219.26 986.29,-218.09 990.44,-222.9 992.53,-219.26"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1144.25,-335.94C1125.6,-326.11 1093.93,-308.5 1069,-290 1040.45,-268.82 1038.46,-257.3 1010,-236 1002.99,-230.75 994.86,-225.62 987.57,-221.32"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="988.44,-219.4 982.2,-218.21 986.34,-223.03 988.44,-219.4"/>
 <text text-anchor="middle" x="1076" y="-278.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
 </g>
 <!-- folder:src/game/analysis&#45;&gt;folder:src/game/core -->
 <g id="edge53" class="edge">
 <title>folder:src/game/analysis&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M843.8,-271.92C814.46,-233.65 689.37,-70.49 652.97,-23.01"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="654.49,-21.53 649.17,-18.05 651.15,-24.09 654.49,-21.53"/>
-<text text-anchor="middle" x="757" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×15</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M844.37,-271.92C817.72,-233.65 704.12,-70.49 671.06,-23.01"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="672.76,-21.77 667.6,-18.05 669.31,-24.17 672.76,-21.77"/>
+<text text-anchor="middle" x="766" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×15</text>
 </g>
 <!-- folder:src/game/analysis&#45;&gt;folder:src/game/geometry -->
 <g id="edge54" class="edge">
 <title>folder:src/game/analysis&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M848.39,-271.92C842.21,-240.84 819.88,-128.68 811.88,-88.47"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="813.87,-87.72 810.64,-82.24 809.75,-88.54 813.87,-87.72"/>
-<text text-anchor="middle" x="838" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M848.24,-271.92C841.45,-240.84 816.94,-128.68 808.16,-88.47"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="810.13,-87.66 806.8,-82.24 806.03,-88.55 810.13,-87.66"/>
+<text text-anchor="middle" x="836" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/game/analysis&#45;&gt;folder:src/game/mechanics -->
 <g id="edge55" class="edge">
 <title>folder:src/game/analysis&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M852.66,-271.96C860.32,-248.83 882.47,-181.91 892.25,-152.34"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="894.36,-152.66 894.25,-146.31 890.37,-151.34 894.36,-152.66"/>
-<text text-anchor="middle" x="883" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M852.44,-271.96C859.44,-248.83 879.7,-181.91 888.66,-152.34"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="890.76,-152.66 890.48,-146.31 886.74,-151.44 890.76,-152.66"/>
+<text text-anchor="middle" x="881" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/game/analysis&#45;&gt;folder:src/game/rules -->
 <g id="edge56" class="edge">
 <title>folder:src/game/analysis&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M859.39,-271.74C872.22,-260.57 894.7,-241.41 904,-236 914.84,-229.7 927.49,-224.33 938.86,-220.15"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="939.73,-222.07 944.68,-218.07 938.32,-218.11 939.73,-222.07"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M859.41,-271.77C872.26,-260.63 894.76,-241.51 904,-236 914.29,-229.87 926.3,-224.52 937.05,-220.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="938.02,-222.17 942.88,-218.06 936.52,-218.24 938.02,-222.17"/>
 <text text-anchor="middle" x="911" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×3</text>
 </g>
 <!-- folder:src/game/generation&#45;&gt;folder:src/game/core -->
 <g id="edge57" class="edge">
 <title>folder:src/game/generation&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1158.31,-163.78C1149.64,-138.76 1119.69,-63.62 1065,-36 1032.6,-19.63 798.31,-13.04 693.48,-10.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.41,-8.78 687.37,-10.76 693.33,-12.98 693.41,-8.78"/>
-<text text-anchor="middle" x="1141" y="-102.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1154.31,-163.79C1145.62,-138.8 1115.64,-63.72 1061,-36 1030.64,-20.6 812.58,-13.54 712.26,-11.07"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.17,-8.97 706.12,-10.93 712.06,-13.17 712.17,-8.97"/>
+<text text-anchor="middle" x="1137" y="-102.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/generation&#45;&gt;folder:src/game/geometry -->
 <g id="edge58" class="edge">
 <title>folder:src/game/generation&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1154.45,-163.93C1141.28,-148.39 1109.87,-114.53 1075,-100 1035.03,-83.35 924.07,-86.39 881,-82 878.47,-81.74 875.88,-81.47 873.27,-81.2"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="873.34,-79.1 867.15,-80.55 872.89,-83.27 873.34,-79.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1150.45,-163.93C1137.28,-148.39 1105.87,-114.53 1071,-100 1031.03,-83.35 920.07,-86.39 877,-82 874.47,-81.74 871.88,-81.47 869.27,-81.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="869.34,-79.1 863.15,-80.55 868.89,-83.27 869.34,-79.1"/>
 </g>
 <!-- folder:src/game/geometry&#45;&gt;folder:src/game/core -->
 <g id="edge59" class="edge">
 <title>folder:src/game/geometry&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#aaaaaa" stroke-dasharray="5,2" d="M787.3,-63.89C757.27,-52.68 703.04,-32.43 670.3,-20.2"/>
-<polygon fill="none" stroke="#aaaaaa" points="670.8,-18.14 664.44,-18.01 669.33,-22.08 670.8,-18.14"/>
-<text text-anchor="middle" x="743" y="-38.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
+<path fill="none" stroke="#aaaaaa" stroke-dasharray="5,2" d="M786.31,-63.89C760.72,-52.8 714.75,-32.87 686.46,-20.6"/>
+<polygon fill="none" stroke="#aaaaaa" points="687.04,-18.57 680.7,-18.11 685.37,-22.42 687.04,-18.57"/>
+<text text-anchor="middle" x="750" y="-38.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/mechanics&#45;&gt;folder:src/game/core -->
 <g id="edge60" class="edge">
 <title>folder:src/game/mechanics&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M897.12,-127.97C896.9,-113.09 894.17,-81.18 876,-64 850.04,-39.45 753.69,-23.51 693.32,-15.69"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.45,-13.59 687.23,-14.91 692.92,-17.76 693.45,-13.59"/>
-<text text-anchor="middle" x="898" y="-70.8" font-family="Helvetica,sans-Serif" font-size="9.00">×10</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M893.08,-127.54C892.73,-112.53 889.77,-81.21 872,-64 849.41,-42.13 766.87,-25.8 712.25,-17.1"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.32,-14.99 706.06,-16.13 711.66,-19.14 712.32,-14.99"/>
+<text text-anchor="middle" x="894" y="-70.8" font-family="Helvetica,sans-Serif" font-size="9.00">×13</text>
 </g>
 <!-- folder:src/game/mechanics&#45;&gt;folder:src/game/geometry -->
 <g id="edge61" class="edge">
 <title>folder:src/game/mechanics&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M885.5,-127.89C870.21,-117.13 843.11,-98.03 825.61,-85.7"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="826.62,-83.85 820.51,-82.11 824.2,-87.28 826.62,-83.85"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M881.5,-127.89C866.21,-117.13 839.11,-98.03 821.61,-85.7"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="822.62,-83.85 816.51,-82.11 820.2,-87.28 822.62,-83.85"/>
+<text text-anchor="middle" x="862" y="-102.8" font-family="Helvetica,sans-Serif" font-size="9.00">×2</text>
 </g>
 <!-- folder:src/game/moves&#45;&gt;folder:src/game/core -->
 <g id="edge62" class="edge">
 <title>folder:src/game/moves&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1183.02,-271.84C1200.61,-252.9 1239.76,-204.47 1223,-164 1191.24,-87.31 1164.69,-65.22 1087,-36 1016.21,-9.37 793.77,-8.27 693.22,-9.22"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.05,-7.13 687.07,-9.29 693.09,-11.32 693.05,-7.13"/>
-<text text-anchor="middle" x="1224" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×19</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1182.51,-271.78C1198.99,-252.7 1235.57,-204 1219,-164 1187.24,-87.31 1160.64,-65.35 1083,-36 1016.56,-10.89 809.06,-8.9 712.44,-9.42"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.23,-7.32 706.24,-9.45 712.25,-11.52 712.23,-7.32"/>
+<text text-anchor="middle" x="1220" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×19</text>
 </g>
 <!-- folder:src/game/moves&#45;&gt;folder:src/game/generation -->
 <g id="edge63" class="edge">
 <title>folder:src/game/moves&#45;&gt;folder:src/game/generation</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1173.9,-271.68C1171.52,-253.65 1165.86,-210.76 1162.89,-188.29"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="1164.96,-187.95 1162.09,-182.28 1160.8,-188.5 1164.96,-187.95"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1173.59,-271.68C1170.53,-253.65 1163.24,-210.76 1159.43,-188.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="1161.48,-187.84 1158.41,-182.28 1157.34,-188.55 1161.48,-187.84"/>
 </g>
 <!-- folder:src/game/moves&#45;&gt;folder:src/game/geometry -->
 <g id="edge64" class="edge">
 <title>folder:src/game/moves&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1168.86,-271.88C1157.12,-256.68 1130.24,-223.35 1103,-200 1038.48,-144.68 1020.1,-128.42 940,-100 918.73,-92.45 894.69,-86.88 873.07,-82.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="873.32,-80.79 867.04,-81.8 872.57,-84.93 873.32,-80.79"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1168.42,-271.92C1155.87,-256.78 1127.24,-223.56 1099,-200 1033.74,-145.55 1016.1,-128.42 936,-100 914.73,-92.45 890.69,-86.88 869.07,-82.88"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="869.32,-80.79 863.04,-81.8 868.57,-84.93 869.32,-80.79"/>
 </g>
 <!-- folder:src/game/moves&#45;&gt;folder:src/game/mechanics -->
 <g id="edge65" class="edge">
 <title>folder:src/game/moves&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1159.34,-271.87C1150.28,-266.99 1138.78,-260.49 1129,-254 1096.26,-232.28 1092.56,-220.44 1059,-200 1026.74,-180.34 1017.26,-177.56 982,-164 966.11,-157.89 948.12,-152.21 932.8,-147.74"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="933.2,-145.67 926.85,-146.02 932.03,-149.7 933.2,-145.67"/>
-<text text-anchor="middle" x="1092" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1157.45,-271.83C1147.66,-267.04 1135.39,-260.63 1125,-254 1091.88,-232.85 1088.56,-220.44 1055,-200 1022.74,-180.34 1013.26,-177.56 978,-164 962.11,-157.89 944.12,-152.21 928.8,-147.74"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="929.2,-145.67 922.85,-146.02 928.03,-149.7 929.2,-145.67"/>
+<text text-anchor="middle" x="1088" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/game/moves&#45;&gt;folder:src/game/rules -->
 <g id="edge66" class="edge">
 <title>folder:src/game/moves&#45;&gt;folder:src/game/rules</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1145.89,-272C1128.67,-267.11 1106.48,-260.56 1087,-254 1082.57,-252.51 1030.75,-232.79 997.89,-220.26"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="998.34,-218.18 991.99,-218.01 996.85,-222.11 998.34,-218.18"/>
-<text text-anchor="middle" x="1094" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×7</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M1144.13,-272C1126.17,-267.16 1103.17,-260.66 1083,-254 1078.56,-252.53 1026.75,-232.8 993.89,-220.27"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="994.34,-218.19 987.99,-218.02 992.84,-222.12 994.34,-218.19"/>
+<text text-anchor="middle" x="1090" y="-242.8" font-family="Helvetica,sans-Serif" font-size="9.00">×7</text>
 </g>
 <!-- folder:src/game/rules&#45;&gt;folder:src/game/core -->
 <g id="edge67" class="edge">
 <title>folder:src/game/rules&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M979.51,-199.67C983.77,-194.93 988.54,-188.62 991,-182 999.36,-159.49 1003.47,-149.61 993,-128 973,-86.71 951.87,-86.7 912,-64 843.1,-24.78 750.09,-13.73 693.44,-10.8"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.49,-8.7 687.39,-10.51 693.29,-12.9 693.49,-8.7"/>
-<text text-anchor="middle" x="993" y="-102.8" font-family="Helvetica,sans-Serif" font-size="9.00">×27</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M975.51,-199.67C979.77,-194.93 984.54,-188.62 987,-182 995.36,-159.49 999.47,-149.61 989,-128 969,-86.71 947.77,-86.88 908,-64 846.64,-28.69 764.48,-16.44 712.39,-12.21"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="712.33,-10.1 706.19,-11.73 712.01,-14.29 712.33,-10.1"/>
+<text text-anchor="middle" x="989" y="-102.8" font-family="Helvetica,sans-Serif" font-size="9.00">×27</text>
 </g>
 <!-- folder:src/game/rules&#45;&gt;folder:src/game/geometry -->
 <g id="edge68" class="edge">
 <title>folder:src/game/rules&#45;&gt;folder:src/game/geometry</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M973.14,-199.97C976.8,-184.34 982.36,-149.48 966,-128 952.06,-109.7 894.45,-93.22 853.05,-83.41"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="853.39,-81.33 847.07,-82.01 852.44,-85.42 853.39,-81.33"/>
-<text text-anchor="middle" x="982" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M969.14,-199.97C972.8,-184.34 978.36,-149.48 962,-128 948.06,-109.7 890.45,-93.22 849.05,-83.41"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="849.39,-81.33 843.07,-82.01 848.44,-85.42 849.39,-81.33"/>
+<text text-anchor="middle" x="978" y="-134.8" font-family="Helvetica,sans-Serif" font-size="9.00">×4</text>
 </g>
 <!-- folder:src/game/rules&#45;&gt;folder:src/game/mechanics -->
 <g id="edge69" class="edge">
 <title>folder:src/game/rules&#45;&gt;folder:src/game/mechanics</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M960.73,-199.82C954.59,-194.81 946.7,-188.21 940,-182 929.03,-171.83 917.19,-159.62 908.72,-150.64"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="910.02,-148.96 904.39,-146.02 906.96,-151.84 910.02,-148.96"/>
-<text text-anchor="middle" x="947" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×5</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M956.73,-199.82C950.59,-194.81 942.7,-188.21 936,-182 925.03,-171.83 913.19,-159.62 904.72,-150.64"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="906.02,-148.96 900.39,-146.02 902.96,-151.84 906.02,-148.96"/>
+<text text-anchor="middle" x="943" y="-170.8" font-family="Helvetica,sans-Serif" font-size="9.00">×5</text>
 </g>
 <!-- folder:src/pages&#45;&gt;folder:src -->
 <g id="edge70" class="edge">
@@ -633,8 +634,8 @@
 <!-- folder:src/pages&#45;&gt;folder:src/game/core -->
 <g id="edge73" class="edge">
 <title>folder:src/pages&#45;&gt;folder:src/game/core</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M867.44,-654.5C706.09,-651.79 0,-637.39 0,-593 0,-593 0,-593 0,-72 0,-34.62 39.73,-45.03 76,-36 172.99,-11.84 472.33,-9.64 592.4,-9.77"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="592.67,-11.87 598.67,-9.78 592.68,-7.67 592.67,-11.87"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M867.44,-654.5C706.09,-651.79 0,-637.39 0,-593 0,-593 0,-593 0,-72 0,-10.62 456.9,-8.44 611.54,-9.45"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="611.78,-11.55 617.79,-9.5 611.81,-7.35 611.78,-11.55"/>
 </g>
 </g>
 </svg>
