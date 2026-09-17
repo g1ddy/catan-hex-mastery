@@ -50,7 +50,11 @@ export function evaluatePortAccess(state: CatanSearchState, playerID: string): n
   const player = state.game.players[playerID]; if (!player) return 0;
   return Object.values(state.game.board.ports || {}).filter((port) => port.vertices.some((id) => player.settlements.includes(id))).length;
 }
-/** Production lead/deficit versus the highest-producing opponent; this is not spatial blocking pressure. */
+/**
+ * Production lead/deficit versus the highest-producing opponent.
+ * Note: This is an opponent-relative production signal, NOT a spatial blocking model.
+ * Actual spatial blocking is deferred until existing geometry/rule primitives support it appropriately.
+ */
 export function evaluateProductionAdvantage(playerID: string, players: readonly string[], pipsByPlayer: Record<string, Record<string, number>>): number {
   const mine = evaluateProductionPips(pipsByPlayer[playerID] || {}); let highestOpponent = 0;
   for (const opponent of players) if (opponent !== playerID) highestOpponent = Math.max(highestOpponent, evaluateProductionPips(pipsByPlayer[opponent] || {}));

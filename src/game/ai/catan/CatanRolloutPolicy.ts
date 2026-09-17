@@ -6,8 +6,13 @@ import type { CatanSearchAction } from './CatanSearchAction';
 import { CatanEvaluator } from './CatanEvaluator';
 
 export interface CatanRolloutPolicyOptions { evaluator?: CatanEvaluator; evalWeight?: number; customWeights?: Partial<Record<string, number>>; }
+
+/**
+ * A configurable baseline rollout configuration for standard constructive preferences.
+ * These weights are not objectively correct strategy policy, but provide a reasonable
+ * starting point for Catan-aware rollouts.
+ */
 const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = { placeSettlement: 10, buildSettlement: 10, buildCity: 12, placeRoad: 3, buildRoad: 3, rollDice: 15, resolveRoll: 15, dismissRobber: 6, tradeBank: 2, endTurn: 1, regenerateBoard: 0.1 };
-const STOCHASTIC_ACTIONS = new Set(['rollDice', 'resolveRoll', 'regenerateBoard']);
 
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
   private readonly evaluator: CatanEvaluator; private readonly evalWeight: number; private readonly baseWeights: Readonly<Record<string, number>>;
@@ -17,9 +22,11 @@ export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, Catan
     const actingPlayer = game.getCurrentPlayer(state); const weights: number[] = new Array(legalActions.length); let totalWeight = 0;
     for (let i = 0; i < legalActions.length; i++) {
       const action = legalActions[i]; const baseWeight = this.baseWeights[action.move] ?? 1; let evalBonus = 0;
-      if (this.evalWeight > 0 && !STOCHASTIC_ACTIONS.has(action.move)) {
-        const deterministicRandom: SearchRandom = { next: () => 0.5, integer: (max) => Math.floor(0.5 * max), pick: (items) => items[0], die: () => 1 };
-        const nextState = game.applyAction(state, action, deterministicRandom);
+      if (this.evalWeight > 0) {
+        // Deliberately consume RNG during candidate evaluation to maintain a single transition pathway.
+        // As long as legal actions are evaluated in a canonical, deterministic order, the overall
+        // rollout stream remains deterministic. We do not try to guess which actions are stochastic.
+        const nextState = game.applyAction(state, action, random);
         const utility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState)); evalBonus = (utility[actingPlayer] ?? 0) * this.evalWeight;
       }
       const weight = Math.max(0.01, baseWeight + evalBonus); weights[i] = weight; totalWeight += weight;
