@@ -168,6 +168,15 @@ export function evaluateOpponentPressure(
   return Math.max(-10.0, Math.min(10.0, myPipsTotal - maxOpponentPips));
 }
 
+/**
+ * Catan state evaluator implementing SearchEvaluator<CatanSearchState>.
+ *
+ * Non-terminal state utilities are independent per-player, general-sum strategic value estimates
+ * bounded strictly in [0.01, 0.98] via non-saturating monotonic scaling (`rawScore / (rawScore + 40) * 0.98`).
+ * Utilities reflect each player's absolute and relative game progress independently, rather than
+ * enforcing a zero-sum constraint across players. Genuine winning terminal outcomes (1.0) strictly dominate
+ * all non-terminal state estimates.
+ */
 export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
   private readonly weights: CatanEvaluatorWeights;
 

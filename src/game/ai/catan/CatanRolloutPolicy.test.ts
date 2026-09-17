@@ -74,6 +74,28 @@ describe('CatanRolloutPolicy', () => {
     expect(action1).toEqual(action2);
   });
 
+  it('exhibits zero cross-call state pollution or RNG drift across repeated selectAction calls', () => {
+    const state = createMockSetupState();
+    const rngA = new SeededSearchRandom('cross-call-seed');
+    const rngB = new SeededSearchRandom('cross-call-seed');
+
+    const policy1 = new CatanRolloutPolicy();
+    const policy2 = new CatanRolloutPolicy();
+
+    // Call 1 on policy1
+    const res1A = policy1.selectAction(searchGame, state, rngA);
+    // Call 2 on policy1
+    const res2A = policy1.selectAction(searchGame, state, rngA);
+
+    // Call 1 on fresh policy2
+    const res1B = policy2.selectAction(searchGame, state, rngB);
+    // Call 2 on fresh policy2
+    const res2B = policy2.selectAction(searchGame, state, rngB);
+
+    expect(res1A).toEqual(res1B);
+    expect(res2A).toEqual(res2B);
+  });
+
   it('does not consume or alter the caller SearchRandom stream during candidate action evaluations (RNG isolation)', () => {
     const state = createMockSetupState();
     const legalActions = searchGame.getLegalActions(state);
@@ -90,11 +112,9 @@ describe('CatanRolloutPolicy', () => {
       die: () => 1,
     };
 
-    // Evaluate candidate legal actions
     const chosenAction = policy.selectAction(searchGame, state, trackingRng);
 
     expect(chosenAction).not.toBeNull();
-    // Candidate evaluation loops over all legal actions without invoking trackingRng.
     // trackingRng.next() must be called EXACTLY once for final weighted action selection.
     expect(rngCalls).toBe(1);
   });
