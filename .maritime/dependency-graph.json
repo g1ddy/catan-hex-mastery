@@ -908,8 +908,6 @@
         "src/game/rules/enumerator.ts",
         "src/game/rules/lifecycle.ts",
         "src/game/analysis/production.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/analysis/probability.ts",
         "src/game/ai/catan/CatanSearchState.ts",
         "src/game/ai/catan/CatanSearchAction.ts",
         "src/game/ai/catan/CatanSearchGame.ts",
@@ -1301,9 +1299,7 @@
         "src/game/generation/boardGen.ts",
         "src/game/rules/moveValidation.ts",
         "src/game/moves/setup.ts",
-        "src/game/analysis/production.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/analysis/probability.ts"
+        "src/game/analysis/production.ts"
       ],
       "orphan": false
     },
@@ -1475,8 +1471,7 @@
         "src/features/game/hooks/useGameScreenState.ts",
         "src/game/moves/robber.ts",
         "src/game/rules/enumerator.ts",
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/spatialAnalysis.ts"
+        "src/game/ai/catan/CatanEvaluator.ts"
       ],
       "orphan": false
     },
@@ -1571,7 +1566,6 @@
         "src/game/moves/trade.ts",
         "src/pages/SetupPage.tsx",
         "src/game/analysis/production.ts",
-        "src/game/analysis/probability.ts",
         "src/game/testUtils.ts"
       ],
       "orphan": false
@@ -1682,9 +1676,7 @@
         "src/game/rules/moveValidation.ts",
         "src/game/moves/setup.ts",
         "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/production.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/analysis/probability.ts"
+        "src/game/analysis/production.ts"
       ],
       "orphan": false
     },
@@ -2137,8 +2129,7 @@
         "src/game/analysis/coach.ts",
         "src/game/analysis/advisors/RoadAdvisor.ts",
         "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/game/analysis/index.ts"
+        "src/bots/logic/OptimalMoveFilter.ts"
       ],
       "orphan": false
     },
@@ -10399,24 +10390,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../analysis/spatialAnalysis",
-          "resolved": "src/game/analysis/spatialAnalysis.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "../../core/utils/objectUtils",
           "resolved": "src/game/core/utils/objectUtils.ts",
           "valid": true,
@@ -10606,196 +10579,7 @@
         }
       ],
       "dependents": [
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/spatialAnalysis.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../rules/queries",
-          "resolved": "src/game/rules/queries.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./probability",
-          "resolved": "src/game/analysis/probability.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/probability.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/analysis/index.ts"
+        "src/game/ai/catan/CatanEvaluator.ts"
       ],
       "orphan": false
     },
@@ -12030,86 +11814,6 @@
       "orphan": false
     },
     {
-      "source": "src/game/analysis/index.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./probability",
-          "resolved": "src/game/analysis/probability.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./production",
-          "resolved": "src/game/analysis/production.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./spatialAnalysis",
-          "resolved": "src/game/analysis/spatialAnalysis.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [],
-      "orphan": false
-    },
-    {
       "source": "src/game/testUtils.ts",
       "valid": true,
       "dependencies": [
@@ -12280,8 +11984,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 157,
-    "totalDependenciesCruised": 549,
+    "totalCruised": 154,
+    "totalDependenciesCruised": 535,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

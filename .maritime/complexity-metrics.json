@@ -59,7 +59,7 @@
     "complexity": 1,
     "loc": 201,
     "instability": 0.01,
-    "fanIn": 80,
+    "fanIn": 78,
     "fanOut": 1,
     "scanned": true
   },
@@ -82,8 +82,8 @@
   "src/game/geometry/hexUtils.ts": {
     "complexity": 6,
     "loc": 195,
-    "instability": 0.12,
-    "fanIn": 15,
+    "instability": 0.13,
+    "fanIn": 13,
     "fanOut": 2,
     "scanned": true
   },
@@ -98,8 +98,8 @@
   "src/game/rules/queries.ts": {
     "complexity": 9,
     "loc": 234,
-    "instability": 0.5,
-    "fanIn": 8,
+    "instability": 0.53,
+    "fanIn": 7,
     "fanOut": 8,
     "scanned": true
   },
@@ -114,8 +114,8 @@
   "src/game/core/config.ts": {
     "complexity": 1,
     "loc": 76,
-    "instability": 0.05,
-    "fanIn": 18,
+    "instability": 0.06,
+    "fanIn": 17,
     "fanOut": 1,
     "scanned": true
   },
@@ -131,7 +131,7 @@
     "complexity": 4,
     "loc": 33,
     "instability": 0,
-    "fanIn": 20,
+    "fanIn": 18,
     "fanOut": 0,
     "scanned": true
   },
@@ -187,7 +187,7 @@
     "complexity": 1,
     "loc": 24,
     "instability": 0,
-    "fanIn": 5,
+    "fanIn": 4,
     "fanOut": 0,
     "scanned": true
   },
@@ -930,32 +930,16 @@
   "src/game/ai/catan/CatanEvaluator.ts": {
     "complexity": 10,
     "loc": 91,
-    "instability": 0.8,
+    "instability": 0.78,
     "fanIn": 2,
-    "fanOut": 8,
+    "fanOut": 7,
     "scanned": true
   },
   "src/game/analysis/production.ts": {
     "complexity": 10,
     "loc": 26,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/game/analysis/spatialAnalysis.ts": {
-    "complexity": 14,
-    "loc": 255,
-    "instability": 0.71,
-    "fanIn": 2,
-    "fanOut": 5,
-    "scanned": true
-  },
-  "src/game/analysis/probability.ts": {
-    "complexity": 15,
-    "loc": 183,
-    "instability": 0.67,
-    "fanIn": 2,
+    "instability": 0.8,
+    "fanIn": 1,
     "fanOut": 4,
     "scanned": true
   },
@@ -1077,14 +1061,6 @@
     "instability": 1,
     "fanIn": 0,
     "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/analysis/index.ts": {
-    "complexity": 1,
-    "loc": 5,
-    "instability": 1,
-    "fanIn": 0,
-    "fanOut": 4,
     "scanned": true
   },
   "src/game/testUtils.ts": {

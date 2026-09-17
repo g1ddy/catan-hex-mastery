@@ -58,10 +58,10 @@ export function getHexesInRing(center: CubeCoordinates, radius: number): CubeCoo
 }
 
 /**
- * Returns all vertex IDs reachable via graph traversal over a player's connected road network.
+ * Low-level topology query: Returns all vertex IDs reachable via graph traversal over a player's connected road network.
  * Traversal starts at player structures (settlements/cities) or starting road endpoints if no structures exist.
  * Traversal expands along player-owned edges and halts at vertices occupied by opponent structures.
- * Stably sorted.
+ * Includes occupied structures and cutoff vertices. Stably sorted.
  */
 export function getPlayerRoadConnectedVertices(G: GameState, playerID: string): string[] {
   const player = safeGet(G.players, playerID);
@@ -110,6 +110,22 @@ export function getPlayerRoadConnectedVertices(G: GameState, playerID: string): 
   }
 
   return Array.from(visited).sort();
+}
+
+/**
+ * Domain expansion query: Returns unoccupied road-connected vertices suitable for settlement expansion.
+ * Delegates legal placement checks directly to authoritative rule queries (`getValidSettlementSpots`).
+ * Stably sorted.
+ */
+export function getPlayerRoadExpansionCandidates(
+  G: GameState,
+  playerID: string,
+  checkCost = false
+): string[] {
+  const validSpots = getValidSettlementSpots(G, playerID, checkCost);
+  const connected = getPlayerRoadConnectedVertices(G, playerID);
+  const candidates = connected.filter((vId) => validSpots.has(vId));
+  return candidates.sort();
 }
 
 /**

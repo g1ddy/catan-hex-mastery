@@ -3,6 +3,7 @@ import {
   getHexesInRadius,
   getHexesInRing,
   getPlayerRoadConnectedVertices,
+  getPlayerRoadExpansionCandidates,
   getLegalSettlementCandidates,
   getPlayerAccessedPorts,
   getNearbyPortsForVertex,
@@ -82,6 +83,46 @@ describe('spatial analysis domain primitives', () => {
 
     const candidates = getLegalSettlementCandidates(G, '0', false);
     expect(Array.isArray(candidates)).toBe(true);
+  });
+
+  it('distinguishes raw road connected vertices from valid expansion candidates', () => {
+    const G = createMockGameState();
+
+    // Setup valid hexes around vertex
+    G.board.hexes['0,0,0'] = { id: '0,0,0', coords: { q: 0, r: 0, s: 0 }, terrain: TerrainType.Forest, tokenValue: 6 };
+    G.board.hexes['1,-1,0'] = { id: '1,-1,0', coords: { q: 1, r: -1, s: 0 }, terrain: TerrainType.Hills, tokenValue: 5 };
+    G.board.hexes['1,0,-1'] = { id: '1,0,-1', coords: { q: 1, r: 0, s: -1 }, terrain: TerrainType.Mountains, tokenValue: 8 };
+    G.board.hexes['0,-1,1'] = { id: '0,-1,1', coords: { q: 0, r: -1, s: 1 }, terrain: TerrainType.Pasture, tokenValue: 9 };
+
+    const p0 = createTestPlayer('0');
+    const vStart = '0,0,0::1,-1,0::1,0,-1';
+    const edge1 = '0,0,0::1,-1,0';
+    const endpoints1 = getVerticesForEdge(edge1);
+    const vMiddle = endpoints1.find((v) => v !== vStart)!;
+
+    const edge2 = '0,-1,1::1,-1,0';
+    const endpoints2 = getVerticesForEdge(edge2);
+    const vTarget = endpoints2.find((v) => v !== vMiddle)!;
+
+    p0.settlements = [vStart];
+    p0.roads = [edge1, edge2];
+    G.players['0'] = p0;
+
+    G.board.vertices[vStart] = { owner: '0', type: 'settlement' }; // Occupied by player 0
+    G.board.edges[edge1] = { owner: '0' };
+    G.board.edges[edge2] = { owner: '0' };
+
+    // Raw topology includes vStart (occupied), vMiddle (adjacent to vStart, distance rule prevents building), and vTarget
+    const connectedTopology = getPlayerRoadConnectedVertices(G, '0');
+    expect(connectedTopology).toContain(vStart);
+    expect(connectedTopology).toContain(vMiddle);
+    expect(connectedTopology).toContain(vTarget);
+
+    // Expansion candidates exclude occupied vStart & distance-blocked vMiddle, returning open legal vTarget
+    const expansionCandidates = getPlayerRoadExpansionCandidates(G, '0', false);
+    expect(expansionCandidates).not.toContain(vStart);
+    expect(expansionCandidates).not.toContain(vMiddle);
+    expect(expansionCandidates).toContain(vTarget);
   });
 
   it('excludes disconnected road components when computing connected vertices from settlements', () => {
