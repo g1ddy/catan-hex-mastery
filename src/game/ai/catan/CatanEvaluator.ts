@@ -2,6 +2,7 @@ import type { SearchGame } from '../search/SearchGame';
 import type { SearchEvaluator, SearchUtility } from '../search/MctsPolicies';
 import type { CatanSearchState } from './CatanSearchState';
 import { calculatePlayerPotentialPips } from '../../analysis/production';
+import { getPlayerAccessedPorts } from '../../analysis/spatialAnalysis';
 import { isValidPlayer } from '../../core/validation';
 import { safeGet } from '../../core/utils/objectUtils';
 import { getValidSetupSettlementSpots, getValidSettlementSpots } from '../../rules/queries';
@@ -47,8 +48,7 @@ export function evaluateSettlementOpportunities(state: CatanSearchState, playerI
   return getValidSettlementSpots(state.game, playerID, false).size;
 }
 export function evaluatePortAccess(state: CatanSearchState, playerID: string): number {
-  const player = state.game.players[playerID]; if (!player) return 0;
-  return Object.values(state.game.board.ports || {}).filter((port) => port.vertices.some((id) => player.settlements.includes(id))).length;
+  return getPlayerAccessedPorts(state.game, playerID).length;
 }
 /**
  * Production lead/deficit versus the highest-producing opponent.
