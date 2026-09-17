@@ -9,7 +9,7 @@
   },
   "src/pages/GamePage.tsx": {
     "complexity": 11,
-    "loc": 79,
+    "loc": 89,
     "instability": 0.83,
     "fanIn": 1,
     "fanOut": 5,
@@ -929,7 +929,7 @@
   },
   "src/pages/SetupPage.tsx": {
     "complexity": 5,
-    "loc": 167,
+    "loc": 171,
     "instability": 0.8,
     "fanIn": 1,
     "fanOut": 4,
