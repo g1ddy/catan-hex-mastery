@@ -16,9 +16,9 @@
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
 
-**Last Updated:** 2026-09-16
+**Last Updated:** 2026-09-17
 
-### 🏥 Repository Health Score: **91.0 / 100**
+### 🏥 Repository Health Score: **92.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 131
@@ -32,7 +32,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `src/features/board/components/HexOverlays.tsx` | **87.2** | 148 | 19 | 9 | 0.82 |
 | `src/game/Game.ts` | **85.9** | 130 | 9 | 18 | 0.95 |
-| `src/game/moves/execution.ts` | **85.2** | 114 | 20 | 8 | 0.89 |
 | `src/features/board/components/HexEdges.tsx` | **78.5** | 140 | 11 | 12 | 0.92 |
 | `src/features/game/GameLayout.tsx` | **77.5** | 210 | 7 | 12 | 0.92 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
@@ -40,11 +39,11 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/ai/search/MctsEngine.ts` | **72** | 198 | 7 | 10 | 0.91 |
 | `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
 | `src/pages/GamePage.tsx` | **69.6** | 94 | 11 | 10 | 0.91 |
+| `src/game/rules/queries.ts` | **68.8** | 234 | 9 | 8 | 0.57 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
 | :--- | :--- | :--- |
-| `src/game/moves/execution.ts` | **20** | 114 |
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
@@ -54,3 +53,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/pages/GamePage.tsx` | **11** | 94 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
 | `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |
+| `src/features/board/components/Port.tsx` | **10** | 102 |
