@@ -1,0 +1,38 @@
+import type { SearchGame } from '../search/SearchGame';
+import type { RolloutPolicy } from '../search/MctsPolicies';
+import type { SearchRandom } from '../search/SearchRandom';
+import type { CatanSearchState } from './CatanSearchState';
+import type { CatanSearchAction } from './CatanSearchAction';
+import { CatanEvaluator } from './CatanEvaluator';
+
+export interface CatanRolloutPolicyOptions { evaluator?: CatanEvaluator; evalWeight?: number; customWeights?: Partial<Record<string, number>>; }
+
+/**
+ * A configurable baseline rollout configuration for standard constructive preferences.
+ * These weights are not objectively correct strategy policy, but provide a reasonable
+ * starting point for Catan-aware rollouts.
+ */
+const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = { placeSettlement: 10, buildSettlement: 10, buildCity: 12, placeRoad: 3, buildRoad: 3, rollDice: 15, resolveRoll: 15, dismissRobber: 6, tradeBank: 2, endTurn: 1, regenerateBoard: 0.1 };
+
+export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
+  private readonly evaluator: CatanEvaluator; private readonly evalWeight: number; private readonly baseWeights: Readonly<Record<string, number>>;
+  constructor(options: CatanRolloutPolicyOptions = {}) { this.evaluator = options.evaluator ?? new CatanEvaluator(); this.evalWeight = options.evalWeight ?? 10; this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights as Record<string, number> ?? {}) }; }
+  public selectAction(game: SearchGame<CatanSearchState, CatanSearchAction>, state: CatanSearchState, random: SearchRandom): CatanSearchAction | null {
+    if (game.isTerminal(state)) return null; const legalActions = game.getLegalActions(state); if (legalActions.length === 0) return null; if (legalActions.length === 1) return legalActions[0];
+    const actingPlayer = game.getCurrentPlayer(state); const weights: number[] = new Array(legalActions.length); let totalWeight = 0;
+    for (let i = 0; i < legalActions.length; i++) {
+      const action = legalActions[i]; const baseWeight = this.baseWeights[action.move] ?? 1; let evalBonus = 0;
+      if (this.evalWeight > 0) {
+        // Deliberately consume RNG during candidate evaluation to maintain a single transition pathway.
+        // As long as legal actions are evaluated in a canonical, deterministic order, the overall
+        // rollout stream remains deterministic. We do not try to guess which actions are stochastic.
+        const nextState = game.applyAction(state, action, random);
+        const utility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState)); evalBonus = (utility[actingPlayer] ?? 0) * this.evalWeight;
+      }
+      const weight = Math.max(0.01, baseWeight + evalBonus); weights[i] = weight; totalWeight += weight;
+    }
+    const threshold = random.next() * totalWeight; let accumulated = 0;
+    for (let i = 0; i < legalActions.length; i++) { accumulated += weights[i]; if (accumulated >= threshold) return legalActions[i]; }
+    return legalActions[legalActions.length - 1];
+  }
+}

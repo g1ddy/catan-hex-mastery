@@ -42,6 +42,3 @@ This journal records critical architectural blockers and recurring anti-patterns
 ## 2026-08-17 - [High Complexity Logic]
 **Observation:** `enumerator.ts` had high cyclomatic complexity (11) due to monolithic conditionals for determining valid moves within the `enumerate` iteration.
 **Strategy:** Extracted the complexity into `addMovesForType`, `handleParameterizedSpatialMoves`, `handleDismissRobberMoves`, `handleTradeBankMove`, and `handleNonParameterizedMove` to decouple specific branch enumeration, effectively reducing its complexity score.
-## 2026-09-17 - [High Complexity Logic]
-**Observation:** `executeCatanMove` in `src/game/moves/execution.ts` had high cyclomatic complexity (20) due to a monolithic switch statement routing moves.
-**Strategy:** Extracted the switch cases into grouped helper functions (`executeBuildMove`, `executeSetupMove`, `executeMiscMove`). Reduced cyclomatic complexity to 11.

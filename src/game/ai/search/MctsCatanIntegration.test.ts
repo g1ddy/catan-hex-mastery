@@ -1,6 +1,8 @@
 import { CatanSearchGame } from '../catan/CatanSearchGame';
 import type { CatanSearchState } from '../catan/CatanSearchState';
 import type { CatanSearchAction } from '../catan/CatanSearchAction';
+import { CatanEvaluator } from '../catan/CatanEvaluator';
+import { CatanRolloutPolicy } from '../catan/CatanRolloutPolicy';
 import { MctsEngine } from './MctsEngine';
 import { UctSelectionPolicy } from './UctSelectionPolicy';
 import { createMockGameState, createTestPlayer } from '../../testUtils';
@@ -90,5 +92,41 @@ describe('MctsEngine Integration with CatanSearchGame Adapter', () => {
     expect(result.iterations).toBe(30);
     expect(result.rootVisits).toBe(30);
     expect(result.candidates.length).toBeGreaterThan(0);
+  });
+
+  it('runs MctsEngine + UCT + CatanEvaluator + CatanRolloutPolicy + CatanSearchGame end-to-end', () => {
+    const catanGame = new CatanSearchGame();
+    const uctPolicy = new UctSelectionPolicy<CatanSearchState, CatanSearchAction>({
+      explorationConstant: 1.414,
+    });
+    const evaluator = new CatanEvaluator();
+    const rolloutPolicy = new CatanRolloutPolicy();
+
+    const engine = new MctsEngine<CatanSearchState, CatanSearchAction>({
+      selectionPolicy: uctPolicy,
+      evaluator,
+      rolloutPolicy,
+    });
+
+    const initialState = createMockSetupState();
+    const result = engine.search(catanGame, initialState, {
+      iterations: 25,
+      maxDepth: 5,
+      seed: 'full-catan-mcts-stack-789',
+    });
+
+    expect(result.action).not.toBeNull();
+    expect(result.action?.move).toBe('placeSettlement');
+    expect(result.rootPlayer).toBe('0');
+    expect(result.iterations).toBe(25);
+    expect(result.rootVisits).toBe(25);
+    expect(result.candidates.length).toBeGreaterThan(0);
+
+    for (const candidate of result.candidates) {
+      expect(candidate.action.move).toBe('placeSettlement');
+      expect(candidate.visits).toBeGreaterThan(0);
+      expect(candidate.value).toBeGreaterThanOrEqual(0.0);
+      expect(candidate.value).toBeLessThanOrEqual(1.0);
+    }
   });
 });
