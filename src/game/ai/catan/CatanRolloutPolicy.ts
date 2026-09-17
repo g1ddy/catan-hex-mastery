@@ -11,7 +11,7 @@ const STOCHASTIC_ACTIONS = new Set(['rollDice', 'resolveRoll', 'regenerateBoard'
 
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
   private readonly evaluator: CatanEvaluator; private readonly evalWeight: number; private readonly baseWeights: Readonly<Record<string, number>>;
-  constructor(options: CatanRolloutPolicyOptions = {}) { this.evaluator = options.evaluator ?? new CatanEvaluator(); this.evalWeight = options.evalWeight ?? 10; this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights ?? {}) }; }
+  constructor(options: CatanRolloutPolicyOptions = {}) { this.evaluator = options.evaluator ?? new CatanEvaluator(); this.evalWeight = options.evalWeight ?? 10; this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights as Record<string, number> ?? {}) }; }
   public selectAction(game: SearchGame<CatanSearchState, CatanSearchAction>, state: CatanSearchState, random: SearchRandom): CatanSearchAction | null {
     if (game.isTerminal(state)) return null; const legalActions = game.getLegalActions(state); if (legalActions.length === 0) return null; if (legalActions.length === 1) return legalActions[0];
     const actingPlayer = game.getCurrentPlayer(state); const weights: number[] = new Array(legalActions.length); let totalWeight = 0;
