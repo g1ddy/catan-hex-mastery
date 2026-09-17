@@ -74,6 +74,31 @@ describe('CatanRolloutPolicy', () => {
     expect(action1).toEqual(action2);
   });
 
+  it('does not consume or alter the caller SearchRandom stream during candidate action evaluations (RNG isolation)', () => {
+    const state = createMockSetupState();
+    const legalActions = searchGame.getLegalActions(state);
+    expect(legalActions.length).toBeGreaterThan(1);
+
+    let rngCalls = 0;
+    const trackingRng: SearchRandom = {
+      next: () => {
+        rngCalls++;
+        return 0.25;
+      },
+      integer: (max) => Math.floor(0.25 * max),
+      pick: (arr) => arr[0],
+      die: () => 1,
+    };
+
+    // Evaluate candidate legal actions
+    const chosenAction = policy.selectAction(searchGame, state, trackingRng);
+
+    expect(chosenAction).not.toBeNull();
+    // Candidate evaluation loops over all legal actions without invoking trackingRng.
+    // trackingRng.next() must be called EXACTLY once for final weighted action selection.
+    expect(rngCalls).toBe(1);
+  });
+
   it('surfaces transition errors directly from applyAction rather than swallowing them', () => {
     const state = createMockSetupState();
     const rng = new SeededSearchRandom('error-test-seed');

@@ -1,6 +1,7 @@
 import type { SearchGame } from '../search/SearchGame';
 import type { RolloutPolicy } from '../search/MctsPolicies';
 import type { SearchRandom } from '../search/SearchRandom';
+import { SeededSearchRandom } from '../search/SearchRandom';
 import type { CatanSearchState } from './CatanSearchState';
 import type { CatanSearchAction } from './CatanSearchAction';
 import { CatanEvaluator } from './CatanEvaluator';
@@ -24,6 +25,10 @@ const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = {
   endTurn: 1.0,
   regenerateBoard: 0.1,
 };
+
+// Static deterministic RNG used strictly for speculative candidate lookahead evaluations
+// so candidate evaluation never consumes or advances the caller's main SearchRandom stream.
+const SPECULATIVE_EVAL_RNG = new SeededSearchRandom(0);
 
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
   private readonly evaluator: CatanEvaluator;
@@ -73,9 +78,9 @@ export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, Catan
 
       let evalBonus = 0.0;
       if (this.evalWeight > 0) {
-        // Direct transition application through CatanSearchGame using injected random
-        // Errors surface directly to reveal game model or enumerator bugs
-        const nextState = game.applyAction(state, action, random);
+        // Use SPECULATIVE_EVAL_RNG for speculative lookahead so candidate scoring
+        // never consumes or alters the caller's main SearchRandom stream.
+        const nextState = game.applyAction(state, action, SPECULATIVE_EVAL_RNG);
         const evalUtility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState));
         const playerUtility = evalUtility[actingPlayer] ?? 0.0;
         evalBonus = playerUtility * this.evalWeight;
