@@ -5,6 +5,8 @@ import {
   get2d6PipWeight,
   getHexExpectedProduction,
   getVertexExpectedProduction,
+  getSettlementExpectedProduction,
+  getCityExpectedProduction,
   getPlayerExpectedProduction,
 } from './probability';
 import { TerrainType } from '../core/types';
@@ -75,7 +77,7 @@ describe('probability domain primitives', () => {
     expect(getHexExpectedProduction(null)).toBe(0);
   });
 
-  it('distinguishes settlement (1x) vs city (2x) vertex expected production', () => {
+  it('distinguishes existing structure vs hypothetical settlement/city vertex expected production', () => {
     const G = createMockGameState();
     G.board.hexes['0,0,0'] = {
       id: '0,0,0',
@@ -98,13 +100,24 @@ describe('probability domain primitives', () => {
 
     const vertexId = '0,0,0::1,-1,0::1,0,-1';
 
-    // 1x settlement yield = (5 + 5 + 2) / 36 = 12/36 = 1/3
-    const settlementYield = getVertexExpectedProduction(G, vertexId, { structureType: 'settlement' });
+    // Unoccupied vertex -> getVertexExpectedProduction returns 0
+    expect(getVertexExpectedProduction(G, vertexId)).toBe(0);
+
+    // Hypothetical settlement yield = (5 + 5 + 2) / 36 = 12/36 = 1/3
+    const settlementYield = getSettlementExpectedProduction(G, vertexId);
     expect(settlementYield).toBeCloseTo(12 / 36, 8);
 
-    // 2x city yield = 2 * (12/36) = 24/36 = 2/3
-    const cityYield = getVertexExpectedProduction(G, vertexId, { structureType: 'city' });
+    // Hypothetical city yield = 2 * (12/36) = 24/36 = 2/3
+    const cityYield = getCityExpectedProduction(G, vertexId);
     expect(cityYield).toBeCloseTo(24 / 36, 8);
+
+    // Build city on vertex -> getVertexExpectedProduction returns city yield (2x)
+    G.board.vertices[vertexId] = { owner: '0', type: 'city' };
+    expect(getVertexExpectedProduction(G, vertexId)).toBeCloseTo(24 / 36, 8);
+
+    // Build settlement on vertex -> getVertexExpectedProduction returns settlement yield (1x)
+    G.board.vertices[vertexId] = { owner: '0', type: 'settlement' };
+    expect(getVertexExpectedProduction(G, vertexId)).toBeCloseTo(12 / 36, 8);
   });
 
   it('calculates player resource-level expected production summaries', () => {

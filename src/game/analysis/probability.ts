@@ -61,31 +61,19 @@ export function getHexExpectedProduction(hex: Hex | null | undefined): number {
 }
 
 export interface ExpectedProductionOptions {
-  /** Override structure type multiplier (settlement = 1, city = 2). Default uses vertex structure if present or settlement (1x) if unbuilt. */
-  structureType?: 'settlement' | 'city';
   /** If true, returns 0 if robber is on hex. Defaults to false. */
   checkRobber?: boolean;
 }
 
 /**
- * Expected resource yield per dice roll for a vertex location.
- * Applies 1x for settlement and 2x for city multiplier.
+ * Helper to sum total probability yield across adjacent resource hexes.
  */
-export function getVertexExpectedProduction(
+function sumHexProductionProbability(
   G: GameState,
   vertexId: string,
   options: ExpectedProductionOptions = {}
 ): number {
   const hexes = getHexesForVertex(vertexId);
-  const vertex = safeGet(G.board.vertices, vertexId);
-
-  let multiplier = 1;
-  if (options.structureType) {
-    multiplier = options.structureType === 'city' ? 2 : 1;
-  } else if (vertex) {
-    multiplier = vertex.type === 'city' ? 2 : 1;
-  }
-
   let totalProb = 0;
   for (const hexId of hexes) {
     const hex = safeGet(G.board.hexes, hexId);
@@ -95,8 +83,45 @@ export function getVertexExpectedProduction(
     if (!resource) continue;
     totalProb += get2d6Probability(hex.tokenValue);
   }
+  return totalProb;
+}
 
-  return totalProb * multiplier;
+/**
+ * Expected resource yield for an EXISTING structure on a vertex.
+ * Returns 0 if no structure exists on the vertex.
+ * Applies 1x multiplier for settlement, 2x multiplier for city.
+ */
+export function getVertexExpectedProduction(
+  G: GameState,
+  vertexId: string,
+  options: ExpectedProductionOptions = {}
+): number {
+  const vertex = safeGet(G.board.vertices, vertexId);
+  if (!vertex) return 0;
+  const multiplier = vertex.type === 'city' ? 2 : 1;
+  return sumHexProductionProbability(G, vertexId, options) * multiplier;
+}
+
+/**
+ * Hypothetical expected resource yield IF a settlement (1x) were built on this vertex.
+ */
+export function getSettlementExpectedProduction(
+  G: GameState,
+  vertexId: string,
+  options: ExpectedProductionOptions = {}
+): number {
+  return sumHexProductionProbability(G, vertexId, options) * 1;
+}
+
+/**
+ * Hypothetical expected resource yield IF a city (2x) were built on this vertex.
+ */
+export function getCityExpectedProduction(
+  G: GameState,
+  vertexId: string,
+  options: ExpectedProductionOptions = {}
+): number {
+  return sumHexProductionProbability(G, vertexId, options) * 2;
 }
 
 export interface PlayerProductionSummary {

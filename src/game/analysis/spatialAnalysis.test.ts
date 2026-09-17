@@ -7,11 +7,12 @@ import {
   getPlayerAccessedPorts,
   getNearbyPortsForVertex,
   getOpponentAdjacentStructures,
+  getOpponentAdjacentRoads,
   getCandidateSpatialSummary,
 } from './spatialAnalysis';
 import { TerrainType, Port } from '../core/types';
 import { createMockGameState, createTestPlayer } from '../testUtils';
-import { getVertexNeighbors } from '../geometry/hexUtils';
+import { getVertexNeighbors, getVerticesForEdge } from '../geometry/hexUtils';
 
 describe('spatial analysis domain primitives', () => {
   it('calculates cube coordinate distance correctly', () => {
@@ -24,7 +25,7 @@ describe('spatial analysis domain primitives', () => {
     expect(getCubeDistance(origin, far)).toBe(2);
   });
 
-  it('computes hexes in radius and ring deterministically', () => {
+  it('computes hexes in radius and ring deterministically and validates inputs', () => {
     const center = { q: 0, r: 0, s: 0 };
     const radius1 = getHexesInRadius(center, 1);
     expect(radius1).toHaveLength(7); // center + 6 neighbors
@@ -34,20 +35,77 @@ describe('spatial analysis domain primitives', () => {
 
     const ring2 = getHexesInRing(center, 2);
     expect(ring2).toHaveLength(12);
+
+    expect(() => getHexesInRadius(center, -1)).toThrow('Invalid radius');
+    expect(() => getHexesInRadius(center, 1.5)).toThrow('Invalid radius');
+    expect(() => getHexesInRing(center, NaN)).toThrow('Invalid radius');
   });
 
-  it('identifies player road connected vertices and legal settlement candidates', () => {
+  it('identifies player road connected vertices respecting opponent structure cutoff', () => {
     const G = createMockGameState();
     const p0 = createTestPlayer('0');
-    const edgeId = '0,0,0::1,-1,0';
-    p0.roads = [edgeId];
+
+    // vStart: vertex touching hexes (0,0,0), (1,-1,0), (1,0,-1)
+    const vStart = '0,0,0::1,-1,0::1,0,-1';
+    // edge1: between (0,0,0) and (1,-1,0). Endpoints: vStart and vCutoff
+    const edge1 = '0,0,0::1,-1,0';
+    const endpoints1 = getVerticesForEdge(edge1);
+    const vCutoff = endpoints1.find((v) => v !== vStart)!;
+
+    // edge2: between (1,-1,0) and (0,-1,1). Endpoints: vCutoff and vEnd
+    const edge2 = '0,-1,1::1,-1,0';
+    const endpoints2 = getVerticesForEdge(edge2);
+    const vEnd = endpoints2.find((v) => v !== vCutoff)!;
+
+    p0.settlements = [vStart];
+    p0.roads = [edge1, edge2];
     G.players['0'] = p0;
 
-    const vertices = getPlayerRoadConnectedVertices(G, '0');
-    expect(vertices).toEqual(['0,-1,1::0,0,0::1,-1,0', '0,0,0::1,-1,0::1,0,-1'].sort());
+    G.board.vertices[vStart] = { owner: '0', type: 'settlement' };
+    G.board.edges[edge1] = { owner: '0' };
+    G.board.edges[edge2] = { owner: '0' };
+
+    // Before cutoff: vStart, vCutoff, and vEnd are connected
+    const connectedBefore = getPlayerRoadConnectedVertices(G, '0');
+    expect(connectedBefore).toContain(vStart);
+    expect(connectedBefore).toContain(vCutoff);
+    expect(connectedBefore).toContain(vEnd);
+
+    // Opponent places a settlement at vCutoff
+    G.board.vertices[vCutoff] = { owner: '1', type: 'settlement' };
+
+    // After cutoff: vCutoff is reached, but traversal halts at vCutoff so vEnd beyond cutoff is NOT reached
+    const connectedAfter = getPlayerRoadConnectedVertices(G, '0');
+    expect(connectedAfter).toContain(vStart);
+    expect(connectedAfter).toContain(vCutoff);
+    expect(connectedAfter).not.toContain(vEnd);
 
     const candidates = getLegalSettlementCandidates(G, '0', false);
     expect(Array.isArray(candidates)).toBe(true);
+  });
+
+  it('excludes disconnected road components when computing connected vertices from settlements', () => {
+    const G = createMockGameState();
+    const p0 = createTestPlayer('0');
+
+    const vStart = '0,0,0::1,-1,0::1,0,-1';
+    const connectedEdge = '0,0,0::1,-1,0';
+    const disconnectedEdge = '-1,1,0::0,1,-1';
+
+    p0.settlements = [vStart];
+    p0.roads = [connectedEdge, disconnectedEdge];
+    G.players['0'] = p0;
+
+    G.board.vertices[vStart] = { owner: '0', type: 'settlement' };
+    G.board.edges[connectedEdge] = { owner: '0' };
+    G.board.edges[disconnectedEdge] = { owner: '0' };
+
+    const connectedVertices = getPlayerRoadConnectedVertices(G, '0');
+    const disconnectedEndpoints = getVerticesForEdge(disconnectedEdge);
+
+    for (const vId of disconnectedEndpoints) {
+      expect(connectedVertices).not.toContain(vId);
+    }
   });
 
   it('distinguishes player accessed ports from nearby port locations', () => {
@@ -86,7 +144,7 @@ describe('spatial analysis domain primitives', () => {
     expect(nearbyUnconnected).toHaveLength(0);
   });
 
-  it('identifies opponent adjacent structures', () => {
+  it('identifies opponent adjacent structures and roads as descriptive facts', () => {
     const G = createMockGameState();
     const vertexId = '0,0,0::1,-1,0::1,0,-1';
     const neighbors = getVertexNeighbors(vertexId);
@@ -100,9 +158,17 @@ describe('spatial analysis domain primitives', () => {
     expect(opponentFacts[0].vertexId).toBe(neighborId);
     expect(opponentFacts[0].owner).toBe('1');
     expect(opponentFacts[0].type).toBe('city');
+
+    const edgeId = '0,0,0::1,-1,0';
+    G.board.edges[edgeId] = { owner: '1' };
+
+    const opponentRoadFacts = getOpponentAdjacentRoads(G, vertexId, '0');
+    expect(opponentRoadFacts).toHaveLength(1);
+    expect(opponentRoadFacts[0].edgeId).toBe(edgeId);
+    expect(opponentRoadFacts[0].owner).toBe('1');
   });
 
-  it('returns candidate spatial summary with production and port access', () => {
+  it('returns candidate spatial summary with hypothetical settlement production and facts', () => {
     const G = createMockGameState();
     const hex0 = {
       id: '0,0,0',
@@ -133,6 +199,7 @@ describe('spatial analysis domain primitives', () => {
     expect(summary.vertexId).toBe(vertexId);
     expect(summary.adjacentHexes).toEqual(['0,0,0', '1,-1,0', '1,0,-1']);
     expect(summary.expectedProduction).toBeCloseTo((5 + 4 + 5) / 36, 8);
-    expect(summary.isContested).toBe(false);
+    expect(summary.adjacentOpponentStructures).toEqual([]);
+    expect(summary.adjacentOpponentRoads).toEqual([]);
   });
 });

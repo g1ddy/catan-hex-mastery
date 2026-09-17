@@ -11,11 +11,17 @@ import {
   getValidSettlementSpots,
   getValidSetupSettlementSpots,
 } from '../rules/queries';
-import { getVertexExpectedProduction } from './probability';
+import { getSettlementExpectedProduction } from './probability';
 
 /** Calculates cube-coordinate distance between two hex coordinates. */
 export function getCubeDistance(a: CubeCoordinates, b: CubeCoordinates): number {
   return getDistance(a, b);
+}
+
+function validateRadius(radius: number): void {
+  if (!Number.isFinite(radius) || !Number.isInteger(radius) || radius < 0) {
+    throw new Error(`Invalid radius '${radius}'. Radius must be a non-negative finite integer.`);
+  }
 }
 
 /**
@@ -23,6 +29,7 @@ export function getCubeDistance(a: CubeCoordinates, b: CubeCoordinates): number 
  * Result is ordered deterministically by q, then r, then s.
  */
 export function getHexesInRadius(center: CubeCoordinates, radius: number): CubeCoordinates[] {
+  validateRadius(radius);
   const result: CubeCoordinates[] = [];
   for (let q = -radius; q <= radius; q++) {
     const r1 = Math.max(-radius, -q - radius);
@@ -44,26 +51,65 @@ export function getHexesInRadius(center: CubeCoordinates, radius: number): CubeC
  * Result is ordered deterministically.
  */
 export function getHexesInRing(center: CubeCoordinates, radius: number): CubeCoordinates[] {
-  if (radius <= 0) return [center];
+  validateRadius(radius);
+  if (radius === 0) return [center];
   const allInRadius = getHexesInRadius(center, radius);
   return allInRadius.filter((coords) => getDistance(center, coords) === radius);
 }
 
 /**
- * Returns all vertex IDs reachable/connected via a player's road network.
+ * Returns all vertex IDs reachable via graph traversal over a player's connected road network.
+ * Traversal starts at player structures (settlements/cities) or starting road endpoints if no structures exist.
+ * Traversal expands along player-owned edges and halts at vertices occupied by opponent structures.
  * Stably sorted.
  */
 export function getPlayerRoadConnectedVertices(G: GameState, playerID: string): string[] {
   const player = safeGet(G.players, playerID);
   if (!player) return [];
 
-  const vertices = new Set<string>();
-  for (const roadId of player.roads) {
-    for (const vId of getVerticesForEdge(roadId)) {
-      vertices.add(vId);
+  const visited = new Set<string>();
+  const queue: string[] = [];
+
+  // Seed graph traversal starting at player structures
+  for (const vId of player.settlements) {
+    visited.add(vId);
+    queue.push(vId);
+  }
+
+  // Fallback if player has no settlements/cities placed yet but has roads (e.g. custom test setup)
+  if (queue.length === 0 && player.roads.length > 0) {
+    const firstRoad = player.roads[0];
+    for (const vId of getVerticesForEdge(firstRoad)) {
+      visited.add(vId);
+      queue.push(vId);
     }
   }
-  return Array.from(vertices).sort();
+
+  while (queue.length > 0) {
+    const currentVertexId = queue.shift()!;
+    const vertex = safeGet(G.board.vertices, currentVertexId);
+
+    // Opponent building cuts off road network pass-through (unless it's the start node)
+    if (vertex && vertex.owner !== playerID) {
+      continue;
+    }
+
+    const adjEdges = getEdgesForVertex(currentVertexId);
+    for (const edgeId of adjEdges) {
+      const edge = safeGet(G.board.edges, edgeId);
+      if (edge && edge.owner === playerID) {
+        const endpoints = getVerticesForEdge(edgeId);
+        for (const nextVId of endpoints) {
+          if (!visited.has(nextVId)) {
+            visited.add(nextVId);
+            queue.push(nextVId);
+          }
+        }
+      }
+    }
+  }
+
+  return Array.from(visited).sort();
 }
 
 /**
@@ -120,6 +166,11 @@ export interface OpponentStructureFact {
   type: 'settlement' | 'city';
 }
 
+export interface OpponentRoadFact {
+  edgeId: string;
+  owner: string;
+}
+
 /**
  * Returns opponent structures that are direct vertex neighbors of the given location.
  */
@@ -145,12 +196,35 @@ export function getOpponentAdjacentStructures(
   return facts.sort((a, b) => a.vertexId.localeCompare(b.vertexId));
 }
 
+/**
+ * Returns opponent roads that are directly adjacent (connected by edge) to the given location.
+ */
+export function getOpponentAdjacentRoads(
+  G: GameState,
+  vertexId: string,
+  playerID?: string
+): OpponentRoadFact[] {
+  const adjEdges = getEdgesForVertex(vertexId);
+  const facts: OpponentRoadFact[] = [];
+
+  for (const eId of adjEdges) {
+    const edge = safeGet(G.board.edges, eId);
+    if (edge && (!playerID || edge.owner !== playerID)) {
+      facts.push({
+        edgeId: eId,
+        owner: edge.owner,
+      });
+    }
+  }
+
+  return facts.sort((a, b) => a.edgeId.localeCompare(b.edgeId));
+}
+
 export interface CandidateSpatialSummary {
   vertexId: string;
   adjacentHexes: string[];
   adjacentOpponentStructures: OpponentStructureFact[];
-  /** True if an opponent structure is adjacent or opponent road leads directly to this vertex. */
-  isContested: boolean;
+  adjacentOpponentRoads: OpponentRoadFact[];
   expectedProduction: number;
   ports: Port[];
 }
@@ -165,27 +239,15 @@ export function getCandidateSpatialSummary(
 ): CandidateSpatialSummary {
   const adjacentHexes = getHexesForVertex(vertexId).sort();
   const adjacentOpponents = getOpponentAdjacentStructures(G, vertexId, playerID);
+  const adjacentOpponentRoads = getOpponentAdjacentRoads(G, vertexId, playerID);
   const ports = getNearbyPortsForVertex(G, vertexId);
-  const expectedProduction = getVertexExpectedProduction(G, vertexId);
-
-  // Check if contested by opponent roads
-  const adjEdges = getEdgesForVertex(vertexId);
-  let isContested = adjacentOpponents.length > 0;
-  if (!isContested && playerID) {
-    for (const eId of adjEdges) {
-      const edge = safeGet(G.board.edges, eId);
-      if (edge && edge.owner !== playerID) {
-        isContested = true;
-        break;
-      }
-    }
-  }
+  const expectedProduction = getSettlementExpectedProduction(G, vertexId);
 
   return {
     vertexId,
     adjacentHexes,
     adjacentOpponentStructures: adjacentOpponents,
-    isContested,
+    adjacentOpponentRoads,
     expectedProduction,
     ports,
   };
