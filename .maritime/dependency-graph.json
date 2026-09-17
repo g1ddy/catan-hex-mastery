@@ -11555,7 +11555,7 @@
     "violations": [],
     "warn": 0,
     "optionsUsed": {
-      "baseDir": "/app",
+      "baseDir": "/home/runner/work/catan-hex-mastery/catan-hex-mastery",
       "combinedDependencies": false,
       "detectJSDocImports": false,
       "detectProcessBuiltinModuleCalls": false,
@@ -11765,8 +11765,8 @@
     "environment": {
       "version": "18.3.1",
       "nodeVersionSupported": "^22||^24||>=26",
-      "nodeVersionFound": "v22.22.1",
-      "osVersionFound": "x64 linux@6.8.0",
+      "nodeVersionFound": "v22.13.0",
+      "osVersionFound": "x64 linux@6.17.0-1022-azure",
       "transpilersFound": [
         {
           "name": "javascript",
