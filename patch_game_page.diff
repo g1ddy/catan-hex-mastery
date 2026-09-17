@@ -1,0 +1,26 @@
+--- src/pages/GamePage.tsx
++++ src/pages/GamePage.tsx
+@@ -43,15 +43,15 @@
+     const startBotIndex = numPlayers - numBots;
+     let botTypeIndex = 0;
+
+-    // Get test overrides if any
++    // Get bot scenario if any
+     const searchParams = new URLSearchParams(window.location.search);
+-    const isTestOverride = searchParams.get('test_bot_override') === 'true';
++    const botScenarioKey = searchParams.get('bot_scenario');
++    const botScenario = botScenarioKey ? BOT_SCENARIOS[botScenarioKey] : null;
+
+     for (let i = startBotIndex; i < numPlayers; i++) {
+         let botConfig = BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
+-        if (isTestOverride) {
+-             // For tests we need faster bots so they don't timeout: balanced, aggressive, defensive
+-             // Using botTypeIndex works correctly to step through testBots array
+-             const testBots = [BOT_CYCLE[0], BOT_CYCLE[3], BOT_CYCLE[4]];
+-             botConfig = testBots[botTypeIndex % testBots.length];
++        if (botScenario) {
++             // Using `botTypeIndex` correctly cycles through the scenario explicitly
++             botConfig = botScenario[botTypeIndex % botScenario.length];
+         }
+
+         botsResult[i.toString()] = botConfig.class;

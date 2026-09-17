@@ -16,3 +16,11 @@ export const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
     { class: ExpansiveBot, name: 'Expansive Bot' },
     { class: RandomBot, name: 'Random Bot' }
 ];
+
+export const BOT_SCENARIOS: Record<string, Array<{ class: typeof Bot, name: string }>> = {
+    'fast-autoplay': [
+        { class: BalancedBot, name: 'Balanced' },
+        { class: AggressiveBot, name: 'Aggressive Bot' },
+        { class: DefensiveBot, name: 'Defensive Bot' }
+    ]
+};
