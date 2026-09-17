@@ -53,4 +53,4 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/game/analysis/coach.ts` | **11** | 209 |
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
 | `src/game/rules/validator.ts` | **11** | 75 |
-| `src/pages/GamePage.tsx` | **11** | 79 |
+| `src/pages/GamePage.tsx` | **11** | 88 |
