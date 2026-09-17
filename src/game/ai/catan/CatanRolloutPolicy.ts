@@ -26,6 +26,17 @@ const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = {
   regenerateBoard: 0.1,
 };
 
+/**
+ * One-step heuristic rollout policy implementing RolloutPolicy<CatanSearchState, CatanSearchAction>.
+ *
+ * Evaluation & Action Selection Strategy:
+ * 1. Action-type priors (`baseWeights`) provide baseline move-type preferences.
+ * 2. 1-step post-action evaluator lookahead (`CatanEvaluator.evaluate(nextState)`) provides an optional
+ *    strategic score bonus for candidate actions applied via `CatanSearchGame.applyAction()`.
+ * 3. Candidate lookahead transitions use local stateless `SeededSearchRandom` instances to intentionally
+ *    insulate the search's injected RNG stream from candidate evaluation loops.
+ * 4. Weighted random sampling via injected `SearchRandom.next()` selects the actual rollout action.
+ */
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
   private readonly evaluator: CatanEvaluator;
   private readonly evalWeight: number;

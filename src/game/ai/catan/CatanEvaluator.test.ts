@@ -69,6 +69,62 @@ describe('CatanEvaluator', () => {
     });
   });
 
+  describe('Extreme Weights and Bounded Normalization', () => {
+    it('handles extreme valid weights without NaN, Infinity, or out-of-bounds outputs', () => {
+      const state = createBaseState();
+      state.game.players['0'].victoryPoints = 10;
+      state.game.players['0'].roads = ['0,0,0::0,1,-1', '0,0,0::1,0,-1'];
+
+      const extremeEvaluator = new CatanEvaluator({
+        victoryPoints: 1000.0,
+        productionPips: 500.0,
+        cities: 500.0,
+        roadLength: 200.0,
+      });
+
+      const utility = extremeEvaluator.evaluate(searchGame, state, false);
+
+      expect(Number.isNaN(utility['0'])).toBe(false);
+      expect(Number.isFinite(utility['0'])).toBe(true);
+      expect(utility['0']).toBeGreaterThanOrEqual(0.01);
+      expect(utility['0']).toBeLessThanOrEqual(0.98);
+    });
+
+    it('weight changes alter the relative contributions of signals', () => {
+      const stateVpLead = createBaseState();
+      stateVpLead.game.players['0'].victoryPoints = 5;
+      stateVpLead.game.players['0'].roads = ['0,0,0::0,1,-1'];
+
+      const stateRoadLead = createBaseState();
+      stateRoadLead.game.players['0'].victoryPoints = 2;
+      stateRoadLead.game.players['0'].roads = ['0,0,0::0,1,-1', '0,0,0::1,0,-1', '0,0,0::1,-1,0', '0,0,0::0,-1,1'];
+
+      // Evaluator prioritizing VPs heavily
+      const vpPrioritizingEvaluator = new CatanEvaluator({
+        victoryPoints: 20.0,
+        roadLength: 0.1,
+      });
+
+      // Evaluator prioritizing roads heavily
+      const roadPrioritizingEvaluator = new CatanEvaluator({
+        victoryPoints: 0.1,
+        roadLength: 20.0,
+      });
+
+      const utilVpHeavyVPState = vpPrioritizingEvaluator.evaluate(searchGame, stateVpLead, false);
+      const utilVpHeavyRoadState = vpPrioritizingEvaluator.evaluate(searchGame, stateRoadLead, false);
+
+      const utilRoadHeavyVPState = roadPrioritizingEvaluator.evaluate(searchGame, stateVpLead, false);
+      const utilRoadHeavyRoadState = roadPrioritizingEvaluator.evaluate(searchGame, stateRoadLead, false);
+
+      // Under VP heavy weights, high-VP state scores higher than high-road state
+      expect(utilVpHeavyVPState['0']).toBeGreaterThan(utilVpHeavyRoadState['0']);
+
+      // Under road heavy weights, high-road state scores higher than high-VP state
+      expect(utilRoadHeavyRoadState['0']).toBeGreaterThan(utilRoadHeavyVPState['0']);
+    });
+  });
+
   describe('Terminal and Bounded Evaluation', () => {
     it('evaluates terminal state with a winner explicitly (1.0 for winner, 0.0 for others)', () => {
       const state = createBaseState();
@@ -92,10 +148,10 @@ describe('CatanEvaluator', () => {
       const state = createBaseState();
       const utility = evaluator.evaluate(searchGame, state, false);
 
-      expect(utility['0']).toBeGreaterThanOrEqual(0.0);
-      expect(utility['0']).toBeLessThan(1.0);
-      expect(utility['1']).toBeGreaterThanOrEqual(0.0);
-      expect(utility['1']).toBeLessThan(1.0);
+      expect(utility['0']).toBeGreaterThanOrEqual(0.01);
+      expect(utility['0']).toBeLessThanOrEqual(0.98);
+      expect(utility['1']).toBeGreaterThanOrEqual(0.01);
+      expect(utility['1']).toBeLessThanOrEqual(0.98);
     });
   });
 

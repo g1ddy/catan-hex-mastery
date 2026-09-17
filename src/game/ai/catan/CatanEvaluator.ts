@@ -172,7 +172,10 @@ export function evaluateOpponentPressure(
  * Catan state evaluator implementing SearchEvaluator<CatanSearchState>.
  *
  * Non-terminal state utilities are independent per-player, general-sum strategic value estimates
- * bounded strictly in [0.01, 0.98] via non-saturating monotonic scaling (`rawScore / (rawScore + 40) * 0.98`).
+ * bounded strictly in [0.01, 0.98] via logistic sigmoid normalization:
+ * `0.01 + 0.97 / (1 + Math.exp(-rawScore / 40.0))`.
+ * This transformation is strictly monotonic, deterministic, and mathematically safe for all real raw scores,
+ * eliminating division-by-zero, negative values, NaN, or Infinity under any valid non-negative weights.
  * Utilities reflect each player's absolute and relative game progress independently, rather than
  * enforcing a zero-sum constraint across players. Genuine winning terminal outcomes (1.0) strictly dominate
  * all non-terminal state estimates.
@@ -253,8 +256,9 @@ export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
       rawScore += ports * this.weights.ports;
       rawScore += oppPressure * this.weights.opponentPressure;
 
-      // Smooth, non-saturating monotonic scaling: rawScore / (rawScore + 40) * 0.98
-      const nonTerminalVal = (rawScore / (rawScore + 40.0)) * 0.98;
+      // Mathematically safe logistic sigmoid mapping strictly bounded in [0.01, 0.98]
+      const expVal = Math.exp(-rawScore / 40.0);
+      const nonTerminalVal = 0.01 + 0.97 / (1.0 + expVal);
       const normalized = Math.min(0.98, Math.max(0.01, nonTerminalVal));
       utility[playerID] = Math.round(normalized * 10000) / 10000;
     }
