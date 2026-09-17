@@ -86,6 +86,43 @@ describe('CatanRolloutPolicy', () => {
     }
   });
 
+  it('evaluator-driven rollout prefers stronger resulting states (1-action lookahead)', () => {
+    const state = createMockSetupState();
+    state.context.phase = PHASES.GAMEPLAY;
+    state.context.stagesByPlayer = { '0': STAGES.ACTING };
+
+    // Give player 0 a settlement and resources to build a city
+    const vId = '0,0,0::0,1,-1::1,0,-1';
+    state.game.board.vertices[vId] = { owner: '0', type: 'settlement' };
+    state.game.players['0'].settlements = [vId];
+    state.game.players['0'].victoryPoints = 1;
+    state.game.players['0'].resources = { ore: 3, wheat: 2, wood: 0, brick: 0, sheep: 0 };
+
+    const legalActions = searchGame.getLegalActions(state);
+    const cityAction = legalActions.find((a) => a.move === 'buildCity');
+    const endTurnAction = legalActions.find((a) => a.move === 'endTurn');
+
+    expect(cityAction).toBeDefined();
+    expect(endTurnAction).toBeDefined();
+
+    // High-evaluator rollout policy
+    const strongPolicy = new CatanRolloutPolicy({ evalWeight: 100.0 });
+
+    let cityChosenCount = 0;
+    const trials = 30;
+
+    for (let i = 0; i < trials; i++) {
+      const rng = new SeededSearchRandom(`lookahead-trial-${i}`);
+      const chosen = strongPolicy.selectAction(searchGame, state, rng);
+      if (chosen?.move === 'buildCity') {
+        cityChosenCount++;
+      }
+    }
+
+    // Evaluator lookahead causes buildCity (stronger resulting evaluation) to be chosen significantly more than random chance
+    expect(cityChosenCount).toBeGreaterThan(trials * 0.5);
+  });
+
   it('handles single legal action without calling random inappropriately', () => {
     const state = createMockSetupState();
     state.context.stagesByPlayer = { '0': STAGES.PLACE_ROAD };

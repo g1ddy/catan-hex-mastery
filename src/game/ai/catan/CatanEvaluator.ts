@@ -4,8 +4,7 @@ import type { CatanSearchState } from './CatanSearchState';
 import { calculatePlayerPotentialPips } from '../../analysis/analyst';
 import { isValidPlayer } from '../../core/validation';
 import { safeGet } from '../../core/utils/objectUtils';
-import { getValidSetupSettlementSpots } from '../../rules/queries';
-import { isValidSettlementPlacement, validateSettlementLocation } from '../../rules/spatial';
+import { getValidSetupSettlementSpots, getValidSettlementSpots } from '../../rules/queries';
 
 export interface CatanEvaluatorWeights {
   victoryPoints: number;
@@ -33,11 +32,98 @@ export const DEFAULT_CATAN_EVALUATOR_WEIGHTS: Readonly<CatanEvaluatorWeights> = 
   ports: 2.0,
 });
 
+/** Validates that all evaluator weights are finite numbers */
+export function validateEvaluatorWeights(weights: Record<string, number>): void {
+  for (const [key, val] of Object.entries(weights)) {
+    if (typeof val !== 'number' || Number.isNaN(val) || !Number.isFinite(val)) {
+      throw new Error(`Invalid evaluator weight '${key}': ${val}. Weights must be finite numbers.`);
+    }
+  }
+}
+
+// Extracted Signal Evaluation Functions
+export function evaluateVictoryPoints(state: CatanSearchState, playerID: string): number {
+  const player = state.game.players[playerID];
+  return player?.victoryPoints ?? 0;
+}
+
+export function evaluateProductionPips(
+  myPips: Record<string, number>
+): number {
+  return Object.values(myPips).reduce((sum, p) => sum + p, 0);
+}
+
+export function evaluateResourceDiversity(myPips: Record<string, number>): number {
+  const activeCount = Object.values(myPips).filter((p) => p > 0).length;
+  if (activeCount >= 4) return 1.0;
+  if (activeCount === 3) return 0.5;
+  return 0.0;
+}
+
+export function evaluateResourceSynergy(myPips: Record<string, number>): { oreWheat: number; woodBrick: number } {
+  const oreWheat = (myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0 ? 1.0 : 0.0;
+  const woodBrick = (myPips.wood || 0) > 0 && (myPips.brick || 0) > 0 ? 1.0 : 0.0;
+  return { oreWheat, woodBrick };
+}
+
+export function evaluateStructures(state: CatanSearchState, playerID: string): { cityCount: number; settlementCount: number } {
+  const player = state.game.players[playerID];
+  if (!player) return { cityCount: 0, settlementCount: 0 };
+
+  let cityCount = 0;
+  let settlementCount = 0;
+  for (const vId of player.settlements) {
+    const v = safeGet(state.game.board.vertices, vId);
+    if (v?.type === 'city') {
+      cityCount++;
+    } else if (v?.type === 'settlement') {
+      settlementCount++;
+    }
+  }
+  return { cityCount, settlementCount };
+}
+
+export function evaluateRoadExpansion(state: CatanSearchState, playerID: string): number {
+  const player = state.game.players[playerID];
+  return player?.roads.length ?? 0;
+}
+
+export function evaluateSettlementOpportunities(state: CatanSearchState, playerID: string): number {
+  if (state.context.phase === 'setup') {
+    // In setup phase, only the active setup player has immediate setup settlement opportunities
+    if (state.context.currentPlayer === playerID) {
+      const spots = getValidSetupSettlementSpots(state.game);
+      return spots.size;
+    }
+    return 0;
+  }
+
+  // In gameplay phase, count open settlement spots reachable by playerID's road network
+  const spots = getValidSettlementSpots(state.game, playerID, false);
+  return spots.size;
+}
+
+export function evaluatePortAccess(state: CatanSearchState, playerID: string): number {
+  const player = state.game.players[playerID];
+  if (!player) return 0;
+
+  let portCount = 0;
+  const portsList = Object.values(state.game.board.ports || {});
+  for (const port of portsList) {
+    if (port.vertices.some((vId) => player.settlements.includes(vId))) {
+      portCount++;
+    }
+  }
+  return portCount;
+}
+
 export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
   private readonly weights: CatanEvaluatorWeights;
 
   constructor(weights: Partial<CatanEvaluatorWeights> = {}) {
-    this.weights = { ...DEFAULT_CATAN_EVALUATOR_WEIGHTS, ...weights };
+    const combined = { ...DEFAULT_CATAN_EVALUATOR_WEIGHTS, ...weights };
+    validateEvaluatorWeights(combined);
+    this.weights = combined;
   }
 
   public evaluate<A>(
@@ -68,7 +154,6 @@ export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
       return utility;
     }
 
-    // Calculate raw strategic scores for each player
     const pipsByPlayer = calculatePlayerPotentialPips(state.game);
 
     for (const playerID of players) {
@@ -83,81 +168,30 @@ export class CatanEvaluator implements SearchEvaluator<CatanSearchState> {
         continue;
       }
 
-      let rawScore = 0.0;
-
-      // 1. Victory Points & progress
-      rawScore += player.victoryPoints * this.weights.victoryPoints;
-
-      // 2. Resource production pips
       const myPips = pipsByPlayer[playerID] || {};
-      const totalPips = Object.values(myPips).reduce((sum, p) => sum + p, 0);
-      rawScore += totalPips * this.weights.productionPips;
 
-      // 3. Resource diversity
-      const activeResources = Object.values(myPips).filter((p) => p > 0).length;
-      if (activeResources >= 4) {
-        rawScore += this.weights.resourceDiversity;
-      } else if (activeResources === 3) {
-        rawScore += this.weights.resourceDiversity * 0.5;
-      }
+      // Calculate signals using extracted functions
+      const vp = evaluateVictoryPoints(state, playerID);
+      const pips = evaluateProductionPips(myPips);
+      const diversity = evaluateResourceDiversity(myPips);
+      const synergy = evaluateResourceSynergy(myPips);
+      const { cityCount, settlementCount } = evaluateStructures(state, playerID);
+      const roads = evaluateRoadExpansion(state, playerID);
+      const settlementSpots = evaluateSettlementOpportunities(state, playerID);
+      const ports = evaluatePortAccess(state, playerID);
 
-      // 4. Resource synergies (Ore/Wheat, Wood/Brick)
-      if ((myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0) {
-        rawScore += this.weights.synergyOreWheat;
-      }
-      if ((myPips.wood || 0) > 0 && (myPips.brick || 0) > 0) {
-        rawScore += this.weights.synergyWoodBrick;
-      }
-
-      // 5. Cities and Settlements
-      let cityCount = 0;
-      let settlementCount = 0;
-      for (const vId of player.settlements) {
-        const v = safeGet(state.game.board.vertices, vId);
-        if (v?.type === 'city') {
-          cityCount++;
-        } else if (v?.type === 'settlement') {
-          settlementCount++;
-        }
-      }
+      let rawScore = 0.0;
+      rawScore += vp * this.weights.victoryPoints;
+      rawScore += pips * this.weights.productionPips;
+      rawScore += diversity * this.weights.resourceDiversity;
+      rawScore += synergy.oreWheat * this.weights.synergyOreWheat;
+      rawScore += synergy.woodBrick * this.weights.synergyWoodBrick;
       rawScore += cityCount * this.weights.cities + settlementCount * this.weights.settlements;
-
-      // 6. Road length & expansion potential
-      rawScore += player.roads.length * this.weights.roadLength;
-
-      // 7. Settlement opportunities for player
-      if (state.context.phase === 'setup') {
-        const spots = getValidSetupSettlementSpots(state.game);
-        let validPlayerSpots = 0;
-        for (const spot of spots) {
-          if (validateSettlementLocation(state.game, spot).isValid) {
-            validPlayerSpots++;
-          }
-        }
-        rawScore += validPlayerSpots * this.weights.settlementSpots;
-      } else {
-        // Count open settlement spots reachable by player's roads
-        let openSpots = 0;
-        for (const vId of Object.keys(state.game.board.vertices)) {
-          if (isValidSettlementPlacement(state.game, vId, playerID).isValid) {
-            openSpots++;
-          }
-        }
-        rawScore += openSpots * this.weights.settlementSpots;
-      }
-
-      // 8. Port access
-      let portCount = 0;
-      const portsList = Object.values(state.game.board.ports || {});
-      for (const port of portsList) {
-        if (port.vertices.some((vId) => player.settlements.includes(vId))) {
-          portCount++;
-        }
-      }
-      rawScore += portCount * this.weights.ports;
+      rawScore += roads * this.weights.roadLength;
+      rawScore += settlementSpots * this.weights.settlementSpots;
+      rawScore += ports * this.weights.ports;
 
       // Smooth, non-saturating monotonic scaling: rawScore / (rawScore + 40) * 0.98
-      // Monotonically strictly increasing, bounded strictly in [0.01, 0.98]
       const nonTerminalVal = (rawScore / (rawScore + 40.0)) * 0.98;
       const normalized = Math.min(0.98, Math.max(0.01, nonTerminalVal));
       utility[playerID] = Math.round(normalized * 10000) / 10000;

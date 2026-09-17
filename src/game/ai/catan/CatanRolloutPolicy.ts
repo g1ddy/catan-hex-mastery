@@ -1,8 +1,16 @@
 import type { SearchGame } from '../search/SearchGame';
 import type { RolloutPolicy } from '../search/MctsPolicies';
 import type { SearchRandom } from '../search/SearchRandom';
+import { SeededSearchRandom } from '../search/SearchRandom';
 import type { CatanSearchState } from './CatanSearchState';
 import type { CatanSearchAction } from './CatanSearchAction';
+import { CatanEvaluator } from './CatanEvaluator';
+
+export interface CatanRolloutPolicyOptions {
+  evaluator?: CatanEvaluator;
+  evalWeight?: number;
+  customWeights?: Partial<Record<string, number>>;
+}
 
 const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = {
   placeSettlement: 10.0,
@@ -19,12 +27,17 @@ const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = {
 };
 
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
+  private readonly evaluator: CatanEvaluator;
+  private readonly evalWeight: number;
   private readonly baseWeights: Readonly<Record<string, number>>;
 
-  constructor(customWeights?: Partial<Record<string, number>>) {
+  constructor(options: CatanRolloutPolicyOptions = {}) {
+    this.evaluator = options.evaluator ?? new CatanEvaluator();
+    this.evalWeight = options.evalWeight ?? 10.0;
+
     const weights: Record<string, number> = { ...DEFAULT_ACTION_BASE_WEIGHTS };
-    if (customWeights) {
-      for (const [key, val] of Object.entries(customWeights)) {
+    if (options.customWeights) {
+      for (const [key, val] of Object.entries(options.customWeights)) {
         if (val !== undefined) {
           weights[key] = val;
         }
@@ -51,26 +64,36 @@ export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, Catan
       return legalActions[0];
     }
 
+    const actingPlayer = game.getCurrentPlayer(state);
     const weights: number[] = new Array(legalActions.length);
     let totalWeight = 0.0;
 
+    // Draw a single seed derived from random for isolated lookahead simulations
+    const simSeed = Math.floor(random.next() * 1000000);
+
     for (let i = 0; i < legalActions.length; i++) {
       const action = legalActions[i];
-      let weight = this.baseWeights[action.move] ?? 1.0;
+      const baseWeight = this.baseWeights[action.move] ?? 1.0;
 
-      // Small heuristic adjustments based on action payload without state simulation
-      if (action.move === 'placeSettlement' || action.move === 'buildSettlement') {
-        weight += 5.0;
-      } else if (action.move === 'buildCity') {
-        weight += 8.0;
+      let evalBonus = 0.0;
+      if (this.evalWeight > 0) {
+        try {
+          const simRandom = new SeededSearchRandom(simSeed + i * 31);
+          const nextState = game.applyAction(state, action, simRandom);
+          const evalUtility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState));
+          const playerUtility = evalUtility[actingPlayer] ?? 0.0;
+          evalBonus = playerUtility * this.evalWeight;
+        } catch {
+          // Fallback to base weight if transition simulation fails
+        }
       }
 
-      const validWeight = Math.max(0.01, weight);
+      const validWeight = Math.max(0.01, baseWeight + evalBonus);
       weights[i] = validWeight;
       totalWeight += validWeight;
     }
 
-    // Weighted random sampling using injected SearchRandom
+    // Perform weighted random sampling using injected SearchRandom
     const threshold = random.next() * totalWeight;
     let accumulated = 0.0;
 
