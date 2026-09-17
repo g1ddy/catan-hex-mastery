@@ -1,0 +1,8 @@
+--- src/game/moves/execution.ts
++++ src/game/moves/execution.ts
+@@ -118,3 +118,4 @@
+   if (!handled) {
+-    throw new Error(`Unhandled move type: ${(action as any).move}`);
++    const _exhaustiveCheck: never = action;
++    throw new Error(`Unhandled move type: ${(_exhaustiveCheck as BotMove).move}`);
+   }

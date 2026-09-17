@@ -118,7 +118,6 @@ export function executeCatanMove(
                   executeMiscMove(moveContext, action);
 
   if (!handled) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     throw new Error(`Unhandled move type: ${(action as any).move}`);
   }
 
