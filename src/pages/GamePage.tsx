@@ -1,27 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
-import { BalancedBot } from '../bots/BalancedBot';
-import { AggressiveBot } from '../bots/AggressiveBot';
-import { DefensiveBot } from '../bots/DefensiveBot';
-import { ExpansiveBot } from '../bots/ExpansiveBot';
-import { CatanMCTSBot } from '../bots/CatanMCTSBot';
-import { MonteCatanoBot } from '../bots/MonteCatanoBot';
-import { RandomBot } from '../adapters/runtime/boardgame';
+import { BOT_CYCLE } from '../bots/botCycle';
 import { Bot } from '../adapters/runtime/boardgame';
 
-const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
+export { BOT_CYCLE };
 
-// Bot Cycling Order: Balanced -> Aggressive -> Defensive -> Expansive -> Random -> MCTS -> MonteCatano
-const BOT_CYCLE: Array<{ class: typeof Bot, name: string }> = [
-    { class: BalancedBot, name: 'Balanced Bot' },
-    { class: AggressiveBot, name: 'Aggressive Bot' },
-    { class: DefensiveBot, name: 'Defensive Bot' },
-    { class: ExpansiveBot, name: 'Expansive Bot' },
-    { class: RandomBot, name: 'Random Bot' },
-    { class: CatanMCTSBot, name: 'MCTS Bot' },
-    { class: MonteCatanoBot, name: 'Monte Catano Bot' }
-];
+const MATCH_ID_REGEX = /^[a-zA-Z0-9-]+$/;
 
 export function GamePage() {
   const location = useLocation();

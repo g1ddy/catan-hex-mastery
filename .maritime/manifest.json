@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.9",
-  "generatedAt": "2026-09-17T10:59:23.008Z",
+  "generatedAt": "2026-09-17T13:18:52.127Z",
   "sourceRoots": [
     "src"
   ],
@@ -11,9 +11,9 @@
     "report": "complexity-report.md"
   },
   "summary": {
-    "totalFiles": 138,
+    "totalFiles": 139,
     "healthScore": 89,
-    "scannedCount": 138,
+    "scannedCount": 139,
     "skippedCount": 0,
     "architecture": {
       "namespaces": [
@@ -27,16 +27,16 @@
         {
           "folder": "src/adapters",
           "moduleCount": 4,
-          "afferentCoupling": 9,
+          "afferentCoupling": 10,
           "efferentCoupling": 3,
-          "instability": 0.25
+          "instability": 0.231
         },
         {
           "folder": "src/bots",
-          "moduleCount": 12,
+          "moduleCount": 13,
           "afferentCoupling": 2,
-          "efferentCoupling": 9,
-          "instability": 0.818
+          "efferentCoupling": 10,
+          "instability": 0.833
         },
         {
           "folder": "src/features/board",
@@ -84,8 +84,8 @@
           "folder": "src/pages",
           "moduleCount": 2,
           "afferentCoupling": 1,
-          "efferentCoupling": 9,
-          "instability": 0.9
+          "efferentCoupling": 4,
+          "instability": 0.8
         },
         {
           "folder": "src/styles",
