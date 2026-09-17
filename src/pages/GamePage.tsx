@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { GameClient } from '../GameClient';
-import { BOT_CYCLE } from '../bots/botCycle';
+import { BOT_CYCLE, BOT_SCENARIOS } from '../bots/botCycle';
 import { Bot } from '../adapters/runtime/boardgame';
 
 export { BOT_CYCLE };
@@ -42,19 +42,20 @@ export function GamePage() {
     const botNamesResult: Record<string, string> = {};
 
     const startBotIndex = numPlayers - numBots;
-    let botTypeIndex = 0;
+    const scenarioKey = new URLSearchParams(location.search).get('bot_scenario');
+    const botScenario = scenarioKey ? BOT_SCENARIOS[scenarioKey] : undefined;
 
-    for (let i = startBotIndex; i < numPlayers; i++) {
-        const botConfig = BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
+    for (let botTypeIndex = 0, i = startBotIndex; i < numPlayers; i++, botTypeIndex++) {
+      const botConfig = botScenario
+        ? botScenario[botTypeIndex % botScenario.length]
+        : BOT_CYCLE[botTypeIndex % BOT_CYCLE.length];
 
-        botsResult[i.toString()] = botConfig.class;
-        botNamesResult[i.toString()] = botConfig.name;
-
-        botTypeIndex++;
+      botsResult[i.toString()] = botConfig.class;
+      botNamesResult[i.toString()] = botConfig.name;
     }
 
     return { bots: botsResult, botNames: botNamesResult };
-  }, [numBots, numPlayers]);
+  }, [location.search, numBots, numPlayers]);
 
   const setupData = useMemo(() => ({ botNames }), [botNames]);
 

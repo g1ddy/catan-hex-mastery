@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Bot Auto Play', () => {
+    // Note: This test explicitly uses the 'fast-autoplay' bot scenario (Balanced, Aggressive, Defensive)
+    // to keep Playwright execution fast. It is a browser smoke test validating the game lifecycle.
+    // The real MCTS matchup (Balanced vs CatanMCTS vs MonteCatano) is validated at the bot/integration layer.
     test('Game runs with 3 bots without console errors', async ({ page }) => {
         const consoleErrors: string[] = [];
         const moveLogs: string[] = [];
@@ -17,7 +20,7 @@ test.describe('Bot Auto Play', () => {
         });
 
         // 1. Go to Setup Page
-        await page.goto('/');
+        await page.goto('/?bot_scenario=fast-autoplay');
 
         // 2. Select "0 Players (Auto Play)"
         await page.getByRole('button', { name: '0 Players (Auto Play)' }).click();

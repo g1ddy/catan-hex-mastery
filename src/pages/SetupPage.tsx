@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { GAME_CONFIG } from '../game/core/config';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -40,10 +40,14 @@ const generateLabel = (humans: number, bots: number) => {
 
 export function SetupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Unified start handler
   const startGame = (numPlayers: number, mode: string, numBots: number = 0) => {
-    navigate('/game', {
+    navigate({
+        pathname: '/game',
+        search: location.search
+    }, {
         state: {
             numPlayers,
             mode,
