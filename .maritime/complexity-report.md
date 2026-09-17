@@ -18,7 +18,7 @@
 
 **Last Updated:** 2026-09-17
 
-### 🏥 Repository Health Score: **90.0 / 100**
+### 🏥 Repository Health Score: **91.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 135
@@ -48,9 +48,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
-| `src/game/ai/catan/CatanRolloutPolicy.ts` | **11** | 32 |
 | `src/game/analysis/coach.ts` | **11** | 209 |
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
 | `src/game/rules/validator.ts` | **11** | 75 |
 | `src/pages/GamePage.tsx` | **11** | 94 |
 | `src/bots/logic/MoveScorer.ts` | **10** | 80 |
+| `src/bots/logic/OptimalMoveFilter.ts` | **10** | 228 |

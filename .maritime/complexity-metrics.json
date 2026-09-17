@@ -929,7 +929,7 @@
   },
   "src/game/ai/catan/CatanEvaluator.ts": {
     "complexity": 10,
-    "loc": 87,
+    "loc": 91,
     "instability": 0.78,
     "fanIn": 2,
     "fanOut": 7,
@@ -992,8 +992,8 @@
     "scanned": true
   },
   "src/game/ai/catan/CatanRolloutPolicy.ts": {
-    "complexity": 11,
-    "loc": 32,
+    "complexity": 10,
+    "loc": 39,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
