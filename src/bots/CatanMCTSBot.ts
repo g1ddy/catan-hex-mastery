@@ -81,11 +81,6 @@ export class CatanMCTSBot extends Bot {
     });
   }
 
-  /** Exposes internal engine for contract testing */
-  public getEngine(): MctsEngine<CatanSearchState, CatanSearchAction> {
-    return this.engine;
-  }
-
   async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
     const { G } = state;
     const context = toGameContext(state.ctx);
