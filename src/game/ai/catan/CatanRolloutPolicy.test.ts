@@ -104,7 +104,7 @@ describe('CatanRolloutPolicy', () => {
     expect(() => new CatanRolloutPolicy({ customWeights: { buildCity: NaN } })).toThrow('Invalid custom weight');
   });
 
-  it('does not consume RNG during candidate scoring for stochastic actions', () => {
+  it('does not consume RNG during candidate scoring for robber actions', () => {
     const state = createMockSetupState();
     state.context.phase = PHASES.GAMEPLAY;
     state.context.stagesByPlayer = { '0': STAGES.ROBBER };
@@ -129,15 +129,15 @@ describe('CatanRolloutPolicy', () => {
       },
     };
 
-    // Candidates are multiple dismissRobber actions, which are stochastic actions
+    // Candidates are multiple dismissRobber actions, which are deterministic actions
     const legalActions = searchGame.getLegalActions(state);
     expect(legalActions.length).toBeGreaterThan(1);
     expect(legalActions.every((a) => a.move === 'dismissRobber')).toBe(true);
 
     policy.selectAction(searchGame, state, trackingRng);
 
-    // Because candidate evaluation skips applyAction for stochastic actions,
-    // trackingRng is called ONLY ONCE for the final weighted action choice in selectAction!
+    // Candidate evaluation may apply each dismissRobber action with the throwing dummy RNG;
+    // the real tracking RNG is called ONLY ONCE for the final weighted action choice.
     expect(rngCalls).toBe(1);
   });
 
