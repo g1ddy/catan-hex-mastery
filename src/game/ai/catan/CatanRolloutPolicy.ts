@@ -21,9 +21,9 @@ const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = { placeSettlement: 1
  * `placeRoad`, `buildRoad`, `rollDice`, `tradeBank`, `endTurn`) produce deterministic
  * successor states and may be evaluated using a throwing dummy RNG during candidate scoring.
  *
- * Stochastic move types (`resolveRoll`, `dismissRobber`, `regenerateBoard`) involve random
- * dice, resource theft, or board generation. They must NOT be executed during candidate
- * scoring in rollout action selection to avoid consuming RNG for unselected candidate actions.
+ * Stochastic move types (`resolveRoll`, `dismissRobber`, `regenerateBoard`) involve random die
+ * rolls or card/board shuffles. They must NOT be executed during candidate scoring in rollout
+ * action selection to avoid consuming RNG for unselected candidate actions.
  * Note: `rollDice` merely transitions `rollStatus` to `ROLLING` without rolling dice; the actual
  * stochastic roll occurs in `resolveRoll`.
  */
