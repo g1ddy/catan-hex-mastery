@@ -184,6 +184,28 @@ with normalized values in `[0, 1]`. Terminal values are `1` for the winner and `
 
 The first implementation treats stochastic transitions through `SearchRandom` supplied to `applyAction`. It does not require explicit chance nodes.
 
+### 8.1 Rollout stochasticity
+
+A rollout policy may use deterministic state/action heuristics to weight legal actions, but candidate scoring must not apply stochastic actions solely for the purpose of evaluating those candidates.
+
+For example, a rollout policy must not call `applyAction(state, rollDice, random)` for every candidate merely to evaluate a sampled dice outcome before deciding whether to roll. Doing so consumes randomness for actions that may be discarded, makes the stochastic trajectory depend on candidate enumeration/order, and can score a sampled outcome different from the transition eventually taken.
+
+The rollout sequence is:
+
+```text
+RolloutPolicy chooses an action
+        ↓
+SearchGame.applyAction performs the actual transition
+        ↓
+Evaluator values the resulting state when the rollout reaches its evaluation point
+```
+
+Deterministic actions may use deterministic successor-state evaluation as a rollout-policy heuristic. Stochastic actions should use deterministic action-level heuristics/base weights until an explicit expected-value or chance-node mechanism is introduced.
+
+This rule preserves the separation between action selection, stochastic state transition, and state valuation. It also preserves seeded reproducibility without making the random stream depend on discarded candidate evaluations.
+
+### 8.2 Information assumptions
+
 The first implementation assumes perfect information. No information-set abstraction belongs in #477.
 
 ## 9. Catan adapter responsibilities
