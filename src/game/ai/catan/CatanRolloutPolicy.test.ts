@@ -104,12 +104,10 @@ describe('CatanRolloutPolicy', () => {
     expect(() => new CatanRolloutPolicy({ customWeights: { buildCity: NaN } })).toThrow('Invalid custom weight');
   });
 
-  it('does not consume RNG during candidate scoring for robber actions', () => {
+  it('does not execute stochastic candidates during candidate scoring', () => {
     const state = createMockSetupState();
-    state.context.phase = PHASES.GAMEPLAY;
-    state.context.stagesByPlayer = { '0': STAGES.ROBBER };
-
     let rngCalls = 0;
+
     const trackingRng: SearchRandom = {
       next: () => {
         rngCalls++;
@@ -129,174 +127,83 @@ describe('CatanRolloutPolicy', () => {
       },
     };
 
-    // Candidates are multiple dismissRobber actions, which are deterministic actions
-    const legalActions = searchGame.getLegalActions(state);
-    expect(legalActions.length).toBeGreaterThan(1);
-    expect(legalActions.every((a) => a.move === 'dismissRobber')).toBe(true);
+    const stochasticAction = { move: 'resolveRoll' as const, args: [] as [] };
+    const deterministicAction = { move: 'rollDice' as const, args: [] as [] };
 
-    policy.selectAction(searchGame, state, trackingRng);
+    const game: CatanSearchGame = {
+      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
+      getLegalActions: () => [stochasticAction, deterministicAction],
+      isTerminal: (s) => searchGame.isTerminal(s),
+      getTerminalResult: (s) => searchGame.getTerminalResult(s),
+      getPlayers: (s) => searchGame.getPlayers(s),
+      applyAction: (s, action, random) => {
+        // Candidate scoring must never apply the stochastic action. The deterministic
+        // action is safe to score with the policy's throwing dummy RNG.
+        expect(action.move).toBe('rollDice');
+        expect(random).not.toBe(trackingRng);
+        return s;
+      },
+    };
 
-    // Candidate evaluation may apply each dismissRobber action with the throwing dummy RNG;
-    // the real tracking RNG is called ONLY ONCE for the final weighted action choice.
+    const chosen = policy.selectAction(game, state, trackingRng);
+
+    expect(chosen).toBeDefined();
+    // Only the final weighted-choice draw uses the caller RNG.
     expect(rngCalls).toBe(1);
   });
 
-  it('reordering legal candidates containing stochastic actions does not alter candidate scoring RNG consumption', () => {
+  it('reordering stochastic candidates does not perturb candidate-scoring RNG consumption', () => {
     const state = createMockSetupState();
-    state.context.phase = PHASES.GAMEPLAY;
-    state.context.stagesByPlayer = { '0': STAGES.ROBBER };
+    const stochasticAction = { move: 'resolveRoll' as const, args: [] as [] };
+    const deterministicAction = { move: 'rollDice' as const, args: [] as [] };
 
-    let rngCallsA = 0;
-    const rngA: SearchRandom = {
-      next: () => {
-        rngCallsA++;
-        return 0.5;
-      },
-      integer: (max) => {
-        rngCallsA++;
-        return Math.floor(0.5 * max);
-      },
-      pick: (arr) => {
-        rngCallsA++;
-        return arr[0];
-      },
-      die: () => {
-        rngCallsA++;
-        return 1;
-      },
+    const makeRng = () => {
+      let calls = 0;
+      const rng: SearchRandom = {
+        next: () => {
+          calls++;
+          return 0.5;
+        },
+        integer: (max) => {
+          calls++;
+          return Math.floor(0.5 * max);
+        },
+        pick: (arr) => {
+          calls++;
+          return arr[0];
+        },
+        die: () => {
+          calls++;
+          return 1;
+        },
+      };
+      return { rng, getCalls: () => calls };
     };
 
-    const normalGame = searchGame;
-    const actionA = policy.selectAction(normalGame, state, rngA);
-
-    let rngCallsB = 0;
-    const rngB: SearchRandom = {
-      next: () => {
-        rngCallsB++;
-        return 0.5;
+    const makeGame = (actions: typeof [stochasticAction, deterministicAction]) => ({
+      getCurrentPlayer: (s: CatanSearchState) => searchGame.getCurrentPlayer(s),
+      getLegalActions: () => actions,
+      isTerminal: (s: CatanSearchState) => searchGame.isTerminal(s),
+      getTerminalResult: (s: CatanSearchState) => searchGame.getTerminalResult(s),
+      getPlayers: (s: CatanSearchState) => searchGame.getPlayers(s),
+      applyAction: (s: CatanSearchState, action: typeof deterministicAction, random: SearchRandom) => {
+        expect(action.move).toBe('rollDice');
+        expect(random).not.toBeNull();
+        return s;
       },
-      integer: (max) => {
-        rngCallsB++;
-        return Math.floor(0.5 * max);
-      },
-      pick: (arr) => {
-        rngCallsB++;
-        return arr[0];
-      },
-      die: () => {
-        rngCallsB++;
-        return 1;
-      },
-    };
+    });
 
-    // Reverse legal action ordering in custom search game
-    const reversedGame: CatanSearchGame = {
-      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
-      getLegalActions: (s) => [...searchGame.getLegalActions(s)].reverse(),
-      isTerminal: (s) => searchGame.isTerminal(s),
-      getTerminalResult: (s) => searchGame.getTerminalResult(s),
-      getPlayers: (s) => searchGame.getPlayers(s),
-      applyAction: (s, a, r) => searchGame.applyAction(s, a, r),
-    };
+    const first = makeRng();
+    const second = makeRng();
 
-    const actionB = policy.selectAction(reversedGame, state, rngB);
+    policy.selectAction(makeGame([stochasticAction, deterministicAction]), state, first.rng);
+    policy.selectAction(makeGame([deterministicAction, stochasticAction]), state, second.rng);
 
-    expect(actionA).toBeDefined();
-    expect(actionB).toBeDefined();
-    expect(rngCallsA).toBe(1);
-    expect(rngCallsB).toBe(1);
+    expect(first.getCalls()).toBe(1);
+    expect(second.getCalls()).toBe(1);
   });
 
-  it('reordering or inserting stochastic candidates alongside deterministic candidates does not perturb selection behavior or RNG draws', () => {
-    const state = createMockSetupState();
-    state.context.phase = PHASES.GAMEPLAY;
-    state.context.stagesByPlayer = { '0': STAGES.ACTING };
-
-    // Give player 0 a settlement and resources to build roads (multiple deterministic candidates)
-    const vId = '0,0,0::0,1,-1::1,0,-1';
-    state.game.board.vertices[vId] = { owner: '0', type: 'settlement' };
-    state.game.players['0'].settlements = [vId];
-    state.game.players['0'].resources = { wood: 2, brick: 2, sheep: 0, wheat: 0, ore: 0 };
-
-    // Set up a state with deterministic candidates (buildRoad actions)
-    const legalActions = searchGame.getLegalActions(state);
-    expect(legalActions.length).toBeGreaterThan(1);
-
-    // Mock search games with different candidate ordering including a dummy stochastic action
-    const dummyStochasticAction = { move: 'resolveRoll' as const, args: [] as [] };
-
-    // Ordering 1: [det_0, det_1, ..., stochastic]
-    const gameOrdering1: CatanSearchGame = {
-      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
-      getLegalActions: (s) => [...searchGame.getLegalActions(s), dummyStochasticAction],
-      isTerminal: (s) => searchGame.isTerminal(s),
-      getTerminalResult: (s) => searchGame.getTerminalResult(s),
-      getPlayers: (s) => searchGame.getPlayers(s),
-      applyAction: (s, a, r) => searchGame.applyAction(s, a, r),
-    };
-
-    // Ordering 2: [stochastic, det_0, det_1, ...]
-    const gameOrdering2: CatanSearchGame = {
-      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
-      getLegalActions: (s) => [dummyStochasticAction, ...searchGame.getLegalActions(s)],
-      isTerminal: (s) => searchGame.isTerminal(s),
-      getTerminalResult: (s) => searchGame.getTerminalResult(s),
-      getPlayers: (s) => searchGame.getPlayers(s),
-      applyAction: (s, a, r) => searchGame.applyAction(s, a, r),
-    };
-
-    let calls1 = 0;
-    const rng1: SearchRandom = {
-      next: () => {
-        calls1++;
-        return 0.5;
-      },
-      integer: (max) => {
-        calls1++;
-        return Math.floor(0.5 * max);
-      },
-      pick: (arr) => {
-        calls1++;
-        return arr[0];
-      },
-      die: () => {
-        calls1++;
-        return 1;
-      },
-    };
-
-    let calls2 = 0;
-    const rng2: SearchRandom = {
-      next: () => {
-        calls2++;
-        return 0.5;
-      },
-      integer: (max) => {
-        calls2++;
-        return Math.floor(0.5 * max);
-      },
-      pick: (arr) => {
-        calls2++;
-        return arr[0];
-      },
-      die: () => {
-        calls2++;
-        return 1;
-      },
-    };
-
-    const choice1 = policy.selectAction(gameOrdering1, state, rng1);
-    const choice2 = policy.selectAction(gameOrdering2, state, rng2);
-
-    expect(choice1).toBeDefined();
-    expect(choice2).toBeDefined();
-    // In both ordering presentations, candidate evaluation makes EXACTLY 1 RNG call during selectAction (for the final weighted choice).
-    // The stochastic candidate consumes 0 RNG draws during candidate evaluation regardless of whether it was placed first or last.
-    expect(calls1).toBe(1);
-    expect(calls2).toBe(1);
-  });
-
-  it('consumes RNG for stochastic transition exactly when applyAction is called, not during candidate selection', () => {
+  it('consumes RNG for a stochastic transition exactly when applyAction is called', () => {
     const state = createMockSetupState();
     state.context.phase = PHASES.GAMEPLAY;
     state.context.stagesByPlayer = { '0': STAGES.ROLLING };
@@ -325,22 +232,19 @@ describe('CatanRolloutPolicy', () => {
 
     expect(rngCalls).toBe(0);
 
-    // 1. Action selection phase: candidate evaluation must NOT consume stochastic transition RNG.
+    // Action selection has a single legal resolveRoll action, so it returns without
+    // consuming the RNG or applying the stochastic transition.
     const chosenAction = policy.selectAction(searchGame, state, countingRng);
 
     expect(chosenAction).not.toBeNull();
     expect(chosenAction?.move).toBe('resolveRoll');
-    // Since resolveRoll is the single legal action in this state, zero RNG calls are consumed for action selection,
-    // and candidate evaluation skipped calling applyAction for stochastic candidate actions.
     expect(rngCalls).toBe(0);
 
-    // 2. Transition execution phase: applyAction performs the actual stochastic transition (rolling 2d6).
-    const callsBeforeApply = rngCalls;
+    // The actual transition is where the two dice draws occur.
     const nextState = searchGame.applyAction(state, chosenAction!, countingRng);
 
     expect(nextState.game.rollStatus).toBe('resolved');
-    // applyAction consumed 2 additional die calls (2d6 dice roll) for the actual stochastic transition.
-    expect(rngCalls).toBe(callsBeforeApply + 2);
+    expect(rngCalls).toBe(2);
   });
 
   it('surfaces transition errors directly from applyAction rather than swallowing them', () => {
