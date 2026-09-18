@@ -1016,8 +1016,8 @@
     "scanned": true
   },
   "src/game/ai/catan/CatanRolloutPolicy.ts": {
-    "complexity": 11,
-    "loc": 70,
+    "complexity": 10,
+    "loc": 39,
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
