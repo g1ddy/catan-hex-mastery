@@ -61,6 +61,8 @@ interface SearchGame<S, A> {
 
 `SearchGame` answers rules questions: what can happen, what state results, and whether the game is over. It does not answer strategy questions.
 
+The current engine does not require an action-equality operation because children are tracked directly from the deterministic `getLegalActions` sequence. Any tree implementation that indexes, deduplicates, transposes, or otherwise looks up actions by value must use a canonical action identity rather than JavaScript object identity. Catan should provide a stable `actionKey(action: CatanSearchAction): string` (or equivalent canonical serializer) for that purpose; this is an adapter/domain concern, not a transport concern.
+
 ### 4.2 Search consumes domain commands
 
 A search action represents what Catan move should happen, not how the current runtime dispatches it.
@@ -106,6 +108,8 @@ Legal means the action can actually be executed from the supplied state. The Cat
 
 Actions returned to search must be canonical and deterministic, and parameterized choices such as settlement/road locations and robber victims must be preserved.
 
+`applyAction` is guaranteed to succeed only for an action returned by `getLegalActions` for the same state. Callers must not use `applyAction` as a general-purpose legality validator; authoritative legality remains in the Catan rule/enumerator layer.
+
 `BotMove` currently contains `buyDevCard` for forward compatibility, but development-card purchase is not implemented by the game. Until a real Catan-owned handler exists, `CatanSearchAction` explicitly excludes that command and the search adapter filters it from enumerated actions. This is preferable to advertising an action that `applyAction` cannot execute.
 
 ### 4.5 `applyAction`
@@ -122,7 +126,9 @@ Rules:
 
 The current migration seam is `executeCatanMove`. It is deliberately Catan-owned and has no boardgame.io/runtime imports. It invokes the same Catan move handlers used by the runtime and supplies only the small event callbacks those handlers require (`endTurn` and `setActivePlayers`). Lifecycle work that boardgame.io normally performs after those callbacks is centralized in `rules/lifecycle.ts` for the framework-neutral path.
 
-This seam is migration glue, not a second rules engine: it must remain limited to cloning state, invoking an existing Catan move handler, applying its lifecycle callbacks, and deriving terminal state from the shared lifecycle rules. New move legality or strategic behavior does not belong here.
+This seam is migration glue, not a second rules engine: it must remain limited to isolating the input state, invoking an existing Catan move handler, applying its lifecycle callbacks, and deriving terminal state from the shared lifecycle rules. New move legality or strategic behavior does not belong here.
+
+The immutability requirement is an observable contract, not a requirement for a particular cloning technique. The implementation may use structural sharing, copy-on-write, pooled scratch state, or another optimization in the future, provided caller-visible state is unchanged and simulated branches cannot leak mutations into one another. Performance work must therefore preserve branch isolation rather than weakening the contract for throughput.
 
 ### 4.6 Terminal semantics
 
@@ -133,6 +139,8 @@ type SearchTerminalResult =
 ```
 
 Terminal results are derived from `checkTerminalResult` in Catan-owned lifecycle code. The search engine must not duplicate winner rules.
+
+The contract requires `getTerminalResult(state) !== null` if and only if `isTerminal(state) === true`. The adapter should implement `isTerminal` in terms of `getTerminalResult` (or otherwise test this equivalence) so the two operations cannot silently disagree.
 
 ### 4.7 Stable player ordering
 
@@ -180,9 +188,43 @@ type SearchUtility = Readonly<Record<string, number>>;
 
 with normalized values in `[0, 1]`. Terminal values are `1` for the winner and `0` for other players; draws are `0.5` for every player. Exact heuristic evaluation belongs to #480.
 
+The current #478 engine uses Max-N-style player-relative selection: at a node, child values are compared using the utility dimension of the player acting at that node, while absolute per-player utilities are backpropagated unchanged. This is an explicit multiplayer assumption, not generic minimax. It should remain documented and tested as the engine evolves. Paranoid search, coalition assumptions, and alternative multi-agent backup rules are future research rather than implicit behavior.
+
 ## 8. Chance and information
 
 The first implementation treats stochastic transitions through `SearchRandom` supplied to `applyAction`. It does not require explicit chance nodes.
+
+For the current closed-loop tree implementation, a stochastic action produces a concrete sampled successor state when the action is expanded or traversed. The resulting node therefore represents that sampled post-transition state, not a pre-roll chance node. The tree does not currently maintain a probability distribution over alternative outcomes of the same stochastic action. Re-visiting a child does not retroactively turn that edge into a chance node.
+
+This is a deliberate first-generation limitation, not an assertion that sampled stochastic edges are equivalent to a full chance-node MCTS model. A future chance-node/expected-value design must be introduced explicitly rather than being smuggled into the rollout policy.
+
+### 8.1 Rollout stochasticity
+
+A rollout policy may use deterministic state/action heuristics to weight legal actions, but candidate scoring must not apply stochastic actions solely for the purpose of evaluating those candidates.
+
+For example, a rollout policy must not call `applyAction(state, rollDice, random)` for every candidate merely to evaluate a sampled dice outcome before deciding whether to roll. Doing so consumes randomness for actions that may be discarded, makes the stochastic trajectory depend on candidate enumeration/order, and can score a sampled outcome different from the transition eventually taken.
+
+The rollout sequence is:
+
+```text
+RolloutPolicy chooses an action
+        ↓
+SearchGame.applyAction performs the actual transition
+        ↓
+Evaluator values the resulting state when the rollout reaches its evaluation point
+```
+
+Deterministic actions may use deterministic successor-state evaluation as a rollout-policy heuristic. Stochastic actions should use deterministic action-level heuristics/base weights until an explicit expected-value or chance-node mechanism is introduced.
+
+This rule preserves the separation between action selection, stochastic state transition, and state valuation. It also preserves seeded reproducibility without making the random stream depend on discarded candidate evaluations.
+
+### 8.2 Serialized multi-step resolution
+
+`getCurrentPlayer` represents the player whose action currently blocks lifecycle advancement. Catan's current framework-neutral lifecycle serializes multi-step resolution through `currentPlayer` and `stagesByPlayer`; the search adapter therefore does not expose boardgame.io's `activePlayers` map.
+
+If a future Catan rule genuinely requires multiple players to make independent decisions before the state can advance, the search contract must be extended deliberately to represent those actors rather than silently treating a simultaneous phase as ordinary turn alternation. In the current implementation, staged decisions must remain represented by an explicit blocking actor and deterministic progression through the Catan lifecycle.
+
+### 8.3 Information assumptions
 
 The first implementation assumes perfect information. No information-set abstraction belongs in #477.
 
