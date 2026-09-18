@@ -18,9 +18,28 @@ test.describe('Bot Scenario Propagation', () => {
         // 5. Verify the bots in the UI
         // In the fast-autoplay scenario, the bots should be Balanced, Aggressive, Defensive
         // Let's verify their names appear in the UI.
-        // It's safer to just check that the page contains the text somewhere.
         await expect(page.locator('body')).toContainText('P1: Balanced');
         await expect(page.locator('body')).toContainText('P2: Aggressive Bot');
         await expect(page.locator('body')).toContainText('P3: Defensive Bot');
+
+        // Explicitly verify the slow bots are NOT present
+        await expect(page.locator('body')).not.toContainText('CatanMCTS');
+        await expect(page.locator('body')).not.toContainText('MonteCatano');
+    });
+
+    test('normal three-bot production autoplay produces Balanced, CatanMCTS, MonteCatano', async ({ page }) => {
+        // Normal configuration without scenario override
+        await page.goto('/');
+
+        await page.getByRole('button', { name: '0 Players (Auto Play)' }).click();
+
+        // Wait for Game Layout
+        const gameLayout = page.getByTestId('game-layout');
+        await expect(gameLayout).toBeVisible({ timeout: 10000 });
+
+        // Normal autoplay config is Balanced, CatanMCTS, MonteCatano
+        await expect(page.locator('body')).toContainText('P1: Balanced');
+        await expect(page.locator('body')).toContainText('P2: CatanMCTS');
+        await expect(page.locator('body')).toContainText('P3: MonteCatano');
     });
 });

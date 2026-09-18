@@ -46,7 +46,7 @@ export function SetupPage() {
   const startGame = (numPlayers: number, mode: string, numBots: number = 0) => {
     navigate({
         pathname: '/game',
-        search: location.search
+        search: location.search || window.location.search
     }, {
         state: {
             numPlayers,

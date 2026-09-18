@@ -42,7 +42,7 @@ export function GamePage() {
     const botNamesResult: Record<string, string> = {};
 
     const startBotIndex = numPlayers - numBots;
-    const scenarioKey = new URLSearchParams(location.search).get('bot_scenario');
+    const scenarioKey = new URLSearchParams(location.search || window.location.search).get('bot_scenario');
     const botScenario = scenarioKey ? BOT_SCENARIOS[scenarioKey] : undefined;
 
     for (let botTypeIndex = 0, i = startBotIndex; i < numPlayers; i++, botTypeIndex++) {
@@ -55,7 +55,7 @@ export function GamePage() {
     }
 
     return { bots: botsResult, botNames: botNamesResult };
-  }, [location.search, numBots, numPlayers]);
+  }, [location.search, window.location.search, numBots, numPlayers]);
 
   const setupData = useMemo(() => ({ botNames }), [botNames]);
 
