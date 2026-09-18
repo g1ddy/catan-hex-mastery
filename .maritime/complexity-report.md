@@ -16,9 +16,9 @@
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
 
-**Last Updated:** 2026-09-18
+**Last Updated:** 2026-09-17
 
-### 🏥 Repository Health Score: **88.0 / 100**
+### 🏥 Repository Health Score: **89.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 139
@@ -48,9 +48,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
 | `src/game/analysis/probability.ts` | **16** | 188 |
 | `src/game/analysis/spatialAnalysis.ts` | **14** | 271 |
-| `src/game/ai/catan/CatanRolloutPolicy.ts` | **12** | 93 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
 | `src/game/analysis/coach.ts` | **11** | 209 |
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
 | `src/game/rules/validator.ts` | **11** | 75 |
+| `src/pages/GamePage.tsx` | **11** | 80 |
