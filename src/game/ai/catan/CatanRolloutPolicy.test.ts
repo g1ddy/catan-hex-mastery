@@ -213,26 +213,45 @@ describe('CatanRolloutPolicy', () => {
     state.context.stagesByPlayer = { '0': STAGES.ROLLING };
     state.game.rollStatus = 'rolling' as any;
 
-    const rng = new SeededSearchRandom('stochastic-apply-test');
-    const chosenAction = policy.selectAction(searchGame, state, rng);
+    const delegateRng = new SeededSearchRandom('stochastic-apply-test');
+    let rngCalls = 0;
+    const countingRng: SearchRandom = {
+      next: () => {
+        rngCalls++;
+        return delegateRng.next();
+      },
+      integer: (max) => {
+        rngCalls++;
+        return delegateRng.integer(max);
+      },
+      pick: (arr) => {
+        rngCalls++;
+        return delegateRng.pick(arr);
+      },
+      die: (sides) => {
+        rngCalls++;
+        return delegateRng.die(sides);
+      },
+    };
+
+    expect(rngCalls).toBe(0);
+
+    // 1. Action selection phase: candidate evaluation must NOT consume stochastic transition RNG.
+    const chosenAction = policy.selectAction(searchGame, state, countingRng);
 
     expect(chosenAction).not.toBeNull();
     expect(chosenAction?.move).toBe('resolveRoll');
+    // Since resolveRoll is the single legal action in this state, zero RNG calls are consumed for action selection,
+    // and candidate evaluation skipped calling applyAction for stochastic candidate actions.
+    expect(rngCalls).toBe(0);
 
-    // Capture state of rng before applyAction
-    const preApplyRand = rng.next();
+    // 2. Transition execution phase: applyAction performs the actual stochastic transition (rolling 2d6).
+    const callsBeforeApply = rngCalls;
+    const nextState = searchGame.applyAction(state, chosenAction!, countingRng);
 
-    // Re-seed RNG for actual execution test
-    const executionRng = new SeededSearchRandom('stochastic-apply-test');
-    policy.selectAction(searchGame, state, executionRng);
-
-    // Apply the chosen stochastic action
-    const nextState = searchGame.applyAction(state, chosenAction!, executionRng);
-
-    // In nextState, rollStatus should be RESOLVED and dice rolled
     expect(nextState.game.rollStatus).toBe('resolved');
-    // executionRng was consumed during applyAction (rolling dice)
-    expect(executionRng.next()).not.toEqual(preApplyRand);
+    // applyAction consumed 2 additional die calls (2d6 dice roll) for the actual stochastic transition.
+    expect(rngCalls).toBe(callsBeforeApply + 2);
   });
 
   it('surfaces transition errors directly from applyAction rather than swallowing them', () => {
