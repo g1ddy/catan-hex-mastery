@@ -96,20 +96,28 @@ describe('CatanRolloutPolicy', () => {
     expect(res2A).toEqual(res2B);
   });
 
-  it('deliberately consumes the caller SearchRandom stream during candidate action evaluations (RNG delegation)', () => {
+  it('rejects non-finite and negative evalWeight and customWeights', () => {
+    expect(() => new CatanRolloutPolicy({ evalWeight: NaN })).toThrow('Invalid evalWeight');
+    expect(() => new CatanRolloutPolicy({ evalWeight: Infinity })).toThrow('Invalid evalWeight');
+    expect(() => new CatanRolloutPolicy({ evalWeight: -1 })).toThrow('Invalid evalWeight');
+    expect(() => new CatanRolloutPolicy({ customWeights: { rollDice: -5 } })).toThrow('Invalid custom weight');
+    expect(() => new CatanRolloutPolicy({ customWeights: { buildCity: NaN } })).toThrow('Invalid custom weight');
+  });
+
+  it('does not consume RNG during candidate scoring for stochastic actions', () => {
     const state = createMockSetupState();
-    const legalActions = searchGame.getLegalActions(state);
-    expect(legalActions.length).toBeGreaterThan(1);
+    state.context.phase = PHASES.GAMEPLAY;
+    state.context.stagesByPlayer = { '0': STAGES.ROBBER };
 
     let rngCalls = 0;
     const trackingRng: SearchRandom = {
       next: () => {
         rngCalls++;
-        return 0.25;
+        return 0.5;
       },
       integer: (max) => {
         rngCalls++;
-        return Math.floor(0.25 * max);
+        return Math.floor(0.5 * max);
       },
       pick: (arr) => {
         rngCalls++;
@@ -121,13 +129,110 @@ describe('CatanRolloutPolicy', () => {
       },
     };
 
-    const chosenAction = policy.selectAction(searchGame, state, trackingRng);
+    // Candidates are multiple dismissRobber actions, which are stochastic actions
+    const legalActions = searchGame.getLegalActions(state);
+    expect(legalActions.length).toBeGreaterThan(1);
+    expect(legalActions.every((a) => a.move === 'dismissRobber')).toBe(true);
+
+    policy.selectAction(searchGame, state, trackingRng);
+
+    // Because candidate evaluation skips applyAction for stochastic actions,
+    // trackingRng is called ONLY ONCE for the final weighted action choice in selectAction!
+    expect(rngCalls).toBe(1);
+  });
+
+  it('reordering legal candidates containing stochastic actions does not alter candidate scoring RNG consumption', () => {
+    const state = createMockSetupState();
+    state.context.phase = PHASES.GAMEPLAY;
+    state.context.stagesByPlayer = { '0': STAGES.ROBBER };
+
+    let rngCallsA = 0;
+    const rngA: SearchRandom = {
+      next: () => {
+        rngCallsA++;
+        return 0.5;
+      },
+      integer: (max) => {
+        rngCallsA++;
+        return Math.floor(0.5 * max);
+      },
+      pick: (arr) => {
+        rngCallsA++;
+        return arr[0];
+      },
+      die: () => {
+        rngCallsA++;
+        return 1;
+      },
+    };
+
+    const normalGame = searchGame;
+    const actionA = policy.selectAction(normalGame, state, rngA);
+
+    let rngCallsB = 0;
+    const rngB: SearchRandom = {
+      next: () => {
+        rngCallsB++;
+        return 0.5;
+      },
+      integer: (max) => {
+        rngCallsB++;
+        return Math.floor(0.5 * max);
+      },
+      pick: (arr) => {
+        rngCallsB++;
+        return arr[0];
+      },
+      die: () => {
+        rngCallsB++;
+        return 1;
+      },
+    };
+
+    // Reverse legal action ordering in custom search game
+    const reversedGame: CatanSearchGame = {
+      getCurrentPlayer: (s) => searchGame.getCurrentPlayer(s),
+      getLegalActions: (s) => [...searchGame.getLegalActions(s)].reverse(),
+      isTerminal: (s) => searchGame.isTerminal(s),
+      getTerminalResult: (s) => searchGame.getTerminalResult(s),
+      getPlayers: (s) => searchGame.getPlayers(s),
+      applyAction: (s, a, r) => searchGame.applyAction(s, a, r),
+    };
+
+    const actionB = policy.selectAction(reversedGame, state, rngB);
+
+    expect(actionA).toBeDefined();
+    expect(actionB).toBeDefined();
+    expect(rngCallsA).toBe(1);
+    expect(rngCallsB).toBe(1);
+  });
+
+  it('consumes RNG for stochastic transition exactly when applyAction is called, not during candidate selection', () => {
+    const state = createMockSetupState();
+    state.context.phase = PHASES.GAMEPLAY;
+    state.context.stagesByPlayer = { '0': STAGES.ROLLING };
+    state.game.rollStatus = 'rolling' as any;
+
+    const rng = new SeededSearchRandom('stochastic-apply-test');
+    const chosenAction = policy.selectAction(searchGame, state, rng);
 
     expect(chosenAction).not.toBeNull();
-    // trackingRng must be called at least once for final weighted action selection,
-    // plus potential calls during game.applyAction for stochastic action evaluations.
-    // The key invariant is that it properly delegates rather than manufacturing an internal RNG.
-    expect(rngCalls).toBeGreaterThan(0);
+    expect(chosenAction?.move).toBe('resolveRoll');
+
+    // Capture state of rng before applyAction
+    const preApplyRand = rng.next();
+
+    // Re-seed RNG for actual execution test
+    const executionRng = new SeededSearchRandom('stochastic-apply-test');
+    policy.selectAction(searchGame, state, executionRng);
+
+    // Apply the chosen stochastic action
+    const nextState = searchGame.applyAction(state, chosenAction!, executionRng);
+
+    // In nextState, rollStatus should be RESOLVED and dice rolled
+    expect(nextState.game.rollStatus).toBe('resolved');
+    // executionRng was consumed during applyAction (rolling dice)
+    expect(executionRng.next()).not.toEqual(preApplyRand);
   });
 
   it('surfaces transition errors directly from applyAction rather than swallowing them', () => {

@@ -14,19 +14,50 @@ export interface CatanRolloutPolicyOptions { evaluator?: CatanEvaluator; evalWei
  */
 const DEFAULT_ACTION_BASE_WEIGHTS: Record<string, number> = { placeSettlement: 10, buildSettlement: 10, buildCity: 12, placeRoad: 3, buildRoad: 3, rollDice: 15, resolveRoll: 15, dismissRobber: 6, tradeBank: 2, endTurn: 1, regenerateBoard: 0.1 };
 
+/**
+ * Stochastic actions whose outcomes involve random rolls/shuffles.
+ * These must not be executed during candidate scoring in rollout action selection.
+ */
+function isStochasticAction(action: CatanSearchAction): boolean {
+  return action.move === 'resolveRoll' || action.move === 'dismissRobber' || action.move === 'regenerateBoard';
+}
+
+const DUMMY_RNG: SearchRandom = {
+  next: () => { throw new Error('Deterministic candidate evaluation must not consume randomness.'); },
+  integer: () => { throw new Error('Deterministic candidate evaluation must not consume randomness.'); },
+  pick: () => { throw new Error('Deterministic candidate evaluation must not consume randomness.'); },
+  die: () => { throw new Error('Deterministic candidate evaluation must not consume randomness.'); },
+};
+
+export function validateRolloutWeights(evalWeight: number, customWeights?: Partial<Record<string, number>>): void {
+  if (!Number.isFinite(evalWeight) || evalWeight < 0) {
+    throw new Error(`Invalid evalWeight '${evalWeight}'. Weights must be non-negative finite numbers.`);
+  }
+  if (customWeights) {
+    for (const [key, value] of Object.entries(customWeights)) {
+      if (value !== undefined && (!Number.isFinite(value) || value < 0)) {
+        throw new Error(`Invalid custom weight '${key}': ${value}. Custom weights must be non-negative finite numbers.`);
+      }
+    }
+  }
+}
+
 export class CatanRolloutPolicy implements RolloutPolicy<CatanSearchState, CatanSearchAction> {
   private readonly evaluator: CatanEvaluator; private readonly evalWeight: number; private readonly baseWeights: Readonly<Record<string, number>>;
-  constructor(options: CatanRolloutPolicyOptions = {}) { this.evaluator = options.evaluator ?? new CatanEvaluator(); this.evalWeight = options.evalWeight ?? 10; this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights as Record<string, number> ?? {}) }; }
+  constructor(options: CatanRolloutPolicyOptions = {}) {
+    const evalWeight = options.evalWeight ?? 10;
+    validateRolloutWeights(evalWeight, options.customWeights);
+    this.evaluator = options.evaluator ?? new CatanEvaluator();
+    this.evalWeight = evalWeight;
+    this.baseWeights = { ...DEFAULT_ACTION_BASE_WEIGHTS, ...(options.customWeights as Record<string, number> ?? {}) };
+  }
   public selectAction(game: SearchGame<CatanSearchState, CatanSearchAction>, state: CatanSearchState, random: SearchRandom): CatanSearchAction | null {
     if (game.isTerminal(state)) return null; const legalActions = game.getLegalActions(state); if (legalActions.length === 0) return null; if (legalActions.length === 1) return legalActions[0];
     const actingPlayer = game.getCurrentPlayer(state); const weights: number[] = new Array(legalActions.length); let totalWeight = 0;
     for (let i = 0; i < legalActions.length; i++) {
       const action = legalActions[i]; const baseWeight = this.baseWeights[action.move] ?? 1; let evalBonus = 0;
-      if (this.evalWeight > 0) {
-        // Deliberately consume RNG during candidate evaluation to maintain a single transition pathway.
-        // As long as legal actions are evaluated in a canonical, deterministic order, the overall
-        // rollout stream remains deterministic. We do not try to guess which actions are stochastic.
-        const nextState = game.applyAction(state, action, random);
+      if (this.evalWeight > 0 && !isStochasticAction(action)) {
+        const nextState = game.applyAction(state, action, DUMMY_RNG);
         const utility = this.evaluator.evaluate(game, nextState, game.isTerminal(nextState)); evalBonus = (utility[actingPlayer] ?? 0) * this.evalWeight;
       }
       const weight = Math.max(0.01, baseWeight + evalBonus); weights[i] = weight; totalWeight += weight;
