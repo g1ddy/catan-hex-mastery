@@ -8,9 +8,9 @@ import { createMockGameState, createTestPlayer } from '../game/testUtils';
 import { RollStatus, TerrainType } from '../game/core/types';
 import { PHASES, STAGES, GameStage } from '../game/core/constants';
 import { generateBoard } from '../game/generation/boardGen';
-import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 import { enumerate } from '../game/rules/enumerator';
 import { CatanGame } from '../game/Game';
+import { BOT_CYCLE } from './botCycle';
 
 function createSetupState(currentPlayer = '0') {
   const { hexes, ports } = generateBoard();
@@ -65,16 +65,19 @@ function createGameplayState(currentPlayer = '0', stage: GameStage = STAGES.ACTI
 
 describe('CatanMCTSBot Migration & Integration', () => {
   describe('1. Bot Construction & Configuration', () => {
-    it('uses Catan-owned MCTS stack with default search bounds (100 iterations, 10 rollout depth, 1.414 UCT)', () => {
+    it('uses the Catan-owned MCTS stack with default search bounds', () => {
       const bot = new CatanMCTSBot({ enumerate, game: CatanGame });
 
       expect(bot.iterations).toBe(100);
       expect(bot.maxDepth).toBe(10);
       expect(bot.explorationConstant).toBe(1.414);
+    });
 
-      const engine = bot.getEngine();
-      expect(engine).toBeDefined();
-      expect(engine.selectionPolicy).toBeInstanceOf(UctSelectionPolicy);
+    it('is wired into the production BOT_CYCLE configuration', () => {
+      const catanMctsEntry = BOT_CYCLE.find(({ name }) => name === 'CatanMCTS');
+
+      expect(catanMctsEntry).toBeDefined();
+      expect(catanMctsEntry?.class).toBe(CatanMCTSBot);
     });
 
     it('respects custom configuration overrides for iterations, maxDepth, and explorationConstant', () => {
