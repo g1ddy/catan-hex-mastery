@@ -59,7 +59,7 @@
     "complexity": 1,
     "loc": 32,
     "instability": 0,
-    "fanIn": 21,
+    "fanIn": 22,
     "fanOut": 0,
     "scanned": true
   },
@@ -280,131 +280,51 @@
     "scanned": true
   },
   "src/bots/CatanMCTSBot.ts": {
-    "complexity": 6,
-    "loc": 126,
-    "instability": 0.92,
+    "complexity": 3,
+    "loc": 50,
+    "instability": 0.83,
     "fanIn": 1,
-    "fanOut": 11,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanEvaluator.ts": {
-    "complexity": 10,
-    "loc": 91,
-    "instability": 0.73,
-    "fanIn": 3,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/analysis/production.ts": {
-    "complexity": 10,
-    "loc": 26,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/game/analysis/spatialAnalysis.ts": {
-    "complexity": 14,
-    "loc": 271,
-    "instability": 0.71,
-    "fanIn": 2,
     "fanOut": 5,
     "scanned": true
   },
-  "src/game/analysis/probability.ts": {
-    "complexity": 16,
-    "loc": 188,
+  "src/game/Game.ts": {
+    "complexity": 9,
+    "loc": 130,
+    "instability": 0.86,
+    "fanIn": 3,
+    "fanOut": 18,
+    "scanned": true
+  },
+  "src/game/core/utils/sanitize.ts": {
+    "complexity": 11,
+    "loc": 73,
+    "instability": 0,
+    "fanIn": 1,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/analysis/CoachPlugin.ts": {
+    "complexity": 1,
+    "loc": 10,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
+    "scanned": true
+  },
+  "src/game/generation/boardGen.ts": {
+    "complexity": 8,
+    "loc": 184,
     "instability": 0.67,
     "fanIn": 2,
     "fanOut": 4,
     "scanned": true
   },
-  "src/game/ai/search/MctsPolicies.ts": {
-    "complexity": 10,
-    "loc": 124,
-    "instability": 0.44,
-    "fanIn": 5,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/game/ai/search/MctsNode.ts": {
-    "complexity": 6,
-    "loc": 47,
-    "instability": 0.2,
-    "fanIn": 4,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchGame.ts": {
-    "complexity": 1,
-    "loc": 15,
-    "instability": 0.11,
-    "fanIn": 8,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchRandom.ts": {
-    "complexity": 3,
-    "loc": 61,
-    "instability": 0,
-    "fanIn": 6,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchResult.ts": {
-    "complexity": 1,
-    "loc": 16,
-    "instability": 0,
-    "fanIn": 3,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchState.ts": {
-    "complexity": 1,
-    "loc": 7,
-    "instability": 0.17,
-    "fanIn": 5,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanRolloutPolicy.ts": {
-    "complexity": 12,
-    "loc": 93,
-    "instability": 0.75,
-    "fanIn": 2,
-    "fanOut": 6,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchAction.ts": {
-    "complexity": 1,
-    "loc": 11,
-    "instability": 0.2,
-    "fanIn": 4,
-    "fanOut": 1,
-    "scanned": true
-  },
-  "src/game/ai/catan/CatanSearchGame.ts": {
+  "src/game/mechanics/boardStats.ts": {
     "complexity": 4,
-    "loc": 80,
-    "instability": 0.8,
+    "loc": 54,
+    "instability": 0.5,
     "fanIn": 2,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/moves/execution.ts": {
-    "complexity": 20,
-    "loc": 114,
-    "instability": 0.89,
-    "fanIn": 1,
-    "fanOut": 8,
-    "scanned": true
-  },
-  "src/game/rules/lifecycle.ts": {
-    "complexity": 6,
-    "loc": 73,
-    "instability": 0.57,
-    "fanIn": 3,
-    "fanOut": 4,
+    "fanOut": 2,
     "scanned": true
   },
   "src/game/mechanics/turnOrder.ts": {
@@ -471,22 +391,6 @@
     "fanOut": 10,
     "scanned": true
   },
-  "src/game/generation/boardGen.ts": {
-    "complexity": 8,
-    "loc": 184,
-    "instability": 0.67,
-    "fanIn": 2,
-    "fanOut": 4,
-    "scanned": true
-  },
-  "src/game/mechanics/boardStats.ts": {
-    "complexity": 4,
-    "loc": 54,
-    "instability": 0.5,
-    "fanIn": 2,
-    "fanOut": 2,
-    "scanned": true
-  },
   "src/game/moves/trade.ts": {
     "complexity": 2,
     "loc": 28,
@@ -503,52 +407,12 @@
     "fanOut": 6,
     "scanned": true
   },
-  "src/game/ai/search/MctsEngine.ts": {
-    "complexity": 7,
-    "loc": 198,
-    "instability": 0.83,
-    "fanIn": 2,
-    "fanOut": 10,
-    "scanned": true
-  },
-  "src/game/ai/search/SearchConfig.ts": {
-    "complexity": 9,
-    "loc": 28,
-    "instability": 0,
-    "fanIn": 2,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/ai/search/UctSelectionPolicy.ts": {
+  "src/game/rules/lifecycle.ts": {
     "complexity": 6,
-    "loc": 97,
-    "instability": 0.5,
-    "fanIn": 3,
-    "fanOut": 3,
-    "scanned": true
-  },
-  "src/game/Game.ts": {
-    "complexity": 9,
-    "loc": 130,
-    "instability": 0.86,
-    "fanIn": 3,
-    "fanOut": 18,
-    "scanned": true
-  },
-  "src/game/core/utils/sanitize.ts": {
-    "complexity": 11,
     "loc": 73,
-    "instability": 0,
-    "fanIn": 1,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/analysis/CoachPlugin.ts": {
-    "complexity": 1,
-    "loc": 10,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
+    "instability": 0.57,
+    "fanIn": 3,
+    "fanOut": 4,
     "scanned": true
   },
   "src/bots/DefensiveBot.ts": {
@@ -1071,12 +935,148 @@
     "fanOut": 4,
     "scanned": true
   },
+  "src/game/ai/catan/CatanEvaluator.ts": {
+    "complexity": 10,
+    "loc": 91,
+    "instability": 0.8,
+    "fanIn": 2,
+    "fanOut": 8,
+    "scanned": true
+  },
+  "src/game/analysis/production.ts": {
+    "complexity": 10,
+    "loc": 26,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/game/analysis/spatialAnalysis.ts": {
+    "complexity": 14,
+    "loc": 271,
+    "instability": 0.71,
+    "fanIn": 2,
+    "fanOut": 5,
+    "scanned": true
+  },
+  "src/game/analysis/probability.ts": {
+    "complexity": 16,
+    "loc": 188,
+    "instability": 0.67,
+    "fanIn": 2,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/game/ai/search/MctsPolicies.ts": {
+    "complexity": 10,
+    "loc": 124,
+    "instability": 0.44,
+    "fanIn": 5,
+    "fanOut": 4,
+    "scanned": true
+  },
+  "src/game/ai/search/MctsNode.ts": {
+    "complexity": 6,
+    "loc": 47,
+    "instability": 0.2,
+    "fanIn": 4,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/game/ai/search/SearchGame.ts": {
+    "complexity": 1,
+    "loc": 15,
+    "instability": 0.11,
+    "fanIn": 8,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/game/ai/search/SearchRandom.ts": {
+    "complexity": 3,
+    "loc": 61,
+    "instability": 0,
+    "fanIn": 6,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/ai/search/SearchResult.ts": {
+    "complexity": 1,
+    "loc": 16,
+    "instability": 0,
+    "fanIn": 3,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/ai/catan/CatanSearchState.ts": {
+    "complexity": 1,
+    "loc": 7,
+    "instability": 0.2,
+    "fanIn": 4,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/game/ai/catan/CatanRolloutPolicy.ts": {
+    "complexity": 12,
+    "loc": 93,
+    "instability": 0.86,
+    "fanIn": 1,
+    "fanOut": 6,
+    "scanned": true
+  },
+  "src/game/ai/catan/CatanSearchAction.ts": {
+    "complexity": 1,
+    "loc": 11,
+    "instability": 0.25,
+    "fanIn": 3,
+    "fanOut": 1,
+    "scanned": true
+  },
+  "src/game/ai/catan/CatanSearchGame.ts": {
+    "complexity": 4,
+    "loc": 80,
+    "instability": 0.89,
+    "fanIn": 1,
+    "fanOut": 8,
+    "scanned": true
+  },
+  "src/game/moves/execution.ts": {
+    "complexity": 20,
+    "loc": 114,
+    "instability": 0.89,
+    "fanIn": 1,
+    "fanOut": 8,
+    "scanned": true
+  },
   "src/game/ai/catan/index.ts": {
     "complexity": 1,
     "loc": 6,
     "instability": 1,
     "fanIn": 0,
     "fanOut": 5,
+    "scanned": true
+  },
+  "src/game/ai/search/MctsEngine.ts": {
+    "complexity": 7,
+    "loc": 198,
+    "instability": 0.91,
+    "fanIn": 1,
+    "fanOut": 10,
+    "scanned": true
+  },
+  "src/game/ai/search/SearchConfig.ts": {
+    "complexity": 9,
+    "loc": 28,
+    "instability": 0,
+    "fanIn": 2,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/ai/search/UctSelectionPolicy.ts": {
+    "complexity": 6,
+    "loc": 97,
+    "instability": 0.6,
+    "fanIn": 2,
+    "fanOut": 3,
     "scanned": true
   },
   "src/game/ai/search/index.ts": {
