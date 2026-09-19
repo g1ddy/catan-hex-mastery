@@ -3,7 +3,7 @@ import { AggressiveBot } from './AggressiveBot';
 import { DefensiveBot } from './DefensiveBot';
 import { ExpansiveBot } from './ExpansiveBot';
 import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
-import { MonteCatanoRuntimeAdapter } from './MonteCatanoBot';
+import { MonteCatanoRuntimeAdapter } from '../adapters/runtime/MonteCatanoBot';
 import { RandomBot, Bot } from '../adapters/runtime/boardgame';
 
 // Bot Cycling Order: Balanced -> CatanMCTS -> MonteCatano -> Aggressive -> Defensive -> Expansive -> Random

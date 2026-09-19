@@ -5,7 +5,7 @@ import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { BalancedBot } from './BalancedBot';
 import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
-import { MonteCatanoRuntimeAdapter } from './MonteCatanoBot';
+import { MonteCatanoRuntimeAdapter } from '../adapters/runtime/MonteCatanoBot';
 import { BOT_CYCLE } from './botCycle';
 import { enumerate } from '../game/rules/enumerator';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';

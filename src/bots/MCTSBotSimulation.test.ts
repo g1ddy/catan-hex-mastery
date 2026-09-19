@@ -4,7 +4,7 @@
 import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
-import { MonteCatanoRuntimeAdapter } from './MonteCatanoBot';
+import { MonteCatanoRuntimeAdapter } from '../adapters/runtime/MonteCatanoBot';
 
 describe('MonteCatanoBot vs CatanMCTSBot Simulation', () => {
     // Increase timeout significantly for running matches

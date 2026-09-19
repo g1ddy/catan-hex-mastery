@@ -1,5 +1,4 @@
-import { Bot, Ctx } from '../adapters/runtime/boardgame';
-import { GameState, MakeMoveAction } from '../game/core/types';
+import { GameState, GameContext, MakeMoveAction } from '../game/core/types';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { CatanSearchGame } from '../game/ai/catan/CatanSearchGame';
 import type { CatanSearchState } from '../game/ai/catan/CatanSearchState';
@@ -11,10 +10,17 @@ import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 
 /**
  * Evaluator weights for MonteCatanoBot.
- * Unlike CatanMCTSBot's baseline weights (which focus only on VPs and structures),
- * MonteCatanoBot incorporates richer strategic signals including production pips,
- * resource diversity, resource synergies (Ore+Wheat and Wood+Brick), city scaling,
- * road expansion, settlement opportunities, and port access.
+ *
+ * Note on Behavioral Approximation:
+ * The weights defined below translate the legacy threshold-style heuristics of MonteCatanoBot
+ * (e.g. discrete objectives for pip thresholds, diversity, Ore/Wheat and Wood/Brick synergies)
+ * into continuous, weighted signals supported by CatanEvaluator.
+ *
+ * - The weights preserve the important strategic signals of the old MonteCatano behavior
+ *   (engine building, resource diversity, key synergies, cities, and road expansion).
+ * - The new evaluator is a continuous/weighted approximation of the old heuristic objective.
+ * - Exact reproduction of every legacy threshold is intentionally out of scope for #483.
+ * - Expanding the generic evaluator/search architecture is not part of this PR.
  */
 export const MONTE_CATANO_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Object.freeze({
   victoryPoints: 10,
@@ -47,7 +53,7 @@ const DEFAULT_CONFIG: MonteCatanoBotConfig = {
 
 /**
  * Framework-neutral Catan MonteCatanoBot.
- * Does NOT extend boardgame.io's Bot class and has no boardgame.io dependencies.
+ * Does NOT extend boardgame.io's Bot class and has no boardgame.io dependencies or imports.
  */
 export class MonteCatanoBot {
   public readonly iterations: number;
@@ -82,9 +88,9 @@ export class MonteCatanoBot {
     });
   }
 
-  async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+  async play(state: { G: GameState; ctx: GameContext | any }, playerID: string): Promise<any> {
     const { G } = state;
-    const context = toGameContext(state.ctx);
+    const context: GameContext = 'stagesByPlayer' in state.ctx ? state.ctx : toGameContext(state.ctx);
 
     // Safety: Only act if player is current active player
     if (playerID !== context.currentPlayer) {
@@ -124,23 +130,5 @@ export class MonteCatanoBot {
       iterations: result.iterations,
       rootVisits: result.rootVisits,
     };
-  }
-}
-
-/**
- * Thin runtime adapter to expose the Catan-owned MonteCatanoBot
- * to boardgame.io's Bot architecture where still required by the runtime.
- */
-export class MonteCatanoRuntimeAdapter extends Bot {
-  private readonly innerBot: MonteCatanoBot;
-
-  constructor(config: Record<string, any> = {}) {
-    // boardgame.io/ai Bot base class expects enumerate, although we don't use it.
-    super({ enumerate: () => [], ...config });
-    this.innerBot = new MonteCatanoBot(config as MonteCatanoBotConfig);
-  }
-
-  async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
-    return this.innerBot.play(state, playerID);
   }
 }
