@@ -281,10 +281,10 @@
   },
   "src/bots/CatanMCTSBot.ts": {
     "complexity": 6,
-    "loc": 133,
-    "instability": 0.92,
+    "loc": 147,
+    "instability": 0.91,
     "fanIn": 1,
-    "fanOut": 11,
+    "fanOut": 10,
     "scanned": true
   },
   "src/game/ai/catan/CatanEvaluator.ts": {
@@ -527,30 +527,6 @@
     "fanOut": 3,
     "scanned": true
   },
-  "src/game/Game.ts": {
-    "complexity": 9,
-    "loc": 130,
-    "instability": 0.86,
-    "fanIn": 3,
-    "fanOut": 18,
-    "scanned": true
-  },
-  "src/game/core/utils/sanitize.ts": {
-    "complexity": 11,
-    "loc": 73,
-    "instability": 0,
-    "fanIn": 1,
-    "fanOut": 0,
-    "scanned": true
-  },
-  "src/game/analysis/CoachPlugin.ts": {
-    "complexity": 1,
-    "loc": 10,
-    "instability": 0.67,
-    "fanIn": 1,
-    "fanOut": 2,
-    "scanned": true
-  },
   "src/bots/DefensiveBot.ts": {
     "complexity": 2,
     "loc": 9,
@@ -573,6 +549,30 @@
     "instability": 0.86,
     "fanIn": 1,
     "fanOut": 6,
+    "scanned": true
+  },
+  "src/game/Game.ts": {
+    "complexity": 9,
+    "loc": 130,
+    "instability": 0.9,
+    "fanIn": 2,
+    "fanOut": 18,
+    "scanned": true
+  },
+  "src/game/core/utils/sanitize.ts": {
+    "complexity": 11,
+    "loc": 73,
+    "instability": 0,
+    "fanIn": 1,
+    "fanOut": 0,
+    "scanned": true
+  },
+  "src/game/analysis/CoachPlugin.ts": {
+    "complexity": 1,
+    "loc": 10,
+    "instability": 0.67,
+    "fanIn": 1,
+    "fanOut": 2,
     "scanned": true
   },
   "src/GameClient.tsx": {

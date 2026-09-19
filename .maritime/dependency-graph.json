@@ -821,8 +821,8 @@
       "dependents": [
         "src/bots/CatanBot.ts",
         "src/bots/CatanMCTSBot.ts",
-        "src/game/Game.ts",
         "src/bots/MonteCatanoBot.ts",
+        "src/game/Game.ts",
         "src/adapters/runtime/BoardgameView.tsx"
       ],
       "orphan": false
@@ -843,8 +843,8 @@
         "src/game/moves/roll.ts",
         "src/game/moves/setup.ts",
         "src/game/rules/enumerator.ts",
-        "src/game/Game.ts",
         "src/bots/MonteCatanoBot.ts",
+        "src/game/Game.ts",
         "src/features/coach/logic/coachUtils.ts",
         "src/features/board/components/HexEdges.tsx",
         "src/features/board/components/HexVertices.tsx",
@@ -922,9 +922,9 @@
         "src/game/mechanics/boardStats.ts",
         "src/game/moves/trade.ts",
         "src/game/rules/enumerator.ts",
+        "src/bots/MonteCatanoBot.ts",
         "src/game/Game.ts",
         "src/game/analysis/CoachPlugin.ts",
-        "src/bots/MonteCatanoBot.ts",
         "src/adapters/runtime/BoardgameView.tsx",
         "src/features/game/GameScreen.tsx",
         "src/features/board/BoardLayer.tsx",
@@ -3207,24 +3207,6 @@
           "resolved": "src/game/core/types.ts",
           "valid": true,
           "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/Game",
-          "resolved": "src/game/Game.ts",
-          "valid": true,
-          "preCompilationOnly": false,
           "matchesDoNotFollow": false
         }
       ],
@@ -5987,6 +5969,217 @@
       "orphan": false
     },
     {
+      "source": "src/bots/DefensiveBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./CatanBot",
+          "resolved": "src/bots/CatanBot.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/ExpansiveBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./CatanBot",
+          "resolved": "src/bots/CatanBot.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/MonteCatanoBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/analysis/analyst",
+          "resolved": "src/game/analysis/analyst.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/Game",
+          "resolved": "src/game/Game.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
       "source": "src/game/Game.ts",
       "valid": true,
       "dependencies": [
@@ -6317,7 +6510,6 @@
         }
       ],
       "dependents": [
-        "src/bots/CatanMCTSBot.ts",
         "src/bots/MonteCatanoBot.ts",
         "src/GameClient.tsx"
       ],
@@ -6393,217 +6585,6 @@
       ],
       "dependents": [
         "src/game/Game.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/DefensiveBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./CatanBot",
-          "resolved": "src/bots/CatanBot.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/ExpansiveBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./CatanBot",
-          "resolved": "src/bots/CatanBot.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/MonteCatanoBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgame",
-          "resolved": "src/adapters/runtime/boardgame.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgameMoves",
-          "resolved": "src/adapters/runtime/boardgameMoves.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/analysis/analyst",
-          "resolved": "src/game/analysis/analyst.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/Game",
-          "resolved": "src/game/Game.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
       ],
       "orphan": false
     },
@@ -12485,7 +12466,7 @@
     "ignore": 0,
     "info": 0,
     "totalCruised": 158,
-    "totalDependenciesCruised": 559,
+    "totalDependenciesCruised": 558,
     "violations": [],
     "warn": 0,
     "optionsUsed": {
