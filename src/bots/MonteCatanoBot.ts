@@ -1,117 +1,146 @@
-import { MCTSBot } from '../adapters/runtime/boardgame';
-import { Game, Ctx } from '../adapters/runtime/boardgame';
-import { GameState, GameAction } from '../game/core/types';
+import { Bot, Ctx } from '../adapters/runtime/boardgame';
+import { GameState, MakeMoveAction } from '../game/core/types';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';
-import { WINNING_SCORE } from '../game/core/constants';
-import { calculatePlayerPotentialPips } from '../game/analysis/analyst';
-import { CatanGame } from '../game/Game';
+import { CatanSearchGame } from '../game/ai/catan/CatanSearchGame';
+import type { CatanSearchState } from '../game/ai/catan/CatanSearchState';
+import type { CatanSearchAction } from '../game/ai/catan/CatanSearchAction';
+import { CatanEvaluator, CatanEvaluatorWeights } from '../game/ai/catan/CatanEvaluator';
+import { CatanRolloutPolicy } from '../game/ai/catan/CatanRolloutPolicy';
+import { MctsEngine } from '../game/ai/search/MctsEngine';
+import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 
-const pipsCache = new WeakMap<GameState, Record<string, Record<string, number>>>();
+/**
+ * Evaluator weights for MonteCatanoBot.
+ * Unlike CatanMCTSBot's baseline weights (which focus only on VPs and structures),
+ * MonteCatanoBot incorporates richer strategic signals including production pips,
+ * resource diversity, resource synergies (Ore+Wheat and Wood+Brick), city scaling,
+ * road expansion, settlement opportunities, and port access.
+ */
+export const MONTE_CATANO_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Object.freeze({
+  victoryPoints: 10,
+  productionPips: 2.5,
+  resourceDiversity: 3,
+  synergyOreWheat: 8,
+  synergyWoodBrick: 5,
+  cities: 15,
+  settlements: 2,
+  roadLength: 1,
+  settlementSpots: 1,
+  ports: 2,
+  productionAdvantage: 1,
+});
 
-function getPlayerPotentialPips(gameState: GameState): Record<string, Record<string, number>> {
-    let cached = pipsCache.get(gameState);
-    if (!cached) {
-        cached = calculatePlayerPotentialPips(gameState);
-        pipsCache.set(gameState, cached);
-    }
-    return cached;
+export interface MonteCatanoBotConfig {
+  seed?: string | number;
+  iterations?: number;
+  playoutDepth?: number;
+  maxDepth?: number;
+  explorationConstant?: number;
+  evaluatorWeights?: Partial<CatanEvaluatorWeights>;
 }
 
-interface BotConfig {
-    game?: Game;
-    enumerate: (G: GameState, ctx: any, playerID: string) => GameAction[];
-    seed?: string | number;
-    playerID?: string;
-    [key: string]: any;
+const DEFAULT_CONFIG: MonteCatanoBotConfig = {
+  iterations: 200,
+  playoutDepth: 50,
+  explorationConstant: 1.414,
+};
+
+/**
+ * Framework-neutral Catan MonteCatanoBot.
+ * Does NOT extend boardgame.io's Bot class and has no boardgame.io dependencies.
+ */
+export class MonteCatanoBot {
+  public readonly iterations: number;
+  public readonly maxDepth: number;
+  public readonly explorationConstant: number;
+  public readonly initialSeed?: string | number;
+  public readonly evaluatorWeights: Partial<CatanEvaluatorWeights>;
+
+  private readonly searchGame: CatanSearchGame;
+  private readonly engine: MctsEngine<CatanSearchState, CatanSearchAction>;
+
+  constructor(config: MonteCatanoBotConfig = {}) {
+    const fullConfig = { ...DEFAULT_CONFIG, ...config };
+
+    this.iterations = fullConfig.iterations ?? 200;
+    this.maxDepth = fullConfig.playoutDepth ?? fullConfig.maxDepth ?? 50;
+    this.explorationConstant = fullConfig.explorationConstant ?? 1.414;
+    this.initialSeed = fullConfig.seed;
+    this.evaluatorWeights = fullConfig.evaluatorWeights ?? MONTE_CATANO_EVALUATOR_WEIGHTS;
+
+    const evaluator = new CatanEvaluator(this.evaluatorWeights);
+    const rolloutPolicy = new CatanRolloutPolicy({ evaluator });
+    const selectionPolicy = new UctSelectionPolicy<CatanSearchState, CatanSearchAction>({
+      explorationConstant: this.explorationConstant,
+    });
+
+    this.searchGame = new CatanSearchGame();
+    this.engine = new MctsEngine<CatanSearchState, CatanSearchAction>({
+      selectionPolicy,
+      evaluator,
+      rolloutPolicy,
+    });
+  }
+
+  async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+    const { G } = state;
+    const context = toGameContext(state.ctx);
+
+    // Safety: Only act if player is current active player
+    if (playerID !== context.currentPlayer) {
+      return undefined;
+    }
+
+    const searchState: CatanSearchState = { game: G, context };
+
+    const searchSeed =
+      this.initialSeed !== undefined
+        ? `${this.initialSeed}-${context.turn}-${context.phase}-${playerID}`
+        : undefined;
+
+    const result = this.engine.search(this.searchGame, searchState, {
+      iterations: this.iterations,
+      maxDepth: this.maxDepth,
+      seed: searchSeed,
+      explorationConstant: this.explorationConstant,
+    });
+
+    if (!result.action) {
+      return undefined;
+    }
+
+    const selectedAction = result.action;
+
+    return {
+      action: {
+        type: 'MAKE_MOVE' as const,
+        payload: {
+          type: selectedAction.move,
+          args: selectedAction.args,
+          playerID,
+        } as MakeMoveAction['payload'],
+      },
+      metadata: { message: `MonteCatanoBot (${playerID})` },
+      iterations: result.iterations,
+      rootVisits: result.rootVisits,
+    };
+  }
 }
 
-export class MonteCatanoBot extends MCTSBot {
-    constructor(config: BotConfig) {
-        super({
-            ...config,
-            game: config.game || CatanGame,
-            enumerate: (G: GameState, ctx: Ctx, playerID: string) =>
-                config.enumerate(G, toGameContext(ctx), playerID),
-            iterations: 200, // Higher iterations
-            playoutDepth: 50, // Constrained depth
-            objectives: (_G: GameState, _ctx: Ctx, playerID: string | undefined) => {
-                if (!playerID) {
-                    return {};
-                }
+/**
+ * Thin runtime adapter to expose the Catan-owned MonteCatanoBot
+ * to boardgame.io's Bot architecture where still required by the runtime.
+ */
+export class MonteCatanoRuntimeAdapter extends Bot {
+  private readonly innerBot: MonteCatanoBot;
 
-                const objectives: Record<string, { checker: (G: GameState) => boolean, weight: number }> = {};
+  constructor(config: Record<string, any> = {}) {
+    // boardgame.io/ai Bot base class expects enumerate, although we don't use it.
+    super({ enumerate: () => [], ...config });
+    this.innerBot = new MonteCatanoBot(config as MonteCatanoBotConfig);
+  }
 
-                // 1. Base VP Objectives (scaled down slightly so heuristics can matter)
-                for (let i = 1; i <= WINNING_SCORE; i++) {
-                    objectives[`VP_${i}`] = {
-                        checker: (gameState: GameState) => {
-                            const player = gameState.players[playerID];
-                            return !!player && player.victoryPoints >= i;
-                        },
-                        weight: 5.0 + i, // Base VP weight
-                    };
-                }
-
-                // 2. Heuristic Objectives: Pip Production (Engine Building)
-                const pipThresholds = [5, 10, 15, 20, 25];
-                pipThresholds.forEach(threshold => {
-                    objectives[`PIPS_${threshold}`] = {
-                        checker: (gameState: GameState) => {
-                            const pipsByPlayer = getPlayerPotentialPips(gameState);
-                            const myPips = pipsByPlayer[playerID] || {};
-                            const totalPips = Object.values(myPips).reduce((a, b) => a + b, 0);
-                            return totalPips >= threshold;
-                        },
-                        weight: threshold * 0.5, // E.g., 20 pips gives 10 weight
-                    };
-                });
-
-                // 3. Heuristic Objectives: Resource Diversity / Synergy
-                // Reward having at least SOME production in critical resources (Ore/Wheat)
-                objectives['HAS_ORE_AND_WHEAT'] = {
-                    checker: (gameState: GameState) => {
-                        const pipsByPlayer = getPlayerPotentialPips(gameState);
-                        const myPips = pipsByPlayer[playerID] || {};
-                        return (myPips.ore || 0) > 0 && (myPips.wheat || 0) > 0;
-                    },
-                    weight: 8.0,
-                };
-
-                objectives['HAS_BRICK_AND_WOOD'] = {
-                    checker: (gameState: GameState) => {
-                        const pipsByPlayer = getPlayerPotentialPips(gameState);
-                        const myPips = pipsByPlayer[playerID] || {};
-                        return (myPips.brick || 0) > 0 && (myPips.wood || 0) > 0;
-                    },
-                    weight: 5.0,
-                };
-
-                // 4. Infrastructure Scaling
-                objectives['HAS_MULTIPLE_CITIES'] = {
-                    checker: (gameState: GameState) => {
-                        const player = gameState.players[playerID];
-                        if (!player) return false;
-                        let cityCount = 0;
-                        player.settlements.forEach(vId => {
-                            const v = gameState.board.vertices[vId];
-                            if (v && v.type === 'city') cityCount++;
-                        });
-                        return cityCount >= 2;
-                    },
-                    weight: 15.0,
-                };
-
-                // 5. Expansion potential (Road Network size)
-                objectives['ROAD_LENGTH_5'] = {
-                    checker: (gameState: GameState) => {
-                        const player = gameState.players[playerID];
-                        return !!player && player.roads.length >= 5;
-                    },
-                    weight: 5.0,
-                };
-
-                return objectives;
-            }
-        });
-    }
+  async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+    return this.innerBot.play(state, playerID);
+  }
 }
