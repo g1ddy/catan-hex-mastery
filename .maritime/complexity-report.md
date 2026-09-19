@@ -5,7 +5,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | `src` | 4 | 1 ($C_a$) | 7 ($C_e$) | **0.875** |
 | `src/adapters` | 4 | 10 ($C_a$) | 3 ($C_e$) | **0.231** |
-| `src/bots` | 13 | 2 ($C_a$) | 10 ($C_e$) | **0.833** |
+| `src/bots` | 13 | 2 ($C_a$) | 17 ($C_e$) | **0.895** |
 | `src/features/board` | 13 | 1 ($C_a$) | 14 ($C_e$) | **0.933** |
 | `src/features/coach` | 11 | 4 ($C_a$) | 10 ($C_e$) | **0.714** |
 | `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
@@ -16,7 +16,7 @@
 | `src/styles` | 2 | 2 ($C_a$) | 0 ($C_e$) | **0** |
 
 
-**Last Updated:** 2026-09-18
+**Last Updated:** 2026-09-19
 
 ### 🏥 Repository Health Score: **88.0 / 100**
 
@@ -39,7 +39,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **75.5** | 209 | 11 | 12 | 0.43 |
 | `src/game/analysis/probability.ts` | **72.1** | 188 | 16 | 4 | 0.67 |
-| `src/game/ai/search/MctsEngine.ts` | **72** | 198 | 7 | 10 | 0.91 |
+| `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
