@@ -5,7 +5,7 @@ import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { BalancedBot } from './BalancedBot';
 import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
-import { MonteCatanoBot } from './MonteCatanoBot';
+import { MonteCatanoRuntimeAdapter } from './MonteCatanoBot';
 import { BOT_CYCLE } from './botCycle';
 import { enumerate } from '../game/rules/enumerator';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';
@@ -40,7 +40,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
 
             expect(botsResult['0']).toBe(BalancedBot);
             expect(botsResult['1']).toBe(CatanMCTSRuntimeAdapter);
-            expect(botsResult['2']).toBe(MonteCatanoBot);
+            expect(botsResult['2']).toBe(MonteCatanoRuntimeAdapter);
 
             expect(botNamesResult['0']).toBe('Balanced');
             expect(botNamesResult['1']).toBe('CatanMCTS');
@@ -79,7 +79,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
             expect(resMcts.action.payload.type).toBe('placeSettlement');
 
             // Test MonteCatanoBot
-            const monte = new MonteCatanoBot({ enumerate, game: CatanGame });
+            const monte = new MonteCatanoRuntimeAdapter();
             const resMonte = await monte.play(state, activePlayer);
             expect(resMonte).toBeDefined();
             expect(resMonte.action).toBeDefined();
@@ -104,7 +104,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
             const bots = {
                 '0': new BalancedBot({ enumerate: adaptedEnumerate, seed: 'test-seed-123' }),
                 '1': new CatanMCTSRuntimeAdapter({ seed: 'test-seed-123' }),
-                '2': new MonteCatanoBot({ enumerate, game: CatanGame, seed: 'test-seed-123' }),
+                '2': new MonteCatanoRuntimeAdapter({ seed: 'test-seed-123' }),
             };
 
             let steps = 0;
@@ -163,7 +163,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
             const bots = {
                 '0': new BalancedBot({ enumerate: adaptedEnumerate, seed: 'gameplay-seed' }),
                 '1': new CatanMCTSRuntimeAdapter({ seed: 'gameplay-seed' }),
-                '2': new MonteCatanoBot({ enumerate, game: CatanGame, seed: 'gameplay-seed' }),
+                '2': new MonteCatanoRuntimeAdapter({ seed: 'gameplay-seed' }),
             };
 
             let steps = 0;

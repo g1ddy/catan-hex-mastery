@@ -4,8 +4,7 @@
 import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
-import { MonteCatanoBot } from './MonteCatanoBot';
-import { enumerate } from '../game/rules/enumerator';
+import { MonteCatanoRuntimeAdapter } from './MonteCatanoBot';
 
 describe('MonteCatanoBot vs CatanMCTSBot Simulation', () => {
     // Increase timeout significantly for running matches
@@ -43,8 +42,8 @@ describe('MonteCatanoBot vs CatanMCTSBot Simulation', () => {
             const originalMCTSId = p0IsMonte ? '1' : '0';
 
             const bots = {
-                [monteCatanoId]: new MonteCatanoBot({ enumerate, game: CatanGame }),
-                [originalMCTSId]: new CatanMCTSRuntimeAdapter(),
+                [monteCatanoId]: new MonteCatanoRuntimeAdapter({ seed: `monte-${match}` }),
+                [originalMCTSId]: new CatanMCTSRuntimeAdapter({ seed: `mcts-${match}` }),
             };
 
             let steps = 0;

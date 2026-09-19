@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.9",
-  "generatedAt": "2026-09-19T15:32:13.671Z",
+  "generatedAt": "2026-09-19T16:45:46.144Z",
   "sourceRoots": [
     "src"
   ],
@@ -35,8 +35,8 @@
           "folder": "src/bots",
           "moduleCount": 13,
           "afferentCoupling": 2,
-          "efferentCoupling": 17,
-          "instability": 0.895
+          "efferentCoupling": 14,
+          "instability": 0.875
         },
         {
           "folder": "src/features/board",
