@@ -32,12 +32,10 @@ export const CATAN_MCTS_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Obje
 
 export interface CatanMCTSBotConfig {
   seed?: string | number;
-  playerID?: string;
   iterations?: number;
   playoutDepth?: number;
   maxDepth?: number;
   explorationConstant?: number;
-  [key: string]: any;
 }
 
 const DEFAULT_CONFIG: CatanMCTSBotConfig = {
@@ -75,11 +73,6 @@ export class CatanMCTSBot {
       evaluator,
       rolloutPolicy,
     });
-  }
-
-  /** Exposes internal engine for contract testing */
-  public getEngine(): MctsEngine<CatanSearchState, CatanSearchAction> {
-    return this.engine;
   }
 
   async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {

@@ -6,7 +6,6 @@ import { createMockGameState, createTestPlayer } from '../game/testUtils';
 import { RollStatus, TerrainType } from '../game/core/types';
 import { PHASES, STAGES, GameStage } from '../game/core/constants';
 import { generateBoard } from '../game/generation/boardGen';
-import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 
 function createSetupState(currentPlayer = '0') {
   const { hexes, ports } = generateBoard();
@@ -67,10 +66,6 @@ describe('CatanMCTSBot Migration & Integration', () => {
       expect(bot.iterations).toBe(100);
       expect(bot.maxDepth).toBe(10);
       expect(bot.explorationConstant).toBe(1.414);
-
-      const engine = bot.getEngine();
-      expect(engine).toBeDefined();
-      expect(engine.selectionPolicy).toBeInstanceOf(UctSelectionPolicy);
     });
 
     it('respects custom configuration overrides for iterations, maxDepth, and explorationConstant', () => {
