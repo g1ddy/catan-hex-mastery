@@ -281,7 +281,7 @@
   },
   "src/bots/CatanMCTSBot.ts": {
     "complexity": 6,
-    "loc": 131,
+    "loc": 133,
     "instability": 0.92,
     "fanIn": 1,
     "fanOut": 11,
