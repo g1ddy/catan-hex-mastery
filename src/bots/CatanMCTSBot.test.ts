@@ -1,8 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import fs from 'fs';
-import path from 'path';
 import { CatanMCTSBot, CATAN_MCTS_EVALUATOR_WEIGHTS } from './CatanMCTSBot';
 import { createMockGameState, createTestPlayer } from '../game/testUtils';
 import { RollStatus, TerrainType } from '../game/core/types';
@@ -198,6 +196,10 @@ describe('CatanMCTSBot Migration & Integration', () => {
 
       expect(res).toBeDefined();
       expect(res.action.type).toBe('MAKE_MOVE');
+      // MctsEngine backpropagates once per completed iteration, so rootVisits
+      // is the observable execution count for a non-terminal searchable root.
+      expect(res.iterations).toBe(25);
+      expect(res.rootVisits).toBe(25);
     });
 
     it('does not mutate input game state during MCTS search', async () => {
