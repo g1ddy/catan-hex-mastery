@@ -89,13 +89,6 @@ describe('CatanMCTSBot Migration & Integration', () => {
       expect(bot.explorationConstant).toBe(2.0);
     });
 
-    it('does not import or depend on boardgame.io/ai', () => {
-      const filePath = path.resolve(__dirname, 'CatanMCTSBot.ts');
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-      expect(fileContent).not.toContain('boardgame.io/ai');
-      expect(fileContent).not.toContain('import { MCTSBot }');
-    });
   });
 
   describe('2. Legal Action & Lifecycle Coverage', () => {

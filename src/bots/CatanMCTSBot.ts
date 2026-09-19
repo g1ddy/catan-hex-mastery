@@ -125,6 +125,8 @@ export class CatanMCTSBot extends Bot {
         } as MakeMoveAction['payload'],
       },
       metadata: { message: `CatanMCTSBot (${playerID})` },
+      iterations: result.iterations,
+      rootVisits: result.rootVisits,
     };
   }
 }
