@@ -4,7 +4,7 @@
 import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
 import { BalancedBot } from './BalancedBot';
-import { CatanMCTSBot } from './CatanMCTSBot';
+import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
 import { MonteCatanoBot } from './MonteCatanoBot';
 import { BOT_CYCLE } from './botCycle';
 import { enumerate } from '../game/rules/enumerator';
@@ -39,7 +39,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
             expect(Object.keys(botNamesResult)).toHaveLength(3);
 
             expect(botsResult['0']).toBe(BalancedBot);
-            expect(botsResult['1']).toBe(CatanMCTSBot);
+            expect(botsResult['1']).toBe(CatanMCTSRuntimeAdapter);
             expect(botsResult['2']).toBe(MonteCatanoBot);
 
             expect(botNamesResult['0']).toBe('Balanced');
@@ -71,7 +71,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
             expect(resBalanced.action.payload.type).toBe('placeSettlement');
 
             // Test CatanMCTSBot
-            const mcts = new CatanMCTSBot({ enumerate, game: CatanGame });
+            const mcts = new CatanMCTSRuntimeAdapter();
             const resMcts = await mcts.play(state, activePlayer);
             expect(resMcts).toBeDefined();
             expect(resMcts.action).toBeDefined();
@@ -103,7 +103,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
 
             const bots = {
                 '0': new BalancedBot({ enumerate: adaptedEnumerate, seed: 'test-seed-123' }),
-                '1': new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'test-seed-123' }),
+                '1': new CatanMCTSRuntimeAdapter({ seed: 'test-seed-123' }),
                 '2': new MonteCatanoBot({ enumerate, game: CatanGame, seed: 'test-seed-123' }),
             };
 
@@ -162,7 +162,7 @@ describe('Autoplay Matchup: Balanced vs CatanMCTS vs MonteCatano', () => {
 
             const bots = {
                 '0': new BalancedBot({ enumerate: adaptedEnumerate, seed: 'gameplay-seed' }),
-                '1': new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'gameplay-seed' }),
+                '1': new CatanMCTSRuntimeAdapter({ seed: 'gameplay-seed' }),
                 '2': new MonteCatanoBot({ enumerate, game: CatanGame, seed: 'gameplay-seed' }),
             };
 

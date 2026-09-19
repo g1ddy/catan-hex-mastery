@@ -6,9 +6,6 @@ import { createMockGameState, createTestPlayer } from '../game/testUtils';
 import { RollStatus, TerrainType } from '../game/core/types';
 import { PHASES, STAGES, GameStage } from '../game/core/constants';
 import { generateBoard } from '../game/generation/boardGen';
-import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
-import { enumerate } from '../game/rules/enumerator';
-import { CatanGame } from '../game/Game';
 
 function createSetupState(currentPlayer = '0') {
   const { hexes, ports } = generateBoard();
@@ -64,21 +61,15 @@ function createGameplayState(currentPlayer = '0', stage: GameStage = STAGES.ACTI
 describe('CatanMCTSBot Migration & Integration', () => {
   describe('1. Bot Construction & Configuration', () => {
     it('uses Catan-owned MCTS stack with default search bounds (100 iterations, 10 rollout depth, 1.414 UCT)', () => {
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame });
+      const bot = new CatanMCTSBot();
 
       expect(bot.iterations).toBe(100);
       expect(bot.maxDepth).toBe(10);
       expect(bot.explorationConstant).toBe(1.414);
-
-      const engine = bot.getEngine();
-      expect(engine).toBeDefined();
-      expect(engine.selectionPolicy).toBeInstanceOf(UctSelectionPolicy);
     });
 
     it('respects custom configuration overrides for iterations, maxDepth, and explorationConstant', () => {
       const bot = new CatanMCTSBot({
-        enumerate,
-        game: CatanGame,
         iterations: 40,
         playoutDepth: 6,
         explorationConstant: 2.0,
@@ -94,7 +85,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
   describe('2. Legal Action & Lifecycle Coverage', () => {
     it('handles setup settlement placement and returns a valid MAKE_MOVE payload', async () => {
       const { game, ctx } = createSetupState('0');
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'setup-seed-1' });
+      const bot = new CatanMCTSBot({ seed: 'setup-seed-1' });
 
       const state = { G: game, ctx };
       const result = await bot.play(state, '0');
@@ -109,7 +100,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
 
     it('handles rolling stage during gameplay phase', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ROLLING);
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'roll-seed-1' });
+      const bot = new CatanMCTSBot({ seed: 'roll-seed-1' });
 
       const state = { G: game, ctx };
       const result = await bot.play(state, '0');
@@ -122,7 +113,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
 
     it('handles robber dismiss stage during gameplay phase', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ROBBER);
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'robber-seed-1' });
+      const bot = new CatanMCTSBot({ seed: 'robber-seed-1' });
 
       const state = { G: game, ctx };
       const result = await bot.play(state, '0');
@@ -135,7 +126,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
 
     it('safely returns undefined when requested player is not current active player', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ACTING);
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame });
+      const bot = new CatanMCTSBot();
 
       const state = { G: game, ctx };
       // Request player '1' when current player is '0'
@@ -147,7 +138,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
     it('returns undefined when state is terminal / gameover', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ACTING);
       ctx.gameover = { winner: '0' };
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame });
+      const bot = new CatanMCTSBot();
 
       const state = { G: game, ctx };
       const result = await bot.play(state, '0');
@@ -160,8 +151,8 @@ describe('CatanMCTSBot Migration & Integration', () => {
     it('produces identical move choices and payload for two bots given same state and seed', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ACTING);
 
-      const bot1 = new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'repro-seed-99' });
-      const bot2 = new CatanMCTSBot({ enumerate, game: CatanGame, seed: 'repro-seed-99' });
+      const bot1 = new CatanMCTSBot({ seed: 'repro-seed-99' });
+      const bot2 = new CatanMCTSBot({ seed: 'repro-seed-99' });
 
       const state1 = { G: JSON.parse(JSON.stringify(game)), ctx: JSON.parse(JSON.stringify(ctx)) };
       const state2 = { G: JSON.parse(JSON.stringify(game)), ctx: JSON.parse(JSON.stringify(ctx)) };
@@ -177,8 +168,6 @@ describe('CatanMCTSBot Migration & Integration', () => {
     it('respects configured iteration budget during search execution', async () => {
       const { game, ctx } = createGameplayState('0', STAGES.ACTING);
       const bot = new CatanMCTSBot({
-        enumerate,
-        game: CatanGame,
         iterations: 25,
         playoutDepth: 5,
         seed: 'bounds-seed-1',
@@ -200,7 +189,7 @@ describe('CatanMCTSBot Migration & Integration', () => {
       const gameSnapshot = JSON.stringify(game);
       const ctxSnapshot = JSON.stringify(ctx);
 
-      const bot = new CatanMCTSBot({ enumerate, game: CatanGame, iterations: 30, seed: 'immutability-check' });
+      const bot = new CatanMCTSBot({ iterations: 30, seed: 'immutability-check' });
       await bot.play({ G: game, ctx }, '0');
 
       expect(JSON.stringify(game)).toBe(gameSnapshot);

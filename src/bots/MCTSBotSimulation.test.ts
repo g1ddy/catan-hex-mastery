@@ -3,7 +3,7 @@
  */
 import { Client, Local } from '../adapters/runtime/boardgame';
 import { CatanGame } from '../game/Game';
-import { CatanMCTSBot } from './CatanMCTSBot';
+import { CatanMCTSRuntimeAdapter } from './CatanMCTSBot';
 import { MonteCatanoBot } from './MonteCatanoBot';
 import { enumerate } from '../game/rules/enumerator';
 
@@ -44,7 +44,7 @@ describe('MonteCatanoBot vs CatanMCTSBot Simulation', () => {
 
             const bots = {
                 [monteCatanoId]: new MonteCatanoBot({ enumerate, game: CatanGame }),
-                [originalMCTSId]: new CatanMCTSBot({ enumerate, game: CatanGame }),
+                [originalMCTSId]: new CatanMCTSRuntimeAdapter(),
             };
 
             let steps = 0;

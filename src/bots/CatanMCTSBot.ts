@@ -1,7 +1,6 @@
-import { Bot, Game, Ctx } from '../adapters/runtime/boardgame';
+import { Bot, Ctx } from '../adapters/runtime/boardgame';
 import { GameState, MakeMoveAction } from '../game/core/types';
 import { toGameContext } from '../adapters/runtime/boardgameMoves';
-import { CatanGame } from '../game/Game';
 import { CatanSearchGame } from '../game/ai/catan/CatanSearchGame';
 import type { CatanSearchState } from '../game/ai/catan/CatanSearchState';
 import type { CatanSearchAction } from '../game/ai/catan/CatanSearchAction';
@@ -12,8 +11,10 @@ import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 
 /**
  * Baseline evaluator weights for CatanMCTSBot.
- * Focuses on Victory Points and structure expansion (cities, settlements, roads)
- * while leaving complex engine-building and trade heuristics for MonteCatanoBot (#483).
+ * This configuration intentionally approximates the old bot's cumulative VP objective behavior
+ * by combining raw Victory Points with structure expansion (cities, settlements, roads).
+ * It focuses on basic board presence while leaving complex engine-building and trade heuristics
+ * for MonteCatanoBot (#483).
  */
 export const CATAN_MCTS_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Object.freeze({
   victoryPoints: 10,
@@ -29,27 +30,21 @@ export const CATAN_MCTS_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Obje
   productionAdvantage: 0,
 });
 
-export interface BotConfig {
-  game?: Game;
-  enumerate?: (G: any, ctx: any, playerID: string) => any;
+export interface CatanMCTSBotConfig {
   seed?: string | number;
-  playerID?: string;
   iterations?: number;
   playoutDepth?: number;
   maxDepth?: number;
   explorationConstant?: number;
-  [key: string]: any;
 }
 
-const DEFAULT_CONFIG: BotConfig = {
-  game: CatanGame,
-  enumerate: () => [],
+const DEFAULT_CONFIG: CatanMCTSBotConfig = {
   iterations: 100,
   playoutDepth: 10,
   explorationConstant: 1.414,
 };
 
-export class CatanMCTSBot extends Bot {
+export class CatanMCTSBot {
   public readonly iterations: number;
   public readonly maxDepth: number;
   public readonly explorationConstant: number;
@@ -58,9 +53,8 @@ export class CatanMCTSBot extends Bot {
   private readonly searchGame: CatanSearchGame;
   private readonly engine: MctsEngine<CatanSearchState, CatanSearchAction>;
 
-  constructor(config: BotConfig = {}) {
+  constructor(config: CatanMCTSBotConfig = {}) {
     const fullConfig = { ...DEFAULT_CONFIG, ...config };
-    super(fullConfig as any);
 
     this.iterations = fullConfig.iterations ?? 100;
     this.maxDepth = fullConfig.playoutDepth ?? fullConfig.maxDepth ?? 10;
@@ -79,11 +73,6 @@ export class CatanMCTSBot extends Bot {
       evaluator,
       rolloutPolicy,
     });
-  }
-
-  /** Exposes internal engine for contract testing */
-  public getEngine(): MctsEngine<CatanSearchState, CatanSearchAction> {
-    return this.engine;
   }
 
   async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
@@ -128,5 +117,23 @@ export class CatanMCTSBot extends Bot {
       iterations: result.iterations,
       rootVisits: result.rootVisits,
     };
+  }
+}
+
+/**
+ * Thin runtime adapter to expose the Catan-owned CatanMCTSBot
+ * to boardgame.io's Bot architecture where still required by the runtime.
+ */
+export class CatanMCTSRuntimeAdapter extends Bot {
+  private readonly innerBot: CatanMCTSBot;
+
+  constructor(config: Record<string, any> = {}) {
+    // boardgame.io/ai Bot base class expects enumerate, although we don't use it.
+    super({ enumerate: () => [], ...config });
+    this.innerBot = new CatanMCTSBot(config as CatanMCTSBotConfig);
+  }
+
+  async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
+    return this.innerBot.play(state, playerID);
   }
 }
