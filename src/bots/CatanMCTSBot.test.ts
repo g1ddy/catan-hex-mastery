@@ -1,8 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import fs from 'fs';
-import path from 'path';
 import { CatanMCTSBot, CATAN_MCTS_EVALUATOR_WEIGHTS } from './CatanMCTSBot';
 import { createMockGameState, createTestPlayer } from '../game/testUtils';
 import { RollStatus, TerrainType } from '../game/core/types';
@@ -217,12 +215,12 @@ describe('CatanMCTSBot Migration & Integration', () => {
   });
 
   describe('5. Strategic Intent & Evaluator Baseline', () => {
-    it('configures CATAN_MCTS_EVALUATOR_WEIGHTS focusing on VP and structure expansion', () => {
+    it('keeps the migrated baseline VP-centric rather than adding richer evaluator signals', () => {
       expect(CATAN_MCTS_EVALUATOR_WEIGHTS.victoryPoints).toBe(10);
-      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.cities).toBe(4);
-      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.settlements).toBe(2);
-      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.roadLength).toBe(0.5);
 
+      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.cities).toBe(0);
+      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.settlements).toBe(0);
+      expect(CATAN_MCTS_EVALUATOR_WEIGHTS.roadLength).toBe(0);
       expect(CATAN_MCTS_EVALUATOR_WEIGHTS.productionPips).toBe(0);
       expect(CATAN_MCTS_EVALUATOR_WEIGHTS.resourceDiversity).toBe(0);
       expect(CATAN_MCTS_EVALUATOR_WEIGHTS.synergyOreWheat).toBe(0);

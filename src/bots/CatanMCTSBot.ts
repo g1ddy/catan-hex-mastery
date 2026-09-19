@@ -12,14 +12,20 @@ import { UctSelectionPolicy } from '../game/ai/search/UctSelectionPolicy';
 
 /**
  * Baseline evaluator weights for CatanMCTSBot.
- * Focuses on Victory Points and structure expansion (cities, settlements, roads)
- * while leaving complex engine-building and trade heuristics for MonteCatanoBot (#483).
+ *
+ * The legacy bot used cumulative VP-threshold objectives with increasing weights.
+ * CatanEvaluator is intentionally a linear feature evaluator, so that exact
+ * threshold objective cannot be represented without changing #480's evaluator
+ * contract. Keep this migration deliberately VP-centric rather than introducing
+ * new structural preferences: the baseline bot should continue to optimize game
+ * progress toward victory, while richer structural/economic signals remain the
+ * responsibility of MonteCatanoBot (#483).
  */
 export const CATAN_MCTS_EVALUATOR_WEIGHTS: Partial<CatanEvaluatorWeights> = Object.freeze({
   victoryPoints: 10,
-  cities: 4,
-  settlements: 2,
-  roadLength: 0.5,
+  cities: 0,
+  settlements: 0,
+  roadLength: 0,
   productionPips: 0,
   resourceDiversity: 0,
   synergyOreWheat: 0,
