@@ -5,10 +5,12 @@ import { GameState, MakeMoveAction } from '../game/core/types';
 import { Coach } from '../game/analysis/coach';
 import { BotProfile, BALANCED_PROFILE } from './profiles/BotProfile';
 import { getAffordableBuilds } from '../game/mechanics/costs';
+import { generateBoard } from '../game/generation/boardGen';
 
 // Mock dependencies
 jest.mock('../game/analysis/coach');
 jest.mock('../game/rules/validator', () => ({
+    ...jest.requireActual('../game/rules/validator'),
     getValidSettlementSpots: jest.fn(() => new Set(['2_2_2'])),
     getValidCitySpots: jest.fn(() => new Set(['3_3_3'])),
     getValidRoadSpots: jest.fn(() => new Set(['edge_2'])),
@@ -24,6 +26,7 @@ jest.mock('../game/mechanics/costs', () => ({
     }))
 }));
 jest.mock('../game/geometry/hexUtils', () => ({
+    ...jest.requireActual('../game/geometry/hexUtils'),
     getHexesForVertex: jest.fn(() => []),
 }));
 
@@ -40,15 +43,27 @@ describe('BotCoach', () => {
     let mockGameContext: GameContext;
 
     beforeEach(() => {
+        const { hexes, ports } = generateBoard();
         G = {
+            board: { hexes, ports, vertices: {}, edges: {} },
             players: {
                 '0': {
                     id: '0',
                     resources: { wood: 10, brick: 10, wheat: 10, sheep: 10, ore: 10 },
                     settlements: [],
                     roads: [],
+                    cities: [],
                     victoryPoints: 0,
                     color: 'red'
+                },
+                '1': {
+                    id: '1',
+                    resources: { wood: 10, brick: 10, wheat: 10, sheep: 10, ore: 10 },
+                    settlements: [],
+                    roads: [],
+                    cities: [],
+                    victoryPoints: 0,
+                    color: 'blue'
                 }
             }
         } as unknown as GameState;
@@ -404,6 +419,112 @@ describe('BotCoach', () => {
             const actions = result as MakeMoveAction[];
 
             expect(actions[0].payload.type).toBe('tradeBank');
+        });
+    });
+
+    describe('Catan Search Integration', () => {
+        it('invokes Catan search and returns complete SearchResult contract', () => {
+            const ctx: GameContext = {
+                currentPlayer: '0',
+                turn: 1,
+                phase: 'setup',
+                stagesByPlayer: { '0': 'placeSettlement' },
+                numPlayers: 2,
+            };
+
+            const result = botCoach.search('0', ctx, { iterations: 10, seed: 'test-seed' });
+
+            expect(result).toBeDefined();
+            expect(result.rootPlayer).toBe('0');
+            expect(result.iterations).toBe(10);
+            expect(result.seed).toBe('test-seed');
+            expect(Array.isArray(result.candidates)).toBe(true);
+        });
+
+        it('produces repeatable results when given a fixed seed', () => {
+            const ctx: GameContext = {
+                currentPlayer: '0',
+                turn: 1,
+                phase: 'setup',
+                stagesByPlayer: { '0': 'placeSettlement' },
+                numPlayers: 2,
+            };
+
+            const res1 = botCoach.search('0', ctx, { iterations: 15, seed: 'fixed-123' });
+            const res2 = botCoach.search('0', ctx, { iterations: 15, seed: 'fixed-123' });
+
+            expect(res1.action).toEqual(res2.action);
+            expect(res1.candidates.length).toEqual(res2.candidates.length);
+            if (res1.candidates.length > 0) {
+                expect(res1.candidates[0].visits).toEqual(res2.candidates[0].visits);
+                expect(res1.candidates[0].value).toEqual(res2.candidates[0].value);
+            }
+        });
+
+        it('does not mutate input state during search execution', () => {
+            const ctx: GameContext = {
+                currentPlayer: '0',
+                turn: 1,
+                phase: 'setup',
+                stagesByPlayer: { '0': 'placeSettlement' },
+                numPlayers: 2,
+            };
+
+            const stateSnapshot = JSON.stringify({ G, ctx });
+            botCoach.search('0', ctx, { iterations: 10, seed: 'immutability-check' });
+            const postSnapshot = JSON.stringify({ G, ctx });
+
+            expect(stateSnapshot).toEqual(postSnapshot);
+        });
+
+        it('handles inactive player requests without attempting search', () => {
+            const ctx: GameContext = {
+                currentPlayer: '1', // Active player is 1, but requesting for 0
+                turn: 1,
+                phase: 'setup',
+                stagesByPlayer: { '1': 'placeSettlement' },
+                numPlayers: 2,
+            };
+
+            const result = botCoach.search('0', ctx);
+
+            expect(result.action).toBeNull();
+            expect(result.iterations).toBe(0);
+            expect(result.candidates).toEqual([]);
+        });
+
+        it('returns recommendation and explanation using getRecommendation', () => {
+            const ctx: GameContext = {
+                currentPlayer: '0',
+                turn: 1,
+                phase: 'setup',
+                stagesByPlayer: { '0': 'placeSettlement' },
+                numPlayers: 2,
+            };
+
+            const rec = botCoach.getRecommendation('0', ctx, { iterations: 10, seed: 'rec-test' });
+
+            expect(rec).toBeDefined();
+            expect(rec.explanation).toBeDefined();
+            expect(typeof rec.explanation).toBe('string');
+            expect(rec.result).toBeDefined();
+            expect(rec.result.rootPlayer).toBe('0');
+        });
+
+        it('handles terminal or empty state gracefully without inventing recommendations', () => {
+            const ctx: GameContext = {
+                currentPlayer: '0',
+                turn: 100,
+                phase: 'gameplay',
+                stagesByPlayer: {},
+                numPlayers: 2,
+                gameover: { winner: '0' },
+            };
+
+            const rec = botCoach.getRecommendation('0', ctx, { iterations: 10 });
+
+            expect(rec.selectedAction).toBeNull();
+            expect(rec.explanation).toContain('No action recommended');
         });
     });
 });
