@@ -369,9 +369,9 @@
       "dependents": [
         "src/pages/GamePage.tsx",
         "src/bots/botCycle.ts",
-        "src/adapters/runtime/MonteCatanoBot.ts",
         "src/bots/CatanBot.ts",
-        "src/bots/CatanMCTSBot.ts"
+        "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts"
       ],
       "orphan": false
     },
@@ -382,8 +382,8 @@
       "dependents": [
         "src/adapters/runtime/boardgame.ts",
         "src/adapters/runtime/boardgameMoves.ts",
-        "src/GameClient.tsx",
-        "src/game/Game.ts"
+        "src/game/Game.ts",
+        "src/GameClient.tsx"
       ],
       "coreModule": false,
       "couldNotResolve": false,
@@ -484,24 +484,6 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../adapters/runtime/MonteCatanoBot",
-          "resolved": "src/adapters/runtime/MonteCatanoBot.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
           "module": "./AggressiveBot",
           "resolved": "src/bots/AggressiveBot.ts",
           "valid": true,
@@ -579,6 +561,24 @@
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MonteCatanoBot",
+          "resolved": "src/bots/MonteCatanoBot.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
         }
       ],
       "dependents": [
@@ -587,7 +587,7 @@
       "orphan": false
     },
     {
-      "source": "src/adapters/runtime/MonteCatanoBot.ts",
+      "source": "src/bots/AggressiveBot.ts",
       "valid": true,
       "dependencies": [
         {
@@ -602,10 +602,2259 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "../../bots/MonteCatanoBot",
-          "resolved": "src/bots/MonteCatanoBot.ts",
+          "module": "./CatanBot",
+          "resolved": "src/bots/CatanBot.ts",
           "valid": true,
           "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/CatanBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/analysis/coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./BotCoach",
+          "resolved": "src/bots/BotCoach.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/AggressiveBot.ts",
+        "src/bots/BalancedBot.ts",
+        "src/bots/DefensiveBot.ts",
+        "src/bots/ExpansiveBot.ts",
+        "src/GameClient.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/adapters/runtime/boardgameMoves.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io",
+          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts",
+        "src/bots/CatanMCTSBot.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/game/Game.ts",
+        "src/adapters/runtime/BoardgameView.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/constants.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/adapters/runtime/boardgameMoves.ts",
+        "src/game/core/types.ts",
+        "src/game/analysis/coach.ts",
+        "src/game/rules/queries.ts",
+        "src/game/moves/execution.ts",
+        "src/game/rules/lifecycle.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/moves/robber.ts",
+        "src/game/moves/roll.ts",
+        "src/game/moves/setup.ts",
+        "src/game/rules/enumerator.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/game/Game.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/hooks/useGameControls.ts",
+        "src/features/hud/hooks/useTradeLogic.ts",
+        "src/features/hud/components/controls/SetupControls.tsx",
+        "src/features/hud/logic/statusMessageUtils.ts",
+        "src/features/game/hooks/useGameScreenState.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/types.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts",
+        "src/adapters/runtime/boardgameMoves.ts",
+        "src/game/analysis/coach.ts",
+        "src/game/core/validation.ts",
+        "src/game/geometry/hexUtils.ts",
+        "src/game/rules/queries.ts",
+        "src/game/mechanics/costs.ts",
+        "src/game/core/config.ts",
+        "src/game/rules/robberRules.ts",
+        "src/game/mechanics/resources.ts",
+        "src/game/rules/spatial.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/game/mechanics/production.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/analysis/advisors/TradeAdvisor.ts",
+        "src/game/mechanics/trade.ts",
+        "src/bots/BotCoach.ts",
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/utils/ActionUtils.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/bots/CatanMCTSBot.ts",
+        "src/game/analysis/production.ts",
+        "src/game/analysis/spatialAnalysis.ts",
+        "src/game/analysis/probability.ts",
+        "src/game/ai/catan/CatanSearchState.ts",
+        "src/game/ai/catan/CatanSearchAction.ts",
+        "src/game/ai/catan/CatanSearchGame.ts",
+        "src/game/moves/execution.ts",
+        "src/game/rules/lifecycle.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/validator.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/rules/economy.ts",
+        "src/game/moves/robber.ts",
+        "src/game/moves/roll.ts",
+        "src/game/moves/setup.ts",
+        "src/game/generation/boardGen.ts",
+        "src/game/mechanics/boardStats.ts",
+        "src/game/moves/trade.ts",
+        "src/game/rules/enumerator.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/game/Game.ts",
+        "src/game/analysis/CoachPlugin.ts",
+        "src/adapters/runtime/BoardgameView.tsx",
+        "src/features/game/GameScreen.tsx",
+        "src/features/board/BoardLayer.tsx",
+        "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/board/components/GameHex.tsx",
+        "src/features/shared/config/uiConfig.tsx",
+        "src/features/board/components/helpers.tsx",
+        "src/features/board/components/HexOverlays.tsx",
+        "src/game/geometry/staticGeometry.ts",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/Port.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/components/GameControls.tsx",
+        "src/features/hud/hooks/useGameControls.ts",
+        "src/features/hud/hooks/useTradeLogic.ts",
+        "src/features/hud/components/controls/TurnControls.tsx",
+        "src/features/board/hooks/useBoardInteractions.ts",
+        "src/features/board/hooks/useGameEffects.ts",
+        "src/features/coach/components/AnalystPanel.tsx",
+        "src/features/coach/components/CoachPanel.tsx",
+        "src/features/coach/components/PlayerProductionPotential.tsx",
+        "src/features/shared/components/ResourceIconRow.tsx",
+        "src/features/coach/components/PlayerProduction.tsx",
+        "src/features/coach/components/ResourceDistribution.tsx",
+        "src/features/hud/components/GameNotification.tsx",
+        "src/features/hud/hooks/useAutoDismissNotification.ts",
+        "src/features/hud/components/notifications/ProductionNotification.tsx",
+        "src/features/hud/components/notifications/RobberNotification.tsx",
+        "src/features/hud/components/GameStatusBanner.tsx",
+        "src/features/hud/hooks/useGameStatusMessage.ts",
+        "src/features/hud/logic/statusMessageUtils.ts",
+        "src/features/hud/components/PlayerPanel.tsx",
+        "src/features/game/components/TooltipRenderers.tsx",
+        "src/features/game/hooks/useAutoResolveRoll.ts",
+        "src/features/game/hooks/useGameScreenState.ts",
+        "src/game/testUtils.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/coach.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../rules/queries",
+          "resolved": "src/game/rules/queries.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./adviceConstants",
+          "resolved": "src/game/analysis/adviceConstants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./advisors/RoadAdvisor",
+          "resolved": "src/game/analysis/advisors/RoadAdvisor.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "cycle": [
+            {
+              "name": "src/game/analysis/advisors/RoadAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import"
+              ]
+            },
+            {
+              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            },
+            {
+              "name": "src/game/analysis/coach.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./advisors/SpatialAdvisor",
+          "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "cycle": [
+            {
+              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import"
+              ]
+            },
+            {
+              "name": "src/game/analysis/coach.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./advisors/TradeAdvisor",
+          "resolved": "src/game/analysis/advisors/TradeAdvisor.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types",
+          "resolved": "src/game/analysis/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "type-only",
+            "export",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types",
+          "resolved": "src/game/analysis/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/bots/BotCoach.ts",
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/game/analysis/CoachPlugin.ts",
+        "src/features/game/GameScreen.tsx",
+        "src/features/coach/hooks/useCoachData.ts",
+        "src/features/coach/logic/coachUtils.ts",
+        "src/features/coach/types.ts",
+        "src/features/board/components/HexOverlays.tsx",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/components/GameControls.tsx",
+        "src/features/hud/components/controls/BuildBar.tsx",
+        "src/features/coach/components/CoachPanel.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/validation.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/rules/queries.ts",
+        "src/game/rules/spatial.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/analysis/advisors/TradeAdvisor.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/game/ai/catan/CatanEvaluator.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/rules/economy.ts",
+        "src/game/moves/setup.ts",
+        "src/game/rules/enumerator.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/geometry/hexUtils.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./math",
+          "resolved": "src/game/geometry/math.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/rules/queries.ts",
+        "src/game/rules/robberRules.ts",
+        "src/game/mechanics/resources.ts",
+        "src/game/rules/spatial.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/game/mechanics/production.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/analysis/production.ts",
+        "src/game/analysis/spatialAnalysis.ts",
+        "src/game/analysis/probability.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/moves/setup.ts",
+        "src/game/generation/boardGen.ts",
+        "src/game/geometry/staticGeometry.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/geometry/math.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/geometry/hexUtils.ts",
+        "src/game/geometry/staticGeometry.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/rules/queries.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../mechanics/costs",
+          "resolved": "src/game/mechanics/costs.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./robberRules",
+          "resolved": "src/game/rules/robberRules.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./spatial",
+          "resolved": "src/game/rules/spatial.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/ai/catan/CatanEvaluator.ts",
+        "src/game/analysis/spatialAnalysis.ts",
+        "src/game/moves/robber.ts",
+        "src/game/rules/enumerator.ts",
+        "src/features/board/hooks/useBoardInteractions.ts",
+        "src/features/game/hooks/useGameScreenState.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/mechanics/costs.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/config",
+          "resolved": "src/game/core/config.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/rules/queries.ts",
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/game/rules/economy.ts",
+        "src/features/hud/hooks/useGameControls.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/config.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/mechanics/costs.ts",
+        "src/game/mechanics/resources.ts",
+        "src/game/mechanics/production.ts",
+        "src/game/mechanics/trade.ts",
+        "src/game/analysis/production.ts",
+        "src/game/analysis/probability.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/rules/economy.ts",
+        "src/game/mechanics/boardStats.ts",
+        "src/game/moves/trade.ts",
+        "src/game/Game.ts",
+        "src/features/board/BoardLayer.tsx",
+        "src/features/board/components/OverlayVertex.tsx",
+        "src/features/hud/components/controls/BuildBar.tsx",
+        "src/features/game/components/TooltipRenderers.tsx",
+        "src/pages/SetupPage.tsx",
+        "src/game/testUtils.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/rules/robberRules.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../mechanics/resources",
+          "resolved": "src/game/mechanics/resources.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/rules/queries.ts",
+        "src/game/rules/moveValidation.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/core/utils/objectUtils.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/rules/robberRules.ts",
+        "src/game/mechanics/resources.ts",
+        "src/game/rules/spatial.ts",
+        "src/game/mechanics/production.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/mechanics/trade.ts",
+        "src/game/ai/catan/CatanEvaluator.ts",
+        "src/game/analysis/production.ts",
+        "src/game/analysis/spatialAnalysis.ts",
+        "src/game/analysis/probability.ts",
+        "src/game/moves/build.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/moves/setup.ts",
+        "src/game/generation/boardGen.ts",
+        "src/features/board/components/helpers.tsx",
+        "src/features/board/components/HexOverlays.tsx",
+        "src/features/board/components/HexEdges.tsx",
+        "src/features/board/components/HexVertices.tsx",
+        "src/features/hud/components/notifications/ProductionNotification.tsx",
+        "src/features/hud/components/notifications/RobberNotification.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/mechanics/resources.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/config",
+          "resolved": "src/game/core/config.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/rules/robberRules.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/game/moves/roll.ts",
+        "src/game/moves/setup.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/rules/spatial.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/rules/queries.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/game/rules/validator.ts",
+        "src/game/rules/moveValidation.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/adviceConstants.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/analysis/advisors/TradeAdvisor.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/advisors/RoadAdvisor.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../rules/spatial",
+          "resolved": "src/game/rules/spatial.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../analyst",
+          "resolved": "src/game/analysis/analyst.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../types",
+          "resolved": "src/game/analysis/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./SpatialAdvisor",
+          "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "cycle": [
+            {
+              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            },
+            {
+              "name": "src/game/analysis/coach.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            },
+            {
+              "name": "src/game/analysis/advisors/RoadAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/analyst.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "export"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../mechanics/production",
+          "resolved": "src/game/mechanics/production.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/bots/MonteCatanoBot.ts",
+        "src/features/coach/components/PlayerProductionPotential.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/mechanics/production.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/config",
+          "resolved": "src/game/core/config.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/analyst.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/types.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts",
+        "src/game/analysis/advisors/SpatialAdvisor.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/game/analysis/index.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/advisors/SpatialAdvisor.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../../game/core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../geometry/hexUtils",
+          "resolved": "src/game/geometry/hexUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../mechanics/resources",
+          "resolved": "src/game/mechanics/resources.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../mechanics/scoring",
+          "resolved": "src/game/mechanics/scoring.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../rules/queries",
+          "resolved": "src/game/rules/queries.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": true,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "cycle": [
+            {
+              "name": "src/game/analysis/coach.ts",
+              "dependencyTypes": [
+                "local",
+                "import",
+                "pre-compilation-only"
+              ]
+            },
+            {
+              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
+              "dependencyTypes": [
+                "local",
+                "import"
+              ]
+            }
+          ],
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../types",
+          "resolved": "src/game/analysis/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts",
+        "src/game/analysis/advisors/RoadAdvisor.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/mechanics/scoring.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/analysis/advisors/SpatialAdvisor.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/advisors/TradeAdvisor.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../mechanics/trade",
+          "resolved": "src/game/mechanics/trade.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adviceConstants",
+          "resolved": "src/game/analysis/adviceConstants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/coach.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/mechanics/trade.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/utils/objectUtils",
+          "resolved": "src/game/core/utils/objectUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/config",
+          "resolved": "src/game/core/config.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/analysis/advisors/TradeAdvisor.ts",
+        "src/game/rules/moveValidation.ts",
+        "src/game/moves/trade.ts",
+        "src/features/hud/hooks/useGameControls.ts",
+        "src/features/hud/hooks/useTradeLogic.ts",
+        "src/features/hud/components/controls/BuildBar.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/BotCoach.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/analysis/coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./logic/MoveScorer",
+          "resolved": "src/bots/logic/MoveScorer.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./logic/OptimalMoveFilter",
+          "resolved": "src/bots/logic/OptimalMoveFilter.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/CatanBot.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/logic/MoveScorer.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/analysis/coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/mechanics/costs",
+          "resolved": "src/game/mechanics/costs.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../utils/ActionUtils",
+          "resolved": "src/bots/utils/ActionUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/BotCoach.ts",
+        "src/bots/logic/OptimalMoveFilter.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/profiles/BotProfile.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/bots/AggressiveBot.ts",
+        "src/bots/CatanBot.ts",
+        "src/bots/BotCoach.ts",
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/logic/OptimalMoveFilter.ts",
+        "src/bots/BalancedBot.ts",
+        "src/bots/DefensiveBot.ts",
+        "src/bots/ExpansiveBot.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/utils/ActionUtils.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/logic/MoveScorer.ts",
+        "src/bots/logic/OptimalMoveFilter.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/logic/OptimalMoveFilter.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/analysis/coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/analysis/types",
+          "resolved": "src/game/analysis/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
           "matchesDoNotFollow": false
         },
         {
@@ -639,8 +2888,128 @@
           "exoticallyRequired": false,
           "followable": true,
           "moduleSystem": "es6",
-          "module": "./boardgame",
-          "resolved": "src/adapters/runtime/boardgame.ts",
+          "module": "../../game/core/validation",
+          "resolved": "src/game/core/validation.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../../game/mechanics/costs",
+          "resolved": "src/game/mechanics/costs.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../utils/ActionUtils",
+          "resolved": "src/bots/utils/ActionUtils.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./MoveScorer",
+          "resolved": "src/bots/logic/MoveScorer.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/BotCoach.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/BalancedBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./CatanBot",
+          "resolved": "src/bots/CatanBot.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./profiles/BotProfile",
+          "resolved": "src/bots/profiles/BotProfile.ts",
           "valid": true,
           "preCompilationOnly": false,
           "matchesDoNotFollow": false
@@ -652,9 +3021,27 @@
       "orphan": false
     },
     {
-      "source": "src/bots/MonteCatanoBot.ts",
+      "source": "src/bots/CatanMCTSBot.ts",
       "valid": true,
       "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
         {
           "circular": false,
           "coreModule": false,
@@ -824,217 +3211,7 @@
         }
       ],
       "dependents": [
-        "src/adapters/runtime/MonteCatanoBot.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/adapters/runtime/boardgameMoves.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [
-        "src/bots/MonteCatanoBot.ts",
-        "src/bots/CatanBot.ts",
-        "src/bots/CatanMCTSBot.ts",
-        "src/adapters/runtime/BoardgameView.tsx",
-        "src/game/Game.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/constants.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/adapters/runtime/boardgameMoves.ts",
-        "src/game/core/types.ts",
-        "src/game/rules/queries.ts",
-        "src/game/moves/execution.ts",
-        "src/game/rules/lifecycle.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/moves/robber.ts",
-        "src/game/moves/roll.ts",
-        "src/game/moves/setup.ts",
-        "src/game/rules/enumerator.ts",
-        "src/game/analysis/coach.ts",
-        "src/features/coach/logic/coachUtils.ts",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/hud/components/controls/SetupControls.tsx",
-        "src/features/hud/logic/statusMessageUtils.ts",
-        "src/features/game/hooks/useGameScreenState.ts",
-        "src/game/Game.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/types.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/adapters/runtime/MonteCatanoBot.ts",
-        "src/bots/MonteCatanoBot.ts",
-        "src/adapters/runtime/boardgameMoves.ts",
-        "src/game/analysis/production.ts",
-        "src/game/core/config.ts",
-        "src/game/geometry/hexUtils.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/rules/queries.ts",
-        "src/game/core/validation.ts",
-        "src/game/mechanics/costs.ts",
-        "src/game/rules/robberRules.ts",
-        "src/game/mechanics/resources.ts",
-        "src/game/rules/spatial.ts",
-        "src/game/analysis/probability.ts",
-        "src/game/ai/catan/CatanSearchState.ts",
-        "src/game/ai/catan/CatanSearchAction.ts",
-        "src/game/ai/catan/CatanSearchGame.ts",
-        "src/game/moves/execution.ts",
-        "src/game/rules/lifecycle.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/validator.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/mechanics/trade.ts",
-        "src/game/rules/economy.ts",
-        "src/game/moves/robber.ts",
-        "src/game/moves/roll.ts",
-        "src/game/moves/setup.ts",
-        "src/game/generation/boardGen.ts",
-        "src/game/mechanics/boardStats.ts",
-        "src/game/moves/trade.ts",
-        "src/game/rules/enumerator.ts",
-        "src/bots/CatanBot.ts",
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts",
-        "src/game/mechanics/production.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/game/analysis/advisors/TradeAdvisor.ts",
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/utils/ActionUtils.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/bots/CatanMCTSBot.ts",
-        "src/adapters/runtime/BoardgameView.tsx",
-        "src/features/game/GameScreen.tsx",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/coach/hooks/useCoachData.ts",
-        "src/features/coach/logic/coachUtils.ts",
-        "src/features/board/components/GameHex.tsx",
-        "src/features/shared/config/uiConfig.tsx",
-        "src/features/board/components/helpers.tsx",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/game/geometry/staticGeometry.ts",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/Port.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/components/GameControls.tsx",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/hud/components/controls/TurnControls.tsx",
-        "src/features/board/hooks/useBoardInteractions.ts",
-        "src/features/board/hooks/useGameEffects.ts",
-        "src/features/coach/components/AnalystPanel.tsx",
-        "src/features/coach/components/CoachPanel.tsx",
-        "src/features/coach/components/PlayerProductionPotential.tsx",
-        "src/features/shared/components/ResourceIconRow.tsx",
-        "src/features/coach/components/PlayerProduction.tsx",
-        "src/features/coach/components/ResourceDistribution.tsx",
-        "src/features/hud/components/GameNotification.tsx",
-        "src/features/hud/hooks/useAutoDismissNotification.ts",
-        "src/features/hud/components/notifications/ProductionNotification.tsx",
-        "src/features/hud/components/notifications/RobberNotification.tsx",
-        "src/features/hud/components/GameStatusBanner.tsx",
-        "src/features/hud/hooks/useGameStatusMessage.ts",
-        "src/features/hud/logic/statusMessageUtils.ts",
-        "src/features/hud/components/PlayerPanel.tsx",
-        "src/features/game/components/TooltipRenderers.tsx",
-        "src/features/game/hooks/useAutoResolveRoll.ts",
-        "src/features/game/hooks/useGameScreenState.ts",
-        "src/game/Game.ts",
-        "src/game/analysis/CoachPlugin.ts",
-        "src/game/testUtils.ts"
+        "src/bots/botCycle.ts"
       ],
       "orphan": false
     },
@@ -1194,9 +3371,8 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
-        "src/game/ai/catan/CatanRolloutPolicy.ts",
         "src/bots/CatanMCTSBot.ts",
+        "src/game/ai/catan/CatanRolloutPolicy.ts",
         "src/game/ai/catan/index.ts"
       ],
       "orphan": false
@@ -1283,150 +3459,6 @@
       "dependents": [
         "src/game/ai/catan/CatanEvaluator.ts",
         "src/game/analysis/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/config.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/production.ts",
-        "src/game/mechanics/costs.ts",
-        "src/game/mechanics/resources.ts",
-        "src/game/analysis/probability.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/mechanics/trade.ts",
-        "src/game/rules/economy.ts",
-        "src/game/mechanics/boardStats.ts",
-        "src/game/moves/trade.ts",
-        "src/game/mechanics/production.ts",
-        "src/features/board/BoardLayer.tsx",
-        "src/features/board/components/OverlayVertex.tsx",
-        "src/features/hud/components/controls/BuildBar.tsx",
-        "src/features/game/components/TooltipRenderers.tsx",
-        "src/game/Game.ts",
-        "src/pages/SetupPage.tsx",
-        "src/game/testUtils.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/utils/objectUtils.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/production.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/rules/robberRules.ts",
-        "src/game/mechanics/resources.ts",
-        "src/game/rules/spatial.ts",
-        "src/game/analysis/probability.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/mechanics/trade.ts",
-        "src/game/moves/setup.ts",
-        "src/game/generation/boardGen.ts",
-        "src/game/mechanics/production.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/features/board/components/helpers.tsx",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/components/notifications/ProductionNotification.tsx",
-        "src/features/hud/components/notifications/RobberNotification.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/geometry/hexUtils.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./math",
-          "resolved": "src/game/geometry/math.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/production.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/rules/queries.ts",
-        "src/game/rules/robberRules.ts",
-        "src/game/mechanics/resources.ts",
-        "src/game/rules/spatial.ts",
-        "src/game/analysis/probability.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/moves/setup.ts",
-        "src/game/generation/boardGen.ts",
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts",
-        "src/game/mechanics/production.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/game/geometry/staticGeometry.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/geometry/math.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/geometry/hexUtils.ts",
-        "src/game/geometry/staticGeometry.ts"
       ],
       "orphan": false
     },
@@ -1530,516 +3562,6 @@
       "dependents": [
         "src/game/ai/catan/CatanEvaluator.ts",
         "src/game/analysis/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/rules/queries.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../mechanics/costs",
-          "resolved": "src/game/mechanics/costs.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./robberRules",
-          "resolved": "src/game/rules/robberRules.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./spatial",
-          "resolved": "src/game/rules/spatial.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/analysis/spatialAnalysis.ts",
-        "src/game/moves/robber.ts",
-        "src/game/rules/enumerator.ts",
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/features/board/hooks/useBoardInteractions.ts",
-        "src/features/game/hooks/useGameScreenState.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/core/validation.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/ai/catan/CatanEvaluator.ts",
-        "src/game/rules/queries.ts",
-        "src/game/rules/spatial.ts",
-        "src/game/moves/build.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/rules/economy.ts",
-        "src/game/moves/setup.ts",
-        "src/game/rules/enumerator.ts",
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/game/analysis/advisors/TradeAdvisor.ts",
-        "src/bots/logic/OptimalMoveFilter.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/mechanics/costs.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/rules/queries.ts",
-        "src/game/rules/economy.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/features/hud/hooks/useGameControls.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/rules/robberRules.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../mechanics/resources",
-          "resolved": "src/game/mechanics/resources.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/rules/queries.ts",
-        "src/game/rules/moveValidation.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/mechanics/resources.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/rules/robberRules.ts",
-        "src/game/moves/roll.ts",
-        "src/game/moves/setup.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/rules/spatial.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/rules/queries.ts",
-        "src/game/rules/validator.ts",
-        "src/game/rules/moveValidation.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts"
       ],
       "orphan": false
     },
@@ -2343,11 +3865,10 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
+        "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/CatanEvaluator.ts",
         "src/game/ai/catan/CatanRolloutPolicy.ts",
         "src/game/ai/catan/CatanSearchGame.ts",
-        "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/index.ts"
       ],
       "orphan": false
@@ -2476,7 +3997,6 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
         "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/index.ts"
       ],
@@ -2508,10 +4028,9 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
+        "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/CatanRolloutPolicy.ts",
         "src/game/ai/catan/CatanSearchGame.ts",
-        "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/index.ts"
       ],
       "orphan": false
@@ -2676,7 +4195,6 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
         "src/bots/CatanMCTSBot.ts",
         "src/game/ai/catan/index.ts"
       ],
@@ -3331,76 +4849,6 @@
       ],
       "dependents": [
         "src/game/rules/validator.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/mechanics/trade.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/rules/moveValidation.ts",
-        "src/game/moves/trade.ts",
-        "src/game/analysis/advisors/TradeAdvisor.ts",
-        "src/features/hud/hooks/useGameControls.ts",
-        "src/features/hud/hooks/useTradeLogic.ts",
-        "src/features/hud/components/controls/BuildBar.tsx"
       ],
       "orphan": false
     },
@@ -4433,7 +5881,6 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
         "src/bots/CatanMCTSBot.ts",
         "src/game/ai/search/index.ts"
       ],
@@ -4515,1704 +5962,9 @@
         }
       ],
       "dependents": [
-        "src/bots/MonteCatanoBot.ts",
-        "src/game/ai/search/MctsEngine.ts",
         "src/bots/CatanMCTSBot.ts",
+        "src/game/ai/search/MctsEngine.ts",
         "src/game/ai/search/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/AggressiveBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./CatanBot",
-          "resolved": "src/bots/CatanBot.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/CatanBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgame",
-          "resolved": "src/adapters/runtime/boardgame.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgameMoves",
-          "resolved": "src/adapters/runtime/boardgameMoves.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/analysis/coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./BotCoach",
-          "resolved": "src/bots/BotCoach.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/AggressiveBot.ts",
-        "src/bots/BalancedBot.ts",
-        "src/bots/DefensiveBot.ts",
-        "src/bots/ExpansiveBot.ts",
-        "src/GameClient.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/coach.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../rules/queries",
-          "resolved": "src/game/rules/queries.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./adviceConstants",
-          "resolved": "src/game/analysis/adviceConstants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": true,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./advisors/RoadAdvisor",
-          "resolved": "src/game/analysis/advisors/RoadAdvisor.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "cycle": [
-            {
-              "name": "src/game/analysis/advisors/RoadAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import"
-              ]
-            },
-            {
-              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            },
-            {
-              "name": "src/game/analysis/coach.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            }
-          ],
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": true,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./advisors/SpatialAdvisor",
-          "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "cycle": [
-            {
-              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import"
-              ]
-            },
-            {
-              "name": "src/game/analysis/coach.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            }
-          ],
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./advisors/TradeAdvisor",
-          "resolved": "src/game/analysis/advisors/TradeAdvisor.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "export",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/CatanBot.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/features/game/GameScreen.tsx",
-        "src/features/coach/hooks/useCoachData.ts",
-        "src/features/coach/logic/coachUtils.ts",
-        "src/features/coach/types.ts",
-        "src/features/board/components/HexOverlays.tsx",
-        "src/features/board/components/HexEdges.tsx",
-        "src/features/board/components/HexVertices.tsx",
-        "src/features/hud/components/GameControls.tsx",
-        "src/features/hud/components/controls/BuildBar.tsx",
-        "src/features/coach/components/CoachPanel.tsx",
-        "src/game/analysis/CoachPlugin.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/adviceConstants.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/TradeAdvisor.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/advisors/RoadAdvisor.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../rules/spatial",
-          "resolved": "src/game/rules/spatial.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../analyst",
-          "resolved": "src/game/analysis/analyst.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": true,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./SpatialAdvisor",
-          "resolved": "src/game/analysis/advisors/SpatialAdvisor.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "cycle": [
-            {
-              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            },
-            {
-              "name": "src/game/analysis/coach.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            },
-            {
-              "name": "src/game/analysis/advisors/RoadAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import"
-              ]
-            }
-          ],
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/coach.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/analyst.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../mechanics/production",
-          "resolved": "src/game/mechanics/production.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/advisors/RoadAdvisor.ts",
-        "src/features/coach/components/PlayerProductionPotential.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/mechanics/production.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/analyst.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/types.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts",
-        "src/game/analysis/advisors/SpatialAdvisor.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/game/analysis/index.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/advisors/SpatialAdvisor.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../../game/core/utils/objectUtils",
-          "resolved": "src/game/core/utils/objectUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../geometry/hexUtils",
-          "resolved": "src/game/geometry/hexUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../mechanics/resources",
-          "resolved": "src/game/mechanics/resources.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../mechanics/scoring",
-          "resolved": "src/game/mechanics/scoring.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../rules/queries",
-          "resolved": "src/game/rules/queries.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": true,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "cycle": [
-            {
-              "name": "src/game/analysis/coach.ts",
-              "dependencyTypes": [
-                "local",
-                "import",
-                "pre-compilation-only"
-              ]
-            },
-            {
-              "name": "src/game/analysis/advisors/SpatialAdvisor.ts",
-              "dependencyTypes": [
-                "local",
-                "import"
-              ]
-            }
-          ],
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/coach.ts",
-        "src/game/analysis/advisors/RoadAdvisor.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/mechanics/scoring.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/analysis/advisors/SpatialAdvisor.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/advisors/TradeAdvisor.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../mechanics/trade",
-          "resolved": "src/game/mechanics/trade.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adviceConstants",
-          "resolved": "src/game/analysis/adviceConstants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/analysis/coach.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/BotCoach.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/analysis/coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./logic/MoveScorer",
-          "resolved": "src/bots/logic/MoveScorer.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./logic/OptimalMoveFilter",
-          "resolved": "src/bots/logic/OptimalMoveFilter.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/CatanBot.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/logic/MoveScorer.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/analysis/coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/mechanics/costs",
-          "resolved": "src/game/mechanics/costs.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../utils/ActionUtils",
-          "resolved": "src/bots/utils/ActionUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/OptimalMoveFilter.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/profiles/BotProfile.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/bots/AggressiveBot.ts",
-        "src/bots/CatanBot.ts",
-        "src/bots/BotCoach.ts",
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/logic/OptimalMoveFilter.ts",
-        "src/bots/BalancedBot.ts",
-        "src/bots/DefensiveBot.ts",
-        "src/bots/ExpansiveBot.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/utils/ActionUtils.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/logic/MoveScorer.ts",
-        "src/bots/logic/OptimalMoveFilter.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/logic/OptimalMoveFilter.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/analysis/coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/analysis/types",
-          "resolved": "src/game/analysis/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/core/validation",
-          "resolved": "src/game/core/validation.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../../game/mechanics/costs",
-          "resolved": "src/game/mechanics/costs.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../utils/ActionUtils",
-          "resolved": "src/bots/utils/ActionUtils.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./MoveScorer",
-          "resolved": "src/bots/logic/MoveScorer.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/BotCoach.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/BalancedBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./CatanBot",
-          "resolved": "src/bots/CatanBot.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./profiles/BotProfile",
-          "resolved": "src/bots/profiles/BotProfile.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/bots/CatanMCTSBot.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgame",
-          "resolved": "src/adapters/runtime/boardgame.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgameMoves",
-          "resolved": "src/adapters/runtime/boardgameMoves.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/catan/CatanEvaluator",
-          "resolved": "src/game/ai/catan/CatanEvaluator.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/catan/CatanRolloutPolicy",
-          "resolved": "src/game/ai/catan/CatanRolloutPolicy.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/catan/CatanSearchAction",
-          "resolved": "src/game/ai/catan/CatanSearchAction.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/catan/CatanSearchGame",
-          "resolved": "src/game/ai/catan/CatanSearchGame.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "type-only",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/catan/CatanSearchState",
-          "resolved": "src/game/ai/catan/CatanSearchState.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/search/MctsEngine",
-          "resolved": "src/game/ai/search/MctsEngine.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/ai/search/UctSelectionPolicy",
-          "resolved": "src/game/ai/search/UctSelectionPolicy.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/bots/botCycle.ts"
       ],
       "orphan": false
     },
@@ -6305,6 +6057,534 @@
       ],
       "dependents": [
         "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/bots/MonteCatanoBot.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgame",
+          "resolved": "src/adapters/runtime/boardgame.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/analysis/analyst",
+          "resolved": "src/game/analysis/analyst.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/Game",
+          "resolved": "src/game/Game.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/bots/botCycle.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/Game.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../adapters/runtime/boardgameMoves",
+          "resolved": "src/adapters/runtime/boardgameMoves.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../game/core/utils/sanitize",
+          "resolved": "src/game/core/utils/sanitize.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./analysis/CoachPlugin",
+          "resolved": "src/game/analysis/CoachPlugin.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./core/config",
+          "resolved": "src/game/core/config.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./core/constants",
+          "resolved": "src/game/core/constants.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./generation/boardGen",
+          "resolved": "src/game/generation/boardGen.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./mechanics/boardStats",
+          "resolved": "src/game/mechanics/boardStats.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./mechanics/turnOrder",
+          "resolved": "src/game/mechanics/turnOrder.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./moves/build",
+          "resolved": "src/game/moves/build.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./moves/robber",
+          "resolved": "src/game/moves/robber.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./moves/roll",
+          "resolved": "src/game/moves/roll.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./moves/setup",
+          "resolved": "src/game/moves/setup.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./moves/trade",
+          "resolved": "src/game/moves/trade.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./rules/enumerator",
+          "resolved": "src/game/rules/enumerator.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./rules/lifecycle",
+          "resolved": "src/game/rules/lifecycle.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io",
+          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": true
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "npm",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": false,
+          "moduleSystem": "es6",
+          "module": "boardgame.io/core",
+          "resolved": "node_modules/boardgame.io/dist/cjs/core.js",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": true
+        }
+      ],
+      "dependents": [
+        "src/bots/MonteCatanoBot.ts",
+        "src/GameClient.tsx"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "node_modules/boardgame.io/dist/cjs/core.js",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/Game.ts"
+      ],
+      "coreModule": false,
+      "couldNotResolve": false,
+      "orphan": false,
+      "followable": false,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "npm",
+        "import"
+      ]
+    },
+    {
+      "source": "src/game/core/utils/sanitize.ts",
+      "valid": true,
+      "dependencies": [],
+      "dependents": [
+        "src/game/Game.ts"
+      ],
+      "orphan": false
+    },
+    {
+      "source": "src/game/analysis/CoachPlugin.ts",
+      "valid": true,
+      "dependencies": [
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import",
+            "pre-compilation-only"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "../core/types",
+          "resolved": "src/game/core/types.ts",
+          "valid": true,
+          "preCompilationOnly": true,
+          "matchesDoNotFollow": false
+        },
+        {
+          "circular": false,
+          "coreModule": false,
+          "couldNotResolve": false,
+          "dependencyTypes": [
+            "local",
+            "import"
+          ],
+          "dynamic": false,
+          "exoticallyRequired": false,
+          "followable": true,
+          "moduleSystem": "es6",
+          "module": "./coach",
+          "resolved": "src/game/analysis/coach.ts",
+          "valid": true,
+          "preCompilationOnly": false,
+          "matchesDoNotFollow": false
+        }
+      ],
+      "dependents": [
+        "src/game/Game.ts"
       ],
       "orphan": false
     },
@@ -11603,414 +11883,6 @@
       "orphan": false
     },
     {
-      "source": "src/game/Game.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../adapters/runtime/boardgameMoves",
-          "resolved": "src/adapters/runtime/boardgameMoves.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../game/core/utils/sanitize",
-          "resolved": "src/game/core/utils/sanitize.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./analysis/CoachPlugin",
-          "resolved": "src/game/analysis/CoachPlugin.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./core/config",
-          "resolved": "src/game/core/config.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./core/constants",
-          "resolved": "src/game/core/constants.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./generation/boardGen",
-          "resolved": "src/game/generation/boardGen.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./mechanics/boardStats",
-          "resolved": "src/game/mechanics/boardStats.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./mechanics/turnOrder",
-          "resolved": "src/game/mechanics/turnOrder.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./moves/build",
-          "resolved": "src/game/moves/build.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./moves/robber",
-          "resolved": "src/game/moves/robber.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./moves/roll",
-          "resolved": "src/game/moves/roll.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./moves/setup",
-          "resolved": "src/game/moves/setup.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./moves/trade",
-          "resolved": "src/game/moves/trade.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./rules/enumerator",
-          "resolved": "src/game/rules/enumerator.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./rules/lifecycle",
-          "resolved": "src/game/rules/lifecycle.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io",
-          "resolved": "node_modules/boardgame.io/dist/boardgameio.js",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": true
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": false,
-          "moduleSystem": "es6",
-          "module": "boardgame.io/core",
-          "resolved": "node_modules/boardgame.io/dist/cjs/core.js",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": true
-        }
-      ],
-      "dependents": [
-        "src/GameClient.tsx"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "node_modules/boardgame.io/dist/cjs/core.js",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/Game.ts"
-      ],
-      "coreModule": false,
-      "couldNotResolve": false,
-      "orphan": false,
-      "followable": false,
-      "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ]
-    },
-    {
-      "source": "src/game/core/utils/sanitize.ts",
-      "valid": true,
-      "dependencies": [],
-      "dependents": [
-        "src/game/Game.ts"
-      ],
-      "orphan": false
-    },
-    {
-      "source": "src/game/analysis/CoachPlugin.ts",
-      "valid": true,
-      "dependencies": [
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import",
-            "pre-compilation-only"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "../core/types",
-          "resolved": "src/game/core/types.ts",
-          "valid": true,
-          "preCompilationOnly": true,
-          "matchesDoNotFollow": false
-        },
-        {
-          "circular": false,
-          "coreModule": false,
-          "couldNotResolve": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
-          "dynamic": false,
-          "exoticallyRequired": false,
-          "followable": true,
-          "moduleSystem": "es6",
-          "module": "./coach",
-          "resolved": "src/game/analysis/coach.ts",
-          "valid": true,
-          "preCompilationOnly": false,
-          "matchesDoNotFollow": false
-        }
-      ],
-      "dependents": [
-        "src/game/Game.ts"
-      ],
-      "orphan": false
-    },
-    {
       "source": "src/pages/SetupPage.tsx",
       "valid": true,
       "dependencies": [
@@ -12593,8 +12465,8 @@
     "error": 0,
     "ignore": 0,
     "info": 0,
-    "totalCruised": 159,
-    "totalDependenciesCruised": 564,
+    "totalCruised": 158,
+    "totalDependenciesCruised": 558,
     "violations": [],
     "warn": 0,
     "optionsUsed": {

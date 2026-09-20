@@ -1,5 +1,6 @@
 import { Bot, Ctx } from './boardgame';
 import { GameState } from '../../game/core/types';
+import { toGameContext } from './boardgameMoves';
 import { MonteCatanoBot, MonteCatanoBotConfig } from '../../bots/MonteCatanoBot';
 
 /**
@@ -16,6 +17,7 @@ export class MonteCatanoRuntimeAdapter extends Bot {
   }
 
   async play(state: { G: GameState; ctx: Ctx }, playerID: string): Promise<any> {
-    return this.innerBot.play(state, playerID);
+    const context = toGameContext(state.ctx);
+    return this.innerBot.play({ G: state.G, ctx: context }, playerID);
   }
 }

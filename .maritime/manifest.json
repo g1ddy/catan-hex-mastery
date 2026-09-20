@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.9",
-  "generatedAt": "2026-09-19T23:44:56.785Z",
+  "generatedAt": "2026-09-19T15:32:13.671Z",
   "sourceRoots": [
     "src"
   ],
@@ -11,9 +11,9 @@
     "report": "complexity-report.md"
   },
   "summary": {
-    "totalFiles": 140,
+    "totalFiles": 139,
     "healthScore": 88,
-    "scannedCount": 140,
+    "scannedCount": 139,
     "skippedCount": 0,
     "architecture": {
       "namespaces": [
@@ -26,17 +26,17 @@
         },
         {
           "folder": "src/adapters",
-          "moduleCount": 5,
+          "moduleCount": 4,
           "afferentCoupling": 10,
-          "efferentCoupling": 4,
-          "instability": 0.286
+          "efferentCoupling": 3,
+          "instability": 0.231
         },
         {
           "folder": "src/bots",
           "moduleCount": 13,
-          "afferentCoupling": 3,
-          "efferentCoupling": 15,
-          "instability": 0.833
+          "afferentCoupling": 2,
+          "efferentCoupling": 17,
+          "instability": 0.895
         },
         {
           "folder": "src/features/board",
@@ -76,7 +76,7 @@
         {
           "folder": "src/game",
           "moduleCount": 60,
-          "afferentCoupling": 50,
+          "afferentCoupling": 49,
           "efferentCoupling": 1,
           "instability": 0.02
         },

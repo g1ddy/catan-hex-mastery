@@ -1,5 +1,4 @@
 import { GameState, GameContext, MakeMoveAction } from '../game/core/types';
-import { toGameContext } from '../adapters/runtime/boardgameMoves';
 import { CatanSearchGame } from '../game/ai/catan/CatanSearchGame';
 import type { CatanSearchState } from '../game/ai/catan/CatanSearchState';
 import type { CatanSearchAction } from '../game/ai/catan/CatanSearchAction';
@@ -54,6 +53,7 @@ const DEFAULT_CONFIG: MonteCatanoBotConfig = {
 /**
  * Framework-neutral Catan MonteCatanoBot.
  * Does NOT extend boardgame.io's Bot class and has no boardgame.io dependencies or imports.
+ * Operates strictly on Catan-owned GameState and GameContext.
  */
 export class MonteCatanoBot {
   public readonly iterations: number;
@@ -88,9 +88,8 @@ export class MonteCatanoBot {
     });
   }
 
-  async play(state: { G: GameState; ctx: GameContext | any }, playerID: string): Promise<any> {
-    const { G } = state;
-    const context: GameContext = 'stagesByPlayer' in state.ctx ? state.ctx : toGameContext(state.ctx);
+  async play(state: { G: GameState; ctx: GameContext }, playerID: string): Promise<any> {
+    const { G, ctx: context } = state;
 
     // Safety: Only act if player is current active player
     if (playerID !== context.currentPlayer) {
