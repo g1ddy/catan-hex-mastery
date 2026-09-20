@@ -5,7 +5,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | `src` | 4 | 1 ($C_a$) | 7 ($C_e$) | **0.875** |
 | `src/adapters` | 5 | 9 ($C_a$) | 4 ($C_e$) | **0.308** |
-| `src/bots` | 13 | 3 ($C_a$) | 15 ($C_e$) | **0.833** |
+| `src/bots` | 13 | 3 ($C_a$) | 16 ($C_e$) | **0.842** |
 | `src/features/board` | 13 | 1 ($C_a$) | 14 ($C_e$) | **0.933** |
 | `src/features/coach` | 11 | 4 ($C_a$) | 10 ($C_e$) | **0.714** |
 | `src/features/game` | 7 | 1 ($C_a$) | 19 ($C_e$) | **0.95** |
@@ -18,7 +18,7 @@
 
 **Last Updated:** 2026-09-20
 
-### 🏥 Repository Health Score: **88.0 / 100**
+### 🏥 Repository Health Score: **87.0 / 100**
 
 *   **Formula**: 100 - Penalties for Files exceeding thresholds (LOC > 300, Complexity > 10, Fan-Out > 15).
 *   **Total Graph Files**: 140
@@ -30,6 +30,7 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 
 | File | Score | LOC | Complexity | Fan-Out | Instability |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `src/bots/BotCoach.ts` | **92.1** | 194 | 13 | 14 | 0.93 |
 | `src/features/board/components/HexOverlays.tsx` | **87.2** | 148 | 19 | 9 | 0.82 |
 | `src/game/Game.ts` | **85.9** | 130 | 9 | 18 | 0.95 |
 | `src/game/moves/execution.ts` | **85.2** | 114 | 20 | 8 | 0.89 |
@@ -39,7 +40,6 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/bots/logic/OptimalMoveFilter.ts` | **76.6** | 228 | 10 | 8 | 0.89 |
 | `src/game/analysis/coach.ts` | **75.5** | 209 | 11 | 12 | 0.43 |
 | `src/game/analysis/probability.ts` | **72.1** | 188 | 16 | 4 | 0.67 |
-| `src/game/analysis/advisors/SpatialAdvisor.ts` | **71.8** | 211 | 7 | 10 | 0.83 |
 
 ### 🧠 Top 10 Logic-Heavy Files (Cyclomatic Complexity)
 | File | Max Complexity | LOC |
@@ -48,9 +48,9 @@ _Score = (LOC/10) + (Complexity*2) + (FanOut*2) + (Instability*20)_
 | `src/features/board/components/HexOverlays.tsx` | **19** | 148 |
 | `src/game/analysis/probability.ts` | **16** | 188 |
 | `src/game/analysis/spatialAnalysis.ts` | **14** | 271 |
+| `src/bots/BotCoach.ts` | **13** | 194 |
 | `src/game/ai/catan/CatanRolloutPolicy.ts` | **12** | 93 |
 | `src/features/board/components/HexEdges.tsx` | **11** | 140 |
 | `src/features/hud/components/GameNotification.tsx` | **11** | 73 |
 | `src/game/analysis/coach.ts` | **11** | 209 |
 | `src/game/core/utils/sanitize.ts` | **11** | 73 |
-| `src/game/rules/validator.ts` | **11** | 75 |

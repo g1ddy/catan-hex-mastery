@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "toolVersion": "0.1.0-beta.9",
-  "generatedAt": "2026-09-20T12:01:08.059Z",
+  "generatedAt": "2026-09-20T18:56:06.892Z",
   "sourceRoots": [
     "src"
   ],
@@ -12,7 +12,7 @@
   },
   "summary": {
     "totalFiles": 140,
-    "healthScore": 88,
+    "healthScore": 87,
     "scannedCount": 140,
     "skippedCount": 0,
     "architecture": {
@@ -35,8 +35,8 @@
           "folder": "src/bots",
           "moduleCount": 13,
           "afferentCoupling": 3,
-          "efferentCoupling": 15,
-          "instability": 0.833
+          "efferentCoupling": 16,
+          "instability": 0.842
         },
         {
           "folder": "src/features/board",
