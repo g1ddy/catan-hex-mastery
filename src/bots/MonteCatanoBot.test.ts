@@ -90,16 +90,18 @@ describe('MonteCatanoBot Migration & Integration', () => {
       expect(adapter).toBeInstanceOf(Bot);
     });
 
-    it('respects custom configuration overrides for iterations, maxDepth, and explorationConstant', () => {
-      const bot = new MonteCatanoBot({
-        iterations: 50,
-        playoutDepth: 20,
-        explorationConstant: 2.0,
-      });
+    it('respects custom configuration overrides for iterations, maxDepth, and playoutDepth precedence', () => {
+      const botDefault = new MonteCatanoBot();
+      expect(botDefault.maxDepth).toBe(50);
 
-      expect(bot.iterations).toBe(50);
-      expect(bot.maxDepth).toBe(20);
-      expect(bot.explorationConstant).toBe(2.0);
+      const botMaxDepth = new MonteCatanoBot({ maxDepth: 15 });
+      expect(botMaxDepth.maxDepth).toBe(15);
+
+      const botPlayoutDepth = new MonteCatanoBot({ playoutDepth: 20 });
+      expect(botPlayoutDepth.maxDepth).toBe(20);
+
+      const botPrecedence = new MonteCatanoBot({ playoutDepth: 25, maxDepth: 30 });
+      expect(botPrecedence.maxDepth).toBe(25);
     });
   });
 

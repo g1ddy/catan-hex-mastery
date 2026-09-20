@@ -69,7 +69,7 @@ export class MonteCatanoBot {
     const fullConfig = { ...DEFAULT_CONFIG, ...config };
 
     this.iterations = fullConfig.iterations ?? 200;
-    this.maxDepth = fullConfig.playoutDepth ?? fullConfig.maxDepth ?? 50;
+    this.maxDepth = config.playoutDepth ?? config.maxDepth ?? DEFAULT_CONFIG.playoutDepth ?? 50;
     this.explorationConstant = fullConfig.explorationConstant ?? 1.414;
     this.initialSeed = fullConfig.seed;
     this.evaluatorWeights = fullConfig.evaluatorWeights ?? MONTE_CATANO_EVALUATOR_WEIGHTS;
