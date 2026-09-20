@@ -253,6 +253,30 @@ describe('MonteCatanoBot Migration & Integration', () => {
       expect(result.action.payload.playerID).toBe('0');
       expect(Array.isArray(result.action.payload.args)).toBe(true);
     });
+
+    it('verifies selected action is legal according to CatanSearchGame.getLegalActions', async () => {
+      const searchGame = new CatanSearchGame();
+      const { game, ctx } = createGameplayState('0', STAGES.ACTING);
+      const searchState = { game, context: ctx };
+
+      const legalActions = searchGame.getLegalActions(searchState);
+      expect(legalActions.length).toBeGreaterThan(0);
+
+      const bot = new MonteCatanoBot({ iterations: 20, playoutDepth: 10, seed: 'legality-check-seed' });
+      const result = await bot.play({ G: game, ctx }, '0');
+
+      expect(result).toBeDefined();
+      expect(result.action).toBeDefined();
+
+      const selectedType = result.action.payload.type;
+      const selectedArgs = result.action.payload.args;
+
+      const isLegal = legalActions.some(
+        (legal) => legal.move === selectedType && JSON.stringify(legal.args) === JSON.stringify(selectedArgs)
+      );
+
+      expect(isLegal).toBe(true);
+    });
   });
 
   describe('4. Lifecycle Coverage & Active Player Safety', () => {
